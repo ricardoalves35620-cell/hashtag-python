@@ -1,3 +1,4 @@
+import VSCodeBlock from './VSCodeBlock'
 import type { LessonBlock as LessonBlockType, Lang } from '../data/types'
 
 interface Props {
@@ -10,7 +11,7 @@ export default function LessonBlock({ block, lang }: Props) {
 
   if (block.type === 'heading') {
     return (
-      <h2 className="text-xl font-medium text-white mt-6 mb-2">
+      <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--c-text)', marginTop: 24, marginBottom: 8 }}>
         {t(block.content)}
       </h2>
     )
@@ -19,55 +20,59 @@ export default function LessonBlock({ block, lang }: Props) {
   if (block.type === 'text') {
     return (
       <div
-        className="lesson-prose text-[#b0b0d0] leading-relaxed"
+        className="lesson-prose"
+        style={{ color: 'var(--c-text2)', lineHeight: 1.7, fontSize: 15 }}
         dangerouslySetInnerHTML={{ __html: t(block.content) }}
       />
     )
   }
 
   if (block.type === 'code') {
-    return (
-      <div className="bg-[#0d0d1f] border border-[#1e1e40] rounded-xl p-4 my-3 overflow-x-auto">
-        <pre className="font-mono text-sm text-[#a78bfa] leading-relaxed whitespace-pre">
-          {block.code}
-        </pre>
-      </div>
-    )
+    return <VSCodeBlock code={block.code || ''} />
   }
 
   if (block.type === 'video') {
     const videoId = extractYouTubeId(block.videoUrl || '')
     return (
-      <div className="my-4">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-[10px] bg-[#2d1b69] text-purple-light px-2 py-0.5 rounded-full font-medium uppercase tracking-wide">
+      <div style={{ margin: '12px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <span style={{
+            fontSize: 10, background: 'var(--c-purple-dm)', color: 'var(--c-purple-l)',
+            padding: '3px 8px', borderRadius: 20, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.5px'
+          }}>
             Video · {block.videoDuration}
           </span>
-          <span className="text-sm text-[#8888aa]">{t(block.videoTitle)}</span>
+          <span style={{ fontSize: 13, color: 'var(--c-muted)' }}>{t(block.videoTitle)}</span>
         </div>
         {videoId ? (
-          <div className="rounded-xl overflow-hidden border border-[#1e1e40]" style={{ aspectRatio: '16/9' }}>
+          <div style={{ borderRadius: 10, overflow: 'hidden', border: '0.5px solid var(--c-border)', aspectRatio: '16/9' }}>
             <iframe
               src={`https://www.youtube.com/embed/${videoId}`}
               title={t(block.videoTitle)}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              className="w-full h-full"
+              style={{ width: '100%', height: '100%', display: 'block' }}
             />
           </div>
         ) : (
-          <a
-            href={block.videoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 bg-[#0d0d1f] border border-[#1e1e40] rounded-xl p-4 hover:border-purple-dim transition-colors"
+          <a href={block.videoUrl} target="_blank" rel="noopener noreferrer"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
+              borderRadius: 10, padding: 14, textDecoration: 'none',
+            }}
           >
-            <div className="w-10 h-10 rounded-full bg-purple-dark flex items-center justify-center flex-shrink-0">
+            <div style={{
+              width: 40, height: 40, borderRadius: '50%', background: 'var(--c-purple-d)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+            }}>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M6 3.5l7 4.5-7 4.5z"/></svg>
             </div>
             <div>
-              <div className="text-sm font-medium text-purple-light">{t(block.videoTitle)}</div>
-              <div className="text-xs text-muted mt-0.5">{lang === 'en' ? 'Watch on YouTube' : 'Assistir no YouTube'} · {block.videoDuration}</div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--c-purple-l)' }}>{t(block.videoTitle)}</div>
+              <div style={{ fontSize: 11, color: 'var(--c-muted)', marginTop: 2 }}>
+                {lang === 'en' ? 'Watch on YouTube' : 'Assistir no YouTube'} · {block.videoDuration}
+              </div>
             </div>
           </a>
         )}
@@ -77,10 +82,15 @@ export default function LessonBlock({ block, lang }: Props) {
 
   if (block.type === 'tip') {
     return (
-      <div className="flex gap-3 bg-[#0a1f0a] border border-[#1a4a1a] rounded-xl p-4 my-3">
-        <span className="text-green-400 mt-0.5 flex-shrink-0">💡</span>
+      <div style={{
+        display: 'flex', gap: 10,
+        background: '#0a1f0a', border: '1px solid #1a4a1a',
+        borderRadius: 10, padding: 14, margin: '10px 0'
+      }}>
+        <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
         <div
-          className="text-sm text-green-200 leading-relaxed lesson-prose"
+          className="lesson-prose"
+          style={{ fontSize: 13, color: '#86efac', lineHeight: 1.6 }}
           dangerouslySetInnerHTML={{ __html: t(block.content) }}
         />
       </div>
@@ -89,10 +99,15 @@ export default function LessonBlock({ block, lang }: Props) {
 
   if (block.type === 'warning') {
     return (
-      <div className="flex gap-3 bg-[#1f1000] border border-[#4a2a00] rounded-xl p-4 my-3">
-        <span className="text-amber-400 mt-0.5 flex-shrink-0">⚠️</span>
+      <div style={{
+        display: 'flex', gap: 10,
+        background: '#1f1000', border: '1px solid #4a2a00',
+        borderRadius: 10, padding: 14, margin: '10px 0'
+      }}>
+        <span style={{ fontSize: 16, flexShrink: 0 }}>⚠️</span>
         <div
-          className="text-sm text-amber-200 leading-relaxed lesson-prose"
+          className="lesson-prose"
+          style={{ fontSize: 13, color: '#fbbf24', lineHeight: 1.6 }}
           dangerouslySetInnerHTML={{ __html: t(block.content) }}
         />
       </div>
