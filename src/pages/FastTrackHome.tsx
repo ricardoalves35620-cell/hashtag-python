@@ -139,6 +139,41 @@ export default function FastTrackHome() {
             )
           })}
         </div>
+
+        {/* ── Reset progress ── */}
+        <div style={{
+          background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
+          borderRadius: 12, padding: 16, marginTop: 8,
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--c-text)', marginBottom: 4 }}>
+            {lang === 'en' ? 'Reset progress' : 'Resetar progresso'}
+          </div>
+          <p style={{ fontSize: 12, color: 'var(--c-muted)', margin: '0 0 12px', lineHeight: 1.5 }}>
+            {lang === 'en'
+              ? 'Clear all completed days and start the 7-day track from scratch.'
+              : 'Limpar todos os dias concluídos e recomeçar os 7 dias do zero.'}
+          </p>
+          <button
+            onClick={() => {
+              if (window.confirm(
+                lang === 'en'
+                  ? 'Reset all FastTrack progress? This cannot be undone.'
+                  : 'Resetar todo o progresso do FastTrack? Não pode ser desfeito.'
+              )) {
+                localStorage.removeItem('hp_ft_done')
+                setDoneDays([])
+              }
+            }}
+            style={{
+              padding: '10px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+              background: 'transparent', color: '#f87171',
+              border: '0.5px solid rgba(239,68,68,0.4)', cursor: 'pointer',
+            }}
+          >
+            🔄 {lang === 'en' ? 'Reset FastTrack' : 'Resetar FastTrack'}
+          </button>
+        </div>
+
       </div>
     </Layout>
   )
