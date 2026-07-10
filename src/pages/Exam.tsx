@@ -62,7 +62,7 @@ export default function Exam() {
       setPyodideLoading(true)
       const py = await getPyodide()
       setPyodideLoading(false)
-      const inputs = testInput.split('\n').filter(l => l.trim())
+      const inputs = testInput.split('\n').map(l => l.trim()).filter(l => l !== '')
       const { output, error } = await runCode(py, code, inputs)
       setTestOutput(error ? `Error: ${error}\n\n${output}` : output || '(no output)')
     } catch (e) {

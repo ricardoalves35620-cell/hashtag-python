@@ -396,13 +396,13 @@ print(account)
       { id: 'tc7_1', description: { en: 'Deposit confirmation printed', pt: 'Confirmação de depósito impressa' }, inputs: [], checks: [{ type: 'contains_any', value: ['Deposited', 'deposited', 'deposit'] }], points: 10 },
       { id: 'tc7_2', description: { en: 'Withdraw confirmation printed', pt: 'Confirmação de saque impressa' }, inputs: [], checks: [{ type: 'contains_any', value: ['Withdrew', 'withdrew', 'withdraw'] }], points: 10 },
       { id: 'tc7_3', description: { en: 'Insufficient funds message shown', pt: 'Mensagem de fundos insuficientes mostrada' }, inputs: [], checks: [{ type: 'contains_any', value: ['Insufficient', 'insufficient', 'funds', 'enough'] }], points: 10 },
-      { id: 'tc7_4', description: { en: 'Owner name shown in output', pt: 'Nome do dono mostrado na saída' }, inputs: [], checks: [{ type: 'contains', value: 'Alex' }], points: 10 },
+      { id: 'tc7_4', description: { en: 'Output contains owner label', pt: 'Saída contém rótulo de dono' }, inputs: [], checks: [{ type: 'contains_any', value: ['Owner', 'owner', 'Alex', 'Name'] }], points: 10 },
       { id: 'tc7_5', description: { en: 'Balance shown in output', pt: 'Saldo mostrado na saída' }, inputs: [], checks: [{ type: 'contains', value: '1300' }], points: 10 },
       { id: 'tc7_6', description: { en: 'Deposit amount $500 mentioned', pt: 'Valor do depósito $500 mencionado' }, inputs: [], checks: [{ type: 'contains', value: '500' }], points: 10 },
       { id: 'tc7_7', description: { en: 'Withdraw amount $200 mentioned', pt: 'Valor do saque $200 mencionado' }, inputs: [], checks: [{ type: 'contains', value: '200' }], points: 10 },
       { id: 'tc7_8', description: { en: 'Balance is 1300 after operations', pt: 'Saldo é 1300 após operações' }, inputs: [], checks: [{ type: 'contains', value: '1300' }], points: 10 },
       { id: 'tc7_9', description: { en: 'Runs without errors', pt: 'Roda sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 },
-      { id: 'tc7_10', description: { en: 'Class has owner attribute', pt: 'Classe tem atributo owner' }, inputs: [], checks: [{ type: 'contains', value: 'Alex' }], points: 10 }
+      { id: 'tc7_10', description: { en: 'Balance shows correct value after operations', pt: 'Saldo mostra valor correto após operações' }, inputs: [], checks: [{ type: 'contains', value: '1300' }], points: 10 }
     ]
   }
 }

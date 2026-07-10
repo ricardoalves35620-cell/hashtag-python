@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
-import CodeEditor from '../components/CodeEditor'
+import VSCodeBlock from '../components/VSCodeBlock'
 import { useApp } from '../contexts/AppContext'
 import { FASTTRACK_DAYS } from '../data/fasttrack'
 import { getPyodide, runCode } from '../lib/pyodide'
@@ -21,13 +21,12 @@ export default function FastTrackDay() {
   const [running, setRunning] = useState(false)
   const [pyLoading, setPyLoading] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
-  const [customInput, setCustomInput] = useState('')
+  const [customInput, setCustomInput] = useState(day?.exercise.inputHint || '')
 
   if (!day) return null
 
   const doneDays: number[] = JSON.parse(localStorage.getItem('hp_ft_done') || '[]')
   const isDone = doneDays.includes(day.id)
-  const isAlreadyDone = isDone
 
   const markDone = () => {
     const updated = [...new Set([...doneDays, day.id])]
@@ -44,7 +43,7 @@ export default function FastTrackDay() {
       setPyLoading(true)
       const py = await getPyodide()
       setPyLoading(false)
-      const inputs = customInput.split('\n').filter(l => l.trim())
+      const inputs = customInput.split('\n').map(l => l.trim()).filter(l => l !== '')
       const { output: out, error } = await runCode(py, code, inputs)
       setOutput(error ? `❌ ${error}\n\n${out}` : out || '(no output)')
     } catch (e) {
@@ -55,99 +54,190 @@ export default function FastTrackDay() {
   }
 
   const t = {
-    en: { lesson: 'Lesson', exercise: 'Exercise', day: 'Day', run: 'Run Code', running: 'Running...', loading: 'Loading Python...', solution: 'Show solution', hideSolution: 'Hide solution', markDone: 'Mark as done →', alreadyDone: 'Revisit ↩', skip: 'Skip day', testInput: 'Test inputs (one per line)', output: 'Output', outcome: 'After this day' },
-    pt: { lesson: 'Aula', exercise: 'Exercício', day: 'Dia', run: 'Executar', running: 'Executando...', loading: 'Carregando Python...', solution: 'Ver solução', hideSolution: 'Esconder solução', markDone: 'Marcar como feito →', alreadyDone: 'Revisar ↩', skip: 'Pular dia', testInput: 'Entradas de teste (uma por linha)', output: 'Saída', outcome: 'Após este dia' }
+    en: {
+      lesson: 'Lesson', exercise: 'Exercise', day: 'Day',
+      run: 'Run Code', running: 'Running...', loading: 'Loading Python...',
+      solution: 'Show solution', hideSolution: 'Hide solution',
+      markDone: 'Mark as done →', alreadyDone: 'Revisit ↩', skip: 'Skip',
+      testInput: 'Test inputs (one per line)', output: 'Output', outcome: 'After this day',
+      inputNote: 'These are the example inputs. Edit them or use your own.',
+    },
+    pt: {
+      lesson: 'Aula', exercise: 'Exercício', day: 'Dia',
+      run: 'Executar', running: 'Executando...', loading: 'Carregando Python...',
+      solution: 'Ver solução', hideSolution: 'Esconder solução',
+      markDone: 'Marcar como feito →', alreadyDone: 'Revisar ↩', skip: 'Pular',
+      testInput: 'Entradas de teste (uma por linha)', output: 'Saída', outcome: 'Após este dia',
+      inputNote: 'Estas são as entradas de exemplo. Edite ou use as suas.',
+    }
   }[lang]
 
+  const headerStyle: React.CSSProperties = {
+    borderRadius: 12, padding: 14, marginBottom: 12,
+    background: day.color + '33', border: `1px solid ${day.textColor}44`,
+  }
+
   return (
-    <Layout
-      showBack
-      backTo="/fasttrack"
-      backLabel="FastTrack"
-      title={`${t.day} ${day.id}`}
-    >
-      <div className="flex flex-col" style={{ minHeight: 'calc(100dvh - 64px)' }}>
+    <Layout showBack backTo="/fasttrack" backLabel="FastTrack" title={`${t.day} ${day.id}`}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100dvh - 100px)' }}>
 
         {/* Day header */}
-        <div className="px-4 pt-4 pb-2">
-          <div className="rounded-xl p-4" style={{ background: day.color, border: `1px solid ${day.textColor}33` }}>
-            <div className="text-xs font-medium mb-1" style={{ color: day.textColor, opacity: 0.7 }}>
+        <div style={{ padding: '12px 16px 0' }}>
+          <div style={headerStyle}>
+            <div style={{ fontSize: 11, color: day.textColor, opacity: 0.7, marginBottom: 2 }}>
               {t.day} {day.id} of 7 · {day.duration} min
             </div>
-            <div className="text-base font-medium" style={{ color: day.textColor }}>{day.title[lang]}</div>
-            <div className="text-xs mt-0.5" style={{ color: day.textColor, opacity: 0.6 }}>{day.subtitle[lang]}</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: day.textColor }}>{day.title[lang]}</div>
+            <div style={{ fontSize: 12, color: day.textColor, opacity: 0.6, marginTop: 2 }}>{day.subtitle[lang]}</div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex px-4 gap-0 border-b" style={{ borderColor: 'var(--c-border)' }}>
-          {(['lesson', 'exercise'] as Tab[]).map(t_ => (
+        <div style={{
+          display: 'flex', borderBottom: '0.5px solid var(--c-border)',
+          padding: '0 16px',
+        }}>
+          {(['lesson', 'exercise'] as Tab[]).map(tabId => (
             <button
-              key={t_}
-              onClick={() => setTab(t_)}
-              className="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
+              key={tabId}
+              onClick={() => setTab(tabId)}
               style={{
-                borderColor: tab === t_ ? 'var(--c-purple)' : 'transparent',
-                color: tab === t_ ? 'var(--c-purple-l)' : 'var(--c-muted)',
-                minHeight: 44,
+                padding: '10px 16px', fontSize: 14, fontWeight: tab === tabId ? 500 : 400,
+                color: tab === tabId ? 'var(--c-purple-l)' : 'var(--c-muted)',
+                borderBottom: `2px solid ${tab === tabId ? 'var(--c-purple)' : 'transparent'}`,
+                background: 'none', border: 'none',
+                borderBottomWidth: 2,
+                borderBottomStyle: 'solid',
+                borderBottomColor: tab === tabId ? 'var(--c-purple)' : 'transparent',
+                cursor: 'pointer', minHeight: 44,
               }}
             >
-              {t_ === 'lesson' ? t.lesson : t.exercise}
+              {tabId === 'lesson' ? t.lesson : t.exercise}
             </button>
           ))}
         </div>
 
-        {/* Lesson tab */}
+        {/* ── LESSON TAB ── */}
         {tab === 'lesson' && (
-          <div className="flex-1 p-4 space-y-2 overflow-y-auto">
+          <div style={{ flex: 1, padding: '12px 16px', overflowY: 'auto' }}>
             {day.blocks.map((block, i) => (
               <LessonBlock key={i} block={block as any} lang={lang} />
             ))}
 
             {/* Outcome */}
-            <div className="rounded-xl p-4 mt-4" style={{ background: 'var(--c-purple-f)', border: `1px solid ${day.color}` }}>
-              <div className="text-xs font-medium uppercase tracking-wide mb-1" style={{ color: 'var(--c-purple-l)' }}>
+            <div style={{
+              borderRadius: 10, padding: 14, marginTop: 16,
+              background: 'var(--c-purple-f)', border: `1px solid ${day.color}`,
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--c-purple-l)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>
                 {t.outcome}
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--c-text2)' }}>{day.outcome[lang]}</p>
+              <p style={{ fontSize: 13, color: 'var(--c-text2)', lineHeight: 1.6, margin: 0 }}>
+                {day.outcome[lang]}
+              </p>
             </div>
 
             <button
               onClick={() => setTab('exercise')}
-              className="w-full py-3.5 rounded-xl text-sm font-medium text-white mt-4"
-              style={{ background: 'var(--c-purple)' }}
+              style={{
+                width: '100%', padding: '14px', borderRadius: 12, marginTop: 16,
+                background: 'var(--c-purple)', color: '#fff',
+                fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+              }}
             >
               {lang === 'en' ? 'Go to exercise →' : 'Ir para exercício →'}
             </button>
           </div>
         )}
 
-        {/* Exercise tab */}
+        {/* ── EXERCISE TAB ── */}
         {tab === 'exercise' && (
-          <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-            {/* Exercise description */}
-            <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '0.5px solid var(--c-border)' }}>
-              <div className="text-sm font-medium mb-1" style={{ color: 'var(--c-text)' }}>
+          <div style={{ flex: 1, padding: '12px 16px', overflowY: 'auto' }}>
+
+            {/* Description */}
+            <div style={{
+              background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
+              borderRadius: 12, padding: 14, marginBottom: 4,
+            }}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--c-text)', marginBottom: 6 }}>
                 {day.exercise.title[lang]}
               </div>
-              <p className="text-sm" style={{ color: 'var(--c-text2)' }}>
+              <p style={{ fontSize: 13, color: 'var(--c-text2)', margin: 0, lineHeight: 1.6 }}>
                 {day.exercise.description[lang]}
               </p>
             </div>
 
-            {/* Code editor */}
-            <CodeEditor value={code} onChange={setCode} height="220px" />
+            {/* VS Code style code editor */}
+            <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: 4, border: '1px solid #3e3e3e' }}>
+              {/* Title bar */}
+              <div style={{
+                background: '#252526', display: 'flex', alignItems: 'center', gap: 8,
+                padding: '7px 12px', borderBottom: '1px solid #3e3e3e',
+              }}>
+                <div style={{ display: 'flex', gap: 5 }}>
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#ff5f57' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#febc2e' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#28c840' }} />
+                </div>
+                <span style={{ fontSize: 13 }}>🐍</span>
+                <span style={{ fontSize: 12, color: '#d4d4d4', fontFamily: 'monospace' }}>exercise.py</span>
+                <span style={{ marginLeft: 'auto', fontSize: 11, color: '#858585' }}>editable</span>
+              </div>
+              {/* Editor */}
+              <div style={{ background: '#1e1e1e', position: 'relative' }}>
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, bottom: 0,
+                  width: 40, background: '#1e1e1e',
+                  borderRight: '1px solid #3e3e3e',
+                  display: 'flex', flexDirection: 'column',
+                  pointerEvents: 'none', paddingTop: 8,
+                }}>
+                  {code.split('\n').map((_, i) => (
+                    <div key={i} style={{
+                      fontSize: 12, color: '#858585', textAlign: 'right',
+                      paddingRight: 8, lineHeight: '20px',
+                      fontFamily: "'JetBrains Mono', monospace",
+                    }}>
+                      {i + 1}
+                    </div>
+                  ))}
+                </div>
+                <textarea
+                  value={code}
+                  onChange={e => setCode(e.target.value)}
+                  spellCheck={false}
+                  style={{
+                    width: '100%', minHeight: 200,
+                    background: 'transparent', color: '#d4d4d4',
+                    fontFamily: "'JetBrains Mono', 'Consolas', monospace",
+                    fontSize: 13, lineHeight: '20px',
+                    padding: '8px 12px 8px 48px',
+                    border: 'none', outline: 'none', resize: 'vertical',
+                    caretColor: '#d4d4d4',
+                  }}
+                />
+              </div>
+            </div>
 
             {/* Test inputs */}
-            <div>
-              <label className="block text-xs uppercase tracking-wide mb-1.5" style={{ color: 'var(--c-muted)' }}>{t.testInput}</label>
+            <div style={{ marginBottom: 8 }}>
+              <label style={{
+                display: 'block', fontSize: 11, color: 'var(--c-muted)',
+                textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4,
+              }}>
+                {t.testInput}
+              </label>
+              <div style={{ fontSize: 11, color: 'var(--c-dimmer)', marginBottom: 4 }}>{t.inputNote}</div>
               <textarea
                 value={customInput}
                 onChange={e => setCustomInput(e.target.value)}
-                rows={3}
-                className="w-full rounded-xl px-3 py-2 text-sm font-mono resize-none focus:outline-none"
-                style={{ background: 'var(--c-card)', border: '0.5px solid var(--c-border)', color: 'var(--c-purple-l)' }}
-                placeholder="Alex&#10;1996&#10;Toronto"
+                rows={Math.max(2, customInput.split('\n').length)}
+                style={{
+                  width: '100%', background: '#1e1e1e',
+                  border: '1px solid #3e3e3e', borderRadius: 8,
+                  padding: '8px 12px', fontSize: 13, fontFamily: "'JetBrains Mono', monospace",
+                  color: '#9cdcfe', outline: 'none', resize: 'none',
+                }}
               />
             </div>
 
@@ -155,17 +245,30 @@ export default function FastTrackDay() {
             <button
               onClick={handleRun}
               disabled={running || pyLoading}
-              className="w-full py-3 rounded-xl text-sm font-medium disabled:opacity-50 transition-colors"
-              style={{ background: 'var(--c-card)', border: '0.5px solid var(--c-border)', color: 'var(--c-purple-l)' }}
+              style={{
+                width: '100%', padding: '12px', borderRadius: 10, marginBottom: 8,
+                background: '#1e1e1e', border: '1px solid #3e3e3e',
+                color: '#dcdcaa', fontSize: 14, fontWeight: 500,
+                cursor: running ? 'not-allowed' : 'pointer', opacity: running ? 0.6 : 1,
+              }}
             >
               {pyLoading ? t.loading : running ? t.running : `▶ ${t.run}`}
             </button>
 
             {/* Output */}
             {output && (
-              <div className="rounded-xl p-4" style={{ background: '#040410', border: '0.5px solid var(--c-border)' }}>
-                <div className="text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--c-muted)' }}>{t.output}</div>
-                <pre className={`text-sm font-mono whitespace-pre-wrap ${output.startsWith('❌') ? 'text-red-400' : 'text-green-300'}`}>
+              <div style={{
+                background: '#0d0d0d', border: '1px solid #3e3e3e',
+                borderRadius: 8, padding: 14, marginBottom: 10,
+              }}>
+                <div style={{ fontSize: 11, color: '#858585', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
+                  {t.output}
+                </div>
+                <pre style={{
+                  fontSize: 13, fontFamily: "'JetBrains Mono', monospace",
+                  color: output.startsWith('❌') ? '#f48771' : '#4ec9b0',
+                  whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6,
+                }}>
                   {output}
                 </pre>
               </div>
@@ -174,42 +277,47 @@ export default function FastTrackDay() {
             {/* Solution toggle */}
             <button
               onClick={() => setShowSolution(!showSolution)}
-              className="text-sm transition-colors"
-              style={{ color: 'var(--c-purple-l)' }}
+              style={{
+                background: 'none', border: 'none', padding: 0,
+                color: 'var(--c-purple-l)', fontSize: 13, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8,
+              }}
             >
               💡 {showSolution ? t.hideSolution : t.solution}
             </button>
 
             {showSolution && (
-              <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${day.color}` }}>
-                <div className="px-4 py-2 text-xs font-medium" style={{ background: day.color, color: day.textColor }}>
-                  Solution
-                </div>
-                <pre className="p-4 text-sm font-mono overflow-x-auto" style={{ background: 'var(--c-code-bg)', color: 'var(--c-purple-l)' }}>
-                  {day.exercise.solution}
-                </pre>
-              </div>
+              <VSCodeBlock code={day.exercise.solution} filename="solution.py" />
             )}
 
-            {/* Mark done / skip */}
-            <div className="flex gap-2 pt-2">
+            {/* Mark done */}
+            <div style={{ display: 'flex', gap: 8, paddingTop: 8 }}>
               <button
                 onClick={markDone}
-                className="flex-1 py-3.5 rounded-xl text-sm font-medium text-white"
-                style={{ background: isAlreadyDone ? '#166534' : 'var(--c-purple)' }}
+                style={{
+                  flex: 1, padding: '14px', borderRadius: 12,
+                  background: isDone ? '#166534' : 'var(--c-purple)',
+                  color: '#fff', fontSize: 14, fontWeight: 500,
+                  border: 'none', cursor: 'pointer',
+                }}
               >
-                {isAlreadyDone ? t.alreadyDone : t.markDone}
+                {isDone ? t.alreadyDone : t.markDone}
               </button>
-              {!isAlreadyDone && (
+              {!isDone && (
                 <button
                   onClick={markDone}
-                  className="px-4 py-3.5 rounded-xl text-sm"
-                  style={{ border: '0.5px solid var(--c-border)', color: 'var(--c-muted)' }}
+                  style={{
+                    padding: '14px 16px', borderRadius: 12,
+                    background: 'transparent', color: 'var(--c-muted)',
+                    fontSize: 13, border: '0.5px solid var(--c-border)', cursor: 'pointer',
+                  }}
                 >
                   {t.skip}
                 </button>
               )}
             </div>
+
+            <div style={{ height: 16 }} />
           </div>
         )}
       </div>

@@ -42,7 +42,7 @@ export default function Exercises() {
       setPyodideLoading(true)
       const py = await getPyodide()
       setPyodideLoading(false)
-      const inputs = customInput.split('\n').filter(l => l.trim())
+      const inputs = customInput.split('\n').map(l => l.trim()).filter(l => l !== '')
       const { output: out, error } = await runCode(py, codes[exercise.id], inputs)
       setOutput(error ? `❌ Error: ${error}\n\n${out}` : out || '(no output)')
     } catch (e) {

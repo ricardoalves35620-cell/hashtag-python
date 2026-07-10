@@ -18,6 +18,7 @@ export interface FTDay {
     description: { en: string; pt: string }
     starterCode: string
     solution: string
+    inputHint?: string   // example inputs for the test box
   }
 }
 
@@ -79,6 +80,7 @@ print("=== PROFILE CARD ===")
 print(f"Name: {first_name} {last_name}")
 print(f"Age: {age}")
 print("====================")`,
+      inputHint: "Alex\nSmith\n1996",
       solution: `first_name = input("First name: ")
 last_name = input("Last name: ")
 birth_year = int(input("Birth year: "))
@@ -166,6 +168,7 @@ if score >= 60:
     print("Result: PASS")
 else:
     print("Result: FAIL")`,
+      inputHint: "85",
       solution: `score = int(input("Enter your score (0-100): "))
 
 if score >= 90:
@@ -251,6 +254,7 @@ print("Liftoff! 🚀")` },
         break
 
 print("Goodbye!")`,
+      inputHint: "7\nno",
       solution: `while True:
     number = int(input("\\nEnter a number for its times table: "))
     
@@ -347,6 +351,7 @@ if choice == "1":
 elif choice == "2":
     print(f"Result: {subtract(a, b)}")
 # Complete options 3 and 4...`,
+      inputHint: "1\n10\n5",
       solution: `def add(a, b): return a + b
 def subtract(a, b): return a - b
 def multiply(a, b): return a * b
@@ -445,6 +450,7 @@ while True:
         print(f"Phone: {contacts[name]}")
     else:
         print(f"'{name}' not found")`,
+      inputHint: "Alice\nquit",
       solution: `contacts = {
     "Alice": "555-1234",
     "Bob": "555-5678",
@@ -571,6 +577,7 @@ summary = {"average": average, "top_student": top["name"]}
 with open("summary.json", "w") as f:
     json.dump(summary, f, indent=2)
 print("Saved to summary.json")`,
+      inputHint: "",
       solution: `import json
 
 api_response = """
@@ -679,6 +686,7 @@ else:
         for name, grade in students.items():
             f.write(f"{name}: {grade}\\n")
     print("\\nSaved to grades.txt!")`,
+      inputHint: "Alice\n92\nBob\n78\ndone",
       solution: `students = {}
 
 print("=== Student Grade Manager ===")
@@ -694,24 +702,17 @@ if not students:
 else:
     average = sum(students.values()) / len(students)
     best = max(students, key=students.get)
-    worst = min(students, key=students.get)
     passed = [n for n, g in students.items() if g >= 60]
-    
-    print("\\n=== CLASS REPORT ===")
+    print("\n=== CLASS REPORT ===")
     for name, grade in sorted(students.items(), key=lambda x: x[1], reverse=True):
-        status = "✅ PASS" if grade >= 60 else "❌ FAIL"
-        print(f"{name}: {grade:.1f} — {status}")
-    
-    print(f"\\nClass average: {average:.1f}")
+        status = "PASS" if grade >= 60 else "FAIL"
+        print(f"{name}: {grade:.1f} - {status}")
+    print(f"\nClass average: {average:.1f}")
     print(f"Top student: {best} ({students[best]:.1f})")
     print(f"Passed: {len(passed)}/{len(students)} students")
-    
     with open("grades.txt", "w") as f:
-        f.write("CLASS REPORT\\n")
-        f.write(f"Average: {average:.1f}\\n")
-        for n, g in students.items():
-            f.write(f"{n}: {g}\\n")
-    print("\\nSaved to grades.txt! ✅")`
+        f.write(f"Average: {average:.1f}\n")
+    print("Saved to grades.txt!")`
     }
   }
 ]
