@@ -10,9 +10,9 @@ export interface ErrorExplanation {
 }
 
 // ── Parse raw error text from Pyodide ──
-// Pyodide wraps user code with 27 lines of setup before the try:
-// So reported line N = user line (N - 27)
-const PYODIDE_LINE_OFFSET = 27
+// Pyodide wraps user code with 26 lines before user code starts (line 27 = user line 1)
+// Offset = 26: user_line = pyodide_line - 26
+const PYODIDE_LINE_OFFSET = 26
 
 function parseError(raw: string): { type: string; line: number | null; message: string; badCode: string | null } {
   const lines = raw.split('\n')
@@ -51,7 +51,12 @@ function buildExplanation(
   userCode: string
 ): ErrorExplanation {
 
-  const lineStr = line ? { en: `Line ${line}`, pt: `Linha ${line}` } : { en: 'in your code', pt: 'no seu código' }
+  // Only show line if it's within the code's line count
+  const codeLineCount = userCode ? userCode.split('\n').length : 999
+  const validLine = line && line >= 1 && line <= codeLineCount ? line : null
+  const lineStr = validLine
+    ? { en: `Line ${validLine}`, pt: `Linha ${validLine}` }
+    : { en: 'in your code', pt: 'no seu código' }
 
   // ── SyntaxError ──
   if (type === 'SyntaxError') {
@@ -316,6 +321,27 @@ function buildExplanation(
       tip: {
         en: 'dict.get(key, default) is safer than dict[key] when the key might not exist.',
         pt: 'dict.get(chave, padrão) é mais seguro que dict[chave] quando a chave pode não existir.'
+      }
+    }
+  }
+
+  // ── MemoryError ── (usually infinite loop)
+  if (type === 'MemoryError') {
+    return {
+      type, line, badCode,
+      title: { en: 'Infinite loop detected', pt: 'Loop infinito detectado' },
+      where: { en: 'in your loop', pt: 'no seu loop' },
+      why: {
+        en: 'Your while loop never stopped. Either the exit condition is never met, or all test inputs were consumed and the loop kept running.',
+        pt: 'Seu loop while nunca parou. Ou a condição de saída nunca é satisfeita, ou todas as entradas de teste foram consumidas e o loop continuou rodando.'
+      },
+      fix: {
+        en: '• Check your while loop exit condition\n• Make sure "break" or the condition can be reached\n• Add more test inputs if your loop reads multiple values\n• Example: while True: needs a break statement',
+        pt: '• Verifique a condição de saída do while\n• Certifique-se que "break" ou a condição pode ser alcançada\n• Adicione mais entradas de teste se seu loop lê múltiplos valores\n• Exemplo: while True: precisa de um break'
+      },
+      tip: {
+        en: 'Every while True loop MUST have a "break" statement, or the loop runs forever.',
+        pt: 'Todo loop while True PRECISA ter um "break", ou o loop roda para sempre.'
       }
     }
   }

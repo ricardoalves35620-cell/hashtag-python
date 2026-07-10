@@ -43,9 +43,15 @@ export function getPyodide(): Promise<PyodideInstance> {
   return pyodideReady
 }
 
-export async function runCode(pyodide: PyodideInstance, code: string, inputs: string[] = []): Promise<{ output: string; error: string | null }> {
+export async function runCode(
+  pyodide: PyodideInstance,
+  code: string,
+  inputs: string[] = []
+): Promise<{ output: string; error: string | null }> {
   const inputsJson = JSON.stringify(inputs.map(String))
 
+  // IMPORTANT: Count every line here — user code starts at line 27
+  // Offset = 26 (lines 1-26 are wrapper, user line 1 = pyodide line 27)
   const wrapper = `
 import sys
 import builtins
@@ -66,7 +72,8 @@ def _hp_input(prompt=''):
         _hp_idx[0] += 1
         _hp_buf.write(val + '\\n')
         return val
-    return ''
+    else:
+        raise EOFError("No more test inputs. Add more lines to the test inputs box.")
 
 builtins.input = _hp_input
 sys.stdout = _hp_buf
@@ -75,8 +82,12 @@ try:
 ${code.split('\n').map(l => '    ' + l).join('\n')}
 except SystemExit:
     pass
+except EOFError as _e:
+    _hp_err = f"EOFError: {_e}"
+except MemoryError:
+    _hp_err = "MemoryError: Your code ran into an infinite loop. Check your while loop's exit condition."
 except Exception as _e:
-    _hp_err = str(_e)
+    _hp_err = f"{type(_e).__name__}: {_e}"
 
 sys.stdout = _orig_stdout
 builtins.input = _orig_input
@@ -89,6 +100,7 @@ _hp_output = _hp_buf.getvalue()
     const error = pyodide.globals.get('_hp_err')
     return { output, error: error ? String(error) : null }
   } catch (e) {
+    // SyntaxError and other compile-time errors come here as PythonError
     return { output: '', error: String(e) }
   }
 }
