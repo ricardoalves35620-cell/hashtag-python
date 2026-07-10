@@ -2,38 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+
+/* ── Safe area variables ── */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
+  /* Dark theme (default) */
+  --c-bg:       #0a0a18;
+  --c-card:     #111128;
+  --c-card2:    #161632;
+  --c-border:   #1e1e40;
+  --c-text:     #e8e8f0;
+  --c-text2:    #b0b0d0;
+  --c-muted:    #8888aa;
+  --c-dimmer:   #555570;
+  --c-header:   #0d0d1f;
+  --c-purple:   #7c3aed;
+  --c-purple-l: #a78bfa;
+  --c-purple-d: #5b21b6;
+  --c-purple-dm:#2d1b69;
+  --c-purple-f: #1a1040;
+  --c-code-bg:  #0d0d1f;
+}
+
+/* ── Light theme ── */
+[data-theme="light"] {
+  --c-bg:       #f0f0f8;
+  --c-card:     #ffffff;
+  --c-card2:    #f8f8ff;
+  --c-border:   #d8d8e8;
+  --c-text:     #1a1a2e;
+  --c-text2:    #3a3a5c;
+  --c-muted:    #6060a0;
+  --c-dimmer:   #9090b8;
+  --c-header:   #ffffff;
+  --c-purple:   #6d28d9;
+  --c-purple-l: #7c3aed;
+  --c-purple-d: #5b21b6;
+  --c-purple-dm:#ede9fe;
+  --c-purple-f: #f5f3ff;
+  --c-code-bg:  #1e1e3f;
 }
 
 html, body, #root {
   height: 100%;
-  background-color: #0a0a18;
-  color: #e8e8f0;
+  background-color: var(--c-bg);
+  color: var(--c-text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a0a18; }
-::-webkit-scrollbar-thumb { background: #2d1b69; border-radius: 3px; }
-
-/* CodeMirror overrides */
-.cm-editor {
-  border-radius: 8px;
-  font-size: 13px;
-  height: 100%;
+/* ── Safe area header ── */
+.safe-header {
+  padding-top: calc(var(--sat) + 12px);
+  padding-left: calc(var(--sal) + 16px);
+  padding-right: calc(var(--sar) + 16px);
+  padding-bottom: 12px;
 }
+
+/* ── Safe area bottom ── */
+.safe-bottom {
+  padding-bottom: calc(var(--sab) + 16px);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2d1b69; border-radius: 2px; }
+
+/* ── CodeMirror ── */
+.cm-editor { border-radius: 8px; font-size: 13px; height: 100%; }
 .cm-editor.cm-focused { outline: none !important; }
 .cm-scroller { border-radius: 8px; font-family: 'JetBrains Mono', monospace !important; }
 
-/* Prose content in lessons */
+/* ── Lesson prose ── */
 .lesson-prose p { margin-bottom: 0.75rem; line-height: 1.7; }
-.lesson-prose strong { color: #a78bfa; font-weight: 500; }
+.lesson-prose strong { color: var(--c-purple-l); font-weight: 500; }
 .lesson-prose code {
-  background: #1a1040;
-  color: #a78bfa;
+  background: var(--c-purple-f);
+  color: var(--c-purple-l);
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'JetBrains Mono', monospace;

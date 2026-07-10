@@ -173,7 +173,7 @@ export default function Login() {
             {mode === 'register' && (
               <div>
                 <label className="block text-xs text-muted mb-1.5 font-medium uppercase tracking-wide">{t.name}</label>
-                <input type="text" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Ricardo" required className="w-full bg-card border border-border rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-DEFAULT placeholder:text-muted" />
+                <input type="text" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Your name" required className="w-full bg-card border border-border rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-DEFAULT placeholder:text-muted" />
               </div>
             )}
 
