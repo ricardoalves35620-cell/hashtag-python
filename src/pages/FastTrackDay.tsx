@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
 import VSCodeBlock from '../components/VSCodeBlock'
+import VSCodeEditor from '../components/VSCodeEditor'
 import { useApp } from '../contexts/AppContext'
 import { FASTTRACK_DAYS } from '../data/fasttrack'
 import { getPyodide, runCode } from '../lib/pyodide'
@@ -181,51 +182,14 @@ export default function FastTrackDay() {
               </p>
             </div>
 
-            {/* VS Code editor */}
-            <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: 10, border: '1px solid #3e3e3e' }}>
-              <div style={{
-                background: '#252526', display: 'flex', alignItems: 'center', gap: 8,
-                padding: '7px 12px', borderBottom: '1px solid #3e3e3e',
-              }}>
-                <div style={{ display: 'flex', gap: 5 }}>
-                  {['#ff5f57','#febc2e','#28c840'].map(c => (
-                    <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />
-                  ))}
-                </div>
-                <span style={{ fontSize: 13 }}>🐍</span>
-                <span style={{ fontSize: 12, color: '#d4d4d4', fontFamily: 'monospace' }}>exercise.py</span>
-                <span style={{ marginLeft: 'auto', fontSize: 11, color: '#858585' }}>editable</span>
-              </div>
-              <div style={{ background: '#1e1e1e', position: 'relative' }}>
-                <div style={{
-                  position: 'absolute', top: 0, left: 0, bottom: 0, width: 40,
-                  background: '#1e1e1e', borderRight: '1px solid #3e3e3e',
-                  display: 'flex', flexDirection: 'column', pointerEvents: 'none', paddingTop: 8,
-                }}>
-                  {code.split('\n').map((_, i) => (
-                    <div key={i} style={{
-                      fontSize: 12, color: '#858585', textAlign: 'right',
-                      paddingRight: 8, lineHeight: '20px',
-                      fontFamily: "'JetBrains Mono', monospace",
-                    }}>{i + 1}</div>
-                  ))}
-                </div>
-                <textarea
-                  value={code}
-                  onChange={e => setCode(e.target.value)}
-                  spellCheck={false}
-                  style={{
-                    width: '100%', minHeight: 200,
-                    background: 'transparent', color: '#d4d4d4',
-                    fontFamily: "'JetBrains Mono', 'Consolas', monospace",
-                    fontSize: 13, lineHeight: '20px',
-                    padding: '8px 12px 8px 48px',
-                    border: 'none', outline: 'none', resize: 'vertical',
-                    caretColor: '#d4d4d4',
-                  }}
-                />
-              </div>
-            </div>
+            {/* VS Code Editor (CodeMirror) */}
+            <VSCodeEditor
+              value={code}
+              onChange={setCode}
+              filename="exercise.py"
+              height="220px"
+              label={lang === 'en' ? 'editable' : 'editável'}
+            />
 
             {/* Test inputs */}
             <div style={{ marginBottom: 8 }}>

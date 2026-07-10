@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
-import CodeEditor from '../components/CodeEditor'
+import VSCodeEditor from '../components/VSCodeEditor'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
@@ -27,17 +27,34 @@ export default function Exercises() {
 
   if (!phase || phase.exercises.length === 0) {
     return (
-      <Layout showBack backTo={`/phase/${phase?.id}`}>
-        <div className="p-4 text-muted text-sm">{lang === 'en' ? 'No exercises yet — coming soon!' : 'Ainda sem exercícios — em breve!'}</div>
+      <Layout showBack backTo={`/phase/${phase?.id}`} title={lang === 'en' ? 'Exercises' : 'Exercícios'}>
+        <div style={{ padding: 24, textAlign: 'center' }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>🚧</div>
+          <p style={{ fontSize: 14, color: 'var(--c-text2)', lineHeight: 1.6 }}>
+            {lang === 'en'
+              ? 'Exercises for this phase are being prepared. Complete previous phases first!'
+              : 'Os exercícios desta fase estão sendo preparados. Complete as fases anteriores primeiro!'}
+          </p>
+          <button
+            onClick={() => navigate(`/phase/${phase?.id}`)}
+            style={{
+              marginTop: 16, padding: '12px 24px', borderRadius: 10,
+              background: 'var(--c-purple)', color: '#fff',
+              fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+            }}
+          >
+            {lang === 'en' ? '← Back to phase' : '← Voltar para fase'}
+          </button>
+        </div>
       </Layout>
     )
   }
 
   const exercise = phase.exercises[activeEx]
 
-  // Scroll to top when switching exercise tabs
   const handleExerciseChange = (idx: number) => {
     setActiveEx(idx)
+    setOutput('')
     document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -52,7 +69,7 @@ export default function Exercises() {
       const { output: out, error } = await runCode(py, codes[exercise.id], inputs)
       setOutput(error ? `❌ Error: ${error}\n\n${out}` : out || '(no output)')
     } catch (e) {
-      setOutput(`Failed to run: ${e}`)
+      setOutput(`❌ Failed to run: ${e}`)
     } finally {
       setRunning(false)
     }
@@ -63,20 +80,23 @@ export default function Exercises() {
     await markStepDone(user.id, phase.id, 'exercises')
     await refreshProgress()
     navigate(`/phase/${phase.id}/quiz`)
+    document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   const t = {
     en: {
       exercise: 'Exercise', of: 'of', run: 'Run Code', running: 'Running...',
-      loading: 'Loading Python...', hint: 'Show hint', output: 'Output',
-      input: 'Simulated inputs (one per line)', complete: 'All done → Mini-test',
-      phase: 'Phase'
+      loading: 'Loading Python...', hint: 'Show hints', hideHint: 'Hide hints',
+      output: 'Output', input: 'Test inputs (one per line)',
+      complete: 'All done — go to mini-test →', next: 'Next exercise →',
+      phase: 'Phase', sampleOutput: 'Expected output',
     },
     pt: {
-      exercise: 'Exercício', of: 'de', run: 'Executar Código', running: 'Executando...',
-      loading: 'Carregando Python...', hint: 'Mostrar dica', output: 'Saída',
-      input: 'Entradas simuladas (uma por linha)', complete: 'Concluir → Mini-teste',
-      phase: 'Fase'
+      exercise: 'Exercício', of: 'de', run: 'Executar', running: 'Executando...',
+      loading: 'Carregando Python...', hint: 'Ver dicas', hideHint: 'Esconder dicas',
+      output: 'Saída', input: 'Entradas de teste (uma por linha)',
+      complete: 'Tudo pronto — ir para mini-teste →', next: 'Próximo exercício →',
+      phase: 'Fase', sampleOutput: 'Saída esperada',
     }
   }[lang]
 
@@ -87,18 +107,21 @@ export default function Exercises() {
       backLabel={`${t.phase} ${phase.id}`}
       title={`${t.exercise} · ${phase.title[lang]}`}
     >
-      <div className="p-4 space-y-4">
+      <div style={{ padding: '12px 16px' }}>
+
         {/* Exercise tabs */}
-        <div className="flex gap-2">
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           {phase.exercises.map((ex, i) => (
             <button
               key={ex.id}
               onClick={() => handleExerciseChange(i)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                i === activeEx
-                  ? 'bg-purple-DEFAULT text-white'
-                  : 'bg-card border border-border text-muted hover:text-white'
-              }`}
+              style={{
+                padding: '8px 14px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+                background: i === activeEx ? 'var(--c-purple)' : 'var(--c-card)',
+                color: i === activeEx ? '#fff' : 'var(--c-muted)',
+                border: i === activeEx ? 'none' : '0.5px solid var(--c-border)',
+                cursor: 'pointer', minHeight: 36,
+              }}
             >
               {t.exercise} {i + 1}
             </button>
@@ -106,36 +129,56 @@ export default function Exercises() {
         </div>
 
         {/* Exercise description */}
-        <div className="bg-[#0d0d1f] border border-[#1e1e40] rounded-xl p-4">
-          <h2 className="text-sm font-medium text-white mb-2">{exercise.title[lang]}</h2>
-          <p className="text-sm text-[#8888aa] leading-relaxed">{exercise.description[lang]}</p>
+        <div style={{
+          background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
+          borderRadius: 12, padding: 14, marginBottom: 12,
+        }}>
+          <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--c-text)', marginBottom: 6 }}>
+            {exercise.title[lang]}
+          </div>
+          <p style={{ fontSize: 13, color: 'var(--c-text2)', margin: 0, lineHeight: 1.6 }}>
+            {exercise.description[lang]}
+          </p>
 
           {exercise.sampleOutput && (
-            <div className="mt-3 bg-[#0a0a18] rounded-lg p-3">
-              <div className="text-xs text-muted mb-1">{lang === 'en' ? 'Expected output:' : 'Saída esperada:'}</div>
-              <pre className="text-xs font-mono text-green-400">{exercise.sampleOutput[lang]}</pre>
+            <div style={{ marginTop: 10, background: 'var(--c-bg)', borderRadius: 8, padding: 10 }}>
+              <div style={{ fontSize: 11, color: 'var(--c-muted)', marginBottom: 4 }}>{t.sampleOutput}:</div>
+              <pre style={{ fontSize: 12, fontFamily: "'JetBrains Mono', monospace", color: '#4ec9b0', margin: 0 }}>
+                {exercise.sampleOutput[lang]}
+              </pre>
             </div>
           )}
         </div>
 
-        {/* Code editor */}
-        <div>
-          <CodeEditor
-            value={codes[exercise.id]}
-            onChange={(val) => setCodes(prev => ({ ...prev, [exercise.id]: val }))}
-            height="240px"
-          />
-        </div>
+        {/* VS Code Editor */}
+        <VSCodeEditor
+          value={codes[exercise.id]}
+          onChange={(val) => setCodes(prev => ({ ...prev, [exercise.id]: val }))}
+          filename={`exercise_${activeEx + 1}.py`}
+          height="260px"
+          label={lang === 'en' ? 'editable' : 'editável'}
+        />
 
-        {/* Custom input */}
-        <div>
-          <label className="block text-xs text-muted mb-1.5 uppercase tracking-wide">{t.input}</label>
+        {/* Test inputs */}
+        <div style={{ marginTop: 10 }}>
+          <label style={{
+            display: 'block', fontSize: 11, color: 'var(--c-muted)',
+            textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6,
+          }}>
+            {t.input}
+          </label>
           <textarea
             value={customInput}
             onChange={e => setCustomInput(e.target.value)}
-            placeholder="Alice&#10;25&#10;Toronto"
             rows={3}
-            className="w-full bg-[#0d0d1f] border border-[#1e1e40] rounded-xl px-3 py-2 text-sm font-mono text-[#a78bfa] placeholder:text-muted focus:outline-none focus:border-purple-DEFAULT resize-none"
+            placeholder={lang === 'en' ? 'Alice\n25\nToronto' : 'Alice\n25\nToronto'}
+            style={{
+              width: '100%', background: '#1e1e1e',
+              border: '1px solid #3e3e3e', borderRadius: 8,
+              padding: '8px 12px', fontSize: 13,
+              fontFamily: "'JetBrains Mono', monospace",
+              color: '#9cdcfe', outline: 'none', resize: 'none',
+            }}
           />
         </div>
 
@@ -143,16 +186,32 @@ export default function Exercises() {
         <button
           onClick={handleRun}
           disabled={running || pyodideLoading}
-          className="w-full bg-[#0d0d1f] hover:bg-purple-faint border border-[#1e1e40] hover:border-purple-dim text-purple-light font-medium py-3 rounded-xl text-sm transition-colors disabled:opacity-50"
+          style={{
+            width: '100%', marginTop: 10, padding: '12px',
+            borderRadius: 10, background: '#1e1e1e',
+            border: '1px solid #3e3e3e', color: '#dcdcaa',
+            fontSize: 14, fontWeight: 500,
+            cursor: running ? 'not-allowed' : 'pointer',
+            opacity: running ? 0.6 : 1,
+          }}
         >
           {pyodideLoading ? t.loading : running ? t.running : `▶ ${t.run}`}
         </button>
 
         {/* Output */}
         {output && (
-          <div className="bg-[#040410] border border-[#1e1e40] rounded-xl p-4">
-            <div className="text-xs text-muted mb-2 uppercase tracking-wide">{t.output}</div>
-            <pre className={`text-sm font-mono whitespace-pre-wrap ${output.startsWith('❌') ? 'text-red-400' : 'text-green-300'}`}>
+          <div style={{
+            marginTop: 10, background: '#0d0d0d',
+            border: '1px solid #3e3e3e', borderRadius: 8, padding: 14,
+          }}>
+            <div style={{ fontSize: 11, color: '#858585', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
+              {t.output}
+            </div>
+            <pre style={{
+              fontSize: 13, fontFamily: "'JetBrains Mono', monospace",
+              color: output.startsWith('❌') ? '#f48771' : '#4ec9b0',
+              whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6,
+            }}>
               {output}
             </pre>
           </div>
@@ -160,17 +219,24 @@ export default function Exercises() {
 
         {/* Hints */}
         {exercise.hints.length > 0 && (
-          <div>
+          <div style={{ marginTop: 10 }}>
             <button
               onClick={() => setHintsShown(prev => ({ ...prev, [exercise.id]: !prev[exercise.id] }))}
-              className="text-xs text-purple-light hover:text-white transition-colors"
+              style={{
+                background: 'none', border: 'none', padding: 0,
+                color: 'var(--c-purple-l)', fontSize: 13, cursor: 'pointer',
+              }}
             >
-              💡 {hintsShown[exercise.id] ? (lang === 'en' ? 'Hide hints' : 'Esconder dicas') : t.hint}
+              💡 {hintsShown[exercise.id] ? t.hideHint : t.hint}
             </button>
             {hintsShown[exercise.id] && (
-              <div className="mt-2 space-y-2">
+              <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {exercise.hints.map((hint, i) => (
-                  <div key={i} className="text-xs bg-purple-faint border border-purple-dim rounded-lg px-3 py-2 text-purple-light">
+                  <div key={i} style={{
+                    fontSize: 13, background: 'var(--c-purple-f)',
+                    border: '0.5px solid var(--c-purple-dm)',
+                    borderRadius: 8, padding: '8px 12px', color: 'var(--c-purple-l)',
+                  }}>
                     {hint[lang]}
                   </div>
                 ))}
@@ -179,28 +245,34 @@ export default function Exercises() {
           </div>
         )}
 
-        {/* Complete */}
-        {activeEx === phase.exercises.length - 1 && (
-          <div className="pt-2">
+        {/* Navigation */}
+        <div style={{ marginTop: 16 }}>
+          {activeEx < phase.exercises.length - 1 ? (
+            <button
+              onClick={() => handleExerciseChange(activeEx + 1)}
+              style={{
+                width: '100%', padding: '14px', borderRadius: 12,
+                background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
+                color: 'var(--c-text)', fontSize: 14, fontWeight: 500, cursor: 'pointer',
+              }}
+            >
+              {t.next}
+            </button>
+          ) : (
             <button
               onClick={handleComplete}
-              className="w-full bg-purple-DEFAULT hover:bg-purple-dark text-white font-medium py-3.5 rounded-xl text-sm transition-colors"
+              style={{
+                width: '100%', padding: '14px', borderRadius: 12,
+                background: 'var(--c-purple)', color: '#fff',
+                fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+              }}
             >
               {t.complete}
             </button>
-          </div>
-        )}
+          )}
+        </div>
 
-        {activeEx < phase.exercises.length - 1 && (
-          <button
-            onClick={() => setActiveEx(i => i + 1)}
-            className="w-full bg-card border border-border text-white font-medium py-3 rounded-xl text-sm hover:border-purple-dim transition-colors"
-          >
-            {lang === 'en' ? 'Next exercise →' : 'Próximo exercício →'}
-          </button>
-        )}
-
-        <div className="h-4" />
+        <div style={{ height: 16 }} />
       </div>
     </Layout>
   )

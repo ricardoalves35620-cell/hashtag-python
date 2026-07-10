@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
-import CodeEditor from '../components/CodeEditor'
+import VSCodeEditor from '../components/VSCodeEditor'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { saveExamScore } from '../lib/progress'
@@ -14,7 +14,6 @@ export default function Exam() {
   const navigate = useNavigate()
   const { lang, user, refreshProgress, progress } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
-
   const phaseProgress = progress.find(p => p.phase_id === Number(id))
 
   const [tab, setTab] = useState<Tab>('scenario')
@@ -37,10 +36,12 @@ export default function Exam() {
       submit: 'Submit for grading', submitting: 'Grading...',
       requirements: 'Requirements', output: 'Output',
       testInput: 'Test inputs (one per line)',
-      passed: 'PASSED — Next phase unlocked!', failed: 'Not quite — review and try again',
-      nextPhase: 'Go to next phase →', tryAgain: 'Try again',
+      passed: '🎉 PASSED — Next phase unlocked!',
+      failed: '❌ Not quite — review and try again',
+      nextPhase: 'Go to next phase →', tryAgain: '← Try again',
       phase: 'Phase', minScore: 'Minimum 90% to pass',
-      tip: '💡 Test your code with "Run my code" first, then submit when ready.'
+      tip: '💡 Test your code with "Run my code" first, then submit when ready.',
+      testResults: 'Test results', passedLabel: 'passed',
     },
     pt: {
       scenario: 'Cenário', code: 'Código', results: 'Resultados',
@@ -48,10 +49,12 @@ export default function Exam() {
       submit: 'Enviar para correção', submitting: 'Corrigindo...',
       requirements: 'Requisitos', output: 'Saída',
       testInput: 'Entradas de teste (uma por linha)',
-      passed: 'APROVADO — Próxima fase desbloqueada!', failed: 'Não foi dessa vez — revise e tente novamente',
-      nextPhase: 'Ir para próxima fase →', tryAgain: 'Tentar novamente',
+      passed: '🎉 APROVADO — Próxima fase desbloqueada!',
+      failed: '❌ Não foi dessa vez — revise e tente novamente',
+      nextPhase: 'Ir para próxima fase →', tryAgain: '← Tentar novamente',
       phase: 'Fase', minScore: 'Mínimo 90% para passar',
-      tip: '💡 Teste seu código com "Executar" primeiro, depois envie quando estiver pronto.'
+      tip: '💡 Teste com "Executar" primeiro, depois envie quando estiver pronto.',
+      testResults: 'Resultados dos testes', passedLabel: 'passaram',
     }
   }[lang]
 
@@ -64,9 +67,9 @@ export default function Exam() {
       setPyodideLoading(false)
       const inputs = testInput.split('\n').map(l => l.trim()).filter(l => l !== '')
       const { output, error } = await runCode(py, code, inputs)
-      setTestOutput(error ? `Error: ${error}\n\n${output}` : output || '(no output)')
+      setTestOutput(error ? `❌ Error: ${error}\n\n${output}` : output || '(no output)')
     } catch (e) {
-      setTestOutput(`Failed: ${e}`)
+      setTestOutput(`❌ Failed: ${e}`)
     } finally {
       setRunning(false)
     }
@@ -79,16 +82,15 @@ export default function Exam() {
       setPyodideLoading(true)
       const py = await getPyodide()
       setPyodideLoading(false)
-
       const { results: testResults, score: finalScore } = await runExam(py, code, phase.exam.testCases)
       setResults(testResults)
       setScore(finalScore)
       const didPass = finalScore >= 90
       setPassed(didPass)
-
       await saveExamScore(user.id, phase.id, finalScore)
       await refreshProgress()
       setTab('results')
+      document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
     } catch (e) {
       console.error(e)
       setResults(null)
@@ -102,7 +104,7 @@ export default function Exam() {
   const tabs: { id: Tab; label: string }[] = [
     { id: 'scenario', label: t.scenario },
     { id: 'code', label: t.code },
-    { id: 'results', label: t.results }
+    { id: 'results', label: t.results },
   ]
 
   return (
@@ -112,191 +114,311 @@ export default function Exam() {
       backLabel={`${t.phase} ${phase.id}`}
       title={`${lang === 'en' ? 'Exam' : 'Exame'} · ${phase.title[lang]}`}
     >
-      <div className="flex flex-col h-full">
-        {/* Tabs */}
-        <div className="flex border-b border-border px-4 pt-3 gap-0">
-          {tabs.map(t_ => (
-            <button
-              key={t_.id}
-              onClick={() => setTab(t_.id)}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                tab === t_.id
-                  ? 'border-purple-DEFAULT text-purple-light'
-                  : 'border-transparent text-muted hover:text-white'
-              }`}
-            >
-              {t_.label}
-              {t_.id === 'results' && score !== null && (
-                <span className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${score >= 90 ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'}`}>
-                  {score}%
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Scenario tab */}
-        {tab === 'scenario' && (
-          <div className="p-4 space-y-4 overflow-y-auto">
-            <div className="flex items-center gap-2">
-              <span className="text-xs bg-[#1a1040] text-purple-light border border-purple-dim px-3 py-1 rounded-full">
-                🎯 {t.minScore}
+      {/* Tabs */}
+      <div style={{ display: 'flex', borderBottom: '0.5px solid var(--c-border)', padding: '0 16px' }}>
+        {tabs.map(t_ => (
+          <button
+            key={t_.id}
+            onClick={() => {
+              setTab(t_.id)
+              document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
+            }}
+            style={{
+              padding: '10px 16px', fontSize: 14,
+              fontWeight: tab === t_.id ? 500 : 400,
+              color: tab === t_.id ? 'var(--c-purple-l)' : 'var(--c-muted)',
+              borderBottom: `2px solid ${tab === t_.id ? 'var(--c-purple)' : 'transparent'}`,
+              background: 'none', border: 'none',
+              borderBottomWidth: 2, borderBottomStyle: 'solid',
+              borderBottomColor: tab === t_.id ? 'var(--c-purple)' : 'transparent',
+              cursor: 'pointer', minHeight: 44,
+            }}
+          >
+            {t_.label}
+            {t_.id === 'results' && score !== null && (
+              <span style={{
+                marginLeft: 6, fontSize: 10, padding: '2px 6px', borderRadius: 10,
+                background: score >= 90 ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)',
+                color: score >= 90 ? '#4ade80' : '#f87171',
+              }}>
+                {score}%
               </span>
-            </div>
+            )}
+          </button>
+        ))}
+      </div>
 
-            <div className="bg-[#0d0d1f] border border-[#1e1e40] rounded-xl p-4">
-              <div className="text-xs text-muted mb-2 uppercase tracking-wide">{t.scenario}</div>
-              <pre className="text-sm text-[#b0b0d0] leading-relaxed whitespace-pre-wrap font-sans">
-                {phase.exam.scenario[lang]}
+      {/* ── SCENARIO TAB ── */}
+      {tab === 'scenario' && (
+        <div style={{ padding: '16px' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'var(--c-purple-f)', border: '0.5px solid var(--c-purple-dm)',
+            borderRadius: 20, padding: '4px 12px', marginBottom: 14, fontSize: 12,
+            color: 'var(--c-purple-l)',
+          }}>
+            🎯 {t.minScore}
+          </div>
+
+          <div style={{
+            background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
+            borderRadius: 12, padding: 16, marginBottom: 12,
+          }}>
+            <div style={{ fontSize: 11, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
+              {t.scenario}
+            </div>
+            <pre style={{
+              fontSize: 13, color: 'var(--c-text2)', lineHeight: 1.7,
+              whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: 0,
+            }}>
+              {phase.exam.scenario[lang]}
+            </pre>
+          </div>
+
+          <div style={{
+            background: 'var(--c-bg)', border: '0.5px solid var(--c-border)',
+            borderRadius: 12, padding: 16, marginBottom: 12,
+          }}>
+            <div style={{ fontSize: 11, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
+              {t.requirements}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {phase.exam.requirements[lang].map((req, i) => (
+                <div key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: 'var(--c-text2)' }}>
+                  <span style={{ color: 'var(--c-purple-l)', flexShrink: 0 }}>→</span>
+                  {req}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{
+            background: 'var(--c-purple-f)', border: '0.5px solid var(--c-purple-dm)',
+            borderRadius: 10, padding: 12, marginBottom: 16,
+            fontSize: 12, color: 'var(--c-purple-l)', lineHeight: 1.6,
+          }}>
+            {t.tip}
+          </div>
+
+          <button
+            onClick={() => setTab('code')}
+            style={{
+              width: '100%', padding: '14px', borderRadius: 12,
+              background: 'var(--c-purple)', color: '#fff',
+              fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+            }}
+          >
+            {lang === 'en' ? 'Start coding →' : 'Começar a codificar →'}
+          </button>
+          <div style={{ height: 16 }} />
+        </div>
+      )}
+
+      {/* ── CODE TAB ── */}
+      {tab === 'code' && (
+        <div style={{ padding: '16px' }}>
+          {/* VS Code Editor */}
+          <VSCodeEditor
+            value={code}
+            onChange={setCode}
+            filename="exam.py"
+            height="300px"
+            label={lang === 'en' ? 'editable' : 'editável'}
+          />
+
+          {/* Test input */}
+          <div style={{ marginTop: 12 }}>
+            <label style={{
+              display: 'block', fontSize: 11, color: 'var(--c-muted)',
+              textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6,
+            }}>
+              {t.testInput}
+            </label>
+            <textarea
+              value={testInput}
+              onChange={e => setTestInput(e.target.value)}
+              rows={3}
+              placeholder={lang === 'en' ? 'Alice\nSmith\n1996\nPython' : 'Alice\nSilva\n1996\nPython'}
+              style={{
+                width: '100%', background: '#1e1e1e',
+                border: '1px solid #3e3e3e', borderRadius: 8,
+                padding: '8px 12px', fontSize: 13,
+                fontFamily: "'JetBrains Mono', monospace",
+                color: '#9cdcfe', outline: 'none', resize: 'none',
+              }}
+            />
+          </div>
+
+          {/* Run */}
+          <button
+            onClick={handleRunTest}
+            disabled={running || pyodideLoading}
+            style={{
+              width: '100%', marginTop: 10, padding: '12px',
+              borderRadius: 10, background: '#1e1e1e',
+              border: '1px solid #3e3e3e', color: '#dcdcaa',
+              fontSize: 14, fontWeight: 500,
+              cursor: running ? 'not-allowed' : 'pointer',
+              opacity: running ? 0.6 : 1,
+            }}
+          >
+            {pyodideLoading ? t.loading : running ? t.running : `▶ ${t.runTest}`}
+          </button>
+
+          {/* Output */}
+          {testOutput && (
+            <div style={{
+              marginTop: 10, background: '#0d0d0d',
+              border: '1px solid #3e3e3e', borderRadius: 8, padding: 14,
+            }}>
+              <div style={{ fontSize: 11, color: '#858585', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
+                {t.output}
+              </div>
+              <pre style={{
+                fontSize: 13, fontFamily: "'JetBrains Mono', monospace",
+                color: testOutput.startsWith('❌') ? '#f48771' : '#4ec9b0',
+                whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6,
+              }}>
+                {testOutput}
               </pre>
             </div>
+          )}
 
-            <div className="bg-[#0a0a18] border border-border rounded-xl p-4">
-              <div className="text-xs text-muted mb-3 uppercase tracking-wide">{t.requirements}</div>
-              <ul className="space-y-2">
-                {phase.exam.requirements[lang].map((req, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-[#b0b0d0]">
-                    <span className="text-purple-light mt-0.5 flex-shrink-0">→</span>
-                    {req}
-                  </li>
-                ))}
-              </ul>
+          {/* Submit */}
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || pyodideLoading}
+            style={{
+              width: '100%', marginTop: 14, padding: '14px',
+              borderRadius: 12, background: 'var(--c-purple)', color: '#fff',
+              fontSize: 14, fontWeight: 500, border: 'none',
+              cursor: submitting ? 'not-allowed' : 'pointer',
+              opacity: submitting ? 0.7 : 1,
+            }}
+          >
+            {submitting ? t.submitting : t.submit}
+          </button>
+          <div style={{ height: 16 }} />
+        </div>
+      )}
+
+      {/* ── RESULTS TAB ── */}
+      {tab === 'results' && (
+        <div style={{ padding: '16px' }}>
+          {score === null ? (
+            <div style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--c-muted)', fontSize: 14 }}>
+              {lang === 'en' ? 'Submit your code to see results.' : 'Envie seu código para ver os resultados.'}
             </div>
-
-            <div className="text-xs text-muted bg-purple-faint border border-purple-dim rounded-xl p-3 leading-relaxed">
-              {t.tip}
-            </div>
-
-            <button
-              onClick={() => setTab('code')}
-              className="w-full bg-purple-DEFAULT hover:bg-purple-dark text-white font-medium py-3.5 rounded-xl text-sm transition-colors"
-            >
-              {lang === 'en' ? 'Start coding →' : 'Começar a codificar →'}
-            </button>
-          </div>
-        )}
-
-        {/* Code tab */}
-        {tab === 'code' && (
-          <div className="p-4 space-y-3 flex flex-col flex-1">
-            <CodeEditor value={code} onChange={setCode} height="280px" />
-
-            <div>
-              <label className="block text-xs text-muted mb-1.5 uppercase tracking-wide">{t.testInput}</label>
-              <textarea
-                value={testInput}
-                onChange={e => setTestInput(e.target.value)}
-                placeholder={lang === 'en' ? 'Alice\nSmith\n1990\nPython' : 'Maria\nSilva\n1995\nPython'}
-                rows={3}
-                className="w-full bg-[#0d0d1f] border border-[#1e1e40] rounded-xl px-3 py-2 text-sm font-mono text-[#a78bfa] placeholder:text-muted focus:outline-none focus:border-purple-DEFAULT resize-none"
-              />
-            </div>
-
-            <button
-              onClick={handleRunTest}
-              disabled={running || pyodideLoading}
-              className="w-full bg-[#0d0d1f] hover:bg-purple-faint border border-[#1e1e40] hover:border-purple-dim text-purple-light font-medium py-2.5 rounded-xl text-sm transition-colors disabled:opacity-50"
-            >
-              {pyodideLoading ? t.loading : running ? t.running : `▶ ${t.runTest}`}
-            </button>
-
-            {testOutput && (
-              <div className="bg-[#040410] border border-[#1e1e40] rounded-xl p-3">
-                <div className="text-xs text-muted mb-2 uppercase tracking-wide">{t.output}</div>
-                <pre className={`text-sm font-mono whitespace-pre-wrap ${testOutput.startsWith('Error') ? 'text-red-400' : 'text-green-300'}`}>
-                  {testOutput}
-                </pre>
-              </div>
-            )}
-
-            <div className="pt-2">
-              <button
-                onClick={handleSubmit}
-                disabled={submitting || pyodideLoading}
-                className="w-full bg-purple-DEFAULT hover:bg-purple-dark text-white font-medium py-3.5 rounded-xl text-sm transition-colors disabled:opacity-50"
-              >
-                {submitting ? t.submitting : t.submit}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Results tab */}
-        {tab === 'results' && (
-          <div className="p-4 space-y-4 overflow-y-auto">
-            {score === null ? (
-              <div className="text-center text-muted text-sm py-8">
-                {lang === 'en' ? 'Submit your code to see results.' : 'Envie seu código para ver os resultados.'}
-              </div>
-            ) : (
-              <>
-                {/* Score card */}
-                <div className={`rounded-xl border p-6 text-center ${passed ? 'bg-[#052e16] border-green-700' : 'bg-[#1f0505] border-red-900'}`}>
-                  <div className="text-5xl font-mono font-medium text-white mb-1">{score}%</div>
-                  <div className={`text-sm font-medium mt-2 ${passed ? 'text-green-400' : 'text-red-400'}`}>
-                    {passed ? t.passed : t.failed}
-                  </div>
-                  <div className="mt-3 h-2 bg-[#0a0a18] rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full ${passed ? 'bg-green-500' : 'bg-red-500'}`}
-                      style={{ width: `${score}%` }}
-                    />
-                  </div>
+          ) : (
+            <>
+              {/* Score card */}
+              <div style={{
+                borderRadius: 16, padding: '28px 20px', textAlign: 'center', marginBottom: 16,
+                background: passed ? '#052e16' : '#1f0505',
+                border: `1px solid ${passed ? '#166534' : '#7f1d1d'}`,
+              }}>
+                <div style={{ fontSize: 52, fontFamily: 'monospace', fontWeight: 600, color: '#fff' }}>
+                  {score}%
                 </div>
+                <div style={{
+                  fontSize: 14, fontWeight: 500, marginTop: 8,
+                  color: passed ? '#4ade80' : '#f87171',
+                }}>
+                  {passed ? t.passed : t.failed}
+                </div>
+                <div style={{ marginTop: 12, height: 6, background: 'rgba(0,0,0,0.3)', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%', borderRadius: 3, transition: 'width 1s ease',
+                    width: `${score}%`,
+                    background: passed ? '#22c55e' : '#ef4444',
+                  }} />
+                </div>
+              </div>
 
-                {/* Test cases */}
-                {results && (
-                  <div className="space-y-2">
-                    <div className="text-xs text-muted uppercase tracking-wide">
-                      {lang === 'en' ? 'Test results' : 'Resultados dos testes'} · {results.filter(r => r.passed).length}/{results.length} {lang === 'en' ? 'passed' : 'passaram'}
-                    </div>
-                    {results.map((result) => (
-                      <div
-                        key={result.id}
-                        className={`rounded-xl border p-3 flex items-start gap-3 ${result.passed ? 'bg-[#0a1a0a] border-[#1a4a1a]' : 'bg-[#1a0a0a] border-[#4a1a1a]'}`}
-                      >
-                        <span className="text-base flex-shrink-0 mt-0.5">{result.passed ? '✅' : '❌'}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm text-white">{result.description[lang]}</div>
+              {/* Test results list */}
+              {results && (
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 12, color: 'var(--c-muted)', marginBottom: 8 }}>
+                    {t.testResults} · {results.filter(r => r.passed).length}/{results.length} {t.passedLabel}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {results.map(result => (
+                      <div key={result.id} style={{
+                        borderRadius: 10, padding: '10px 14px',
+                        display: 'flex', alignItems: 'flex-start', gap: 10,
+                        background: result.passed ? '#0a1a0a' : '#1a0a0a',
+                        border: `0.5px solid ${result.passed ? '#1a4a1a' : '#4a1a1a'}`,
+                      }}>
+                        <span style={{ fontSize: 15, flexShrink: 0, marginTop: 1 }}>
+                          {result.passed ? '✅' : '❌'}
+                        </span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, color: 'var(--c-text)' }}>
+                            {result.description[lang]}
+                          </div>
                           {!result.passed && result.output && (
-                            <div className="mt-1">
-                              <span className="text-xs text-muted">{lang === 'en' ? 'Got:' : 'Obteve:'} </span>
-                              <span className="text-xs font-mono text-red-300">{result.output.slice(0, 80)}</span>
+                            <div style={{ marginTop: 4 }}>
+                              <span style={{ fontSize: 11, color: 'var(--c-muted)' }}>
+                                {lang === 'en' ? 'Got:' : 'Obteve:'}
+                              </span>
+                              <span style={{
+                                fontSize: 11, fontFamily: "'JetBrains Mono', monospace",
+                                color: '#f48771', marginLeft: 4,
+                              }}>
+                                {result.output.slice(0, 80)}
+                              </span>
                             </div>
                           )}
                           {result.error && (
-                            <div className="text-xs text-red-400 mt-1 font-mono">{result.error.slice(0, 100)}</div>
+                            <div style={{
+                              fontSize: 11, fontFamily: "'JetBrains Mono', monospace",
+                              color: '#f48771', marginTop: 4,
+                            }}>
+                              {result.error.slice(0, 100)}
+                            </div>
                           )}
                         </div>
-                        <span className={`text-xs font-medium flex-shrink-0 ${result.passed ? 'text-green-400' : 'text-red-400'}`}>
-                          {result.points}pts
+                        <span style={{
+                          fontSize: 12, fontWeight: 500, flexShrink: 0,
+                          color: result.passed ? '#4ade80' : '#f87171',
+                        }}>
+                          {result.points}pt
                         </span>
                       </div>
                     ))}
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* CTA */}
-                {passed ? (
-                  <button
-                    onClick={() => navigate(phase.id < 10 ? `/phase/${phase.id + 1}` : '/home')}
-                    className="w-full bg-green-700 hover:bg-green-600 text-white font-medium py-3.5 rounded-xl text-sm transition-colors"
-                  >
-                    {t.nextPhase}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setTab('code')}
-                    className="w-full bg-purple-DEFAULT hover:bg-purple-dark text-white font-medium py-3.5 rounded-xl text-sm transition-colors"
-                  >
-                    {t.tryAgain}
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        )}
-      </div>
+              {/* CTA */}
+              {passed ? (
+                <button
+                  onClick={() => navigate(phase.id < 27 ? `/phase/${phase.id + 1}` : '/home')}
+                  style={{
+                    width: '100%', padding: '14px', borderRadius: 12,
+                    background: '#166534', color: '#fff',
+                    fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+                  }}
+                >
+                  {t.nextPhase}
+                </button>
+              ) : (
+                <button
+                  onClick={() => setTab('code')}
+                  style={{
+                    width: '100%', padding: '14px', borderRadius: 12,
+                    background: 'var(--c-purple)', color: '#fff',
+                    fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+                  }}
+                >
+                  {t.tryAgain}
+                </button>
+              )}
+            </>
+          )}
+          <div style={{ height: 16 }} />
+        </div>
+      )}
     </Layout>
   )
 }
