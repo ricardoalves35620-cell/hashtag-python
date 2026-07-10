@@ -262,7 +262,7 @@ def sort_by_price(products):
 
 print("Search 'book':", [p.name for p in search(catalog, "book")])
 print("Under $200:", [p.name for p in filter_by_max_price(catalog, 200)])
-print("By price:", [f"{p.name}(${p.price})" for p in sort_by_price(catalog)])`,
+print("By price:", [f"{p.name}(\${p.price})" for p in sort_by_price(catalog)])`,
       hints: [{ en: 'sorted() with key=lambda p: p.price sorts by price', pt: 'sorted() com key=lambda p: p.price ordena por preço' }]
     }
   ],

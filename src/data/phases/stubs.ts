@@ -16,11 +16,13 @@ const stub = (id: number, title: { en: string; pt: string }, description: { en: 
   exercises: [],
   quiz: [],
   exam: {
-    title: { en: `Phase ${id} Exam`, pt: `Exame Fase ${id}` },
+    title: { en: `Phase \${id} Exam`, pt: `Exame Fase ${id}` },
     scenario: { en: 'Complete the previous phases to unlock this exam.', pt: 'Complete as fases anteriores para desbloquear este exame.' },
     requirements: { en: [], pt: [] },
-    starterCode: `# Phase ${id} exam — coming soon!\nprint("Coming soon")\n`,
-    testCases: [{ id: `tc${id}_1`, description: { en: 'Program runs', pt: 'Programa roda' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }]
+    starterCode: `# Phase ${id} exam — coming soon!
+print("Coming soon")
+`,
+    testCases: [{ id: `tc\${id}_1`, description: { en: 'Program runs', pt: 'Programa roda' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }]
   }
 })
 
