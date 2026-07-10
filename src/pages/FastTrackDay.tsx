@@ -6,6 +6,7 @@ import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
 import VSCodeBlock from '../components/VSCodeBlock'
 import VSCodeEditor from '../components/VSCodeEditor'
+import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
 import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
@@ -213,23 +214,13 @@ export default function FastTrackDay() {
               label={lang === 'en' ? 'editable' : 'editável'}
             />
 
-            {/* Test inputs */}
+            {/* Test inputs — smart labels */}
             <div style={{ marginBottom: 8 }}>
-              <label style={{ display: 'block', fontSize: 11, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4 }}>
-                {t.testInput}
-              </label>
-              <div style={{ fontSize: 11, color: 'var(--c-dimmer)', marginBottom: 4 }}>{t.inputNote}</div>
-              <textarea
+              <TestInputEditor
+                code={code}
                 value={customInput}
-                onChange={e => setCustomInput(e.target.value)}
-                rows={Math.max(2, customInput.split('\n').length)}
-                style={{
-                  width: '100%', background: '#1e1e1e',
-                  border: '1px solid #3e3e3e', borderRadius: 8,
-                  padding: '8px 12px', fontSize: 13,
-                  fontFamily: "'JetBrains Mono', monospace",
-                  color: '#9cdcfe', outline: 'none', resize: 'none',
-                }}
+                onChange={setCustomInput}
+                lang={lang}
               />
             </div>
 

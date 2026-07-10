@@ -3,6 +3,7 @@ import { scrollToTop } from '../lib/scroll'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
+import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
 import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
@@ -172,26 +173,13 @@ export default function Exercises() {
           label={lang === 'en' ? 'editable' : 'editável'}
         />
 
-        {/* Test inputs */}
+        {/* Test inputs — smart labels from input() calls */}
         <div style={{ marginTop: 10 }}>
-          <label style={{
-            display: 'block', fontSize: 11, color: 'var(--c-muted)',
-            textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6,
-          }}>
-            {t.input}
-          </label>
-          <textarea
+          <TestInputEditor
+            code={codes[exercise.id]}
             value={customInput}
-            onChange={e => setCustomInput(e.target.value)}
-            rows={3}
-            placeholder={lang === 'en' ? 'Alice\n25\nToronto' : 'Alice\n25\nToronto'}
-            style={{
-              width: '100%', background: '#1e1e1e',
-              border: '1px solid #3e3e3e', borderRadius: 8,
-              padding: '8px 12px', fontSize: 16,
-              fontFamily: "'JetBrains Mono', monospace",
-              color: '#9cdcfe', outline: 'none', resize: 'none',
-            }}
+            onChange={setCustomInput}
+            lang={lang}
           />
         </div>
 
