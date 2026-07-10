@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
+import ErrorExplainer from '../components/ErrorExplainer'
+import { explainError } from '../lib/errorExplainer'
+import type { ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { saveExamScore } from '../lib/progress'
@@ -26,6 +29,8 @@ export default function Exam() {
   const [results, setResults] = useState<TestResult[] | null>(null)
   const [score, setScore] = useState<number | null>(phaseProgress?.exam_score ?? null)
   const [passed, setPassed] = useState(phaseProgress?.exam_passed ?? false)
+  const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
+  const [showRawError, setShowRawError] = useState(false)
 
   if (!phase) return null
 
@@ -61,13 +66,20 @@ export default function Exam() {
   const handleRunTest = async () => {
     setRunning(true)
     setTestOutput('')
+    setErrorExplanation(null)
     try {
       setPyodideLoading(true)
       const py = await getPyodide()
       setPyodideLoading(false)
       const inputs = testInput.split('\n').map(l => l.trim()).filter(l => l !== '')
       const { output, error } = await runCode(py, code, inputs)
-      setTestOutput(error ? `❌ Error: ${error}\n\n${output}` : output || '(no output)')
+      if (error) {
+        setTestOutput(`❌ Error: ${error}\n\n${output}`)
+        setErrorExplanation(explainError(error, code))
+      } else {
+        setTestOutput(output || '(no output)')
+        setErrorExplanation(null)
+      }
     } catch (e) {
       setTestOutput(`❌ Failed: ${e}`)
     } finally {
@@ -265,8 +277,8 @@ export default function Exam() {
             {pyodideLoading ? t.loading : running ? t.running : `▶ ${t.runTest}`}
           </button>
 
-          {/* Output */}
-          {testOutput && (
+          {/* Output / Error Explainer */}
+          {testOutput && !errorExplanation && (
             <div style={{
               marginTop: 10, background: '#0d0d0d',
               border: '1px solid #3e3e3e', borderRadius: 8, padding: 14,
@@ -276,11 +288,21 @@ export default function Exam() {
               </div>
               <pre style={{
                 fontSize: 13, fontFamily: "'JetBrains Mono', monospace",
-                color: testOutput.startsWith('❌') ? '#f48771' : '#4ec9b0',
-                whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6,
+                color: '#4ec9b0', whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6,
               }}>
                 {testOutput}
               </pre>
+            </div>
+          )}
+          {errorExplanation && (
+            <div style={{ marginTop: 10 }}>
+              <ErrorExplainer
+                explanation={errorExplanation}
+                lang={lang}
+                rawError={testOutput}
+                showRaw={showRawError}
+                onToggleRaw={() => setShowRawError(r => !r)}
+              />
             </div>
           )}
 

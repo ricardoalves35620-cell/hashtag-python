@@ -4,6 +4,8 @@ import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
 import VSCodeBlock from '../components/VSCodeBlock'
 import VSCodeEditor from '../components/VSCodeEditor'
+import ErrorExplainer from '../components/ErrorExplainer'
+import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { FASTTRACK_DAYS } from '../data/fasttrack'
 import { getPyodide, runCode } from '../lib/pyodide'
@@ -19,6 +21,8 @@ export default function FastTrackDay() {
   const [tab, setTab] = useState<Tab>('lesson')
   const [code, setCode] = useState(day?.exercise.starterCode || '')
   const [output, setOutput] = useState('')
+  const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
+  const [showRawError, setShowRawError] = useState(false)
   const [running, setRunning] = useState(false)
   const [pyLoading, setPyLoading] = useState(false)
   const [showSolution, setShowSolution] = useState(false)
@@ -58,13 +62,22 @@ export default function FastTrackDay() {
   const handleRun = async () => {
     setRunning(true)
     setOutput('')
+    setErrorExplanation(null)
+    setErrorExplanation(null)
+    setShowRawError(false)
     try {
       setPyLoading(true)
       const py = await getPyodide()
       setPyLoading(false)
       const inputs = customInput.split('\n').map(l => l.trim()).filter(l => l !== '')
       const { output: out, error } = await runCode(py, code, inputs)
-      setOutput(error ? `❌ ${error}\n\n${out}` : out || '(no output)')
+      if (error) {
+        setOutput(`❌ ${error}\n\n${out}`)
+        setErrorExplanation(explainError(error, code))
+      } else {
+        setOutput(out || '(no output)')
+        setErrorExplanation(null)
+      }
       setHasRun(true)
     } catch (e) {
       setOutput(`Error: ${e}`)
@@ -221,8 +234,8 @@ export default function FastTrackDay() {
               {pyLoading ? t.loading : running ? t.running : `▶ ${t.run}`}
             </button>
 
-            {/* Output */}
-            {output && (
+            {/* Output / Error Explainer */}
+            {output && !errorExplanation && (
               <div style={{
                 background: '#0d0d0d', border: '1px solid #3e3e3e',
                 borderRadius: 8, padding: 14, marginBottom: 10,
@@ -232,11 +245,21 @@ export default function FastTrackDay() {
                 </div>
                 <pre style={{
                   fontSize: 13, fontFamily: "'JetBrains Mono', monospace",
-                  color: output.startsWith('❌') ? '#f48771' : '#4ec9b0',
-                  whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6,
+                  color: '#4ec9b0', whiteSpace: 'pre-wrap', margin: 0, lineHeight: 1.6,
                 }}>
                   {output}
                 </pre>
+              </div>
+            )}
+            {errorExplanation && (
+              <div style={{ marginBottom: 10 }}>
+                <ErrorExplainer
+                  explanation={errorExplanation}
+                  lang={lang}
+                  rawError={output}
+                  showRaw={showRawError}
+                  onToggleRaw={() => setShowRawError(r => !r)}
+                />
               </div>
             )}
 
