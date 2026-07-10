@@ -84,3 +84,15 @@ button { cursor: pointer; font-family: inherit; }
 
 /* ── Safe area bottom padding ── */
 .pb-safe { padding-bottom: max(var(--sab), 16px); }
+
+/* ── iOS zoom prevention ── */
+/* iOS Safari zooms in when input font-size < 16px */
+/* Setting 16px prevents zoom while keeping layout consistent */
+input, textarea, select {
+  font-size: 16px !important;
+}
+
+/* CodeMirror editor — also needs 16px to prevent zoom */
+.cm-editor, .cm-content, .cm-scroller {
+  font-size: 16px !important;
+}

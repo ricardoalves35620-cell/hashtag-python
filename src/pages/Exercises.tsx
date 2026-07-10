@@ -188,7 +188,7 @@ export default function Exercises() {
             style={{
               width: '100%', background: '#1e1e1e',
               border: '1px solid #3e3e3e', borderRadius: 8,
-              padding: '8px 12px', fontSize: 13,
+              padding: '8px 12px', fontSize: 16,
               fontFamily: "'JetBrains Mono', monospace",
               color: '#9cdcfe', outline: 'none', resize: 'none',
             }}

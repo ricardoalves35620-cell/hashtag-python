@@ -215,6 +215,7 @@ export default function VSCodeBlock({ code, filename = 'example.py' }: Props) {
                   <td style={{
                     padding: '0 16px',
                     fontFamily: "'JetBrains Mono', 'Consolas', 'Courier New', monospace",
+                    fontSize: 15,
                     whiteSpace: 'pre',
                     verticalAlign: 'top',
                   }}>

@@ -10,6 +10,10 @@ export interface ErrorExplanation {
 }
 
 // ── Parse raw error text from Pyodide ──
+// Pyodide wraps user code with 27 lines of setup before the try:
+// So reported line N = user line (N - 27)
+const PYODIDE_LINE_OFFSET = 27
+
 function parseError(raw: string): { type: string; line: number | null; message: string; badCode: string | null } {
   const lines = raw.split('\n')
 
@@ -19,13 +23,15 @@ function parseError(raw: string): { type: string; line: number | null; message: 
   const type = errorMatch?.[1] || 'Error'
   const message = errorMatch?.[2] || lastLine
 
-  // Extract line number from traceback
+  // Extract line number from traceback — adjust for Pyodide wrapper offset
   let line: number | null = null
   let badCode: string | null = null
   for (let i = 0; i < lines.length; i++) {
     const lineMatch = lines[i].match(/File "<exec>", line (\d+)/)
     if (lineMatch) {
-      line = parseInt(lineMatch[1])
+      const rawLine = parseInt(lineMatch[1])
+      // Subtract wrapper offset — minimum 1
+      line = Math.max(1, rawLine - PYODIDE_LINE_OFFSET)
       // Next non-caret line is the problematic code
       if (lines[i + 1] && !lines[i + 1].trim().startsWith('^')) {
         badCode = lines[i + 1].trim()

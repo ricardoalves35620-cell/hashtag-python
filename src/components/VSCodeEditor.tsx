@@ -21,7 +21,7 @@ const vscodeDarkTheme = EditorView.theme({
     color: '#d4d4d4',
     height: '100%',
     fontFamily: "'JetBrains Mono', 'Consolas', 'Courier New', monospace",
-    fontSize: '13px',
+    fontSize: '16px', /* 16px prevents iOS auto-zoom */
   },
   '.cm-content': { caretColor: '#d4d4d4', padding: '8px 0' },
   '.cm-focused': { outline: 'none' },
@@ -36,6 +36,7 @@ const vscodeDarkTheme = EditorView.theme({
   '.cm-cursor': { borderLeftColor: '#d4d4d4', borderLeftWidth: '2px' },
   '.cm-scroller': {
     fontFamily: "'JetBrains Mono', 'Consolas', 'Courier New', monospace !important",
+    fontSize: '16px !important',
     lineHeight: '1.6',
   },
 }, { dark: true })
