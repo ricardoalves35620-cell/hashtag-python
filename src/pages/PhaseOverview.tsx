@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { scrollToTop } from '../lib/scroll'
 import { useEffect } from 'react'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
@@ -11,7 +12,7 @@ export default function PhaseOverview() {
   const { lang, progress } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
 
-  useEffect(() => { document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' }) }, [])
+  useEffect(() => { scrollToTop() }, [])
 
   if (!phase) return <div className="p-4 text-muted">Phase not found</div>
 

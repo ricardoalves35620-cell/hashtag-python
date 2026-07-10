@@ -113,7 +113,7 @@ export default function FastTrackHome() {
                 {/* Day number circle */}
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0"
-                  style={{ background: isDone ? '#166534' : day.color, color: isDone ? '#fff' : day.textColor }}
+                  style={{ background: isDone ? '#166534' : 'var(--c-purple-dm)', color: isDone ? '#fff' : day.textColor }}
                 >
                   {isDone ? '✓' : day.id}
                 </div>

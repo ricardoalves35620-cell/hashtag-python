@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { scrollToTop } from '../lib/scroll'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
@@ -31,7 +32,7 @@ export default function FastTrackDay() {
 
   // Scroll to top whenever day changes
   useEffect(() => {
-    document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
+    scrollToTop()
     // Reset state for new day
     setTab('lesson')
     setCode(day?.exercise.starterCode || '')
@@ -56,7 +57,7 @@ export default function FastTrackDay() {
     } else {
       navigate('/fasttrack')
     }
-    // Scroll handled by useEffect on id change
+    scrollToTop(100) // ensure scroll after navigation
   }
 
   const handleRun = async () => {
@@ -119,14 +120,16 @@ export default function FastTrackDay() {
         <div style={{ padding: '12px 16px 0' }}>
           <div style={{
             borderRadius: 12, padding: 14, marginBottom: 4,
-            background: day.color + '33', border: `1px solid ${day.textColor}44`,
+            background: 'var(--c-card)',
+            border: '0.5px solid var(--c-border)',
+            borderLeft: `3px solid ${day.textColor}`,
           }}>
-            <div style={{ fontSize: 11, color: day.textColor, opacity: 0.7, marginBottom: 2 }}>
+            <div style={{ fontSize: 11, color: 'var(--c-muted)', marginBottom: 4 }}>
               {t.day} {day.id} of 7 · {day.duration} min
               {isDone && <span style={{ marginLeft: 8, background: '#166534', color: '#86efac', padding: '1px 6px', borderRadius: 10, fontSize: 10 }}>✓ Done</span>}
             </div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: day.textColor }}>{day.title[lang]}</div>
-            <div style={{ fontSize: 12, color: day.textColor, opacity: 0.6, marginTop: 2 }}>{day.subtitle[lang]}</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--c-text)' }}>{day.title[lang]}</div>
+            <div style={{ fontSize: 12, color: 'var(--c-text2)', marginTop: 3 }}>{day.subtitle[lang]}</div>
           </div>
         </div>
 

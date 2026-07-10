@@ -27,7 +27,7 @@ export const FASTTRACK_DAYS: FTDay[] = [
     id: 1,
     title: { en: 'Your First Python Program', pt: 'Seu Primeiro Programa Python' },
     subtitle: { en: 'Variables · types · print · input · f-strings', pt: 'Variáveis · tipos · print · input · f-strings' },
-    color: '#2d1b69', textColor: '#a78bfa', duration: 20,
+    color: '#1a1030', textColor: '#c4b5fd', duration: 20,
     outcome: {
       en: 'You can read any basic Python script and understand what every line does.',
       pt: 'Você consegue ler qualquer script Python básico e entender o que cada linha faz.'
@@ -97,7 +97,7 @@ print("====================")`
     id: 2,
     title: { en: 'Making Decisions', pt: 'Tomando Decisões' },
     subtitle: { en: 'if · elif · else · and · or · comparison operators', pt: 'if · elif · else · and · or · operadores de comparação' },
-    color: '#1a3a1a', textColor: '#86efac', duration: 20,
+    color: '#0f1f1a', textColor: '#6ee7b7', duration: 20,
     outcome: {
       en: 'You understand how any program makes decisions and can trace through if/else logic in code reviews.',
       pt: 'Você entende como qualquer programa toma decisões e consegue acompanhar lógica if/else em revisões de código.'
@@ -199,7 +199,7 @@ else:
     id: 3,
     title: { en: 'Repetition & Automation', pt: 'Repetição e Automação' },
     subtitle: { en: 'for · while · range · break · enumerate', pt: 'for · while · range · break · enumerate' },
-    color: '#1a1a3a', textColor: '#93c5fd', duration: 20,
+    color: '#0f1525', textColor: '#7dd3fc', duration: 20,
     outcome: {
       en: 'You understand why automation is Python\'s superpower and can explain loops to anyone.',
       pt: 'Você entende por que automação é o superpoder do Python e consegue explicar loops para qualquer pessoa.'
@@ -274,7 +274,7 @@ print("Goodbye!")`
     id: 4,
     title: { en: 'Functions — Reusable Code', pt: 'Funções — Código Reutilizável' },
     subtitle: { en: 'def · parameters · return · scope · default values', pt: 'def · parâmetros · return · escopo · valores padrão' },
-    color: '#3a1a00', textColor: '#fbbf24', duration: 20,
+    color: '#1a1200', textColor: '#e2c97e', duration: 20,
     outcome: {
       en: 'You understand why professional code uses functions and can read any well-structured Python file.',
       pt: 'Você entende por que código profissional usa funções e consegue ler qualquer arquivo Python bem estruturado.'
@@ -374,7 +374,7 @@ elif choice == "4": print(f"Result: {divide(a, b)}")`
     id: 5,
     title: { en: 'Organizing Data', pt: 'Organizando Dados' },
     subtitle: { en: 'lists · dictionaries · tuples · sets · when to use each', pt: 'listas · dicionários · tuplas · sets · quando usar cada' },
-    color: '#3a001a', textColor: '#f9a8d4', duration: 20,
+    color: '#1a0010', textColor: '#f0abca', duration: 20,
     outcome: {
       en: 'You can look at any JSON or API response and immediately understand the data structure.',
       pt: 'Você consegue olhar para qualquer JSON ou resposta de API e entender imediatamente a estrutura de dados.'
@@ -476,7 +476,7 @@ while True:
     id: 6,
     title: { en: 'Real World Python', pt: 'Python no Mundo Real' },
     subtitle: { en: 'files · JSON · imports · libraries · how systems talk', pt: 'arquivos · JSON · imports · bibliotecas · como sistemas se comunicam' },
-    color: '#003a2a', textColor: '#6ee7b7', duration: 20,
+    color: '#001a14', textColor: '#5eead4', duration: 20,
     outcome: {
       en: 'You understand how Python talks to files, APIs and other systems — the foundation of every real application.',
       pt: 'Você entende como Python se comunica com arquivos, APIs e outros sistemas — a base de toda aplicação real.'
@@ -612,7 +612,7 @@ print("Saved to summary.json")`
     id: 7,
     title: { en: 'Putting It All Together', pt: 'Juntando Tudo' },
     subtitle: { en: 'Final mini-project using days 1–6', pt: 'Mini-projeto final usando os dias 1–6' },
-    color: '#5b21b6', textColor: '#ffffff', duration: 20,
+    color: '#2d1060', textColor: '#e9d5ff', duration: 20,
     outcome: {
       en: 'You have a working Python program you built yourself. You can walk into any meeting about Python and follow — and contribute.',
       pt: 'Você tem um programa Python funcionando que construiu. Você consegue entrar em qualquer reunião sobre Python e acompanhar — e contribuir.'

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { scrollToTop } from '../lib/scroll'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
@@ -102,7 +103,7 @@ export default function Exam() {
       await saveExamScore(user.id, phase.id, finalScore)
       await refreshProgress()
       setTab('results')
-      document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
+      scrollToTop()
     } catch (e) {
       console.error(e)
       setResults(null)
@@ -133,7 +134,7 @@ export default function Exam() {
             key={t_.id}
             onClick={() => {
               setTab(t_.id)
-              document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
+              scrollToTop()
             }}
             style={{
               padding: '10px 16px', fontSize: 14,

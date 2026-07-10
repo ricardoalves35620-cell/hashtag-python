@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { scrollToTop } from '../lib/scroll'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
@@ -59,7 +60,7 @@ export default function Exercises() {
   const handleExerciseChange = (idx: number) => {
     setActiveEx(idx)
     setOutput('')
-    document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop()
   }
 
   const handleRun = async () => {
@@ -92,7 +93,7 @@ export default function Exercises() {
     await markStepDone(user.id, phase.id, 'exercises')
     await refreshProgress()
     navigate(`/phase/${phase.id}/quiz`)
-    document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
+    scrollToTop(100)
   }
 
   const t = {
