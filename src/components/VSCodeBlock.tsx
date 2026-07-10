@@ -157,6 +157,7 @@ interface Props {
 }
 
 export default function VSCodeBlock({ code, filename = 'example.py' }: Props) {
+  if (!code || !code.trim()) return null
   const lines = code.split('\n')
   // Remove leading/trailing empty lines
   while (lines.length > 0 && lines[0].trim() === '') lines.shift()

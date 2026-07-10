@@ -91,6 +91,9 @@ export default function Exam() {
       setTab('results')
     } catch (e) {
       console.error(e)
+      setResults(null)
+      setScore(null)
+      setTab('code')
     } finally {
       setSubmitting(false)
     }

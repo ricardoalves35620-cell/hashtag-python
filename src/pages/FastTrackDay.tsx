@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
@@ -23,11 +23,10 @@ export default function FastTrackDay() {
   const [showSolution, setShowSolution] = useState(false)
   const [customInput, setCustomInput] = useState(day?.exercise.inputHint || '')
   const [hasRun, setHasRun] = useState(false)
-  const topRef = useRef<HTMLDivElement>(null)
 
   // Scroll to top whenever day changes
   useEffect(() => {
-    topRef.current?.scrollIntoView({ behavior: 'instant' })
+    document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })
     // Reset state for new day
     setTab('lesson')
     setCode(day?.exercise.starterCode || '')
@@ -100,9 +99,6 @@ export default function FastTrackDay() {
 
   return (
     <Layout showBack backTo="/fasttrack" backLabel="FastTrack" title={`${t.day} ${day.id}`}>
-      {/* Invisible top anchor for scroll */}
-      <div ref={topRef} />
-
       <div style={{ display: 'flex', flexDirection: 'column' }}>
 
         {/* Day header */}

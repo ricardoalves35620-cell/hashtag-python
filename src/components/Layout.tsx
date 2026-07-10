@@ -85,8 +85,8 @@ export default function Layout({ children, showBack, backTo = '/home', backLabel
 
       {/* ── Content ── */}
       <main
-        className="flex-1 overflow-y-auto"
-        style={{ paddingBottom: showNav ? 'calc(56px + max(env(safe-area-inset-bottom, 0px), 8px))' : 0 }}
+        className="flex-1 overflow-y-auto" id="main-scroll"
+        style={{ paddingBottom: showNav ? 'calc(72px + max(env(safe-area-inset-bottom, 0px), 16px))' : 0 }}
       >
         {children}
       </main>

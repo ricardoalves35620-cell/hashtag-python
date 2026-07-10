@@ -13,6 +13,10 @@ export default function Lesson() {
 
   if (!phase) return null
 
+  // Stub phase check - show coming soon
+  const isStub = phase.lesson.blocks.length <= 2 && 
+    phase.lesson.blocks.some(b => b.content?.en?.includes('being prepared'))
+
   const handleComplete = async () => {
     if (!user) return
     await markStepDone(user.id, phase.id, 'lesson')
@@ -38,6 +42,18 @@ export default function Lesson() {
           <h1 className="text-lg font-medium text-white">{phase.lesson.title[lang]}</h1>
         </div>
 
+        {isStub && (
+          <div style={{ background: '#1a1040', border: '1px solid var(--c-purple-dm)', borderRadius: 12, padding: 16, marginBottom: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--c-purple-l)', marginBottom: 6 }}>
+              {lang === 'en' ? '🚧 Content in preparation' : '🚧 Conteúdo em preparação'}
+            </div>
+            <p style={{ fontSize: 13, color: 'var(--c-text2)', margin: 0, lineHeight: 1.6 }}>
+              {lang === 'en'
+                ? 'Complete the previous phases first. This phase will be unlocked as you progress.'
+                : 'Complete as fases anteriores primeiro. Esta fase será desbloqueada conforme você avança.'}
+            </p>
+          </div>
+        )}
         {phase.lesson.blocks.map((block, i) => (
           <LessonBlock key={i} block={block} lang={lang} />
         ))}

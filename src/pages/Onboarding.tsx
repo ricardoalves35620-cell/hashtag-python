@@ -7,8 +7,9 @@ export default function Onboarding() {
   const navigate = useNavigate()
 
   const choose = async (track: 'fasttrack' | 'course') => {
+    localStorage.setItem('hp_onboarding_done', track)
     if (user) {
-      await supabase.auth.updateUser({ data: { onboarding_done: true, track } })
+      supabase.auth.updateUser({ data: { onboarding_done: true, track } })
     }
     navigate(track === 'fasttrack' ? '/fasttrack' : '/home')
   }

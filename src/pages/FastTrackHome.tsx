@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
@@ -6,7 +7,16 @@ import { FASTTRACK_DAYS } from '../data/fasttrack'
 export default function FastTrackHome() {
   const { lang } = useApp()
   const navigate = useNavigate()
-  const doneDays: number[] = JSON.parse(localStorage.getItem('hp_ft_done') || '[]')
+  const [doneDays, setDoneDays] = useState<number[]>(() =>
+    JSON.parse(localStorage.getItem('hp_ft_done') || '[]')
+  )
+  
+  useEffect(() => {
+    const refresh = () => setDoneDays(JSON.parse(localStorage.getItem('hp_ft_done') || '[]'))
+    refresh() // re-read on mount (catches changes from other tabs)
+    window.addEventListener('focus', refresh)
+    return () => window.removeEventListener('focus', refresh)
+  }, [])
   const completed = doneDays.length === 7
 
   const t = {

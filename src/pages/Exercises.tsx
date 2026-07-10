@@ -35,6 +35,12 @@ export default function Exercises() {
 
   const exercise = phase.exercises[activeEx]
 
+  // Scroll to top when switching exercise tabs
+  const handleExerciseChange = (idx: number) => {
+    setActiveEx(idx)
+    document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleRun = async () => {
     setRunning(true)
     setOutput('')
@@ -87,7 +93,7 @@ export default function Exercises() {
           {phase.exercises.map((ex, i) => (
             <button
               key={ex.id}
-              onClick={() => setActiveEx(i)}
+              onClick={() => handleExerciseChange(i)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 i === activeEx
                   ? 'bg-purple-DEFAULT text-white'

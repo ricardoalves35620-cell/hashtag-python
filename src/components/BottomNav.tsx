@@ -68,6 +68,7 @@ export default function BottomNav() {
         <Link
           key={item.to}
           to={item.to}
+          onClick={() => document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' })}
           className="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors"
           style={{
             color: item.active ? 'var(--c-purple-l)' : 'var(--c-dimmer)',

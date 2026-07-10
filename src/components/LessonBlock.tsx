@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function LessonBlock({ block, lang }: Props) {
-  const t = (b: { en: string; pt: string } | undefined) => b?.[lang] || ''
+  const t = (b: { en: string; pt: string } | undefined) => b?.[lang] || b?.en || ''
 
   if (block.type === 'heading') {
     return (

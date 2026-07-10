@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
@@ -9,6 +10,8 @@ export default function PhaseOverview() {
   const navigate = useNavigate()
   const { lang, progress } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
+
+  useEffect(() => { document.getElementById('main-scroll')?.scrollTo({ top: 0, behavior: 'instant' }) }, [])
 
   if (!phase) return <div className="p-4 text-muted">Phase not found</div>
 

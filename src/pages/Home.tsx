@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import PhaseCard from '../components/PhaseCard'
@@ -10,7 +11,16 @@ export default function Home() {
   const navigate = useNavigate()
   const overall = getOverallProgress(progress)
   const passed = progress.filter(p => p.exam_passed).length
-  const ftDone: number[] = JSON.parse(localStorage.getItem('hp_ft_done') || '[]')
+  const [ftDone, setFtDone] = useState<number[]>(() => 
+    JSON.parse(localStorage.getItem('hp_ft_done') || '[]')
+  )
+  
+  // Re-read FastTrack progress when page gets focus (after completing a day)
+  useEffect(() => {
+    const refresh = () => setFtDone(JSON.parse(localStorage.getItem('hp_ft_done') || '[]'))
+    window.addEventListener('focus', refresh)
+    return () => window.removeEventListener('focus', refresh)
+  }, [])
   const ftCompleted = ftDone.length === 7
 
   const t = {

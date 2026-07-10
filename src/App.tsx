@@ -33,8 +33,8 @@ function SmartHome() {
   const { user, loading } = useApp()
   if (loading) return <Loader />
   if (!user) return <Navigate to="/" replace />
-  // Show onboarding if first time
-  const onboardingDone = user.user_metadata?.onboarding_done
+  // Check both Supabase metadata and localStorage (localStorage is immediate)
+  const onboardingDone = user.user_metadata?.onboarding_done || localStorage.getItem('hp_onboarding_done')
   if (!onboardingDone) return <Onboarding />
   return <Home />
 }
