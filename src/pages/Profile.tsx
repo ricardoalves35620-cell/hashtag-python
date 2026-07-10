@@ -25,7 +25,7 @@ const COUNTRY_CODES = [
 ]
 
 export default function Profile() {
-  const { lang, setLang, theme, setTheme, user, displayName, avatarUrl, refreshProgress } = useApp()
+  const { lang, setLang, theme, setTheme, user, displayName, avatarUrl, refreshProgress, refreshUser } = useApp()
   const navigate = useNavigate()
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -93,7 +93,7 @@ export default function Profile() {
       await supabase.auth.updateUser({
         data: { display_name: name, phone: phone, country_code: countryCode, full_phone: fullPhone }
       })
-      setSaved(true)
+      await refreshUser(); setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed')
