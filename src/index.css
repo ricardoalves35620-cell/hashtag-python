@@ -4,14 +4,14 @@
 
 * { box-sizing: border-box; }
 
-/* ── Safe area variables ── */
 :root {
+  /* Safe area — fallback to 0 on non-iOS */
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
   --sal: env(safe-area-inset-left, 0px);
   --sar: env(safe-area-inset-right, 0px);
 
-  /* Dark theme (default) */
+  /* Dark theme */
   --c-bg:       #0a0a18;
   --c-card:     #111128;
   --c-card2:    #161632;
@@ -29,12 +29,11 @@
   --c-code-bg:  #0d0d1f;
 }
 
-/* ── Light theme ── */
 [data-theme="light"] {
   --c-bg:       #f0f0f8;
   --c-card:     #ffffff;
   --c-card2:    #f8f8ff;
-  --c-border:   #d8d8e8;
+  --c-border:   #d0d0e8;
   --c-text:     #1a1a2e;
   --c-text2:    #3a3a5c;
   --c-muted:    #6060a0;
@@ -57,18 +56,9 @@ html, body, #root {
   transition: background-color 0.2s, color 0.2s;
 }
 
-/* ── Safe area header ── */
-.safe-header {
-  padding-top: calc(var(--sat) + 12px);
-  padding-left: calc(var(--sal) + 16px);
-  padding-right: calc(var(--sar) + 16px);
-  padding-bottom: 12px;
-}
-
-/* ── Safe area bottom ── */
-.safe-bottom {
-  padding-bottom: calc(var(--sab) + 16px);
-}
+/* ── Minimum tap target ── */
+button, a { min-height: 44px; min-width: 44px; }
+button { cursor: pointer; font-family: inherit; }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }
@@ -91,3 +81,6 @@ html, body, #root {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.875em;
 }
+
+/* ── Safe area bottom padding ── */
+.pb-safe { padding-bottom: max(var(--sab), 16px); }
