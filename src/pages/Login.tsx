@@ -88,7 +88,16 @@ export default function Login() {
     setGoogleLoading(true)
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/home` }
+      options: {
+        redirectTo: `${window.location.origin}/home`,
+        queryParams: {
+          // Force Google to always show account picker
+          // 'select_account' = show account list even if already signed in
+          prompt: 'select_account',
+          // Also request fresh consent so session is truly new
+          access_type: 'online',
+        }
+      }
     })
     if (error) { setError(error.message); setGoogleLoading(false) }
   }

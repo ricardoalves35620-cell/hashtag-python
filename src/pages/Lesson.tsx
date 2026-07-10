@@ -61,7 +61,7 @@ export default function Lesson() {
         <div className="pt-4">
           <button
             onClick={handleComplete}
-            className="w-full bg-purple-DEFAULT hover:bg-purple-dark text-white font-medium py-3.5 rounded-xl text-sm transition-colors"
+            style={{ width:"100%", padding:"14px", borderRadius:12, background:"var(--c-purple)", color:"#fff", fontSize:14, fontWeight:600, border:"none", cursor:"pointer", boxShadow:"0 2px 12px rgba(124,58,237,0.35)" }}
           >
             {t.complete}
           </button>

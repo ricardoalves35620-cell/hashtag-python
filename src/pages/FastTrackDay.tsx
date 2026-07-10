@@ -205,6 +205,38 @@ export default function FastTrackDay() {
               </p>
             </div>
 
+            {/* Guided steps — think before coding */}
+            {day.exercise.steps && day.exercise.steps.length > 0 && (
+              <div style={{
+                background: '#0f1a2e', border: '1px solid #1e3a5f',
+                borderRadius: 12, padding: 14, marginBottom: 10,
+              }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 600, color: '#7dd3fc',
+                  textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10,
+                }}>
+                  {lang === 'en' ? '📋 Before you code — read through these steps' : '📋 Antes de codificar — leia estes passos'}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {day.exercise.steps.map((step, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                      <div style={{
+                        flexShrink: 0, width: 22, height: 22,
+                        borderRadius: '50%', background: '#1e3a5f',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 11, fontWeight: 600, color: '#7dd3fc',
+                      }}>
+                        {i + 1}
+                      </div>
+                      <p style={{ fontSize: 13, color: '#93c5fd', margin: 0, lineHeight: 1.6 }}>
+                        {step[lang]}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* VS Code Editor (CodeMirror) */}
             <VSCodeEditor
               value={code}
