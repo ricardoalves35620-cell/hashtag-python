@@ -8,30 +8,34 @@ import Lesson from './pages/Lesson'
 import Exercises from './pages/Exercises'
 import Quiz from './pages/Quiz'
 import Exam from './pages/Exam'
-import ResetPassword from './pages/ResetPassword'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useApp()
-  if (loading) return (
-    <div className="min-h-screen bg-bg flex items-center justify-center">
-      <div className="font-mono text-purple-light text-2xl animate-pulse">#Python</div>
-    </div>
-  )
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="font-mono text-purple-light text-2xl animate-pulse">#Python</div>
+      </div>
+    )
+  }
   if (!user) return <Navigate to="/" replace />
   return <>{children}</>
 }
 
 function AppRoutes() {
   const { user, loading } = useApp()
-  if (loading) return (
-    <div className="min-h-screen bg-bg flex items-center justify-center">
-      <div className="font-mono text-purple-light text-2xl animate-pulse">#Python</div>
-    </div>
-  )
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="font-mono text-purple-light text-2xl animate-pulse">#Python</div>
+      </div>
+    )
+  }
+
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/home" replace /> : <Login />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
       <Route path="/family" element={<RequireAuth><Family /></RequireAuth>} />
       <Route path="/phase/:id" element={<RequireAuth><PhaseOverview /></RequireAuth>} />
