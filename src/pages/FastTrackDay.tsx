@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { scrollToTop } from '../lib/scroll'
+import { loadFTProgress, markFTDayDone } from '../lib/fasttrackProgress'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
@@ -16,7 +17,7 @@ type Tab = 'lesson' | 'exercise'
 export default function FastTrackDay() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang } = useApp()
+  const { lang, user } = useApp()
   const day = FASTTRACK_DAYS.find(d => d.id === Number(id))
 
   const [tab, setTab] = useState<Tab>('lesson')
@@ -44,20 +45,25 @@ export default function FastTrackDay() {
 
   if (!day) return null
 
-  const doneDays: number[] = JSON.parse(localStorage.getItem('hp_ft_done') || '[]')
+  const [doneDays, setDoneDays] = useState<number[]>([])
   const isDone = doneDays.includes(day.id)
   const nextDay = FASTTRACK_DAYS.find(d => !doneDays.includes(d.id) && d.id !== day.id)
 
-  const markDone = () => {
-    const updated = [...new Set([...doneDays, day.id])]
-    localStorage.setItem('hp_ft_done', JSON.stringify(updated))
+  // Load progress from Supabase on mount
+  useEffect(() => {
+    if (user) loadFTProgress(user.id).then(setDoneDays)
+  }, [user])
+
+  const markDone = async () => {
+    if (!user) return
+    const updated = await markFTDayDone(user.id, day.id)
     const next = FASTTRACK_DAYS.find(d => !updated.includes(d.id))
     if (next) {
       navigate(`/fasttrack/${next.id}`)
     } else {
       navigate('/fasttrack')
     }
-    scrollToTop(100) // ensure scroll after navigation
+    scrollToTop(100)
   }
 
   const handleRun = async () => {

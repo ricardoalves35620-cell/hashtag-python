@@ -4,23 +4,20 @@ import Layout from '../components/Layout'
 import PhaseCard from '../components/PhaseCard'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
+import { loadFTProgress } from '../lib/fasttrackProgress'
 import { getOverallProgress } from '../lib/progress'
 
 export default function Home() {
-  const { lang, displayName, progress } = useApp()
+  const { lang, displayName, progress, user } = useApp()
   const navigate = useNavigate()
   const overall = getOverallProgress(progress)
   const passed = progress.filter(p => p.exam_passed).length
-  const [ftDone, setFtDone] = useState<number[]>(() => 
-    JSON.parse(localStorage.getItem('hp_ft_done') || '[]')
-  )
+  const [ftDone, setFtDone] = useState<number[]>([])
   
-  // Re-read FastTrack progress when page gets focus (after completing a day)
+  // Load FastTrack progress from Supabase (syncs across devices)
   useEffect(() => {
-    const refresh = () => setFtDone(JSON.parse(localStorage.getItem('hp_ft_done') || '[]'))
-    window.addEventListener('focus', refresh)
-    return () => window.removeEventListener('focus', refresh)
-  }, [])
+    if (user) loadFTProgress(user.id).then(setFtDone)
+  }, [user])
   const ftCompleted = ftDone.length === 7
 
   const t = {
