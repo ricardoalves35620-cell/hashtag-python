@@ -169,8 +169,19 @@ export default function Profile() {
 
   // ── Logout ──
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/')
+    // 'global' scope signs out from ALL devices/sessions
+    // 'local' scope only clears this device's session
+    await supabase.auth.signOut({ scope: 'local' })
+    
+    // Clear all local app state
+    localStorage.removeItem('hp_onboarding_done')
+    localStorage.removeItem('hp_ft_done')
+    
+    // Force navigate to login — replace so back button can't return
+    navigate('/', { replace: true })
+    
+    // Hard reload to clear any in-memory auth state
+    window.location.href = '/'
   }
 
   // ── Styles ──
