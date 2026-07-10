@@ -6,6 +6,27 @@ interface InputRow {
   value: string    // value the user types
 }
 
+
+// ── Detect if input() is inside a loop ──
+function isInputInLoop(code: string): boolean {
+  const lines = code.split('\n')
+  let inLoop = false
+  let loopIndent = -1
+  for (const line of lines) {
+    const trimmed = line.trimStart()
+    const indent = line.length - trimmed.length
+    if (/^(while|for)\b/.test(trimmed)) {
+      inLoop = true
+      loopIndent = indent
+    } else if (inLoop && indent <= loopIndent && trimmed !== '') {
+      inLoop = false
+      loopIndent = -1
+    }
+    if (inLoop && /\binput\s*\(/.test(trimmed)) return true
+  }
+  return false
+}
+
 // ── Parse all input() calls from Python code ──
 function parseInputCalls(code: string): string[] {
   const prompts: string[] = []
@@ -36,33 +57,47 @@ interface Props {
 export default function TestInputEditor({ code, value, onChange, lang }: Props) {
   const [rows, setRows] = useState<InputRow[]>([])
 
+  const [hasLoop, setHasLoop] = useState(false)
+
   // Re-parse whenever code changes
   useEffect(() => {
     const prompts = parseInputCalls(code)
+    const loop = isInputInLoop(code)
+    setHasLoop(loop)
 
-    if (prompts.length === 0) {
-      // No input() calls — show a simple textarea fallback
+    if (prompts.length === 0 && !loop) {
       setRows([])
       return
     }
 
-    // Split current value into lines to preserve existing entries
     const currentValues = value.split('\n')
 
-    const newRows: InputRow[] = prompts.map((prompt, i) => ({
+    // For loops: show at least as many rows as current values, minimum 2
+    let allPrompts = [...prompts]
+    if (loop) {
+      const needed = Math.max(currentValues.filter(v => v !== '').length + 1, 2)
+      while (allPrompts.length < needed) {
+        allPrompts.push(prompts[0] ?? '') // repeat the loop's prompt label
+      }
+    }
+
+    const newRows: InputRow[] = allPrompts.map((prompt, i) => ({
       prompt,
       value: currentValues[i] ?? '',
     }))
 
     setRows(newRows)
-    // Sync back the joined values
     onChange(newRows.map(r => r.value).join('\n'))
   }, [code])
 
   const updateRow = (index: number, newValue: string) => {
-    const updated = rows.map((r, i) => i === index ? { ...r, value: newValue } : r)
+    let updated = rows.map((r, i) => i === index ? { ...r, value: newValue } : r)
+    // For loops: add a new empty row when user types in the last row
+    if (hasLoop && index === updated.length - 1 && newValue !== '') {
+      updated = [...updated, { prompt: rows[0]?.prompt ?? '', value: '' }]
+    }
     setRows(updated)
-    onChange(updated.map(r => r.value).join('\n'))
+    onChange(updated.map(r => r.value).join('\n').replace(/\n+$/, '')) // trim trailing newlines
   }
 
   const t = {
@@ -104,11 +139,17 @@ export default function TestInputEditor({ code, value, onChange, lang }: Props) 
   // ── Structured input rows ──
   return (
     <div style={{ marginBottom: 8 }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 6 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
         <div style={{ fontSize: 11, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
           {t.label}
         </div>
-        <div style={{ fontSize: 11, color: 'var(--c-dimmer)' }}>{t.hint}</div>
+        <div style={{ fontSize: 11, color: 'var(--c-dimmer)' }}>
+          {hasLoop
+            ? (lang === 'en'
+                ? '⟳ Loop detected — add one value per iteration. New rows appear as you type.'
+                : '⟳ Loop detectado — adicione um valor por iteração. Novas linhas aparecem ao digitar.')
+            : t.hint}
+        </div>
       </div>
 
       <div style={{
