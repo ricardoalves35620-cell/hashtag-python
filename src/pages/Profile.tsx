@@ -6,95 +6,160 @@ import { supabase } from '../lib/supabase'
 import type { Theme } from '../contexts/AppContext'
 
 const COUNTRY_CODES = [
-  { code: '+1', flag: '🇺🇸🇨🇦', label: '+1 (US/CA)' },
-  { code: '+55', flag: '🇧🇷', label: '+55 (BR)' },
-  { code: '+44', flag: '🇬🇧', label: '+44 (UK)' },
-  { code: '+33', flag: '🇫🇷', label: '+33 (FR)' },
-  { code: '+49', flag: '🇩🇪', label: '+49 (DE)' },
-  { code: '+34', flag: '🇪🇸', label: '+34 (ES)' },
-  { code: '+39', flag: '🇮🇹', label: '+39 (IT)' },
-  { code: '+351', flag: '🇵🇹', label: '+351 (PT)' },
-  { code: '+81', flag: '🇯🇵', label: '+81 (JP)' },
-  { code: '+86', flag: '🇨🇳', label: '+86 (CN)' },
-  { code: '+91', flag: '🇮🇳', label: '+91 (IN)' },
-  { code: '+52', flag: '🇲🇽', label: '+52 (MX)' },
-  { code: '+54', flag: '🇦🇷', label: '+54 (AR)' },
-  { code: '+61', flag: '🇦🇺', label: '+61 (AU)' },
-  { code: '+27', flag: '🇿🇦', label: '+27 (ZA)' },
-  { code: '+other', flag: '🌍', label: 'Other' },
+  { code: '+1',   label: '+1 (US/CA)' },
+  { code: '+55',  label: '+55 (BR)' },
+  { code: '+44',  label: '+44 (UK)' },
+  { code: '+33',  label: '+33 (FR)' },
+  { code: '+49',  label: '+49 (DE)' },
+  { code: '+34',  label: '+34 (ES)' },
+  { code: '+39',  label: '+39 (IT)' },
+  { code: '+351', label: '+351 (PT)' },
+  { code: '+81',  label: '+81 (JP)' },
+  { code: '+86',  label: '+86 (CN)' },
+  { code: '+91',  label: '+91 (IN)' },
+  { code: '+52',  label: '+52 (MX)' },
+  { code: '+54',  label: '+54 (AR)' },
+  { code: '+61',  label: '+61 (AU)' },
+  { code: '+27',  label: '+27 (ZA)' },
+  { code: '+82',  label: '+82 (KR)' },
+  { code: '+7',   label: '+7 (RU)' },
+  { code: '+90',  label: '+90 (TR)' },
+  { code: '+31',  label: '+31 (NL)' },
+  { code: '+46',  label: '+46 (SE)' },
 ]
 
 export default function Profile() {
-  const { lang, setLang, theme, setTheme, user, displayName, avatarUrl, refreshProgress, refreshUser } = useApp()
+  const { lang, setLang, theme, setTheme, user, displayName, avatarUrl, refreshUser } = useApp()
   const navigate = useNavigate()
   const fileRef = useRef<HTMLInputElement>(null)
 
-  const [name, setName] = useState(user?.user_metadata?.display_name || '')
-  const [phone, setPhone] = useState(user?.user_metadata?.phone || '')
-  const [countryCode, setCountryCode] = useState(user?.user_metadata?.country_code || '+1')
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(avatarUrl)
+  // Form state — populated from Supabase user metadata
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState('+1')
+  const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [showLogout, setShowLogout] = useState(false)
 
+  // Load user data when user object is available or changes (multi-device: always fresh)
+  useEffect(() => {
+    if (!user) return
+    const meta = user.user_metadata || {}
+    setName(meta.display_name || meta.full_name || meta.name || '')
+    setPhone(meta.phone_number || '')
+    setCountryCode(meta.country_code || '+1')
+    setLocalAvatarUrl(meta.avatar_url || null)
+  }, [user])
+
+  // Also sync avatar when avatarUrl prop changes (after photo upload)
+  useEffect(() => {
+    if (avatarUrl) setLocalAvatarUrl(avatarUrl)
+  }, [avatarUrl])
+
   const t = {
     en: {
-      title: 'Profile', photo: 'Profile photo', changePic: 'Change photo',
-      name: 'Display name', email: 'Email', phone: 'Phone number',
-      countryCode: 'Country code', phoneNum: 'Number',
-      theme: 'App theme', dark: 'Dark', light: 'Light', system: 'System',
-      language: 'Language', save: 'Save changes', saving: 'Saving...',
-      saved: 'Saved!', logout: 'Sign out', logoutConfirm: 'Are you sure you want to sign out?',
-      cancel: 'Cancel', confirm: 'Sign out', section1: 'Personal info', section2: 'Preferences',
+      title: 'Profile',
+      photo: 'Profile photo', changePhoto: 'Change photo', uploading: 'Uploading...',
+      photoTip: 'JPG, PNG or GIF · max 5MB',
+      personalInfo: 'Personal info',
+      displayName: 'Display name', namePlaceholder: 'Your name',
+      email: 'Email (login)', emailTip: 'Contact support to change your login email',
+      phone: 'Phone number', phonePlaceholder: '555-123-4567',
       phoneTip: 'Include country code for international format',
+      preferences: 'Preferences',
+      theme: 'App theme', dark: 'Dark', light: 'Light', system: 'System (device)',
+      language: 'Language',
+      save: 'Save changes', saving: 'Saving...', saved: '✅ Saved!',
+      logout: 'Sign out', logoutConfirm: 'Are you sure you want to sign out?',
+      cancel: 'Cancel', confirm: 'Sign out',
     },
     pt: {
-      title: 'Perfil', photo: 'Foto de perfil', changePic: 'Mudar foto',
-      name: 'Nome de exibição', email: 'Email', phone: 'Telefone',
-      countryCode: 'Código do país', phoneNum: 'Número',
-      theme: 'Tema do app', dark: 'Escuro', light: 'Claro', system: 'Sistema',
-      language: 'Idioma', save: 'Salvar alterações', saving: 'Salvando...',
-      saved: 'Salvo!', logout: 'Sair', logoutConfirm: 'Tem certeza que deseja sair?',
-      cancel: 'Cancelar', confirm: 'Sair', section1: 'Informações pessoais', section2: 'Preferências',
+      title: 'Perfil',
+      photo: 'Foto de perfil', changePhoto: 'Mudar foto', uploading: 'Enviando...',
+      photoTip: 'JPG, PNG ou GIF · máx 5MB',
+      personalInfo: 'Informações pessoais',
+      displayName: 'Nome de exibição', namePlaceholder: 'Seu nome',
+      email: 'Email (login)', emailTip: 'Contate o suporte para alterar o email de login',
+      phone: 'Telefone', phonePlaceholder: '555-123-4567',
       phoneTip: 'Inclua o código do país para formato internacional',
+      preferences: 'Preferências',
+      theme: 'Tema do app', dark: 'Escuro', light: 'Claro', system: 'Sistema (dispositivo)',
+      language: 'Idioma',
+      save: 'Salvar alterações', saving: 'Salvando...', saved: '✅ Salvo!',
+      logout: 'Sair', logoutConfirm: 'Tem certeza que deseja sair?',
+      cancel: 'Cancelar', confirm: 'Sair',
     }
   }[lang]
 
-  const handlePhotoClick = () => fileRef.current?.click()
-
+  // ── Photo upload ──
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !user) return
     setUploading(true)
+    setError('')
     try {
-      const ext = file.name.split('.').pop()
+      // Always use same filename to overwrite — no duplicates
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
       const path = `${user.id}/avatar.${ext}`
-      const { error: upErr } = await supabase.storage.from('avatars').upload(path, file, { upsert: true })
+
+      // Remove old avatar first (any extension)
+      await supabase.storage.from('avatars').remove([
+        `${user.id}/avatar.jpg`,
+        `${user.id}/avatar.jpeg`,
+        `${user.id}/avatar.png`,
+        `${user.id}/avatar.gif`,
+        `${user.id}/avatar.webp`,
+      ])
+
+      // Upload new
+      const { error: upErr } = await supabase.storage
+        .from('avatars')
+        .upload(path, file, { upsert: true, cacheControl: '1' })
       if (upErr) throw upErr
+
+      // Get public URL with cache buster
       const { data } = supabase.storage.from('avatars').getPublicUrl(path)
-      const url = data.publicUrl + '?t=' + Date.now()
-      setAvatarPreview(url)
-      await supabase.auth.updateUser({ data: { avatar_url: url } })
+      const url = `${data.publicUrl}?v=${Date.now()}`
+
+      // Save to user metadata
+      const { error: metaErr } = await supabase.auth.updateUser({
+        data: { avatar_url: url }
+      })
+      if (metaErr) throw metaErr
+
+      setLocalAvatarUrl(url)
+      await refreshUser()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Upload failed')
     } finally {
       setUploading(false)
+      if (fileRef.current) fileRef.current.value = ''
     }
   }
 
+  // ── Save profile ──
   const handleSave = async () => {
     if (!user) return
     setSaving(true)
     setError('')
     try {
-      const fullPhone = phone ? `${countryCode} ${phone}` : ''
-      await supabase.auth.updateUser({
-        data: { display_name: name, phone: phone, country_code: countryCode, full_phone: fullPhone }
+      const { error: updateErr } = await supabase.auth.updateUser({
+        data: {
+          display_name: name.trim(),
+          phone_number: phone.trim(),
+          country_code: countryCode,
+          full_phone: phone.trim() ? `${countryCode} ${phone.trim()}` : '',
+        }
       })
-      await refreshUser(); setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
+      if (updateErr) throw updateErr
+
+      // Refresh user so displayName updates everywhere (multi-device: next load gets fresh)
+      await refreshUser()
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed')
     } finally {
@@ -102,38 +167,41 @@ export default function Profile() {
     }
   }
 
+  // ── Logout ──
   const handleLogout = async () => {
     await supabase.auth.signOut()
     navigate('/')
   }
 
-  const inputStyle = {
+  // ── Styles ──
+  const inputStyle: React.CSSProperties = {
     width: '100%',
-    background: 'var(--c-card)',
+    background: 'var(--c-bg)',
     border: '0.5px solid var(--c-border)',
-    borderRadius: '10px',
+    borderRadius: 10,
     padding: '10px 14px',
     color: 'var(--c-text)',
-    fontSize: '14px',
+    fontSize: 14,
     outline: 'none',
+    minHeight: 44,
   }
 
-  const labelStyle = {
-    display: 'block',
-    fontSize: '11px',
-    color: 'var(--c-muted)',
-    fontWeight: '500',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.5px',
-    marginBottom: '6px',
-  }
-
-  const sectionStyle = {
+  const sectionStyle: React.CSSProperties = {
     background: 'var(--c-card)',
     border: '0.5px solid var(--c-border)',
-    borderRadius: '12px',
+    borderRadius: 14,
     padding: '16px',
-    marginBottom: '12px',
+    marginBottom: 12,
+  }
+
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: 11,
+    color: 'var(--c-muted)',
+    fontWeight: 500,
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    marginBottom: 6,
   }
 
   const themeOptions: { value: Theme; label: string; icon: string }[] = [
@@ -142,141 +210,159 @@ export default function Profile() {
     { value: 'system', label: t.system, icon: '📱' },
   ]
 
-  return (
-    <Layout showBack backTo="/home" title={t.title}>
-      <div className="p-4 space-y-3">
+  const initials = (name || displayName || user?.email || '?')[0]?.toUpperCase()
 
-        {/* Avatar */}
+  return (
+    <Layout title={t.title}>
+      <div className="p-4">
+
+        {/* ── Photo ── */}
         <div style={sectionStyle}>
-          <div style={labelStyle}>{t.photo}</div>
+          <label style={labelStyle}>{t.photo}</label>
           <div className="flex items-center gap-4">
-            <button onClick={handlePhotoClick} className="relative flex-shrink-0" disabled={uploading}>
-              <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center text-2xl font-medium text-white" style={{ background: 'var(--c-purple-d)' }}>
-                {avatarPreview ? (
-                  <img src={avatarPreview} alt="avatar" className="w-full h-full object-cover" />
-                ) : (
-                  (name || displayName)[0]?.toUpperCase() || '?'
-                )}
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              style={{ background: 'none', border: 'none', padding: 0, position: 'relative', flexShrink: 0 }}
+            >
+              <div
+                className="flex items-center justify-center text-white font-medium overflow-hidden"
+                style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--c-purple-d)', fontSize: 28 }}
+              >
+                {localAvatarUrl ? (
+                  <img src={localAvatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : initials}
               </div>
-              <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs" style={{ background: 'var(--c-purple)' }}>
+              <div
+                className="flex items-center justify-center text-white"
+                style={{ position: 'absolute', bottom: 0, right: 0, width: 22, height: 22, borderRadius: '50%', background: 'var(--c-purple)', fontSize: 11 }}
+              >
                 {uploading ? '…' : '✎'}
               </div>
             </button>
             <div>
-              <button onClick={handlePhotoClick} className="text-sm font-medium" style={{ color: 'var(--c-purple-l)' }}>
-                {uploading ? 'Uploading...' : t.changePic}
+              <button
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                style={{ background: 'none', border: 'none', padding: 0, color: 'var(--c-purple-l)', fontSize: 14, fontWeight: 500, cursor: 'pointer' }}
+              >
+                {uploading ? t.uploading : t.changePhoto}
               </button>
-              <div className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>JPG, PNG or GIF · max 5MB</div>
+              <div style={{ fontSize: 11, color: 'var(--c-dimmer)', marginTop: 4 }}>{t.photoTip}</div>
             </div>
           </div>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+          <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhotoChange} />
         </div>
 
-        {/* Personal info */}
+        {/* ── Personal info ── */}
         <div style={sectionStyle}>
-          <div className="text-xs font-medium uppercase tracking-wide mb-4" style={{ color: 'var(--c-muted)' }}>{t.section1}</div>
+          <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 16 }}>
+            {t.personalInfo}
+          </div>
 
-          <div className="space-y-3">
-            <div>
-              <label style={labelStyle}>{t.name}</label>
+          <div style={{ marginBottom: 14 }}>
+            <label style={labelStyle}>{t.displayName}</label>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder={t.namePlaceholder}
+              style={inputStyle}
+            />
+          </div>
+
+          <div style={{ marginBottom: 14 }}>
+            <label style={labelStyle}>{t.email}</label>
+            <input
+              type="email"
+              value={user?.email || ''}
+              readOnly
+              style={{ ...inputStyle, opacity: 0.5, cursor: 'default' }}
+            />
+            <div style={{ fontSize: 11, color: 'var(--c-dimmer)', marginTop: 4 }}>{t.emailTip}</div>
+          </div>
+
+          <div>
+            <label style={labelStyle}>{t.phone}</label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <select
+                value={countryCode}
+                onChange={e => setCountryCode(e.target.value)}
+                style={{ ...inputStyle, width: 'auto', flexShrink: 0, paddingRight: 8 }}
+              >
+                {COUNTRY_CODES.map(c => (
+                  <option key={c.code} value={c.code}>{c.label}</option>
+                ))}
+              </select>
               <input
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Your name"
+                type="tel"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                placeholder={t.phonePlaceholder}
                 style={inputStyle}
               />
             </div>
-
-            <div>
-              <label style={labelStyle}>{t.email}</label>
-              <input
-                type="email"
-                value={user?.email || ''}
-                readOnly
-                style={{ ...inputStyle, opacity: 0.6, cursor: 'not-allowed' }}
-              />
-            </div>
-
-            <div>
-              <label style={labelStyle}>{t.phone}</label>
-              <div className="flex gap-2">
-                <select
-                  value={countryCode}
-                  onChange={e => setCountryCode(e.target.value)}
-                  style={{ ...inputStyle, width: 'auto', flexShrink: 0, paddingRight: '8px' }}
-                >
-                  {COUNTRY_CODES.map(c => (
-                    <option key={c.code} value={c.code}>{c.label}</option>
-                  ))}
-                </select>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                  placeholder="555-123-4567"
-                  style={inputStyle}
-                />
-              </div>
-              <div className="text-xs mt-1" style={{ color: 'var(--c-dimmer)' }}>{t.phoneTip}</div>
-            </div>
+            <div style={{ fontSize: 11, color: 'var(--c-dimmer)', marginTop: 4 }}>{t.phoneTip}</div>
           </div>
         </div>
 
-        {/* Preferences */}
+        {/* ── Preferences ── */}
         <div style={sectionStyle}>
-          <div className="text-xs font-medium uppercase tracking-wide mb-4" style={{ color: 'var(--c-muted)' }}>{t.section2}</div>
+          <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 16 }}>
+            {t.preferences}
+          </div>
 
-          <div className="space-y-4">
-            {/* Theme */}
-            <div>
-              <label style={labelStyle}>{t.theme}</label>
-              <div className="grid grid-cols-3 gap-2">
-                {themeOptions.map(opt => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setTheme(opt.value)}
-                    className="py-2.5 rounded-xl text-sm transition-all"
-                    style={{
-                      border: theme === opt.value ? '2px solid var(--c-purple)' : '0.5px solid var(--c-border)',
-                      background: theme === opt.value ? 'var(--c-purple-dm)' : 'var(--c-bg)',
-                      color: theme === opt.value ? 'var(--c-purple-l)' : 'var(--c-muted)',
-                      fontWeight: theme === opt.value ? '500' : '400',
-                    }}
-                  >
-                    <div className="text-lg mb-0.5">{opt.icon}</div>
-                    <div style={{ fontSize: '12px' }}>{opt.label}</div>
-                  </button>
-                ))}
-              </div>
+          {/* Theme */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>{t.theme}</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+              {themeOptions.map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setTheme(opt.value)}
+                  style={{
+                    border: theme === opt.value ? '2px solid var(--c-purple)' : '0.5px solid var(--c-border)',
+                    background: theme === opt.value ? 'var(--c-purple-dm)' : 'var(--c-bg)',
+                    color: theme === opt.value ? 'var(--c-purple-l)' : 'var(--c-muted)',
+                    borderRadius: 10, padding: '10px 4px',
+                    fontSize: 12, fontWeight: theme === opt.value ? 500 : 400,
+                    cursor: 'pointer', minHeight: 60,
+                  }}
+                >
+                  <div style={{ fontSize: 18, marginBottom: 4 }}>{opt.icon}</div>
+                  <div>{opt.label}</div>
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Language */}
-            <div>
-              <label style={labelStyle}>{t.language}</label>
-              <div className="grid grid-cols-2 gap-2">
-                {[{ code: 'en', label: '🇨🇦 English' }, { code: 'pt', label: '🇧🇷 Português' }].map(l => (
-                  <button
-                    key={l.code}
-                    onClick={() => setLang(l.code as 'en' | 'pt')}
-                    className="py-2.5 rounded-xl text-sm transition-all"
-                    style={{
-                      border: lang === l.code ? '2px solid var(--c-purple)' : '0.5px solid var(--c-border)',
-                      background: lang === l.code ? 'var(--c-purple-dm)' : 'var(--c-bg)',
-                      color: lang === l.code ? 'var(--c-purple-l)' : 'var(--c-muted)',
-                      fontWeight: lang === l.code ? '500' : '400',
-                    }}
-                  >
-                    {l.label}
-                  </button>
-                ))}
-              </div>
+          {/* Language */}
+          <div>
+            <label style={labelStyle}>{t.language}</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {[{ code: 'en' as const, label: '🇨🇦 English' }, { code: 'pt' as const, label: '🇧🇷 Português' }].map(l => (
+                <button
+                  key={l.code}
+                  onClick={() => setLang(l.code)}
+                  style={{
+                    border: lang === l.code ? '2px solid var(--c-purple)' : '0.5px solid var(--c-border)',
+                    background: lang === l.code ? 'var(--c-purple-dm)' : 'var(--c-bg)',
+                    color: lang === l.code ? 'var(--c-purple-l)' : 'var(--c-muted)',
+                    borderRadius: 10, padding: '10px 4px',
+                    fontSize: 13, fontWeight: lang === l.code ? 500 : 400,
+                    cursor: 'pointer', minHeight: 44,
+                  }}
+                >
+                  {l.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
+        {/* Error */}
         {error && (
-          <div className="text-sm rounded-xl px-4 py-3" style={{ color: 'var(--c-text-danger, #f87171)', background: 'rgba(239,68,68,0.1)', border: '0.5px solid rgba(239,68,68,0.3)' }}>
+          <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '0.5px solid rgba(239,68,68,0.3)', borderRadius: 10, padding: '12px 14px', fontSize: 13, marginBottom: 12 }}>
             {error}
           </div>
         )}
@@ -285,37 +371,68 @@ export default function Profile() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full font-medium py-3.5 rounded-xl text-sm transition-colors text-white disabled:opacity-50"
-          style={{ background: saved ? '#166534' : 'var(--c-purple)', }}
+          style={{
+            width: '100%', padding: '14px', borderRadius: 12,
+            background: saved ? '#166534' : 'var(--c-purple)',
+            color: '#fff', fontSize: 14, fontWeight: 500,
+            border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
+            opacity: saving ? 0.7 : 1, marginBottom: 10,
+          }}
         >
-          {saved ? '✅ ' + t.saved : saving ? t.saving : t.save}
+          {saving ? t.saving : saved ? t.saved : t.save}
         </button>
 
         {/* Logout */}
         <button
           onClick={() => setShowLogout(true)}
-          className="w-full font-medium py-3 rounded-xl text-sm transition-colors"
-          style={{ border: '0.5px solid rgba(239,68,68,0.4)', color: '#f87171', background: 'rgba(239,68,68,0.05)' }}
+          style={{
+            width: '100%', padding: '12px', borderRadius: 12,
+            background: 'transparent',
+            color: '#f87171', fontSize: 14, fontWeight: 500,
+            border: '0.5px solid rgba(239,68,68,0.35)', cursor: 'pointer',
+            marginBottom: 8,
+          }}
         >
           {t.logout}
         </button>
 
-        {/* Logout confirm */}
+        {/* Logout confirm overlay */}
         {showLogout && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }}>
-            <div className="w-full max-w-sm rounded-2xl p-6 space-y-3" style={{ background: 'var(--c-card)', border: '0.5px solid var(--c-border)' }}>
-              <p className="text-sm text-center" style={{ color: 'var(--c-text2)' }}>{t.logoutConfirm}</p>
-              <button onClick={handleLogout} className="w-full py-3 rounded-xl text-sm font-medium text-white" style={{ background: '#dc2626' }}>
+          <div
+            style={{
+              position: 'fixed', inset: 0, zIndex: 50,
+              background: 'rgba(0,0,0,0.6)',
+              display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: 16,
+            }}
+            onClick={() => setShowLogout(false)}
+          >
+            <div
+              style={{
+                width: '100%', maxWidth: 480,
+                background: 'var(--c-card)', borderRadius: 20, padding: 24,
+              }}
+              onClick={e => e.stopPropagation()}
+            >
+              <p style={{ fontSize: 14, color: 'var(--c-text2)', textAlign: 'center', marginBottom: 16 }}>
+                {t.logoutConfirm}
+              </p>
+              <button
+                onClick={handleLogout}
+                style={{ width: '100%', padding: 14, borderRadius: 12, background: '#dc2626', color: '#fff', fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer', marginBottom: 8 }}
+              >
                 {t.confirm}
               </button>
-              <button onClick={() => setShowLogout(false)} className="w-full py-3 rounded-xl text-sm" style={{ border: '0.5px solid var(--c-border)', color: 'var(--c-muted)' }}>
+              <button
+                onClick={() => setShowLogout(false)}
+                style={{ width: '100%', padding: 12, borderRadius: 12, background: 'transparent', color: 'var(--c-muted)', fontSize: 14, border: '0.5px solid var(--c-border)', cursor: 'pointer' }}
+              >
                 {t.cancel}
               </button>
             </div>
           </div>
         )}
 
-        <div className="h-4" />
+        <div style={{ height: 8 }} />
       </div>
     </Layout>
   )

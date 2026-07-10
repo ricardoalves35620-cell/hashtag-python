@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 import BottomNav from './BottomNav'
 
@@ -12,18 +12,16 @@ interface Props {
 }
 
 export default function Layout({ children, showBack, backTo = '/home', backLabel, title, hideNav }: Props) {
-  const { lang, setLang, displayName, avatarUrl } = useApp()
+  const { lang, setLang } = useApp()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
 
-  // Pages that show the bottom nav
-  const showNav = !hideNav && ['/home', '/fasttrack', '/family', '/profile'].some(p =>
-    pathname === p || (p !== '/home' && pathname.startsWith(p + '/'))
-  ) || pathname.startsWith('/phase') || pathname.startsWith('/fasttrack')
+  const showNav = !hideNav
 
   return (
     <div className="flex flex-col max-w-lg mx-auto" style={{ minHeight: '100dvh', background: 'var(--c-bg)' }}>
 
-      {/* ── Header with proper safe area ── */}
+      {/* ── Header ── */}
       <header
         className="sticky z-20 flex items-center gap-2"
         style={{
@@ -36,23 +34,26 @@ export default function Layout({ children, showBack, backTo = '/home', backLabel
           paddingRight: 'max(env(safe-area-inset-right, 0px), 16px)',
         }}
       >
-        {/* Left */}
+        {/* Left: back button OR #Python home link */}
         {showBack ? (
-          <a
-            href={backTo}
-            onClick={e => { e.preventDefault(); window.history.back() }}
-            className="flex items-center gap-1 flex-shrink-0 rounded-lg"
-            style={{ color: 'var(--c-purple-l)', minHeight: 44, minWidth: 44, textDecoration: 'none' }}
+          <button
+            onClick={() => navigate(backTo)}
+            className="flex items-center gap-1 flex-shrink-0"
+            style={{ color: 'var(--c-purple-l)', minHeight: 44, minWidth: 44, background: 'none', border: 'none' }}
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M12 4L7 10l5 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
             </svg>
             <span className="text-sm">{backLabel || (lang === 'en' ? 'Back' : 'Voltar')}</span>
-          </a>
+          </button>
         ) : (
-          <span className="font-mono text-lg font-medium tracking-tight flex-shrink-0 px-1" style={{ color: 'var(--c-purple-l)' }}>
+          <Link
+            to="/home"
+            className="font-mono text-lg font-medium tracking-tight flex-shrink-0"
+            style={{ color: 'var(--c-purple-l)', minHeight: 44, display: 'flex', alignItems: 'center', textDecoration: 'none' }}
+          >
             #Python
-          </span>
+          </Link>
         )}
 
         {/* Title */}
@@ -62,32 +63,30 @@ export default function Layout({ children, showBack, backTo = '/home', backLabel
           <div className="flex-1" />
         )}
 
-        {/* Right: lang toggle only — nav moved to bottom */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <div className="flex rounded-lg overflow-hidden" style={{ background: 'var(--c-bg)', border: '0.5px solid var(--c-border)' }}>
-            {(['en', 'pt'] as const).map(l => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                style={{
-                  background: lang === l ? 'var(--c-purple-dm)' : 'transparent',
-                  color: lang === l ? 'var(--c-purple-l)' : 'var(--c-muted)',
-                  minHeight: 36, minWidth: 36,
-                  fontSize: 12, fontWeight: lang === l ? 500 : 400,
-                  border: 'none', padding: '0 8px',
-                }}
-              >
-                {l.toUpperCase()}
-              </button>
-            ))}
-          </div>
+        {/* Right: lang toggle */}
+        <div className="flex rounded-lg overflow-hidden flex-shrink-0" style={{ background: 'var(--c-bg)', border: '0.5px solid var(--c-border)' }}>
+          {(['en', 'pt'] as const).map(l => (
+            <button
+              key={l}
+              onClick={() => setLang(l)}
+              style={{
+                background: lang === l ? 'var(--c-purple-dm)' : 'transparent',
+                color: lang === l ? 'var(--c-purple-l)' : 'var(--c-muted)',
+                minHeight: 36, minWidth: 36,
+                fontSize: 12, fontWeight: lang === l ? 500 : 400,
+                border: 'none', padding: '0 8px',
+              }}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
         </div>
       </header>
 
       {/* ── Content ── */}
       <main
         className="flex-1 overflow-y-auto"
-        style={{ paddingBottom: showNav ? 'calc(52px + max(env(safe-area-inset-bottom, 0px), 8px))' : 0 }}
+        style={{ paddingBottom: showNav ? 'calc(56px + max(env(safe-area-inset-bottom, 0px), 8px))' : 0 }}
       >
         {children}
       </main>
