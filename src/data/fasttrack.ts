@@ -36,13 +36,13 @@ export const FASTTRACK_DAYS: FTDay[] = [
       { type: 'text', content: { en: 'Python is a programming language that reads like English. You write instructions, the computer follows them. Used by NASA, Netflix, Instagram and thousands of companies worldwide.', pt: 'Python é uma linguagem de programação que parece inglês. Você escreve instruções, o computador as segue. Usada pela NASA, Netflix, Instagram e milhares de empresas no mundo.' } },
       { type: 'heading', content: { en: 'Variables — storing information', pt: 'Variáveis — guardando informações' } },
       { type: 'text', content: { en: 'A variable is a labeled box that stores a value. Use <code>=</code> to put something in the box. Python has 4 main types: <strong>str</strong> (text), <strong>int</strong> (whole number), <strong>float</strong> (decimal), <strong>bool</strong> (True/False).', pt: 'Uma variável é uma caixa rotulada que guarda um valor. Use <code>=</code> para colocar algo na caixa. Python tem 4 tipos principais: <strong>str</strong> (texto), <strong>int</strong> (inteiro), <strong>float</strong> (decimal), <strong>bool</strong> (True/False).' } },
-      { type: 'code', code: `name = "Ricardo"    # str — text, always in quotes
-age = 32            # int — whole number
+      { type: 'code', code: `name = "Alex"    # str — text, always in quotes
+age = 28            # int — whole number
 height = 1.78       # float — decimal number
 is_student = True   # bool — True or False
 
-print(name)   # Ricardo
-print(age)    # 32` },
+print(name)   # Alex
+print(age)    # 28` },
       { type: 'heading', content: { en: 'input() and print()', pt: 'input() e print()' } },
       { type: 'text', content: { en: '<code>print()</code> shows text on screen. <code>input()</code> asks the user to type something — always returns a string. Wrap with <code>int()</code> if you need a number.', pt: '<code>print()</code> mostra texto na tela. <code>input()</code> pede ao usuário que digite algo — sempre retorna string. Envolva com <code>int()</code> se precisar de número.' } },
       { type: 'code', code: `name = input("What is your name? ")
@@ -50,9 +50,9 @@ age = int(input("How old are you? "))
 print("Hello,", name)
 print("Next year you will be", age + 1)` },
       { type: 'heading', content: { en: 'F-strings — the clean way to format text', pt: 'F-strings — a forma limpa de formatar texto' } },
-      { type: 'code', code: `name = "Ricardo"
-age = 32
-city = "Oshawa"
+      { type: 'code', code: `name = "Alex"
+age = 28
+city = "Toronto"
 
 # Old way (messy)
 print("My name is " + name + " and I am " + str(age))
@@ -283,7 +283,7 @@ def greet(name):
     print(f"Hello, {name}! Welcome to Python.")
 
 # Call it as many times as needed
-greet("Ricardo")
+greet("Alex")
 greet("Alice")
 greet("Bob")` },
       { type: 'heading', content: { en: 'return — sending results back', pt: 'return — devolvendo resultados' } },
@@ -397,13 +397,13 @@ print(sorted(fruits))         # alphabetical copy` },
       { type: 'heading', content: { en: 'Dictionaries — labeled data', pt: 'Dicionários — dados com rótulos' } },
       { type: 'text', content: { en: 'Dictionaries store <strong>key: value</strong> pairs. Instead of remembering index numbers, you use meaningful labels. This is how most real-world data (JSON, databases, APIs) is structured.', pt: 'Dicionários armazenam pares <strong>chave: valor</strong>. Em vez de lembrar números de índice, você usa rótulos significativos. É assim que a maioria dos dados do mundo real (JSON, bancos, APIs) é estruturada.' } },
       { type: 'code', code: `person = {
-    "name": "Ricardo",
-    "age": 32,
-    "city": "Oshawa",
+    "name": "Alex",
+    "age": 28,
+    "city": "Toronto",
     "skills": ["Python", "Construction"]
 }
 
-print(person["name"])              # Ricardo
+print(person["name"])              # Alex
 print(person.get("email", "N/A"))  # N/A (default)
 
 person["email"] = "r@email.com"    # add new key
@@ -613,11 +613,11 @@ print("Saved to summary.json")`
     blocks: [
       { type: 'heading', content: { en: 'Quick recap — what you learned', pt: 'Revisão rápida — o que você aprendeu' } },
       { type: 'code', code: `# Day 1: Variables and f-strings
-name = "Ricardo"
+name = "Alex"
 print(f"Hello, {name}!")
 
 # Day 2: Conditionals
-if name == "Ricardo":
+if name == "Alex":
     print("Welcome back!")
 
 # Day 3: Loops

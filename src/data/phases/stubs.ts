@@ -114,7 +114,7 @@ PI = 3.14159
 
 # main.py — using your module
 # from utils import greet, calculate_tax
-# print(greet("Ricardo"))
+# print(greet("Alex"))
 # print(calculate_tax(100))` },
     { type: 'heading', content: { en: 'Virtual environments', pt: 'Ambientes virtuais' } },
     { type: 'code', code: `# Create virtual environment

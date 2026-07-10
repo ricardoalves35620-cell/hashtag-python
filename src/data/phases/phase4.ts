@@ -61,7 +61,7 @@ greet()   # call it as many times as you want`
         code: `def greet(name):              # 'name' is the parameter
     print(f"Hello, {name}!")
 
-greet("Ricardo")              # "Ricardo" is the argument
+greet("Alex")              # "Alex" is the argument
 greet("Alice")
 
 # Multiple parameters
@@ -110,7 +110,7 @@ print(f"Min: {low}, Max: {high}")`
 def greet(name, greeting="Hello"):
     print(f"{greeting}, {name}!")
 
-greet("Ricardo")              # Hello, Ricardo!
+greet("Alex")              # Hello, Alex!
 greet("Alice", "Good morning")  # Good morning, Alice!
 
 # Common use case: optional settings
@@ -138,7 +138,7 @@ def profile(**info):
     for key, value in info.items():
         print(f"{key}: {value}")
 
-profile(name="Ricardo", age=32, city="Oshawa")`
+profile(name="Alex", age=28, city="Toronto")`
       },
       {
         type: 'heading',

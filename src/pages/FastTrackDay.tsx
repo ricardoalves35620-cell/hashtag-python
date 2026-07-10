@@ -147,7 +147,7 @@ export default function FastTrackDay() {
                 rows={3}
                 className="w-full rounded-xl px-3 py-2 text-sm font-mono resize-none focus:outline-none"
                 style={{ background: 'var(--c-card)', border: '0.5px solid var(--c-border)', color: 'var(--c-purple-l)' }}
-                placeholder="Ricardo&#10;1992&#10;Oshawa"
+                placeholder="Alex&#10;1996&#10;Toronto"
               />
             </div>
 

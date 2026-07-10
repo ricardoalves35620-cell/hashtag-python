@@ -100,15 +100,15 @@ upper = [name.upper() for name in names]`
         type: 'code',
         code: `# Create a dictionary
 person = {
-    "name": "Ricardo",
-    "age": 32,
-    "city": "Oshawa",
+    "name": "Alex",
+    "age": 28,
+    "city": "Toronto",
     "languages": ["Python", "English", "Portuguese"]
 }
 
 # Access values
-print(person["name"])           # Ricardo
-print(person.get("age"))        # 32
+print(person["name"])           # Alex
+print(person.get("age"))        # 28
 print(person.get("email", "N/A"))  # N/A (default if missing)
 
 # Modify

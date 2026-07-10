@@ -80,7 +80,7 @@ print(rex.name)  # Rex`
     def get_history(self):
         return self.transactions
 
-account = BankAccount("Ricardo", 1000)
+account = BankAccount("Alex", 1000)
 account.deposit(500)
 account.withdraw(200)
 print(BankAccount.interest_rate)  # 0.05`
@@ -342,7 +342,7 @@ Create a BankAccount class with:
 - __str__ method — returns "Owner: [name] | Balance: $[balance]"
 
 Test your class:
-1. Create account for "Ricardo" with $1000 starting balance
+1. Create account for "Alex" with $1000 starting balance
 2. Deposit $500
 3. Withdraw $200
 4. Try to withdraw $5000 (should fail)
@@ -352,7 +352,7 @@ Expected output includes:
 Deposited $500
 Withdrew $200
 Insufficient funds
-Ricardo`,
+Alex`,
       pt: `Construa um sistema de Conta Bancária usando uma classe.
 
 Crie uma classe BankAccount com atributos owner e balance, métodos deposit, withdraw, get_balance e __str__.`
@@ -386,7 +386,7 @@ class BankAccount:
         return f"Owner: {self.owner} | Balance: \${self.balance}"
 
 # Test your class
-account = BankAccount("Ricardo", 1000)
+account = BankAccount("Alex", 1000)
 account.deposit(500)
 account.withdraw(200)
 account.withdraw(5000)
@@ -396,13 +396,13 @@ print(account)
       { id: 'tc7_1', description: { en: 'Deposit confirmation printed', pt: 'Confirmação de depósito impressa' }, inputs: [], checks: [{ type: 'contains_any', value: ['Deposited', 'deposited', 'deposit'] }], points: 10 },
       { id: 'tc7_2', description: { en: 'Withdraw confirmation printed', pt: 'Confirmação de saque impressa' }, inputs: [], checks: [{ type: 'contains_any', value: ['Withdrew', 'withdrew', 'withdraw'] }], points: 10 },
       { id: 'tc7_3', description: { en: 'Insufficient funds message shown', pt: 'Mensagem de fundos insuficientes mostrada' }, inputs: [], checks: [{ type: 'contains_any', value: ['Insufficient', 'insufficient', 'funds', 'enough'] }], points: 10 },
-      { id: 'tc7_4', description: { en: 'Owner name shown in output', pt: 'Nome do dono mostrado na saída' }, inputs: [], checks: [{ type: 'contains', value: 'Ricardo' }], points: 10 },
+      { id: 'tc7_4', description: { en: 'Owner name shown in output', pt: 'Nome do dono mostrado na saída' }, inputs: [], checks: [{ type: 'contains', value: 'Alex' }], points: 10 },
       { id: 'tc7_5', description: { en: 'Balance shown in output', pt: 'Saldo mostrado na saída' }, inputs: [], checks: [{ type: 'contains', value: '1300' }], points: 10 },
       { id: 'tc7_6', description: { en: 'Deposit amount $500 mentioned', pt: 'Valor do depósito $500 mencionado' }, inputs: [], checks: [{ type: 'contains', value: '500' }], points: 10 },
       { id: 'tc7_7', description: { en: 'Withdraw amount $200 mentioned', pt: 'Valor do saque $200 mencionado' }, inputs: [], checks: [{ type: 'contains', value: '200' }], points: 10 },
       { id: 'tc7_8', description: { en: 'Balance is 1300 after operations', pt: 'Saldo é 1300 após operações' }, inputs: [], checks: [{ type: 'contains', value: '1300' }], points: 10 },
       { id: 'tc7_9', description: { en: 'Runs without errors', pt: 'Roda sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 },
-      { id: 'tc7_10', description: { en: 'Class has owner attribute', pt: 'Classe tem atributo owner' }, inputs: [], checks: [{ type: 'contains', value: 'Ricardo' }], points: 10 }
+      { id: 'tc7_10', description: { en: 'Class has owner attribute', pt: 'Classe tem atributo owner' }, inputs: [], checks: [{ type: 'contains', value: 'Alex' }], points: 10 }
     ]
   }
 }

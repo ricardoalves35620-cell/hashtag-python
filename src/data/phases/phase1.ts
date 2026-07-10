@@ -45,7 +45,7 @@ export const phase1: Phase = {
         type: 'code',
         code: `print("Hello, World!")
 print("Welcome to Hashtag Python!")
-print("My name is Ricardo")`
+print("My name is Alex")`
       },
       {
         type: 'tip',
@@ -67,9 +67,9 @@ print("My name is Ricardo")`
       },
       {
         type: 'code',
-        code: `name = "Ricardo"
-age = 32
-city = "Oshawa"
+        code: `name = "Alex"
+age = 28
+city = "Toronto"
 
 print(name)
 print(age)
@@ -153,9 +153,9 @@ print("You are", age, "years old")`
       },
       {
         type: 'code',
-        code: `name = "Ricardo"
-age = 32
-city = "Oshawa"
+        code: `name = "Alex"
+age = 28
+city = "Toronto"
 
 # Without f-string (harder to read)
 print("My name is " + name + " and I am " + str(age) + " years old.")

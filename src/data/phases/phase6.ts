@@ -53,7 +53,7 @@ print("  ".isspace())        # True`
       { type: 'heading', content: { en: 'F-strings — advanced formatting', pt: 'F-strings — formatação avançada' } },
       {
         type: 'code',
-        code: `name = "Ricardo"
+        code: `name = "Alex"
 price = 9.99
 pi = 3.14159
 
