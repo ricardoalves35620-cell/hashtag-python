@@ -11,7 +11,7 @@ interface Props {
   hideNav?: boolean
 }
 
-export default function Layout({ children, showBack, backTo = "/", backLabel, title, hideNav }: Props) {
+export default function Layout({ children, showBack, backTo = '/', backLabel, title, hideNav }: Props) {
   const { lang, setLang } = useApp()
   const { pathname } = useLocation()
   const navigate = useNavigate()

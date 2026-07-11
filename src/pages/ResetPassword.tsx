@@ -30,7 +30,7 @@ export default function ResetPassword() {
     const { error } = await supabase.auth.updateUser({ password })
     if (error) { setError(error.message); setLoading(false); return }
     setSuccess(true)
-    setTimeout(() => navigate('/home'), 2000)
+    setTimeout(() => navigate('/'), 2000)
   }
 
   return (

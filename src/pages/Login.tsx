@@ -62,14 +62,14 @@ export default function Login() {
       if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        navigate("/")
+        navigate('/')
       } else if (mode === 'register') {
         const { error } = await supabase.auth.signUp({
           email, password,
           options: { data: { display_name: displayName } }
         })
         if (error) throw error
-        navigate("/")
+        navigate('/')
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`
@@ -89,7 +89,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/home`,
+        redirectTo: `${window.location.origin}/`,
         queryParams: {
           // Force Google to always show account picker
           // 'select_account' = show account list even if already signed in

@@ -8,7 +8,7 @@ export default function BottomNav() {
 
   const tabs = [
     { path: '/', label: lang === 'en' ? 'Course' : 'Curso', icon: '📚' },
-    { path: '/exam/1', label: lang === 'en' ? 'FastTrack' : 'FastTrack', icon: '⚡' },
+    { path: '/fasttrack', label: lang === 'en' ? 'FastTrack' : 'FastTrack', icon: '⚡' },
     { path: '/group', label: lang === 'en' ? 'Group' : 'Grupo', icon: '👥' },
     { path: '/profile', label: lang === 'en' ? 'Profile' : 'Perfil', icon: '👤' },
   ]

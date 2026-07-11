@@ -71,7 +71,7 @@ export default function PhaseOverview() {
   return (
     <Layout
       showBack
-      backTo="/home"
+      backTo="/"
       backLabel={lang === 'en' ? 'Home' : 'Início'}
       title={`${lang === 'en' ? 'Phase' : 'Fase'} ${phase.id}`}
     >

@@ -2,72 +2,194 @@ import type { Phase } from '../types'
 
 export const phase1: Phase = {
   id: 1,
-  title: { en: 'Variables & Data Types', pt: 'Variáveis e Tipos de Dados' },
+  title: { en: 'Fundamentals', pt: 'Fundamentos' },
   description: {
-    en: 'Learn variables and data types using real insurance claim calculations',
-    pt: 'Aprenda variáveis e tipos de dados com cálculos reais de sinistros'
+    en: 'Variables, data types, print, and input — the building blocks of every Python program.',
+    pt: 'Variáveis, tipos de dados, print e input — os blocos de construção de todo programa Python.'
   },
-  icon: '📦',
+  icon: '🧱',
   libraries: [],
 
   lesson: {
-    title: { en: 'Insurance Claim Variables', pt: 'Variáveis em Sinistros de Seguro' },
+    title: { en: 'Python Fundamentals', pt: 'Fundamentos do Python' },
     blocks: [
       {
         type: 'heading',
-        content: { en: 'Real Scenario: Insurance Adjuster', pt: 'Cenário Real: Ajustador de Seguros' }
+        content: { en: 'What is Python?', pt: 'O que é Python?' }
       },
       {
         type: 'text',
         content: {
-          en: 'You are processing a property damage claim:\n• Claim amount: R$ 5,230.50\n• Deductible: R$ 250.00\n• Coverage limit: R$ 10,000.00\n\nYour job: calculate the actual payout.',
-          pt: 'Você está processando uma reclamação de dano à propriedade:\n• Valor do sinistro: R$ 5.230,50\n• Franquia: R$ 250,00\n• Limite de cobertura: R$ 10.000,00\n\nSeu trabalho: calcular o pagamento efetivo.'
+          en: 'Python is a programming language that reads almost like English. You write instructions, and the computer follows them — one line at a time. It\'s one of the most popular languages in the world, used for websites, data science, automation, and more.',
+          pt: 'Python é uma linguagem de programação que parece quase inglês. Você escreve instruções e o computador as segue — uma linha por vez. É uma das linguagens mais populares do mundo, usada para sites, ciência de dados, automação e muito mais.'
         }
       },
       {
-        type: 'code',
-        code: `# CLAIM DETAILS (from claim form)
-claim_amount = 5230.50      # R$ - damage amount claimed
-deductible = 250.00         # R$ - customer pays this
-coverage_limit = 10000.00   # R$ - policy maximum
-
-# CALCULATIONS
-actual_payout = claim_amount - deductible   # = 4980.50
-is_valid = actual_payout > 0                # True/False
-pct_of_limit = (actual_payout / coverage_limit) * 100  # 49.8%
-
-print("Payout:", actual_payout)
-print("Valid:", is_valid)
-print("% of limit:", pct_of_limit)`
+        type: 'video',
+        videoUrl: 'https://www.youtube.com/watch?v=x7X9w_GIm1s',
+        videoTitle: { en: 'Python in 100 Seconds', pt: 'Python em 100 Segundos' },
+        videoDuration: '1:40'
       },
       {
         type: 'heading',
-        content: { en: 'Data Types in Python', pt: 'Tipos de Dados no Python' }
+        content: { en: 'Your First Program: print()', pt: 'Seu Primeiro Programa: print()' }
       },
       {
         type: 'text',
         content: {
-          en: '• int — whole numbers: 250, 10000\n• float — decimal numbers: 5230.50, 4980.50\n• str — text: "João Silva", "POL-2026-001"\n• bool — True or False: is_valid = True',
-          pt: '• int — números inteiros: 250, 10000\n• float — números decimais: 5230.50, 4980.50\n• str — texto: "João Silva", "APO-2026-001"\n• bool — Verdadeiro ou Falso: eh_valido = True'
+          en: 'The <code>print()</code> function shows text on the screen. It\'s the first thing every programmer learns. Put whatever you want to display inside the parentheses, between quotes.',
+          pt: 'A função <code>print()</code> mostra texto na tela. É a primeira coisa que todo programador aprende. Coloque o que quiser exibir dentro dos parênteses, entre aspas.'
         }
       },
       {
         type: 'code',
-        code: `# TYPE CONVERSION
-claim_str = "5230.50"           # string from web form
-claim_float = float(claim_str)  # convert to number
-claim_int = int(claim_float)    # convert to integer = 5230
-
-# Type checking
-print(type(claim_str))   # <class 'str'>
-print(type(claim_float)) # <class 'float'>
-print(type(claim_int))   # <class 'int'>`
+        code: `print("Hello, World!")
+print("Welcome to Hashtag Python!")
+print("My name is Alex")`
       },
       {
         type: 'tip',
         content: {
-          en: 'Use float() when working with money values — they always have decimals. Use int() only for whole counts like number of claims.',
-          pt: 'Use float() quando trabalhar com valores monetários — eles sempre têm decimais. Use int() apenas para contagens inteiras como número de sinistros.'
+          en: 'Try it yourself! Every line with print() shows one line on the screen. Order matters — Python runs top to bottom.',
+          pt: 'Tente você mesmo! Cada linha com print() mostra uma linha na tela. A ordem importa — Python roda de cima para baixo.'
+        }
+      },
+      {
+        type: 'heading',
+        content: { en: 'Variables — Storing Information', pt: 'Variáveis — Guardando Informações' }
+      },
+      {
+        type: 'text',
+        content: {
+          en: 'A variable is like a labeled box that stores information. You give it a name, and put a value inside. Use <code>=</code> to assign a value. Later, you can use the name to get the value back.',
+          pt: 'Uma variável é como uma caixa com etiqueta que guarda informações. Você dá um nome a ela e coloca um valor dentro. Use <code>=</code> para atribuir um valor. Depois, você pode usar o nome para recuperar o valor.'
+        }
+      },
+      {
+        type: 'code',
+        code: `name = "Alex"
+age = 28
+city = "Toronto"
+
+print(name)
+print(age)
+print(city)`
+      },
+      {
+        type: 'video',
+        videoUrl: 'https://www.youtube.com/watch?v=cQT33yu9pY8',
+        videoTitle: { en: 'Variables explained in 60 seconds', pt: 'Variáveis explicadas em 60 segundos' },
+        videoDuration: '0:58'
+      },
+      {
+        type: 'heading',
+        content: { en: 'Data Types', pt: 'Tipos de Dados' }
+      },
+      {
+        type: 'text',
+        content: {
+          en: 'Python has different types of data. The most common ones are: <strong>str</strong> (text, always in quotes), <strong>int</strong> (whole numbers), <strong>float</strong> (decimal numbers), and <strong>bool</strong> (True or False).',
+          pt: 'Python tem diferentes tipos de dados. Os mais comuns são: <strong>str</strong> (texto, sempre entre aspas), <strong>int</strong> (números inteiros), <strong>float</strong> (números decimais) e <strong>bool</strong> (True ou False).'
+        }
+      },
+      {
+        type: 'code',
+        code: `# str — text
+first_name = "Alice"
+last_name = 'Smith'
+
+# int — whole number
+age = 25
+year = 2024
+
+# float — decimal number
+height = 1.75
+price = 9.99
+
+# bool — true or false
+is_student = True
+has_job = False
+
+print(type(first_name))  # <class 'str'>
+print(type(age))         # <class 'int'>
+print(type(height))      # <class 'float'>
+print(type(is_student))  # <class 'bool'>`
+      },
+      {
+        type: 'heading',
+        content: { en: 'Getting Input from the User', pt: 'Recebendo Entrada do Usuário' }
+      },
+      {
+        type: 'text',
+        content: {
+          en: 'The <code>input()</code> function pauses the program and waits for the user to type something. Whatever they type gets stored as a string. If you need a number, wrap it with <code>int()</code> or <code>float()</code>.',
+          pt: 'A função <code>input()</code> pausa o programa e espera o usuário digitar algo. O que for digitado é armazenado como string. Se precisar de número, envolva com <code>int()</code> ou <code>float()</code>.'
+        }
+      },
+      {
+        type: 'code',
+        code: `name = input("What is your name? ")
+age = int(input("How old are you? "))
+
+print("Hello,", name)
+print("You are", age, "years old")`
+      },
+      {
+        type: 'video',
+        videoUrl: 'https://www.youtube.com/watch?v=I9h1c-121Uk',
+        videoTitle: { en: 'Python input() function', pt: 'Função input() no Python' },
+        videoDuration: '0:55'
+      },
+      {
+        type: 'heading',
+        content: { en: 'F-Strings — Easy Text Formatting', pt: 'F-Strings — Formatação de Texto Fácil' }
+      },
+      {
+        type: 'text',
+        content: {
+          en: 'An f-string lets you put variables directly inside a string. Put an <code>f</code> before the quotes, then use <code>{variable_name}</code> wherever you want the value to appear. This is the cleanest way to format output.',
+          pt: 'Uma f-string permite colocar variáveis diretamente dentro de uma string. Coloque um <code>f</code> antes das aspas, depois use <code>{nome_da_variavel}</code> onde quiser que o valor apareça. É a forma mais limpa de formatar saída.'
+        }
+      },
+      {
+        type: 'code',
+        code: `name = "Alex"
+age = 28
+city = "Toronto"
+
+# Without f-string (harder to read)
+print("My name is " + name + " and I am " + str(age) + " years old.")
+
+# With f-string (clean and easy)
+print(f"My name is {name} and I am {age} years old.")
+print(f"I live in {city}, Canada.")
+
+# You can even do math inside {}
+birth_year = 2024 - age
+print(f"I was born in {birth_year}.")`
+      },
+      {
+        type: 'heading',
+        content: { en: 'Basic Math Operations', pt: 'Operações Matemáticas Básicas' }
+      },
+      {
+        type: 'code',
+        code: `a = 10
+b = 3
+
+print(a + b)   # Addition: 13
+print(a - b)   # Subtraction: 7
+print(a * b)   # Multiplication: 30
+print(a / b)   # Division: 3.333...
+print(a // b)  # Integer division: 3
+print(a % b)   # Remainder: 1
+print(a ** b)  # Power: 1000`
+      },
+      {
+        type: 'tip',
+        content: {
+          en: 'You can do math directly inside f-strings! Example: <code>f"You were born in {2024 - age}"</code> — Python calculates it automatically.',
+          pt: 'Você pode fazer cálculos diretamente dentro de f-strings! Exemplo: <code>f"Você nasceu em {2024 - age}"</code> — Python calcula automaticamente.'
         }
       }
     ]
@@ -76,179 +198,381 @@ print(type(claim_int))   # <class 'int'>`
   exercises: [
     {
       id: 'ex1_1',
-      title: { en: 'Create Claim Variables', pt: 'Criar Variáveis de Sinistro' },
+      title: { en: 'Print Your Info', pt: 'Imprima Suas Informações' },
       description: {
-        en: '🎯 A water damage claim came in:\n• claim_amount = 3500\n• deductible = 300\n• customer_name = "João Silva"\n\nCreate each variable and calculate payout = claim_amount - deductible. Print all four values.',
-        pt: '🎯 Um sinistro de dano por água chegou:\n• claim_amount = 3500\n• deductible = 300\n• customer_name = "João Silva"\n\nCrie cada variável e calcule payout = claim_amount - deductible. Exiba os quatro valores.'
+        en: 'Create three variables: your name, your age, and your city. Then print each one on a separate line using print().',
+        pt: 'Crie três variáveis: seu nome, sua idade e sua cidade. Depois imprima cada uma em uma linha separada usando print().'
       },
-      starterCode: `# Insurance Claim Variables
-claim_amount = 
-deductible = 
-customer_name = 
+      starterCode: `# Create your variables here
+name = 
+age = 
+city = 
 
-payout = 
-
-print(claim_amount)
-print(deductible)
-print(customer_name)
-print(payout)`,
+# Print them
+`,
       hints: [
-        { en: 'Set claim_amount = 3500 (no quotes — it is a number)', pt: 'Defina claim_amount = 3500 (sem aspas — é um número)' },
-        { en: 'payout = claim_amount - deductible', pt: 'payout = claim_amount - deductible' }
+        {
+          en: 'Text values need quotes: name = "Your Name"',
+          pt: 'Valores de texto precisam de aspas: name = "Seu Nome"'
+        },
+        {
+          en: 'Numbers don\'t need quotes: age = 25',
+          pt: 'Números não precisam de aspas: age = 25'
+        }
       ],
-      sampleOutput: { en: '3500\n300\nJoão Silva\n3200', pt: '3500\n300\nJoão Silva\n3200' }
+      sampleOutput: {
+        en: 'Alice\n30\nToronto',
+        pt: 'Alice\n30\nToronto'
+      }
     },
     {
       id: 'ex1_2',
-      title: { en: 'Type Conversion: Currency', pt: 'Conversão de Tipos: Moeda' },
+      title: { en: 'Greeting Card', pt: 'Cartão de Saudação' },
       description: {
-        en: '🎯 The claim amount arrives as a string from the web form.\nConvert it to float, then convert to USD.\n• claim_str = "2850.75"\n• rate = 5.15\n\nPrint both the BRL and USD values.',
-        pt: '🎯 O valor do sinistro chega como texto do formulário web.\nConverta para float, depois para USD.\n• claim_str = "2850.75"\n• taxa = 5.15\n\nExiba os valores em BRL e USD.'
+        en: 'Ask the user for their name and age. Then print a friendly greeting using an f-string. Example output: "Hello Alice! You are 25 years old. Welcome!"',
+        pt: 'Pergunte ao usuário seu nome e idade. Depois imprima uma saudação amigável usando uma f-string. Exemplo: "Olá Alice! Você tem 25 anos. Seja bem-vindo!"'
       },
-      starterCode: `# Type Conversion
-claim_str = "2850.75"
+      starterCode: `# Ask for name and age
+name = input("What is your name? ")
+age = 
 
-# Convert to float
-claim_brl = float(claim_str)
-
-# Convert to USD (rate = 5.15)
-rate = 5.15
-claim_usd = claim_brl / rate
-
-print(claim_brl)
-print(round(claim_usd, 2))`,
+# Print the greeting using an f-string
+print(f"")
+`,
       hints: [
-        { en: 'float("2850.75") converts the string to a decimal number', pt: 'float("2850.75") converte o texto para um número decimal' },
-        { en: 'Use round(value, 2) to limit to 2 decimal places', pt: 'Use round(valor, 2) para limitar a 2 casas decimais' }
-      ],
-      sampleOutput: { en: '2850.75\n553.54', pt: '2850.75\n553.54' }
+        {
+          en: 'Use int() to convert age: age = int(input(...))',
+          pt: 'Use int() para converter a idade: age = int(input(...))'
+        },
+        {
+          en: 'F-string example: f"Hello {name}!"',
+          pt: 'Exemplo de f-string: f"Olá {name}!"'
+        }
+      ]
+    },
+    {
+      id: 'ex1_3',
+      title: { en: 'Rectangle Calculator', pt: 'Calculadora de Retângulo' },
+      description: {
+        en: 'Ask for the width and height of a rectangle. Calculate and print the area (width × height) and perimeter (2 × (width + height)).',
+        pt: 'Pergunte a largura e altura de um retângulo. Calcule e imprima a área (largura × altura) e o perímetro (2 × (largura + altura)).'
+      },
+      starterCode: `# Get dimensions from user
+width = float(input("Enter width: "))
+height = 
+
+# Calculate
+area = 
+perimeter = 
+
+# Print results
+print(f"Area: {area}")
+print(f"Perimeter: {perimeter}")
+`,
+      hints: [
+        {
+          en: 'Area = width * height',
+          pt: 'Área = largura * altura'
+        },
+        {
+          en: 'Perimeter = 2 * (width + height)',
+          pt: 'Perímetro = 2 * (largura + altura)'
+        }
+      ]
     }
   ],
 
   quiz: [
     {
       id: 'q1_1',
-      question: { en: 'What data type is 5230.50?', pt: 'Qual é o tipo de dado de 5230.50?' },
+      question: {
+        en: 'What does this code print?\n\nname = "Python"\nprint(name)',
+        pt: 'O que esse código imprime?\n\nname = "Python"\nprint(name)'
+      },
       options: [
-        { en: 'str (text)', pt: 'str (texto)' },
-        { en: 'int (whole number)', pt: 'int (inteiro)' },
-        { en: 'float (decimal)', pt: 'float (decimal)' },
-        { en: 'bool (True/False)', pt: 'bool (Verdadeiro/Falso)' }
+        { en: '"Python" (with quotes)', pt: '"Python" (com aspas)' },
+        { en: 'Python (without quotes)', pt: 'Python (sem aspas)' },
+        { en: 'name', pt: 'name' },
+        { en: 'An error', pt: 'Um erro' }
       ],
-      correctIndex: 2,
+      correctIndex: 1,
       explanation: {
-        en: '5230.50 has a decimal point, so it is a float. Integers have no decimal: 5230.',
-        pt: '5230.50 tem ponto decimal, então é float. Inteiros não têm decimal: 5230.'
+        en: 'print() displays the value of the variable, not the variable name or the quotes. So it prints: Python',
+        pt: 'print() exibe o valor da variável, não o nome da variável nem as aspas. Então imprime: Python'
       }
     },
     {
       id: 'q1_2',
       question: {
-        en: 'If claim = 1000 and deductible = 250, what is payout = claim - deductible?',
-        pt: 'Se sinistro = 1000 e franquia = 250, quanto é payout = sinistro - franquia?'
+        en: 'Which line correctly gets a number from the user?',
+        pt: 'Qual linha coleta corretamente um número do usuário?'
       },
       options: [
-        { en: '1250', pt: '1250' },
-        { en: '750', pt: '750' },
-        { en: '250', pt: '250' },
-        { en: '1000', pt: '1000' }
+        { en: 'age = input("Age: ")', pt: 'age = input("Idade: ")' },
+        { en: 'age = int(input("Age: "))', pt: 'age = int(input("Idade: "))' },
+        { en: 'age = print("Age: ")', pt: 'age = print("Idade: ")' },
+        { en: 'int = age(input("Age: "))', pt: 'int = age(input("Idade: "))' }
       ],
       correctIndex: 1,
       explanation: {
-        en: '1000 - 250 = 750. The insurance pays the damage minus the deductible.',
-        pt: '1000 - 250 = 750. O seguro paga o dano menos a franquia.'
+        en: 'input() always returns a string. You need int() to convert it to a number so you can do math with it.',
+        pt: 'input() sempre retorna uma string. Você precisa do int() para convertê-la em número para poder fazer cálculos.'
       }
     },
     {
       id: 'q1_3',
       question: {
-        en: 'What does float("3500") do?',
-        pt: 'O que float("3500") faz?'
+        en: 'What type is the value 3.14?',
+        pt: 'Qual é o tipo do valor 3.14?'
       },
       options: [
-        { en: 'Creates text "3500"', pt: 'Cria texto "3500"' },
-        { en: 'Converts the string "3500" to the number 3500.0', pt: 'Converte o texto "3500" para o número 3500.0' },
-        { en: 'Rounds 3500 to zero', pt: 'Arredonda 3500 para zero' },
-        { en: 'Causes an error', pt: 'Causa um erro' }
+        { en: 'int', pt: 'int' },
+        { en: 'str', pt: 'str' },
+        { en: 'float', pt: 'float' },
+        { en: 'bool', pt: 'bool' }
+      ],
+      correctIndex: 2,
+      explanation: {
+        en: '3.14 is a float — a decimal number. int is for whole numbers only (like 3 or 14).',
+        pt: '3.14 é um float — um número decimal. int é somente para números inteiros (como 3 ou 14).'
+      }
+    },
+    {
+      id: 'q1_4',
+      question: {
+        en: 'What does this f-string print?\n\nage = 25\nprint(f"I am {age} years old")',
+        pt: 'O que essa f-string imprime?\n\nage = 25\nprint(f"I am {age} years old")'
+      },
+      options: [
+        { en: 'I am {age} years old', pt: 'I am {age} years old' },
+        { en: 'I am 25 years old', pt: 'I am 25 years old' },
+        { en: 'f"I am 25 years old"', pt: 'f"I am 25 years old"' },
+        { en: 'Error — missing quotes', pt: 'Erro — aspas faltando' }
       ],
       correctIndex: 1,
       explanation: {
-        en: 'float() converts a string that looks like a number into an actual floating-point number.',
-        pt: 'float() converte um texto que parece um número em um número decimal real.'
+        en: 'The f before the string activates f-string mode. {age} is replaced by the value of age, which is 25.',
+        pt: 'O f antes da string ativa o modo f-string. {age} é substituído pelo valor de age, que é 25.'
+      }
+    },
+    {
+      id: 'q1_5',
+      question: {
+        en: 'What does 10 % 3 return?',
+        pt: 'O que 10 % 3 retorna?'
+      },
+      options: [
+        { en: '3', pt: '3' },
+        { en: '3.33', pt: '3.33' },
+        { en: '1', pt: '1' },
+        { en: '0', pt: '0' }
+      ],
+      correctIndex: 2,
+      explanation: {
+        en: '% is the modulo operator — it returns the remainder after division. 10 ÷ 3 = 3 remainder 1, so 10 % 3 = 1.',
+        pt: '% é o operador módulo — retorna o resto da divisão. 10 ÷ 3 = 3 com resto 1, então 10 % 3 = 1.'
       }
     }
   ],
 
   exam: {
-    title: { en: 'Phase 1 Exam: Insurance Variables', pt: 'Exame Fase 1: Variáveis de Seguros' },
+    title: { en: 'Personal Profile Card', pt: 'Cartão de Perfil Pessoal' },
     scenario: {
-      en: 'A roofing contractor submitted a damage claim. Process it using Python variables and type conversion.',
-      pt: 'Um empreiteiro de telhados enviou uma reclamação de dano. Processe-a usando variáveis Python e conversão de tipos.'
+      en: `Build a Personal Profile Card program.
+
+Your program must:
+1. Ask the user for their first name
+2. Ask for their last name
+3. Ask for their birth year
+4. Ask for their favorite programming language
+5. Calculate their age using: age = 2024 - birth_year
+6. Print a formatted profile card showing ALL of the above information including the calculated age
+
+Example output (with inputs: Alice, Smith, 1990, Python):
+=== PROFILE CARD ===
+Name: Alice Smith
+Age: 34
+Birth Year: 1990
+Favorite Language: Python
+====================`,
+      pt: `Construa um programa de Cartão de Perfil Pessoal.
+
+Seu programa deve:
+1. Perguntar o primeiro nome do usuário
+2. Perguntar o sobrenome
+3. Perguntar o ano de nascimento
+4. Perguntar a linguagem de programação favorita
+5. Calcular a idade usando: age = 2024 - birth_year
+6. Imprimir um cartão de perfil formatado mostrando TODAS as informações acima incluindo a idade calculada
+
+Exemplo de saída (com entradas: Alice, Smith, 1990, Python):
+=== PROFILE CARD ===
+Name: Alice Smith
+Age: 34
+Birth Year: 1990
+Favorite Language: Python
+====================`
     },
     requirements: {
       en: [
-        'Create claim_amount = 7500 (the damage amount)',
-        'Create deductible = 400 (what the owner pays)',
-        'Create coverage_pct = 0.85 (85% coverage)',
-        'Calculate net = claim_amount - deductible',
-        'Calculate payout = net * coverage_pct',
-        'Print the final payout'
+        'Use input() to collect first name, last name, birth year, and favorite language',
+        'Calculate age as 2024 minus birth year',
+        'Print the full name (first + last)',
+        'Print the calculated age',
+        'Print the birth year',
+        'Print the favorite language',
+        'Program must run without errors for any valid input'
       ],
       pt: [
-        'Crie claim_amount = 7500 (valor do dano)',
-        'Crie deductible = 400 (o que o proprietário paga)',
-        'Crie coverage_pct = 0.85 (cobertura de 85%)',
-        'Calcule net = claim_amount - deductible',
-        'Calcule payout = net * coverage_pct',
-        'Exiba o pagamento final'
+        'Use input() para coletar primeiro nome, sobrenome, ano de nascimento e linguagem favorita',
+        'Calcule a idade como 2024 menos o ano de nascimento',
+        'Imprima o nome completo (primeiro + sobrenome)',
+        'Imprima a idade calculada',
+        'Imprima o ano de nascimento',
+        'Imprima a linguagem favorita',
+        'O programa deve rodar sem erros para qualquer entrada válida'
       ]
     },
-    starterCode: `# Roofing Damage Claim
-# Follow the requirements step by step
+    starterCode: `# Phase 1 Exam — Personal Profile Card
+# Complete this program step by step
 
-claim_amount = 
-deductible = 
-coverage_pct = 
+# Step 1: Collect information from the user
+first_name = input("Enter your first name: ")
+# Add more inputs here...
 
-net = 
-payout = 
+# Step 2: Calculate age
+current_year = 2024
+# age = ?
 
-print(payout)`,
+# Step 3: Print the profile card
+print("=== PROFILE CARD ===")
+# Print all information here...
+print("====================")
+`,
     testCases: [
       {
         id: 'tc1_1',
-        description: { en: 'Output contains the correct payout value', pt: 'Saída contém o valor correto do pagamento' },
-        inputs: [],
-        checks: [{ type: 'contains_any', value: ['6035', '6035.0'] }],
-        points: 20
+        description: { en: 'Shows first name (Alice)', pt: 'Mostra primeiro nome (Alice)' },
+        inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
+        checks: [{ type: 'contains', value: 'Alice' }],
+        points: 10
       },
       {
         id: 'tc1_2',
-        description: { en: 'Code runs without errors', pt: 'Código executa sem erros' },
-        inputs: [],
-        checks: [{ type: 'no_error', value: '' }],
-        points: 20
+        description: { en: 'Shows last name (Smith)', pt: 'Mostra sobrenome (Smith)' },
+        inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
+        checks: [{ type: 'contains', value: 'Smith' }],
+        points: 10
       },
       {
         id: 'tc1_3',
-        description: { en: 'claim_amount is assigned', pt: 'claim_amount está definido' },
-        inputs: [],
-        checks: [{ type: 'contains', value: 'claim_amount' }],
-        points: 20
+        description: { en: 'Age calculated correctly (any reasonable value for birth year 1990)', pt: 'Idade calculada corretamente (qualquer valor razoável para 1990)' },
+        inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
+        checks: [{ type: 'contains_any', value: ['28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43'] }],
+        points: 10
       },
       {
         id: 'tc1_4',
-        description: { en: 'deductible is used', pt: 'deductible é usado' },
-        inputs: [],
-        checks: [{ type: 'contains', value: 'deductible' }],
-        points: 20
+        description: { en: 'Shows birth year (1990)', pt: 'Mostra ano de nascimento (1990)' },
+        inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
+        checks: [{ type: 'contains', value: '1990' }],
+        points: 10
       },
       {
         id: 'tc1_5',
-        description: { en: 'coverage_pct is applied', pt: 'coverage_pct é aplicado' },
-        inputs: [],
-        checks: [{ type: 'contains', value: 'coverage_pct' }],
-        points: 20
+        description: { en: 'Shows favorite language (Python)', pt: 'Mostra linguagem favorita (Python)' },
+        inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
+        checks: [{ type: 'contains', value: 'Python' }],
+        points: 10
+      },
+      {
+        id: 'tc1_6',
+        description: { en: 'Works with different name (Bob Jones)', pt: 'Funciona com outro nome (Bob Jones)' },
+        inputs: ['Bob', 'Jones', '2000', 'JavaScript'],
+        inputMap: {
+          'first name': 'Bob', 'first': 'Bob',
+          'last name': 'Jones', 'last': 'Jones', 'surname': 'Jones', 'sobrenome': 'Jones',
+          'birth year': '2000', 'born': '2000', 'year': '2000', 'ano': '2000',
+          'language': 'JavaScript', 'favorit': 'JavaScript', 'programming': 'JavaScript', 'linguagem': 'JavaScript'
+        },
+        checks: [{ type: 'contains', value: 'Bob' }],
+        points: 10
+      },
+      {
+        id: 'tc1_7',
+        description: { en: 'Age calculated for someone born in 2000 (any reasonable value)', pt: 'Idade calculada para nascido em 2000 (qualquer valor razoável)' },
+        inputs: ['Bob', 'Jones', '2000', 'JavaScript'],
+        inputMap: {
+          'first name': 'Bob', 'first': 'Bob',
+          'last name': 'Jones', 'last': 'Jones', 'surname': 'Jones', 'sobrenome': 'Jones',
+          'birth year': '2000', 'born': '2000', 'year': '2000', 'ano': '2000',
+          'language': 'JavaScript', 'favorit': 'JavaScript', 'programming': 'JavaScript', 'linguagem': 'JavaScript'
+        },
+        checks: [{ type: 'contains_any', value: ['20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'] }],
+        points: 10
+      },
+      {
+        id: 'tc1_8',
+        description: { en: 'Shows different language (JavaScript)', pt: 'Mostra outra linguagem (JavaScript)' },
+        inputs: ['Bob', 'Jones', '2000', 'JavaScript'],
+        inputMap: {
+          'first name': 'Bob', 'first': 'Bob',
+          'last name': 'Jones', 'last': 'Jones', 'surname': 'Jones', 'sobrenome': 'Jones',
+          'birth year': '2000', 'born': '2000', 'year': '2000', 'ano': '2000',
+          'language': 'JavaScript', 'favorit': 'JavaScript', 'programming': 'JavaScript', 'linguagem': 'JavaScript'
+        },
+        checks: [{ type: 'contains', value: 'JavaScript' }],
+        points: 10
+      },
+      {
+        id: 'tc1_9',
+        description: { en: 'Full name (first + last) shown in output', pt: 'Nome completo (primeiro + último) mostrado na saída' },
+        inputs: ['Maria', 'Silva', '1985', 'Ruby'],
+        inputMap: {
+          'first name': 'Maria', 'first': 'Maria',
+          'last name': 'Silva', 'last': 'Silva', 'surname': 'Silva', 'sobrenome': 'Silva',
+          'birth year': '1985', 'born': '1985', 'year': '1985', 'ano': '1985',
+          'language': 'Ruby', 'favorit': 'Ruby', 'programming': 'Ruby', 'linguagem': 'Ruby'
+        },
+        checks: [{ type: 'contains', value: 'Maria' }, { type: 'contains', value: 'Silva' }],
+        points: 10
+      },
+      {
+        id: 'tc1_10',
+        description: { en: 'Runs without errors', pt: 'Roda sem erros' },
+        inputs: ['Test', 'User', '2001', 'Python'],
+        checks: [{ type: 'no_error', value: '' }],
+        points: 10
       }
     ]
   }

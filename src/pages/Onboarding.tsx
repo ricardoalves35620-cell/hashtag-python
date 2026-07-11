@@ -11,7 +11,7 @@ export default function Onboarding() {
     if (user) {
       supabase.auth.updateUser({ data: { onboarding_done: true, track } })
     }
-    navigate(track === 'fasttrack' ? '/fasttrack' : '/home')
+    navigate('/')
   }
 
   const t = {

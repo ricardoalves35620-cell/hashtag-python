@@ -105,7 +105,7 @@ export default function FastTrackHome() {
                 <div style={{ fontSize: 28, marginBottom: 8 }}>🏆</div>
                 <div style={{ fontSize: 15, fontWeight: 500, color: '#86efac', marginBottom: 6 }}>{t.completedTitle}</div>
                 <p style={{ fontSize: 13, color: '#4ade80', marginBottom: 14 }}>{t.completedDesc}</p>
-                <button onClick={() => navigate('/home')} style={{ width: '100%', padding: 12, borderRadius: 10, background: '#166534', color: '#fff', fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
+                <button onClick={() => navigate('/')} style={{ width: '100%', padding: 12, borderRadius: 10, background: '#166534', color: '#fff', fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
                   {t.goDeep}
                 </button>
               </div>

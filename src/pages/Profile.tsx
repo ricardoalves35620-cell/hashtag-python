@@ -178,7 +178,7 @@ export default function Profile() {
     localStorage.removeItem('hp_ft_done')
     
     // Force navigate to login — replace so back button can't return
-    navigate('/', { replace: true })
+    navigate('/login', { replace: true })
     
     // Hard reload to clear any in-memory auth state
     window.location.href = '/'

@@ -601,7 +601,7 @@ export default function Exam() {
               {/* CTA */}
               {passed ? (
                 <button
-                  onClick={() => navigate(phase.id < 27 ? `/phase/${phase.id + 1}` : '/home')}
+                  onClick={() => navigate(phase.id < 27 ? `/phase/${phase.id + 1}` : '/')}
                   style={{
                     width: '100%', padding: '14px', borderRadius: 12,
                     background: '#166534', color: '#fff',
