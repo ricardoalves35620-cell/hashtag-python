@@ -24,19 +24,25 @@ export async function markStepDone(userId: string, phaseId: number, step: 'lesso
 
 export async function saveExamScore(userId: string, phaseId: number, score: number) {
   const passed = score >= 90
-  const { error } = await supabase
+
+  // Try UPDATE first (row might already exist from lesson/quiz)
+  const { error: updateErr, data: updated } = await supabase
     .from('user_progress')
-    .upsert(
-      {
-        user_id: userId,
-        phase_id: phaseId,
-        exam_score: score,
-        exam_passed: passed,
-        exam_done: true
-      },
-      { onConflict: 'user_id,phase_id' }
-    )
-  if (error) throw error
+    .update({ exam_score: score, exam_passed: passed, exam_done: true })
+    .eq('user_id', userId)
+    .eq('phase_id', phaseId)
+    .select('id')
+
+  // If no row existed (0 rows updated), INSERT
+  if (!updateErr && (!updated || updated.length === 0)) {
+    const { error: insertErr } = await supabase
+      .from('user_progress')
+      .insert({ user_id: userId, phase_id: phaseId, exam_score: score, exam_passed: passed, exam_done: true })
+    if (insertErr) throw insertErr
+  } else if (updateErr) {
+    throw updateErr
+  }
+
   return passed
 }
 
