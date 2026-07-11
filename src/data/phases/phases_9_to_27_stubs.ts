@@ -1775,133 +1775,1442 @@ print("Total:", running_total)`,
 export const phase17: Phase = {
   id: 17,
   title: { en: 'Reading Files', pt: 'Lendo Arquivos' },
-  description: { en: 'Load data from .txt files.', pt: 'Carregue dados de arquivos .txt.' },
-  icon: '📄',
+  description: { en: 'Read data from files — the foundation of data pipelines.', pt: 'Leia dados de arquivos — a base dos pipelines de dados.' },
+  icon: '📂',
   libraries: [],
-  lesson: { title: { en: 'File I/O', pt: 'I/O de Arquivo' }, blocks: [{ type: 'code', code: `with open("data.txt", "r") as f:\n  lines = f.readlines()\n  for line in lines:\n    print(line)` }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Read File', pt: 'Ler Arquivo' }, scenario: { en: `Read and process file lines.`, pt: `Leia e processe linhas de arquivo.` }, requirements: { en: ['Open file', 'Read lines', 'Process'], pt: ['Abra arquivo', 'Leia linhas', 'Processe'] }, starterCode: `with open("claims.txt", "r") as f:\n  for line in f:\n    print(line)`, testCases: [{ id: 'tc17_1', description: { en: 'Reads file', pt: 'Lê arquivo' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
+  lesson: {
+    title: { en: 'Opening and Reading Files', pt: 'Abrindo e Lendo Arquivos' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Every data pipeline starts with a file', pt: '🌍 Todo pipeline de dados começa com um arquivo' } },
+      { type: 'text', content: {
+        en: 'Netflix ingests billions of viewing logs daily from text files.\nYour bank exports your statement as a CSV.\nEvery ETL pipeline starts with open().\n\nFile I/O is the door between your program and the real world.',
+        pt: 'A Netflix ingere bilhões de logs diariamente de arquivos de texto.\nSeu banco exporta seu extrato como CSV.\nTodo pipeline ETL começa com open().\n\nFile I/O é a porta entre seu programa e o mundo real.'
+      }},
+      { type: 'heading', content: { en: '🧩 A filing cabinet with a key', pt: '🧩 Um arquivo com uma chave' } },
+      { type: 'text', content: {
+        en: 'You need a key to open a filing cabinet (open()), read the document, then close it.\n\nPython\'s "with" block = automatic key that locks when you\'re done.\nNo need to remember to close — Python handles it.',
+        pt: 'Você precisa de uma chave para abrir um arquivo (open()), ler o documento, depois fechar.\n\nO bloco "with" do Python = chave automática que trava quando você termina.\nNão precisa lembrar de fechar — Python cuida.'
+      }},
+      { type: 'code', code: `# Safe way to read a file
+with open("claims.txt", "r") as f:   # "r" = read mode
+    content = f.read()               # reads entire file
+    print(content)
+
+# Read line by line (better for large files)
+with open("claims.txt", "r") as f:
+    for line in f:
+        print(line.strip())          # .strip() removes \\n` },
+      { type: 'code', code: `# Simulate file data (for practice without a real file)
+lines = [
+    "CLM-001,Alice,5230,approved",
+    "CLM-002,Bob,1200,pending",
+    "CLM-003,Carlos,8000,approved"
+]
+for line in lines:
+    parts = line.split(",")
+    print("Client:", parts[1], "| Status:", parts[3])` },
+      { type: 'tip', content: {
+        en: '💡 Always use "with open()" — it closes the file automatically even if an error occurs.',
+        pt: '💡 Sempre use "with open()" — fecha o arquivo automaticamente mesmo se ocorrer um erro.'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex17_fill',
+      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      description: { en: 'Complete the CSV parser.', pt: 'Complete o parser CSV.' },
+      starterCode: `data = [
+    "CLM-001,Alice,5230,approved",
+    "CLM-002,Bob,1200,pending"
+]
+
+for line in data:
+    parts = line.___(","  )   # fill: method to split string
+    if parts[3] == "approved":
+        print(parts[1], "→ $", parts[2])`,
+      hints: [
+        { en: '.split(",") breaks the string at each comma', pt: '.split(",") quebra a string em cada vírgula' }
+      ],
+      sampleOutput: { en: 'Alice → $ 5230', pt: 'Alice → $ 5230' }
+    },
+    {
+      id: 'ex17_zero',
+      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      description: { en: 'Parse 4 CSV lines:\n• Split each by comma\n• Print only "approved" ones\n• Show client + payout ($250 deductible)\n• Print total', pt: 'Parse 4 linhas CSV:\n• Divida cada uma por vírgula\n• Imprima apenas "approved"\n• Mostre cliente + payout (R$250 franquia)\n• Imprima total' },
+      starterCode: `data = [
+    "CLM-001,Alice,5230,approved",
+    "CLM-002,Bob,1200,pending",
+    "CLM-003,Carlos,8000,approved",
+    "CLM-004,Diana,450,rejected"
+]
+
+total = 0
+for line in data:
+    parts = line.split(",")
+    if parts[3] == "approved":
+        payout = int(parts[2]) - 250
+        total += payout
+        print(parts[1], "→ $", payout)
+
+print("Total: $", total)`,
+      hints: [
+        { en: 'parts[2] is the damage — convert with int()', pt: 'parts[2] é o dano — converta com int()' }
+      ],
+      sampleOutput: { en: 'Alice → $ 4980\nCarlos → $ 7750\nTotal: $ 12730', pt: 'Alice → $ 4980\nCarlos → $ 7750\nTotal: $ 12730' }
+    }
+  ],
+  quiz: [
+    { id: 'q17_1', question: { en: 'What does "r" mean in open("f.txt","r")?', pt: 'O que "r" significa em open("f.txt","r")?' }, options: [{ en: 'Read mode', pt: 'Modo leitura' }, { en: 'Run mode', pt: 'Modo execução' }, { en: 'Replace mode', pt: 'Modo substituição' }, { en: 'Random mode', pt: 'Modo aleatório' }], correctIndex: 0, explanation: { en: '"r" opens file for reading. File must exist or you get FileNotFoundError.', pt: '"r" abre arquivo para leitura. O arquivo deve existir ou você recebe FileNotFoundError.' } },
+    { id: 'q17_2', question: { en: 'Why use "with open()" vs plain open()?', pt: 'Por que usar "with open()" vs open() simples?' }, options: [{ en: 'Auto-closes file even on error', pt: 'Fecha automaticamente mesmo com erro' }, { en: 'Reads faster', pt: 'Lê mais rápido' }, { en: 'Required in Python 3', pt: 'Obrigatório no Python 3' }, { en: 'No difference', pt: 'Sem diferença' }], correctIndex: 0, explanation: { en: '"with" guarantees closure even if code crashes inside. Always prefer it.', pt: '"with" garante fechamento mesmo se código travar. Sempre prefira.' } },
+    { id: 'q17_3', question: { en: 'What does .strip() do to a line?', pt: 'O que .strip() faz numa linha?' }, options: [{ en: 'Removes whitespace and newlines from both ends', pt: 'Remove espaços e quebras de linha de ambos os lados' }, { en: 'Splits the line into parts', pt: 'Divide a linha em partes' }, { en: 'Converts to uppercase', pt: 'Converte para maiúsculas' }, { en: 'Removes all spaces', pt: 'Remove todos os espaços' }], correctIndex: 0, explanation: { en: '.strip() removes \\n and spaces from both ends. Essential when reading file lines.', pt: '.strip() remove \\n e espaços de ambos os lados. Essencial ao ler linhas de arquivo.' } },
+    { id: 'q17_4', question: { en: '"hello,world".split(",") returns:', pt: '"hello,world".split(",") retorna:' }, options: [{ en: '["hello", "world"]', pt: '["hello", "world"]' }, { en: '"hello" and "world"', pt: '"hello" e "world"' }, { en: '("hello", "world")', pt: '("hello", "world")' }, { en: '{"hello": "world"}', pt: '{"hello": "world"}' }], correctIndex: 0, explanation: { en: '.split() returns a LIST of strings. "a,b,c".split(",") → ["a","b","c"].', pt: '.split() retorna uma LISTA de strings. "a,b,c".split(",") → ["a","b","c"].' } }
+  ],
+  exam: {
+    title: { en: 'CSV Claims Parser', pt: 'Parser CSV de Sinistros' },
+    scenario: { en: 'Parse CSV claim data and produce a summary.', pt: 'Parse dados CSV de sinistros e produza um resumo.' },
+    requirements: { en: ['Loop 4 CSV lines', 'Split by comma', 'Process approved only', 'Subtract $250 deductible', 'Print approved claims + total'], pt: ['Percorra 4 linhas CSV', 'Divida por vírgula', 'Processe apenas aprovados', 'Subtraia R$250', 'Imprima aprovados + total'] },
+    starterCode: `data = [
+    "CLM-001,Alice,5230,approved",
+    "CLM-002,Bob,1200,pending",
+    "CLM-003,Carlos,8000,approved",
+    "CLM-004,Diana,450,rejected"
+]
+total = 0
+for line in data:
+    parts = line.split(",")
+    if parts[3] == "approved":
+        payout = int(parts[2]) - 250
+        total += payout
+        print(parts[1], "→ $", payout)
+print("Total: $", total)`,
+    testCases: [
+      { id: 'tc17_1', description: { en: 'Alice payout 4980', pt: 'Alice payout 4980' }, inputs: [], checks: [{ type: 'contains', value: '4980' }], points: 30 },
+      { id: 'tc17_2', description: { en: 'Carlos payout 7750', pt: 'Carlos payout 7750' }, inputs: [], checks: [{ type: 'contains', value: '7750' }], points: 30 },
+      { id: 'tc17_3', description: { en: 'Total 12730', pt: 'Total 12730' }, inputs: [], checks: [{ type: 'contains', value: '12730' }], points: 30 },
+      { id: 'tc17_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 }
+    ]
+  }
 }
 
 export const phase18: Phase = {
   id: 18,
   title: { en: 'Writing Files', pt: 'Escrevendo Arquivos' },
-  description: { en: 'Save data to files. Persistence.', pt: 'Salve dados em arquivos. Persistência.' },
+  description: { en: 'Save program output to files — reports, logs, exports.', pt: 'Salve a saída do programa em arquivos — relatórios, logs, exportações.' },
   icon: '💾',
   libraries: [],
-  lesson: { title: { en: 'File Writing', pt: 'Escrita de Arquivo' }, blocks: [{ type: 'code', code: `with open("report.txt", "w") as f:\n  f.write("Claim #2501\\n")\n  f.write("Damage: $5,000\\n")` }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Save Report', pt: 'Salvar Relatório' }, scenario: { en: `Write data to file.`, pt: `Escreva dados em arquivo.` }, requirements: { en: ['Open for writing', 'Write lines', 'Close'], pt: ['Abra para escrita', 'Escreva linhas', 'Feche'] }, starterCode: `with open("output.txt", "w") as f:\n  f.write("Line 1\\n")\n  f.write("Line 2\\n")`, testCases: [{ id: 'tc18_1', description: { en: 'Writes file', pt: 'Escreve arquivo' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
+  lesson: {
+    title: { en: 'Saving Data That Lasts', pt: 'Salvando Dados que Persistem' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Every log you\'ve seen was written by code', pt: '🌍 Todo log que você viu foi escrito por código' } },
+      { type: 'text', content: {
+        en: 'WhatsApp stores every message in files before syncing to the cloud.\nAWS writes millions of log lines per second.\nYour app error logs, export reports — all use f.write().\n\nNow you learn how.',
+        pt: 'O WhatsApp armazena cada mensagem em arquivos antes de sincronizar.\nA AWS escreve milhões de linhas de log por segundo.\nOs logs de erro do app, relatórios de exportação — todos usam f.write().\n\nAgora você aprende como.'
+      }},
+      { type: 'heading', content: { en: '🧩 A receipt printer', pt: '🧩 Uma impressora de cupom' } },
+      { type: 'text', content: {
+        en: '🖨️ Open paper roll → open("w")\n🖨️ Print each line → f.write()\n🖨️ Cut and close → with block ends\n\n"w" = create/overwrite.\n"a" = append without erasing.',
+        pt: '🖨️ Abrir rolo de papel → open("w")\n🖨️ Imprimir cada linha → f.write()\n🖨️ Cortar e fechar → bloco with termina\n\n"w" = criar/sobrescrever.\n"a" = acrescentar sem apagar.'
+      }},
+      { type: 'code', code: `# Write mode "w" — creates or overwrites
+with open("report.txt", "w") as f:
+    f.write("=== Claims Report ===\\n")
+    f.write("Total claims: 3\\n")
+
+# Append mode "a" — adds to end
+with open("report.txt", "a") as f:
+    f.write("New entry added.\\n")` },
+      { type: 'code', code: `# Write CSV from a list
+claims = [("Alice",5230,4980), ("Bob",1200,950), ("Carlos",8000,7750)]
+
+with open("payouts.csv", "w") as f:
+    f.write("client,damage,payout\\n")
+    for name, damage, payout in claims:
+        f.write(f"{name},{damage},{payout}\\n")
+
+print("Saved to payouts.csv")` },
+      { type: 'warning', content: {
+        en: '⚠️ f.write() does NOT add newlines automatically.\nAlways add \\n at the end of each line, or everything runs together.',
+        pt: '⚠️ f.write() NÃO adiciona quebras de linha automaticamente.\nSempre adicione \\n no final de cada linha, ou tudo fica junto.'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex18_fill',
+      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      description: { en: 'Complete the file writer.', pt: 'Complete o escritor de arquivo.' },
+      starterCode: `with open("log.txt", "___") as f:   # fill: write mode
+    f.___("Claim #1 processed.\\n")    # fill: write method
+    f.___("Status: approved.\\n")`,
+      hints: [
+        { en: '"w" for write mode', pt: '"w" para modo escrita' },
+        { en: '.write() writes to the file', pt: '.write() escreve no arquivo' }
+      ],
+      sampleOutput: { en: 'log.txt created', pt: 'log.txt criado' }
+    },
+    {
+      id: 'ex18_zero',
+      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      description: { en: 'Generate a CSV:\n• Header: client,damage,payout\n• 3 claim rows with calculated payout ($250 ded)\n• Print "Report saved!" when done', pt: 'Gere um CSV:\n• Header: client,damage,payout\n• 3 linhas com payout calculado (R$250 franquia)\n• Imprima "Report saved!" ao terminar' },
+      starterCode: `claims = [("Alice",5230), ("Bob",1200), ("Carlos",8000)]
+
+with open("claims.csv", "w") as f:
+    f.write("client,damage,payout\\n")
+    for name, damage in claims:
+        payout = damage - 250
+        f.write(f"{name},{damage},{payout}\\n")
+
+print("Report saved!")`,
+      hints: [{ en: 'Calculate payout inside the loop', pt: 'Calcule payout dentro do loop' }],
+      sampleOutput: { en: 'Report saved!', pt: 'Report saved!' }
+    }
+  ],
+  quiz: [
+    { id: 'q18_1', question: { en: 'Mode "w" does what?', pt: 'Modo "w" faz o quê?' }, options: [{ en: 'Creates or overwrites the file', pt: 'Cria ou sobrescreve o arquivo' }, { en: 'Appends to existing', pt: 'Acrescenta ao existente' }, { en: 'Read only', pt: 'Somente leitura' }, { en: 'Write and read', pt: 'Escrita e leitura' }], correctIndex: 0, explanation: { en: '"w" creates a new file. If it already exists, it ERASES content and starts fresh.', pt: '"w" cria um novo arquivo. Se já existe, APAGA o conteúdo e começa do zero.' } },
+    { id: 'q18_2', question: { en: 'Mode "a" does what?', pt: 'Modo "a" faz o quê?' }, options: [{ en: 'Appends — adds to end without erasing', pt: 'Acrescenta — adiciona ao final sem apagar' }, { en: 'Same as "w"', pt: 'Igual ao "w"' }, { en: 'Creates only if new', pt: 'Cria apenas se novo' }, { en: 'Auto mode', pt: 'Modo automático' }], correctIndex: 0, explanation: { en: '"a" = append. Adds to the END. Existing content is preserved.', pt: '"a" = acrescentar. Adiciona ao FINAL. Conteúdo existente é preservado.' } },
+    { id: 'q18_3', question: { en: 'f.write("hello") — what is missing?', pt: 'f.write("hello") — o que falta?' }, options: [{ en: 'A newline: f.write("hello\\n")', pt: 'Uma quebra: f.write("hello\\n")' }, { en: 'Nothing', pt: 'Nada' }, { en: 'A print() after', pt: 'Um print() depois' }, { en: 'Quotes around hello', pt: 'Aspas em volta de hello' }], correctIndex: 0, explanation: { en: 'write() never adds \\n automatically. Add it yourself for separate lines.', pt: 'write() nunca adiciona \\n. Adicione você mesmo para linhas separadas.' } },
+    { id: 'q18_4', question: { en: 'To write number 42 to file:', pt: 'Para escrever o número 42 no arquivo:' }, options: [{ en: 'f.write(str(42)) or f.write(f"{42}")', pt: 'f.write(str(42)) ou f.write(f"{42}")' }, { en: 'f.write(42)', pt: 'f.write(42)' }, { en: 'print(42, file=f)', pt: 'print(42, file=f)' }, { en: 'Impossible', pt: 'Impossível' }], correctIndex: 0, explanation: { en: 'write() only accepts strings. Convert numbers with str() or use f-strings.', pt: 'write() aceita apenas strings. Converta números com str() ou use f-strings.' } }
+  ],
+  exam: {
+    title: { en: 'Generate CSV Report', pt: 'Gerar Relatório CSV' },
+    scenario: { en: 'Write a complete CSV claims report.', pt: 'Escreva um relatório completo de sinistros em CSV.' },
+    requirements: { en: ['CSV header: id,client,damage,payout', '4 claim rows with calculated payout', 'Print total', 'No errors'], pt: ['Header CSV: id,client,damage,payout', '4 linhas com payout calculado', 'Imprima total', 'Sem erros'] },
+    starterCode: `claims = [(1,"Alice",5230,250),(2,"Bob",1200,250),(3,"Carlos",8000,300),(4,"Diana",900,150)]
+total = 0
+with open("report.csv", "w") as f:
+    f.write("id,client,damage,payout\\n")
+    for cid, name, damage, ded in claims:
+        payout = damage - ded
+        total += payout
+        f.write(f"{cid},{name},{damage},{payout}\\n")
+print("Total payout: $", total)
+print("Saved to report.csv")`,
+    testCases: [
+      { id: 'tc18_1', description: { en: 'Shows total', pt: 'Mostra total' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 30 },
+      { id: 'tc18_2', description: { en: 'Total = 14230', pt: 'Total = 14230' }, inputs: [], checks: [{ type: 'contains', value: '14230' }], points: 40 },
+      { id: 'tc18_3', description: { en: 'Shows saved', pt: 'Mostra salvo' }, inputs: [], checks: [{ type: 'contains', value: 'Saved' }], points: 20 },
+      { id: 'tc18_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 }
+    ]
+  }
 }
 
 export const phase19: Phase = {
   id: 19,
   title: { en: 'JSON Data', pt: 'Dados JSON' },
-  description: { en: 'Read/write JSON. Structured data.', pt: 'Leia/escreva JSON. Dados estruturados.' },
-  icon: '📊',
-  libraries: ['json'],
-  lesson: { title: { en: 'JSON Format', pt: 'Formato JSON' }, blocks: [{ type: 'code', code: `import json\n\ndata = {"id": 2501, "damage": 5000}\njson_str = json.dumps(data)\nprint(json_str)` }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'JSON I/O', pt: 'I/O JSON' }, scenario: { en: `Read/write JSON data.`, pt: `Leia/escreva dados JSON.` }, requirements: { en: ['Import json', 'dumps/loads', 'File ops'], pt: ['Importe json', 'dumps/loads', 'Operações de arquivo'] }, starterCode: `import json\n\ndata = {"id": 1, "name": "Alice"}\nwith open("data.json", "w") as f:\n  json.dump(data, f)`, testCases: [{ id: 'tc19_1', description: { en: 'JSON works', pt: 'JSON funciona' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
+  description: { en: 'The universal language of APIs — read and write structured data.', pt: 'A linguagem universal das APIs — leia e escreva dados estruturados.' },
+  icon: '🌐',
+  libraries: [],
+  lesson: {
+    title: { en: 'JSON: The Internet\'s Language', pt: 'JSON: A Língua da Internet' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Every API speaks JSON', pt: '🌍 Toda API fala JSON' } },
+      { type: 'text', content: {
+        en: 'iFood, Nubank, Mercado Livre — they all exchange data in JSON.\nJSON = Python dict, but as plain text that any language can read.',
+        pt: 'iFood, Nubank, Mercado Livre — todos trocam dados em JSON.\nJSON = dict Python, mas como texto simples que qualquer linguagem lê.'
+      }},
+      { type: 'heading', content: { en: '🧩 A universal shipping label', pt: '🧩 Uma etiqueta universal' } },
+      { type: 'text', content: {
+        en: 'JSON = a data label every system understands.\nPython reads it. JavaScript reads it. Java reads it.\nThe "s" in dumps/loads means String.',
+        pt: 'JSON = etiqueta de dados que todo sistema entende.\nPython lê. JavaScript lê. Java lê.\nO "s" em dumps/loads significa String.'
+      }},
+      { type: 'heading', content: { en: '🐍 Step 1 — dict ↔ JSON string', pt: '🐍 Passo 1 — dict ↔ string JSON' } },
+      { type: 'code', code: `import json
+
+claim = {"id": 2501, "client": "Alice", "damage": 5230}
+
+# Dict → JSON string (for sending/saving)
+json_str = json.dumps(claim)
+print(json_str)   # {"id": 2501, "client": "Alice", "damage": 5230}
+
+# JSON string → dict (from API/file)
+restored = json.loads(json_str)
+print(restored["client"])   # Alice` },
+      { type: 'heading', content: { en: '🐍 Step 2 — save/load JSON files', pt: '🐍 Passo 2 — salvar/carregar arquivos JSON' } },
+      { type: 'code', code: `import json
+
+claims = [{"id": 1, "client": "Alice"}, {"id": 2, "client": "Bob"}]
+
+# Save to file (no "s")
+with open("claims.json", "w") as f:
+    json.dump(claims, f, indent=2)
+
+# Load from file (no "s")
+with open("claims.json", "r") as f:
+    loaded = json.load(f)
+
+print(loaded[0]["client"])   # Alice` },
+      { type: 'tip', content: {
+        en: '💡 Memory: dumps/loads → Strings (has "s")\n       dump/load   → Files  (no "s")',
+        pt: '💡 Memória: dumps/loads → Strings (tem "s")\n           dump/load   → Arquivos (sem "s")'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex19_fill',
+      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      description: { en: 'Complete the JSON round-trip.', pt: 'Complete o ciclo completo JSON.' },
+      starterCode: `import json
+
+claim = {"id": 1, "client": "Maria", "damage": 4500}
+
+json_str = json.___(claim)        # fill: dict → string
+print(json_str)
+
+restored = json.___(json_str)     # fill: string → dict
+print(restored["client"])`,
+      hints: [
+        { en: 'dict → string: json.dumps()', pt: 'dict → string: json.dumps()' },
+        { en: 'string → dict: json.loads()', pt: 'string → dict: json.loads()' }
+      ],
+      sampleOutput: { en: '{"id": 1, "client": "Maria", "damage": 4500}\nMaria', pt: '{"id": 1, "client": "Maria", "damage": 4500}\nMaria' }
+    },
+    {
+      id: 'ex19_zero',
+      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      description: { en: 'Parse JSON string from API, calculate payouts, save results to file.', pt: 'Parse string JSON de API, calcule payouts, salve resultados em arquivo.' },
+      starterCode: `import json
+
+api_data = '[{"id":1,"client":"Alice","damage":5230,"ded":250},{"id":2,"client":"Bob","damage":1200,"ded":250},{"id":3,"client":"Carlos","damage":8000,"ded":300}]'
+
+claims = json.loads(api_data)
+results = []
+total = 0
+
+for c in claims:
+    payout = c["damage"] - c["ded"]
+    total += payout
+    results.append({"id": c["id"], "client": c["client"], "payout": payout})
+
+with open("output.json", "w") as f:
+    json.dump(results, f, indent=2)
+
+print("Total: $", total)`,
+      hints: [{ en: 'json.loads() parses the string; json.dump() saves to file', pt: 'json.loads() parseia a string; json.dump() salva no arquivo' }],
+      sampleOutput: { en: 'Total: $ 13430', pt: 'Total: $ 13430' }
+    }
+  ],
+  quiz: [
+    { id: 'q19_1', question: { en: 'json.dumps(data) converts:', pt: 'json.dumps(data) converte:' }, options: [{ en: 'Python dict → JSON string', pt: 'Dict Python → string JSON' }, { en: 'JSON string → Python dict', pt: 'String JSON → dict Python' }, { en: 'Dict → file', pt: 'Dict → arquivo' }, { en: 'File → dict', pt: 'Arquivo → dict' }], correctIndex: 0, explanation: { en: 'dumps() = dump to String. The "s" = string.', pt: 'dumps() = dump para String. O "s" = string.' } },
+    { id: 'q19_2', question: { en: 'json.loads(text) converts:', pt: 'json.loads(texto) converte:' }, options: [{ en: 'JSON string → Python dict', pt: 'String JSON → dict Python' }, { en: 'Python dict → string', pt: 'Dict Python → string' }, { en: 'File → dict', pt: 'Arquivo → dict' }, { en: 'Dict → list', pt: 'Dict → lista' }], correctIndex: 0, explanation: { en: 'loads() = load from String. JSON text → Python dict.', pt: 'loads() = carregar de String. Texto JSON → dict Python.' } },
+    { id: 'q19_3', question: { en: 'Difference: json.dump() vs json.dumps()?', pt: 'Diferença: json.dump() vs json.dumps()?' }, options: [{ en: 'dump() → file; dumps() → string', pt: 'dump() → arquivo; dumps() → string' }, { en: 'dumps() → file; dump() → string', pt: 'dumps() → arquivo; dump() → string' }, { en: 'No difference', pt: 'Sem diferença' }, { en: 'dump() is faster', pt: 'dump() é mais rápido' }], correctIndex: 0, explanation: { en: 'dump() writes to a file object. dumps() writes to a string in memory.', pt: 'dump() escreve num arquivo. dumps() escreve numa string na memória.' } },
+    { id: 'q19_4', question: { en: 'What does indent=2 do?', pt: 'O que indent=2 faz?' }, options: [{ en: 'Formats JSON for human readability', pt: 'Formata JSON para leitura humana' }, { en: 'Limits to 2 keys', pt: 'Limita a 2 chaves' }, { en: 'Adds 2 items', pt: 'Adiciona 2 itens' }, { en: 'Required for valid JSON', pt: 'Obrigatório para JSON válido' }], correctIndex: 0, explanation: { en: 'indent adds whitespace for readability. Without it, everything is on one line.', pt: 'indent adiciona espaço para legibilidade. Sem ele, tudo fica em uma linha.' } }
+  ],
+  exam: {
+    title: { en: 'JSON Claims Pipeline', pt: 'Pipeline JSON de Sinistros' },
+    scenario: { en: 'Parse JSON from API, process claims, save results.', pt: 'Parse JSON de API, processe sinistros, salve resultados.' },
+    requirements: { en: ['Parse JSON string of 4 claims', 'Calculate payout each', 'Save results to output.json', 'Print total'], pt: ['Parse string JSON de 4 sinistros', 'Calcule payout de cada', 'Salve em output.json', 'Imprima total'] },
+    starterCode: `import json
+
+api = '[{"id":1,"client":"Alice","damage":5230,"ded":250},{"id":2,"client":"Bob","damage":1200,"ded":250},{"id":3,"client":"Carlos","damage":8000,"ded":300},{"id":4,"client":"Diana","damage":900,"ded":150}]'
+
+claims = json.loads(api)
+results = []
+total = 0
+
+for c in claims:
+    payout = c["damage"] - c["ded"]
+    total += payout
+    results.append({"client": c["client"], "payout": payout})
+
+with open("output.json", "w") as f:
+    json.dump(results, f, indent=2)
+
+print("Total: $", total)`,
+    testCases: [
+      { id: 'tc19_1', description: { en: 'Total correct', pt: 'Total correto' }, inputs: [], checks: [{ type: 'contains', value: '14430' }], points: 40 },
+      { id: 'tc19_2', description: { en: 'Shows total', pt: 'Mostra total' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 20 },
+      { id: 'tc19_3', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 40 }
+    ]
+  }
 }
+
+
 
 export const phase20: Phase = {
   id: 20,
-  title: { en: 'DateTime', pt: 'DateTime' },
-  description: { en: 'Work with dates and times.', pt: 'Trabalhe com datas e horas.' },
-  icon: '🕐',
-  libraries: ['datetime'],
-  lesson: { title: { en: 'Date & Time', pt: 'Data e Hora' }, blocks: [{ type: 'code', code: `from datetime import datetime\n\nnow = datetime.now()\nprint(now)` }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Date Calc', pt: 'Cálculo de Data' }, scenario: { en: `Calculate days between dates.`, pt: `Calcule dias entre datas.` }, requirements: { en: ['Import datetime', 'Create dates', 'Calculate diff'], pt: ['Importe datetime', 'Crie datas', 'Calcule diff'] }, starterCode: `from datetime import datetime\n\ndate1 = datetime(2026, 1, 1)\ndate2 = datetime(2026, 7, 13)\ndiff = date2 - date1\nprint(diff.days)`, testCases: [{ id: 'tc20_1', description: { en: 'Calculates days', pt: 'Calcula dias' }, inputs: [], checks: [{ type: 'contains', value: '194' }], points: 100 }] }
+  title: { en: 'DateTime', pt: 'Data e Hora' },
+  description: { en: 'Work with dates and times — for SLAs, deadlines and reports.', pt: 'Trabalhe com datas e horas — para SLAs, prazos e relatórios.' },
+  icon: '📅',
+  libraries: [],
+  lesson: {
+    title: { en: 'Time is Data Too', pt: 'Tempo Também é Dado' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Every SLA and deadline is a datetime calculation', pt: '🌍 Todo SLA e prazo é um cálculo de datetime' } },
+      { type: 'text', content: {
+        en: 'When a claim arrives → system logs a timestamp.\nWhen it must be resolved → timestamp + SLA days.\nWhen adjuster calls → another timestamp.\n\ndatetime is how software tracks everything in time.',
+        pt: 'Quando um sinistro chega → sistema registra timestamp.\nQuando deve ser resolvido → timestamp + dias de SLA.\nQuando o ajustador liga → outro timestamp.\n\ndatetime é como software rastreia tudo no tempo.'
+      }},
+      { type: 'heading', content: { en: '🧩 Calendar + stopwatch merged into one object', pt: '🧩 Calendário + cronômetro fundidos num objeto' } },
+      { type: 'text', content: {
+        en: 'datetime = calendar page + clock face.\nYou can:\n• Read today\'s date/time\n• Add or subtract days\n• Calculate how many days between two dates',
+        pt: 'datetime = página de calendário + mostrador de relógio.\nVocê pode:\n• Ler a data/hora de hoje\n• Adicionar ou subtrair dias\n• Calcular quantos dias entre duas datas'
+      }},
+      { type: 'code', code: `from datetime import datetime, timedelta
+
+now = datetime.now()
+print(now.year)                     # 2026
+print(now.strftime("%Y-%m-%d"))     # 2026-07-11
+
+# Add 5 days (SLA deadline)
+deadline = now + timedelta(days=5)
+print("Deadline:", deadline.strftime("%Y-%m-%d"))
+
+# Days between two dates
+opened = datetime(2026, 7, 1)
+today  = datetime(2026, 7, 11)
+open_days = (today - opened).days
+print("Open for:", open_days, "days")  # 10` },
+      { type: 'tip', content: {
+        en: '💡 strftime() format codes:\n%Y = 4-digit year  %m = month  %d = day\n%H = hour  %M = minute\nExample: now.strftime("%d/%m/%Y") → "11/07/2026"',
+        pt: '💡 Códigos do strftime():\n%Y = ano 4 dígitos  %m = mês  %d = dia\n%H = hora  %M = minuto\nExemplo: now.strftime("%d/%m/%Y") → "11/07/2026"'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex20_fill',
+      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      description: { en: 'Complete the SLA deadline calculator.', pt: 'Complete o calculador de prazo SLA.' },
+      starterCode: `from datetime import datetime, ___   # fill: timedelta
+
+claim_date = datetime(2026, 7, 11)
+sla_days = 5
+deadline = claim_date + ___(days=sla_days)  # fill
+print("Deadline:", deadline.strftime("___")) # fill: YYYY-MM-DD`,
+      hints: [
+        { en: 'Import timedelta alongside datetime', pt: 'Importe timedelta junto com datetime' },
+        { en: 'Format string: "%Y-%m-%d"', pt: 'String de formato: "%Y-%m-%d"' }
+      ],
+      sampleOutput: { en: 'Deadline: 2026-07-16', pt: 'Deadline: 2026-07-16' }
+    },
+    {
+      id: 'ex20_zero',
+      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      description: { en: 'Build a claim age tracker:\n• 3 claims with open dates\n• Calculate days open\n• Flag OVERDUE if > 7 days', pt: 'Construa um rastreador de idade:\n• 3 sinistros com datas de abertura\n• Calcule dias abertos\n• Sinalize ATRASADO se > 7 dias' },
+      starterCode: `from datetime import datetime
+
+today = datetime(2026, 7, 11)
+claims = [
+    {"client": "Alice",  "opened": datetime(2026, 7,  1)},
+    {"client": "Bob",    "opened": datetime(2026, 7,  8)},
+    {"client": "Carlos", "opened": datetime(2026, 7, 10)}
+]
+
+for c in claims:
+    days = (today - c["opened"]).days
+    status = "OVERDUE" if days > 7 else "On time"
+    print(c["client"], "→", days, "days →", status)`,
+      hints: [{ en: '(today - opened).days gives integer days', pt: '(hoje - abertura).days dá dias inteiros' }],
+      sampleOutput: { en: 'Alice → 10 days → OVERDUE\nBob → 3 days → On time\nCarlos → 1 days → On time', pt: 'Alice → 10 days → OVERDUE\nBob → 3 days → On time\nCarlos → 1 days → On time' }
+    }
+  ],
+  quiz: [
+    { id: 'q20_1', question: { en: 'How to get today\'s date and time?', pt: 'Como obter data e hora de hoje?' }, options: [{ en: 'datetime.now()', pt: 'datetime.now()' }, { en: 'datetime.today', pt: 'datetime.today' }, { en: 'today()', pt: 'today()' }, { en: 'date.now()', pt: 'date.now()' }], correctIndex: 0, explanation: { en: 'datetime.now() returns a datetime object with current date and time.', pt: 'datetime.now() retorna um objeto datetime com data e hora atuais.' } },
+    { id: 'q20_2', question: { en: 'How to add 7 days to a datetime?', pt: 'Como adicionar 7 dias a um datetime?' }, options: [{ en: 'date + timedelta(days=7)', pt: 'date + timedelta(days=7)' }, { en: 'date + 7', pt: 'date + 7' }, { en: 'date.add(7)', pt: 'date.add(7)' }, { en: 'date.days += 7', pt: 'date.days += 7' }], correctIndex: 0, explanation: { en: 'timedelta represents a duration. Add it to a datetime to get a new date.', pt: 'timedelta representa uma duração. Adicione a um datetime para obter nova data.' } },
+    { id: 'q20_3', question: { en: 'How to get days between two dates?', pt: 'Como obter dias entre duas datas?' }, options: [{ en: '(date2 - date1).days', pt: '(date2 - date1).days' }, { en: 'date2 - date1', pt: 'date2 - date1' }, { en: 'timedelta(date2, date1)', pt: 'timedelta(date2, date1)' }, { en: 'days(date2, date1)', pt: 'days(date2, date1)' }], correctIndex: 0, explanation: { en: 'Subtracting datetimes returns a timedelta. .days gives the integer count.', pt: 'Subtrair datetimes retorna timedelta. .days dá a contagem inteira.' } },
+    { id: 'q20_4', question: { en: 'strftime("%d/%m/%Y") on 2026-07-11 gives:', pt: 'strftime("%d/%m/%Y") em 2026-07-11 dá:' }, options: [{ en: '"11/07/2026"', pt: '"11/07/2026"' }, { en: '"2026/07/11"', pt: '"2026/07/11"' }, { en: '"07-11-2026"', pt: '"07-11-2026"' }, { en: '"11-07-2026"', pt: '"11-07-2026"' }], correctIndex: 0, explanation: { en: '%d = day, %m = month, %Y = 4-digit year. Separator is what you put between.', pt: '%d = dia, %m = mês, %Y = ano 4 dígitos. Separador é o que você coloca entre eles.' } }
+  ],
+  exam: {
+    title: { en: 'SLA Compliance Report', pt: 'Relatório de Conformidade SLA' },
+    scenario: { en: 'Check which claims missed SLA (must resolve within 5 days).', pt: 'Verifique quais sinistros perderam o SLA (5 dias para resolver).' },
+    requirements: { en: ['4 claims with open dates', 'Calculate days open', 'Flag OVERDUE if > 5 days', 'Count overdue', 'Print each + count'], pt: ['4 sinistros com datas', 'Calcule dias abertos', 'OVERDUE se > 5 dias', 'Contagem de atrasados', 'Imprima cada + contagem'] },
+    starterCode: `from datetime import datetime
+
+today = datetime(2026, 7, 11)
+claims = [
+    {"client": "Alice",  "opened": datetime(2026, 7,  1)},
+    {"client": "Bob",    "opened": datetime(2026, 7,  9)},
+    {"client": "Carlos", "opened": datetime(2026, 7, 10)},
+    {"client": "Diana",  "opened": datetime(2026, 7,  4)}
+]
+
+overdue = 0
+for c in claims:
+    days = (today - c["opened"]).days
+    status = "OVERDUE" if days > 5 else "On time"
+    if days > 5: overdue += 1
+    print(c["client"], "→", days, "days →", status)
+
+print("Overdue:", overdue)`,
+    testCases: [
+      { id: 'tc20_1', description: { en: 'Alice OVERDUE', pt: 'Alice OVERDUE' }, inputs: [], checks: [{ type: 'contains', value: 'OVERDUE' }], points: 25 },
+      { id: 'tc20_2', description: { en: 'Carlos On time', pt: 'Carlos On time' }, inputs: [], checks: [{ type: 'contains', value: 'On time' }], points: 25 },
+      { id: 'tc20_3', description: { en: 'Overdue count', pt: 'Contagem overdue' }, inputs: [], checks: [{ type: 'contains', value: 'Overdue' }], points: 25 },
+      { id: 'tc20_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
+    ]
+  }
 }
 
 export const phase21: Phase = {
   id: 21,
-  title: { en: 'Random', pt: 'Aleatório' },
-  description: { en: 'Generate random values. Simulations.', pt: 'Gere valores aleatórios. Simulações.' },
+  title: { en: 'Random Module', pt: 'Módulo Random' },
+  description: { en: 'Generate random values — for simulations, sampling, and testing.', pt: 'Gere valores aleatórios — para simulações, amostragem e testes.' },
   icon: '🎲',
-  libraries: ['random'],
-  lesson: { title: { en: 'Random Module', pt: 'Módulo Random' }, blocks: [{ type: 'code', code: `import random\n\nnum = random.randint(1, 100)\nprint(num)` }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Random Sim', pt: 'Simulação Aleatória' }, scenario: { en: `Simulate random claim selection.`, pt: `Simule seleção aleatória de sinistro.` }, requirements: { en: ['Import random', 'Generate values', 'Use in logic'], pt: ['Importe random', 'Gere valores', 'Use em lógica'] }, starterCode: `import random\n\nclients = ["Alice", "Bob", "Diana"]\nselected = random.choice(clients)\nprint(selected)`, testCases: [{ id: 'tc21_1', description: { en: 'Chooses randomly', pt: 'Escolhe aleatoriamente' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
+  libraries: [],
+  lesson: {
+    title: { en: 'Controlled Randomness', pt: 'Aleatoriedade Controlada' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Insurance companies simulate risk with random', pt: '🌍 Seguradoras simulam risco com random' } },
+      { type: 'text', content: {
+        en: 'Insurance uses Monte Carlo simulations:\n"If we insure 10,000 homes, how many will claim in a storm?"\n\nRun the simulation 1 million times with random values → predict real costs.\nSame concept: Python random module.',
+        pt: 'Seguradoras usam simulações Monte Carlo:\n"Se assegurarmos 10.000 casas, quantas reclamarão numa tempestade?"\n\nRodam a simulação 1 milhão de vezes com valores aleatórios → preveem custos reais.\nMesmo conceito: módulo random do Python.'
+      }},
+      { type: 'heading', content: { en: '🧩 Dice with rules', pt: '🧩 Dados com regras' } },
+      { type: 'text', content: {
+        en: 'A die roll is random — but constrained to 1–6.\nrandom lets you roll any "die":\n• randint(1,6) = dice roll\n• choice(list) = pick from options\n• random() = float 0.0–1.0',
+        pt: 'Um dado é aleatório — mas limitado a 1–6.\nrandom permite jogar qualquer "dado":\n• randint(1,6) = jogar dado\n• choice(lista) = escolher opção\n• random() = float 0.0–1.0'
+      }},
+      { type: 'code', code: `import random
+
+print(random.randint(1, 100))        # random int 1–100
+
+clients = ["Alice", "Bob", "Carlos", "Diana"]
+print(random.choice(clients))        # pick one
+
+print(random.sample(clients, 2))     # pick 2, no repeats
+
+random.shuffle(clients)
+print(clients)                       # shuffled list
+
+print(random.random())               # float 0.0–1.0` },
+      { type: 'tip', content: {
+        en: '💡 random.seed(42) makes results reproducible.\nSame seed = same results every run. Great for testing.',
+        pt: '💡 random.seed(42) torna resultados reproduzíveis.\nMesma seed = mesmos resultados. Ótimo para testes.'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex21_fill',
+      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      description: { en: 'Complete the random claim selector.', pt: 'Complete o seletor aleatório.' },
+      starterCode: `import random
+
+clients = ["Alice", "Bob", "Carlos", "Diana", "Eduardo"]
+
+audited = random.___(clients)          # fill: pick one
+print("Audit:", audited)
+
+damage = random.___(500, 10000)        # fill: random int
+print("Simulated damage: $", damage)`,
+      hints: [
+        { en: 'random.choice() picks one item', pt: 'random.choice() escolhe um item' },
+        { en: 'random.randint(min, max) picks a random int', pt: 'random.randint(min, max) gera inteiro aleatório' }
+      ],
+      sampleOutput: { en: 'Audit: Carlos\nSimulated damage: $ 4782', pt: 'Audit: Carlos\nSimulated damage: $ 4782' }
+    },
+    {
+      id: 'ex21_zero',
+      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      description: { en: 'Simulate 5 random claims:\n• Damage $500–$12000\n• $250 deductible\n• Flag HIGH if damage > $5000\n• Print all + count high-risk', pt: 'Simule 5 sinistros aleatórios:\n• Dano R$500–R$12000\n• R$250 franquia\n• Sinalizar HIGH se dano > R$5000\n• Imprimir todos + contagem alto risco' },
+      starterCode: `import random
+random.seed(42)
+
+high_risk = 0
+for i in range(5):
+    damage = random.randint(500, 12000)
+    payout = damage - 250
+    risk = "HIGH" if damage > 5000 else "normal"
+    if damage > 5000: high_risk += 1
+    print(f"Claim {i+1}: ${damage} → ${payout} [{risk}]")
+
+print("High risk:", high_risk)`,
+      hints: [{ en: 'random.randint(500, 12000) generates the damage', pt: 'random.randint(500, 12000) gera o dano' }],
+      sampleOutput: { en: 'Claim 1: $4634 → $4384 [normal]\nHigh risk: 2', pt: 'Claim 1: $4634 → $4384 [normal]\nHigh risk: 2' }
+    }
+  ],
+  quiz: [
+    { id: 'q21_1', question: { en: 'random.randint(1, 6) can return:', pt: 'random.randint(1, 6) pode retornar:' }, options: [{ en: '1, 2, 3, 4, 5, or 6 (inclusive)', pt: '1, 2, 3, 4, 5 ou 6 (incluso)' }, { en: '1 to 5 only', pt: 'Apenas 1 a 5' }, { en: '0 to 6', pt: '0 a 6' }, { en: 'A float', pt: 'Um float' }], correctIndex: 0, explanation: { en: 'randint is inclusive on BOTH ends. randint(1, 6) can return 1, 2, 3, 4, 5, or 6.', pt: 'randint é inclusivo em AMBOS os extremos. Pode retornar 1, 2, 3, 4, 5 ou 6.' } },
+    { id: 'q21_2', question: { en: 'random.choice(["a","b","c"]) does:', pt: 'random.choice(["a","b","c"]) faz:' }, options: [{ en: 'Returns one random item', pt: 'Retorna um item aleatório' }, { en: 'Returns all shuffled', pt: 'Retorna todos embaralhados' }, { en: 'Returns random index', pt: 'Retorna índice aleatório' }, { en: 'Returns first item', pt: 'Retorna primeiro item' }], correctIndex: 0, explanation: { en: 'random.choice() picks and returns ONE item randomly from the sequence.', pt: 'random.choice() escolhe e retorna UM item aleatoriamente da sequência.' } },
+    { id: 'q21_3', question: { en: 'What does random.seed(42) do?', pt: 'O que random.seed(42) faz?' }, options: [{ en: 'Makes random results reproducible', pt: 'Torna resultados reproduzíveis' }, { en: 'Sets max value to 42', pt: 'Define valor máximo como 42' }, { en: 'Generates 42 numbers', pt: 'Gera 42 números' }, { en: 'Required to use random', pt: 'Obrigatório para usar random' }], correctIndex: 0, explanation: { en: 'Same seed = same sequence every run. Perfect for reproducible tests.', pt: 'Mesma seed = mesma sequência a cada execução. Perfeito para testes reproduzíveis.' } },
+    { id: 'q21_4', question: { en: 'random.sample(list, 2) returns:', pt: 'random.sample(lista, 2) retorna:' }, options: [{ en: '2 unique random items', pt: '2 itens únicos aleatórios' }, { en: '2 items that may repeat', pt: '2 itens que podem repetir' }, { en: 'First 2 items', pt: 'Primeiros 2 itens' }, { en: '2 random integers', pt: '2 inteiros aleatórios' }], correctIndex: 0, explanation: { en: 'random.sample() picks k unique elements — no repetition.', pt: 'random.sample() escolhe k elementos únicos — sem repetição.' } }
+  ],
+  exam: {
+    title: { en: 'Risk Simulation', pt: 'Simulação de Risco' },
+    scenario: { en: 'Simulate 10 claims and produce a risk report.', pt: 'Simule 10 sinistros e produza um relatório de risco.' },
+    requirements: { en: ['10 random damages $200–$15000', '$250 deductible', 'Critical>8k, Urgent 3k-8k, Normal<3k', 'Print each + totals'], pt: ['10 danos aleatórios R$200–R$15000', 'R$250 franquia', 'Crítico>8k, Urgente 3k-8k, Normal<3k', 'Imprima cada + totais'] },
+    starterCode: `import random
+random.seed(99)
+
+critical = urgent = normal_c = 0
+total = 0
+
+for i in range(10):
+    damage = random.randint(200, 15000)
+    payout = damage - 250
+    total += payout
+    if damage > 8000:   level = "CRITICAL"; critical += 1
+    elif damage >= 3000: level = "URGENT";  urgent += 1
+    else:                level = "normal";  normal_c += 1
+    print(f"#{i+1}: ${damage} → ${payout} [{level}]")
+
+print(f"Critical:{critical} Urgent:{urgent} Normal:{normal_c}")
+print("Total: $", total)`,
+    testCases: [
+      { id: 'tc21_1', description: { en: 'Shows CRITICAL', pt: 'Mostra CRITICAL' }, inputs: [], checks: [{ type: 'contains', value: 'CRITICAL' }], points: 25 },
+      { id: 'tc21_2', description: { en: 'Count summary shown', pt: 'Resumo de contagem' }, inputs: [], checks: [{ type: 'contains', value: 'Critical' }], points: 25 },
+      { id: 'tc21_3', description: { en: 'Total shown', pt: 'Total mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 25 },
+      { id: 'tc21_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
+    ]
+  }
 }
 
 export const phase22: Phase = {
   id: 22,
-  title: { en: 'Math Lib', pt: 'Biblioteca Math' },
-  description: { en: 'Advanced math functions.', pt: 'Funções de matemática avançada.' },
-  icon: '✖️',
-  libraries: ['math'],
-  lesson: { title: { en: 'Math Functions', pt: 'Funções Matemáticas' }, blocks: [{ type: 'code', code: `import math\n\nprint(math.sqrt(16))   # 4\nprint(math.ceil(4.2))  # 5\nprint(math.floor(4.8)) # 4` }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Math Ops', pt: 'Operações Math' }, scenario: { en: `Use math functions in calculations.`, pt: `Use funções de math em cálculos.` }, requirements: { en: ['Import math', 'Use functions', 'Calculate'], pt: ['Importe math', 'Use funções', 'Calcule'] }, starterCode: `import math\n\narea = math.sqrt(100)\nprint(area)`, testCases: [{ id: 'tc22_1', description: { en: 'Math works', pt: 'Math funciona' }, inputs: [], checks: [{ type: 'contains', value: '10' }], points: 100 }] }
+  title: { en: 'Math Library', pt: 'Biblioteca Math' },
+  description: { en: 'Square roots, rounding, powers — the scientific calculator add-on.', pt: 'Raiz quadrada, arredondamento, potências — o complemento científico.' },
+  icon: '📐',
+  libraries: [],
+  lesson: {
+    title: { en: 'Beyond Basic Arithmetic', pt: 'Além da Aritmética Básica' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Engineers and actuaries use math daily', pt: '🌍 Engenheiros e atuários usam math diariamente' } },
+      { type: 'text', content: {
+        en: 'Civil engineers calculate beam stress with math.sqrt().\nInsurance actuaries use math.log() for mortality tables.\nData scientists use math.pi for circular calculations.\n\nmath module = Python\'s scientific calculator.',
+        pt: 'Engenheiros civis calculam tensão de vigas com math.sqrt().\nAtuários usam math.log() para tabelas de mortalidade.\nCientistas de dados usam math.pi para cálculos circulares.\n\nmódulo math = calculadora científica do Python.'
+      }},
+      { type: 'heading', content: { en: '🧩 Extra buttons on a scientific calculator', pt: '🧩 Botões extras de calculadora científica' } },
+      { type: 'text', content: {
+        en: 'Basic Python = pocket calculator (+, -, *, /)\nmath module = the √, log, π, ceil, floor buttons\n\nimport math to unlock them.',
+        pt: 'Python básico = calculadora de bolso (+, -, *, /)\nmódulo math = os botões √, log, π, ceil, floor\n\nimport math para desbloqueá-los.'
+      }},
+      { type: 'code', code: `import math
+
+print(math.pi)          # 3.14159...
+print(math.sqrt(144))   # 12.0
+print(math.pow(2, 10))  # 1024.0
+
+# Rounding
+print(math.ceil(4.1))   # 5 — always UP
+print(math.floor(4.9))  # 4 — always DOWN
+
+# Compound interest formula: A = P * (1+r)^t
+principal = 10000
+amount = principal * math.pow(1.08, 5)
+print(f"After 5 years: ${amount:.2f}")` },
+      { type: 'tip', content: {
+        en: '💡 ceil vs floor vs round:\n• ceil(4.1) = 5  (always UP)\n• floor(4.9) = 4  (always DOWN)\n• round(4.5) = 4  (banker\'s rounding)',
+        pt: '💡 ceil vs floor vs round:\n• ceil(4.1) = 5  (sempre PARA CIMA)\n• floor(4.9) = 4  (sempre PARA BAIXO)\n• round(4.5) = 4  (arredondamento bancário)'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex22_fill',
+      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      description: { en: 'Complete the circular area calculator.', pt: 'Complete a calculadora de área circular.' },
+      starterCode: `import math
+
+radius = 5
+area = math.___ * radius ** 2    # fill: pi constant
+side = math.___(area)            # fill: square root
+print(f"Area: {area:.2f}")
+print(f"Side: {side:.2f}")`,
+      hints: [
+        { en: 'math.pi is the pi constant', pt: 'math.pi é a constante pi' },
+        { en: 'math.sqrt() calculates square root', pt: 'math.sqrt() calcula raiz quadrada' }
+      ],
+      sampleOutput: { en: 'Area: 78.54\nSide: 8.86', pt: 'Area: 78.54\nSide: 8.86' }
+    },
+    {
+      id: 'ex22_zero',
+      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      description: { en: 'Build compound interest calculator:\n• $10,000 at 8% for 5 years\n• A = P * (1+r)^t\n• Round UP to next dollar', pt: 'Construa calculadora de juros compostos:\n• R$10.000 a 8% por 5 anos\n• A = P * (1+r)^t\n• Arredonde PARA CIMA' },
+      starterCode: `import math
+
+principal = 10000
+rate = 0.08
+years = 5
+
+amount = principal * math.pow(1 + rate, years)
+rounded = math.ceil(amount)
+
+print(f"After {years} years: ${amount:.2f}")
+print(f"Rounded up: ${rounded}")`,
+      hints: [{ en: 'math.pow(base, exp) raises base to power', pt: 'math.pow(base, exp) eleva base à potência' }],
+      sampleOutput: { en: 'After 5 years: $14693.28\nRounded up: $14694', pt: 'After 5 years: $14693.28\nRounded up: $14694' }
+    }
+  ],
+  quiz: [
+    { id: 'q22_1', question: { en: 'math.sqrt(64) returns:', pt: 'math.sqrt(64) retorna:' }, options: [{ en: '8.0', pt: '8.0' }, { en: '8', pt: '8' }, { en: '32.0', pt: '32.0' }, { en: '4096.0', pt: '4096.0' }], correctIndex: 0, explanation: { en: 'math.sqrt() always returns float. √64 = 8.0.', pt: 'math.sqrt() sempre retorna float. √64 = 8.0.' } },
+    { id: 'q22_2', question: { en: 'math.ceil(3.1) returns:', pt: 'math.ceil(3.1) retorna:' }, options: [{ en: '4', pt: '4' }, { en: '3', pt: '3' }, { en: '3.1', pt: '3.1' }, { en: '3.0', pt: '3.0' }], correctIndex: 0, explanation: { en: 'ceil always rounds UP. Even 3.001 → 4.', pt: 'ceil sempre arredonda PARA CIMA. Até 3.001 → 4.' } },
+    { id: 'q22_3', question: { en: 'math.floor(7.9) returns:', pt: 'math.floor(7.9) retorna:' }, options: [{ en: '7', pt: '7' }, { en: '8', pt: '8' }, { en: '7.9', pt: '7.9' }, { en: '7.0', pt: '7.0' }], correctIndex: 0, explanation: { en: 'floor always rounds DOWN. 7.9 → 7.', pt: 'floor sempre arredonda PARA BAIXO. 7.9 → 7.' } },
+    { id: 'q22_4', question: { en: 'math.pow(3, 4) returns:', pt: 'math.pow(3, 4) retorna:' }, options: [{ en: '81.0', pt: '81.0' }, { en: '12.0', pt: '12.0' }, { en: '7.0', pt: '7.0' }, { en: '64.0', pt: '64.0' }], correctIndex: 0, explanation: { en: '3^4 = 3×3×3×3 = 81.0. Always float.', pt: '3^4 = 3×3×3×3 = 81.0. Sempre float.' } }
+  ],
+  exam: {
+    title: { en: 'Construction Math Report', pt: 'Relatório de Matemática de Construção' },
+    scenario: { en: 'Calculate areas and costs for 3 sites.', pt: 'Calcule áreas e custos para 3 obras.' },
+    requirements: { en: ['Rectangular: length×width', 'Circular: π×r²', 'Cost = area×$150, rounded UP', 'Print area + cost per site'], pt: ['Retangular: comprimento×largura', 'Circular: π×r²', 'Custo = área×R$150, arredondado CIMA', 'Imprima área + custo por obra'] },
+    starterCode: `import math
+
+sites = [
+    {"name": "Warehouse", "type": "rect",   "a": 40, "b": 25},
+    {"name": "Tank",      "type": "circle", "a": 8,  "b": 0},
+    {"name": "Office",    "type": "rect",   "a": 30, "b": 15}
+]
+
+for s in sites:
+    area = s["a"] * s["b"] if s["type"] == "rect" else math.pi * s["a"]**2
+    cost = math.ceil(area * 150)
+    print(f"{s['name']}: {area:.1f} m² → ${cost}")`,
+    testCases: [
+      { id: 'tc22_1', description: { en: 'Warehouse 150000', pt: 'Warehouse 150000' }, inputs: [], checks: [{ type: 'contains', value: '150000' }], points: 30 },
+      { id: 'tc22_2', description: { en: 'Tank shown', pt: 'Tank mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Tank' }], points: 30 },
+      { id: 'tc22_3', description: { en: 'Office shown', pt: 'Office mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Office' }], points: 20 },
+      { id: 'tc22_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
+    ]
+  }
 }
 
 export const phase23: Phase = {
   id: 23,
-  title: { en: 'Error Handling', pt: 'Tratamento de Erro' },
-  description: { en: 'Try-except blocks. Graceful failures.', pt: 'Blocos try-except. Falhas graciosas.' },
+  title: { en: 'Error Handling', pt: 'Tratamento de Erros' },
+  description: { en: 'Build programs that survive bad input — the mark of professional code.', pt: 'Construa programas que sobrevivem a entradas ruins — a marca do código profissional.' },
   icon: '🛡️',
   libraries: [],
-  lesson: { title: { en: 'Exception Handling', pt: 'Tratamento de Exceção' }, blocks: [{ type: 'code', code: `try:\n  num = int(input("Number: "))\nexcept ValueError:\n  print("Invalid input")` }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Safe Input', pt: 'Entrada Segura' }, scenario: { en: `Handle invalid input safely.`, pt: `Trate entrada inválida com segurança.` }, requirements: { en: ['Try-except block', 'Catch errors', 'Recover gracefully'], pt: ['Bloco try-except', 'Capture erros', 'Recupere graciosamente'] }, starterCode: `try:\n  damage = int(input("Damage: "))\n  print("Damage:", damage)\nexcept ValueError:\n  print("Please enter a number")`, testCases: [{ id: 'tc23_1', description: { en: 'Handles errors', pt: 'Trata erros' }, inputs: ['abc'], inputMap: { 'damage': 'abc' }, checks: [{ type: 'contains', value: 'number' }], points: 100 }] }
+  lesson: {
+    title: { en: 'Don\'t Crash. Handle It.', pt: 'Não Quebre. Trate.' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Unhandled errors cost millions', pt: '🌍 Erros não tratados custam milhões' } },
+      { type: 'text', content: {
+        en: 'In 2012, Knight Capital lost $440 million in 45 minutes due to unhandled exceptions.\nIn 2016, one CDN bug took down half the internet for 1 hour.\n\nProper error handling = the difference between a crash and a graceful recovery.',
+        pt: 'Em 2012, Knight Capital perdeu US$440 milhões em 45 minutos por exceções não tratadas.\nEm 2016, um bug de CDN derrubou metade da internet por 1 hora.\n\nTratamento adequado = diferença entre crash e recuperação graciosa.'
+      }},
+      { type: 'heading', content: { en: '🆚 WITHOUT error handling', pt: '🆚 SEM tratamento de erros' } },
+      { type: 'code', code: `# User types "abc" — program CRASHES
+damage = int(input("Damage: "))
+# ValueError: invalid literal for int() with base 10: 'abc'` },
+      { type: 'heading', content: { en: '🆚 WITH error handling', pt: '🆚 COM tratamento de erros' } },
+      { type: 'code', code: `# Same situation — handled gracefully
+try:
+    damage = int(input("Damage: "))
+    print("Payout:", damage - 250)
+except ValueError:
+    print("⚠️  Please enter a valid number.")` },
+      { type: 'code', code: `# Full pattern: try / except / else / finally
+try:
+    damage = int(input("Damage: $"))
+    if damage < 0: raise ValueError("Must be positive")
+    payout = damage - 250
+
+except ValueError as e:
+    print("Input error:", e)
+
+else:
+    # Runs ONLY if no exception occurred
+    print("Payout: $", payout)
+
+finally:
+    # ALWAYS runs — error or not
+    print("Processing complete.")` },
+      { type: 'tip', content: {
+        en: '💡 Common exceptions:\n• ValueError — wrong type/value (int("abc"))\n• ZeroDivisionError — dividing by zero\n• FileNotFoundError — file missing\n• KeyError — dict key missing\n• IndexError — list index out of range',
+        pt: '💡 Exceções comuns:\n• ValueError — tipo/valor errado (int("abc"))\n• ZeroDivisionError — dividir por zero\n• FileNotFoundError — arquivo faltando\n• KeyError — chave de dict faltando\n• IndexError — índice de lista fora do intervalo'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex23_recog',
+      title: { en: '🟡 Recognize the Problem', pt: '🟡 Reconheça o Problema' },
+      description: { en: 'Add try/except around each crash-prone line.', pt: 'Adicione try/except em cada linha propensa a crash.' },
+      starterCode: `# Wrap each in try/except with the correct exception:
+
+try:
+    result = int("not_a_number")
+except ValueError:
+    print("ValueError caught")
+
+try:
+    value = 100 / 0
+except ZeroDivisionError:
+    print("ZeroDivisionError caught")
+
+try:
+    d = {"name": "Alice"}
+    print(d["damage"])
+except KeyError:
+    print("KeyError caught")`,
+      hints: [{ en: 'Each block uses a specific exception name', pt: 'Cada bloco usa um nome específico de exceção' }],
+      sampleOutput: { en: 'ValueError caught\nZeroDivisionError caught\nKeyError caught', pt: 'ValueError caught\nZeroDivisionError caught\nKeyError caught' }
+    },
+    {
+      id: 'ex23_zero',
+      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      description: { en: 'Build robust claim intake:\n• Loop until valid number entered\n• Reject negatives\n• Print confirmed payout', pt: 'Construa entrada robusta:\n• Loop até número válido\n• Rejeitar negativos\n• Imprimir payout confirmado' },
+      starterCode: `damage = None
+
+while damage is None:
+    try:
+        raw = input("Damage amount: $")
+        damage = int(raw)
+        if damage <= 0:
+            raise ValueError("Must be positive")
+    except ValueError as e:
+        print("Invalid:", e, "— try again")
+        damage = None
+
+print("Confirmed payout: $", damage - 250)`,
+      hints: [{ en: 'Set damage = None before loop; reset to None on error', pt: 'Defina damage = None antes do loop; redefina como None no erro' }],
+      sampleOutput: { en: 'Invalid: ... — try again\nConfirmed payout: $ 4750', pt: 'Inválido: ... — tente novamente\nPayout confirmado: $ 4750' }
+    }
+  ],
+  quiz: [
+    { id: 'q23_1', question: { en: 'What does try/except prevent?', pt: 'O que try/except previne?' }, options: [{ en: 'Program crash on runtime errors', pt: 'Crash do programa em erros de runtime' }, { en: 'All errors from happening', pt: 'Todos os erros de acontecer' }, { en: 'Syntax errors', pt: 'Erros de sintaxe' }, { en: 'Logic errors', pt: 'Erros de lógica' }], correctIndex: 0, explanation: { en: 'try/except catches runtime errors and lets you handle gracefully. Syntax errors still stop execution.', pt: 'try/except captura erros de runtime. Erros de sintaxe ainda impedem execução.' } },
+    { id: 'q23_2', question: { en: 'When does "else" run in try/except/else?', pt: 'Quando "else" roda em try/except/else?' }, options: [{ en: 'When NO exception occurred', pt: 'Quando NENHUMA exceção ocorreu' }, { en: 'When exception occurred', pt: 'Quando exceção ocorreu' }, { en: 'Always', pt: 'Sempre' }, { en: 'After finally', pt: 'Depois do finally' }], correctIndex: 0, explanation: { en: 'else runs ONLY when try completed with no exception. If except runs, else is skipped.', pt: 'else roda SOMENTE quando try completou sem exceção. Se except roda, else é pulado.' } },
+    { id: 'q23_3', question: { en: 'When does "finally" run?', pt: 'Quando "finally" roda?' }, options: [{ en: 'Always — error or not', pt: 'Sempre — com ou sem erro' }, { en: 'Only on success', pt: 'Apenas no sucesso' }, { en: 'Only on error', pt: 'Apenas no erro' }, { en: 'Never', pt: 'Nunca' }], correctIndex: 0, explanation: { en: 'finally ALWAYS runs. Use for cleanup: close files, release connections, etc.', pt: 'finally SEMPRE roda. Use para limpeza: fechar arquivos, liberar conexões, etc.' } },
+    { id: 'q23_4', question: { en: 'int("hello") raises:', pt: 'int("hello") lança:' }, options: [{ en: 'ValueError', pt: 'ValueError' }, { en: 'TypeError', pt: 'TypeError' }, { en: 'NameError', pt: 'NameError' }, { en: 'SyntaxError', pt: 'SyntaxError' }], correctIndex: 0, explanation: { en: 'ValueError = right type, wrong value. "hello" is a string but can\'t be read as an integer.', pt: 'ValueError = tipo certo, valor errado. "hello" é string mas não pode ser lido como inteiro.' } }
+  ],
+  exam: {
+    title: { en: 'Bulletproof Processor', pt: 'Processador À Prova de Falhas' },
+    scenario: { en: 'Process mixed claim data — some entries invalid. Handle all errors.', pt: 'Processe dados mistos — algumas entradas inválidas. Trate todos os erros.' },
+    requirements: { en: ['5 data entries', 'Try/except per entry', 'Handle non-numeric damage', 'Handle negative damage', 'Print success or error per entry'], pt: ['5 entradas de dados', 'Try/except por entrada', 'Tratar dano não-numérico', 'Tratar dano negativo', 'Imprimir sucesso ou erro por entrada'] },
+    starterCode: `entries = [("Alice","5230"),("Bob","abc"),("Carlos","8000"),("Diana","-500"),("Eduardo","1200")]
+
+for name, raw in entries:
+    try:
+        damage = int(raw)
+        if damage <= 0: raise ValueError("Must be positive")
+        print(f"✅ {name}: ${damage - 250}")
+    except ValueError as e:
+        print(f"❌ {name}: {e}")`,
+    testCases: [
+      { id: 'tc23_1', description: { en: 'Alice 4980', pt: 'Alice 4980' }, inputs: [], checks: [{ type: 'contains', value: '4980' }], points: 20 },
+      { id: 'tc23_2', description: { en: 'Bob error', pt: 'Erro Bob' }, inputs: [], checks: [{ type: 'contains', value: 'Bob' }], points: 20 },
+      { id: 'tc23_3', description: { en: 'Diana error', pt: 'Erro Diana' }, inputs: [], checks: [{ type: 'contains', value: 'Diana' }], points: 20 },
+      { id: 'tc23_4', description: { en: 'Eduardo 950', pt: 'Eduardo 950' }, inputs: [], checks: [{ type: 'contains', value: '950' }], points: 20 },
+      { id: 'tc23_5', description: { en: 'No crash', pt: 'Sem crash' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
+    ]
+  }
 }
 
-// BLOCK 6: PROJECTS (Phases 24-27)
+
+
 export const phase24: Phase = {
   id: 24,
   title: { en: 'Project: Calculator', pt: 'Projeto: Calculadora' },
-  description: { en: 'Integrated project. Real-world app.', pt: 'Projeto integrado. Aplicação real.' },
-  icon: '🧮',
+  description: { en: 'Build a complete calculator combining everything learned.', pt: 'Construa uma calculadora completa combinando tudo que foi aprendido.' },
+  icon: '🏗️',
   libraries: [],
-  lesson: { title: { en: 'Calculator Project', pt: 'Projeto Calculadora' }, blocks: [{ type: 'text', content: { en: 'Build a damage calculator for insurance claims', pt: 'Crie uma calculadora de dano para sinistros de seguros' } }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Damage Calculator', pt: 'Calculadora de Dano' }, scenario: { en: `Calculate payout from damages and deductible.`, pt: `Calcule pagamento de danos e franquia.` }, requirements: { en: ['Functions', 'Input/output', 'Math', 'Error handling'], pt: ['Funções', 'Entrada/saída', 'Matemática', 'Tratamento de erro'] }, starterCode: `def calculate_payout(damage, deductible):\n  return damage - deductible\n\nprint("Insurance Calculator")\ndamage = int(input("Damage ($): "))\npayout = calculate_payout(damage, 250)\nprint("Payout: $", payout)`, testCases: [{ id: 'tc24_1', description: { en: 'Full project works', pt: 'Projeto completo funciona' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
+  lesson: {
+    title: { en: 'Your First Complete Program', pt: 'Seu Primeiro Programa Completo' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Real software = simple concepts combined', pt: '🌍 Software real = conceitos simples combinados' } },
+      { type: 'text', content: {
+        en: 'Nubank\'s core engine is essentially:\n• Input → Validate → Calculate → Route → Store → Report\n\nYou already know ALL of these. Now combine them.',
+        pt: 'O motor central do Nubank é essencialmente:\n• Input → Validar → Calcular → Rotear → Armazenar → Reportar\n\nVocê já sabe TODOS esses. Agora combine-os.'
+      }},
+      { type: 'heading', content: { en: '🆚 Beginner vs Professional', pt: '🆚 Iniciante vs Profissional' } },
+      { type: 'code', code: `# ❌ BEGINNER: one big block, no structure
+x = int(input("x: "))
+y = int(input("y: "))
+op = input("op: ")
+if op == "+": print(x + y)
+elif op == "-": print(x - y)` },
+      { type: 'code', code: `# ✅ PROFESSIONAL: functions + validation + history
+def calculate(x, op, y):
+    """Perform arithmetic operation."""
+    if op == "+": return x + y
+    elif op == "-": return x - y
+    elif op == "*": return x * y
+    elif op == "/":
+        if y == 0: raise ValueError("Cannot divide by zero")
+        return x / y
+    else:
+        raise ValueError(f"Unknown operator: {op}")
+
+history = []
+
+def run():
+    while True:
+        try:
+            x  = float(input("First number (q=quit): "))
+            op = input("Operator (+,-,*,/): ")
+            y  = float(input("Second number: "))
+            result = calculate(x, op, y)
+            history.append(f"{x} {op} {y} = {result}")
+            print("=", result)
+        except ValueError as e:
+            print("Error:", e)
+        except:
+            break
+
+run()
+print("\\nHistory:")
+for h in history: print(" ", h)` }
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex24_recog',
+      title: { en: '🟡 Identify the Gap', pt: '🟡 Identifique a Lacuna' },
+      description: { en: 'The calculate() below is missing validation. Add the missing checks.', pt: 'O calculate() abaixo está sem validação. Adicione as verificações faltantes.' },
+      starterCode: `def calculate(x, op, y):
+    if op == "+": return x + y
+    elif op == "-": return x - y
+    elif op == "*": return x * y
+    elif op == "/":
+        # ADD: check for division by zero
+        return x / y
+    # ADD: handle unknown operators
+
+try:
+    print(calculate(10, "/", 0))
+except ValueError as e:
+    print("Error:", e)
+
+try:
+    print(calculate(10, "%", 5))
+except ValueError as e:
+    print("Error:", e)`,
+      hints: [
+        { en: 'Add: if y == 0: raise ValueError("Cannot divide by zero")', pt: 'Adicione: if y == 0: raise ValueError("Não pode dividir por zero")' },
+        { en: 'Add else clause: raise ValueError(f"Unknown: {op}")', pt: 'Adicione else: raise ValueError(f"Desconhecido: {op}")' }
+      ],
+      sampleOutput: { en: 'Error: Cannot divide by zero\nError: Unknown: %', pt: 'Error: Cannot divide by zero\nError: Unknown: %' }
+    },
+    {
+      id: 'ex24_zero',
+      title: { en: '🔴 Build the Full Calculator', pt: '🔴 Construa a Calculadora Completa' },
+      description: { en: 'Build calculator with:\n• calculate() function\n• history list\n• error handling\n• Test with 3 calculations', pt: 'Construa calculadora com:\n• Função calculate()\n• Lista de histórico\n• Tratamento de erros\n• Teste com 3 cálculos' },
+      starterCode: `def calculate(x, op, y):
+    """Perform arithmetic. Raises ValueError on invalid input."""
+    if op == "+": return x + y
+    elif op == "-": return x - y
+    elif op == "*": return x * y
+    elif op == "/":
+        if y == 0: raise ValueError("Cannot divide by zero")
+        return x / y
+    else:
+        raise ValueError(f"Unknown operator: {op}")
+
+history = []
+tests = [(10, "+", 5), (20, "/", 4), (8, "/", 0)]
+
+for x, op, y in tests:
+    try:
+        result = calculate(x, op, y)
+        entry = f"{x} {op} {y} = {result}"
+        history.append(entry)
+        print("=", result)
+    except ValueError as e:
+        print("Error:", e)
+
+print("\\nHistory:")
+for h in history: print(" ", h)`,
+      hints: [{ en: 'Use try/except inside the loop to catch errors per calculation', pt: 'Use try/except dentro do loop para capturar erros por cálculo' }],
+      sampleOutput: { en: '= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0', pt: '= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15.0' }
+    }
+  ],
+  quiz: [
+    { id: 'q24_1', question: { en: 'Why put calculation logic in a function?', pt: 'Por que colocar lógica de cálculo numa função?' }, options: [{ en: 'Reusable, testable, isolated', pt: 'Reutilizável, testável, isolado' }, { en: 'Makes code longer', pt: 'Deixa código mais longo' }, { en: 'Required by Python', pt: 'Exigido pelo Python' }, { en: 'No reason', pt: 'Sem razão' }], correctIndex: 0, explanation: { en: 'Functions encapsulate logic. Test calculate() independently, reuse it, modify without breaking the rest.', pt: 'Funções encapsulam lógica. Teste calculate() independentemente, reutilize, modifique sem quebrar o resto.' } },
+    { id: 'q24_2', question: { en: 'A history list lets you:', pt: 'Uma lista de histórico permite:' }, options: [{ en: 'Review all past calculations', pt: 'Revisar todos os cálculos anteriores' }, { en: 'Undo operations', pt: 'Desfazer operações' }, { en: 'Speed up calculations', pt: 'Acelerar cálculos' }, { en: 'Auto-save to file', pt: 'Auto-salvar em arquivo' }], correctIndex: 0, explanation: { en: 'A list accumulates entries. At the end, loop through to print the session history.', pt: 'Uma lista acumula entradas. No final, percorra para imprimir o histórico da sessão.' } },
+    { id: 'q24_3', question: { en: 'Why raise ValueError instead of just print?', pt: 'Por que raise ValueError em vez de só print?' }, options: [{ en: 'Lets the caller catch and handle it', pt: 'Deixa o chamador capturar e tratar' }, { en: 'Print is broken', pt: 'Print está quebrado' }, { en: 'ValueError is faster', pt: 'ValueError é mais rápido' }, { en: 'No difference', pt: 'Sem diferença' }], correctIndex: 0, explanation: { en: 'raise lets caller use try/except. print just shows text — function continues as if nothing happened.', pt: 'raise permite ao chamador usar try/except. print só exibe texto — a função continua.' } },
+    { id: 'q24_4', question: { en: 'while True loop runs until:', pt: 'Loop while True roda até:' }, options: [{ en: 'A break statement or unhandled exception', pt: 'Um break ou exceção não tratada' }, { en: '100 iterations', pt: '100 iterações' }, { en: 'Memory runs out', pt: 'Memória acabar' }, { en: 'User closes terminal', pt: 'Usuário fecha o terminal' }], correctIndex: 0, explanation: { en: 'while True runs forever. Use break to exit cleanly, or let an unhandled exception stop it.', pt: 'while True roda para sempre. Use break para sair, ou deixe exceção não tratada pará-lo.' } }
+  ],
+  exam: {
+    title: { en: 'Insurance Fee Calculator', pt: 'Calculadora de Taxas de Seguro' },
+    scenario: { en: 'Build an error-safe fee calculator with history.', pt: 'Construa uma calculadora de taxas resistente a erros, com histórico.' },
+    requirements: { en: ['calc_premium(base, risk, years)', 'premium = base * risk * years', 'Validate all > 0', '3 clients with loop', 'Error handling', 'Print history'], pt: ['calc_premium(base, risk, years)', 'premium = base * risk * years', 'Valide todos > 0', '3 clientes com loop', 'Tratamento de erros', 'Imprima histórico'] },
+    starterCode: `def calc_premium(base, risk, years):
+    """Calculate insurance premium. All args must be positive."""
+    if base <= 0 or risk <= 0 or years <= 0:
+        raise ValueError("All values must be positive")
+    return base * risk * years
+
+clients = [("Alice",10000,0.08,3),("Bob",-5000,0.05,2),("Carlos",15000,0.12,5)]
+history = []
+
+for name, base, risk, years in clients:
+    try:
+        premium = calc_premium(base, risk, years)
+        entry = f"{name}: ${premium:.2f}"
+        history.append(entry)
+        print("✅", entry)
+    except ValueError as e:
+        print(f"❌ {name}: {e}")
+
+print("\\nHistory:")
+for h in history: print(" ", h)`,
+    testCases: [
+      { id: 'tc24_1', description: { en: 'Alice 2400.00', pt: 'Alice 2400.00' }, inputs: [], checks: [{ type: 'contains', value: '2400' }], points: 25 },
+      { id: 'tc24_2', description: { en: 'Bob error caught', pt: 'Erro de Bob capturado' }, inputs: [], checks: [{ type: 'contains', value: 'Bob' }], points: 25 },
+      { id: 'tc24_3', description: { en: 'Carlos 9000.00', pt: 'Carlos 9000.00' }, inputs: [], checks: [{ type: 'contains', value: '9000' }], points: 25 },
+      { id: 'tc24_4', description: { en: 'No crash', pt: 'Sem crash' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
+    ]
+  }
 }
 
 export const phase25: Phase = {
   id: 25,
-  title: { en: 'Project: CRUD', pt: 'Projeto: CRUD' },
-  description: { en: 'Create, Read, Update, Delete data.', pt: 'Criar, Ler, Atualizar, Deletar dados.' },
-  icon: '📋',
+  title: { en: 'Project: CRUD System', pt: 'Projeto: Sistema CRUD' },
+  description: { en: 'Create, Read, Update, Delete — the backbone of every database app.', pt: 'Create, Read, Update, Delete — a espinha dorsal de todo app com banco de dados.' },
+  icon: '🗄️',
   libraries: [],
-  lesson: { title: { en: 'CRUD Operations', pt: 'Operações CRUD' }, blocks: [{ type: 'text', content: { en: 'Build a claims manager', pt: 'Crie um gerenciador de sinistros' } }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Claims Manager', pt: 'Gerenciador de Sinistros' }, scenario: { en: `Manage list of claims with add, view, update.`, pt: `Gerencie lista de sinistros com adicionar, visualizar, atualizar.` }, requirements: { en: ['List operations', 'Functions', 'User interface'], pt: ['Operações de lista', 'Funções', 'Interface do usuário'] }, starterCode: `claims = []\n\ndef add_claim(claim_id, damage):\n  claims.append({"id": claim_id, "damage": damage})\n\nadd_claim(2501, 5000)\nprint(claims)`, testCases: [{ id: 'tc25_1', description: { en: 'CRUD works', pt: 'CRUD funciona' }, inputs: [], checks: [{ type: 'contains', value: '2501' }], points: 100 }] }
+  lesson: {
+    title: { en: 'CRUD: How All Apps Manage Data', pt: 'CRUD: Como Todo App Gerencia Dados' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Every app you use is a CRUD system', pt: '🌍 Todo app que você usa é um sistema CRUD' } },
+      { type: 'text', content: {
+        en: 'WhatsApp: Create message, Read chat, Update status, Delete message.\nNetflix: Create account, Read library, Update watchlist, Delete history.\n\nCRUD = the 4 operations behind every app ever built.',
+        pt: 'WhatsApp: Criar mensagem, Ler chat, Atualizar status, Deletar mensagem.\nNetflix: Criar conta, Ler biblioteca, Atualizar lista, Deletar histórico.\n\nCRUD = as 4 operações por trás de todo app já construído.'
+      }},
+      { type: 'heading', content: { en: '🆚 Messy vs Structured', pt: '🆚 Bagunçado vs Estruturado' } },
+      { type: 'code', code: `# ❌ MESSY: scattered data manipulation
+claims = []
+claims.append({"id": 1, "client": "Alice"})   # create
+print(claims[0])                                # read
+claims[0]["client"] = "Alicia"                  # update
+claims.pop(0)                                   # delete` },
+      { type: 'code', code: `# ✅ CLEAN: named CRUD functions
+def create(db, client, damage):
+    db.append({"id": len(db)+1, "client": client, "damage": damage})
+
+def read_all(db):
+    for c in db: print(f"#{c['id']} {c['client']} ${c['damage']}")
+
+def update(db, cid, new_damage):
+    for c in db:
+        if c["id"] == cid: c["damage"] = new_damage; return True
+    return False
+
+def delete(db, cid):
+    db[:] = [c for c in db if c["id"] != cid]
+
+db = []
+create(db, "Alice", 5230)
+create(db, "Bob",   1200)
+update(db, 1, 6000)
+delete(db, 2)
+read_all(db)` }
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex25_recog',
+      title: { en: '🟡 Complete the CRUD', pt: '🟡 Complete o CRUD' },
+      description: { en: 'create() and read_all() are done. Complete update() and delete().', pt: 'create() e read_all() estão prontas. Complete update() e delete().' },
+      starterCode: `def create(db, client, damage):
+    db.append({"id": len(db)+1, "client": client, "damage": damage})
+
+def read_all(db):
+    for c in db: print(c["id"], c["client"], "$"+str(c["damage"]))
+
+def update(db, cid, new_damage):
+    for c in db:
+        if c["id"] == cid:
+            c["___"] = new_damage   # fill: which key to update?
+            return True
+    return False
+
+def delete(db, cid):
+    db[:] = [c for c in db if c["___"] != cid]  # fill: compare which key?
+
+db = []
+create(db, "Alice", 5230)
+create(db, "Bob",   1200)
+update(db, 1, 7000)
+delete(db, 2)
+read_all(db)`,
+      hints: [
+        { en: 'Update the "damage" key', pt: 'Atualize a chave "damage"' },
+        { en: 'Compare by "id" key in delete', pt: 'Compare pela chave "id" no delete' }
+      ],
+      sampleOutput: { en: '1 Alice $7000', pt: '1 Alice $7000' }
+    },
+    {
+      id: 'ex25_zero',
+      title: { en: '🔴 Full CRUD Demo', pt: '🔴 Demo CRUD Completo' },
+      description: { en: 'Build and run a full CRUD demo:\n• Create 4 claims\n• Read all\n• Update claim #2\n• Delete claim #4\n• Read final state', pt: 'Construa e execute um demo CRUD completo:\n• Criar 4 sinistros\n• Ler todos\n• Atualizar sinistro #2\n• Deletar sinistro #4\n• Ler estado final' },
+      starterCode: `def create(db, client, damage):
+    db.append({"id": len(db)+1, "client": client, "damage": damage})
+
+def read_all(db):
+    for c in db: print(f"#{c['id']} {c['client']} ${c['damage']}")
+
+def update(db, cid, new_damage):
+    for c in db:
+        if c["id"] == cid: c["damage"] = new_damage; return True
+    return False
+
+def delete(db, cid):
+    db[:] = [c for c in db if c["id"] != cid]
+
+db = []
+create(db, "Alice",  5230)
+create(db, "Bob",    1200)
+create(db, "Carlos", 8000)
+create(db, "Diana",   900)
+
+print("Initial:"); read_all(db)
+update(db, 2, 9000)
+delete(db, 4)
+print("Final:"); read_all(db)`,
+      hints: [{ en: 'Run in sequence: create × 4, read_all, update, delete, read_all', pt: 'Execute em sequência: create × 4, read_all, update, delete, read_all' }],
+      sampleOutput: { en: 'Initial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000', pt: 'Inicial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000' }
+    }
+  ],
+  quiz: [
+    { id: 'q25_1', question: { en: 'What does CRUD stand for?', pt: 'O que significa CRUD?' }, options: [{ en: 'Create, Read, Update, Delete', pt: 'Create, Read, Update, Delete' }, { en: 'Copy, Run, Upload, Download', pt: 'Copy, Run, Upload, Download' }, { en: 'Connect, Retrieve, Use, Disconnect', pt: 'Connect, Retrieve, Use, Disconnect' }, { en: 'Calculate, Render, Update, Deploy', pt: 'Calculate, Render, Update, Deploy' }], correctIndex: 0, explanation: { en: 'CRUD = Create, Read, Update, Delete. Every data-driven app needs all four.', pt: 'CRUD = Create, Read, Update, Delete. Todo app com dados precisa dos quatro.' } },
+    { id: 'q25_2', question: { en: 'Why use functions for CRUD?', pt: 'Por que usar funções para CRUD?' }, options: [{ en: 'Clear intent, reusable, easy to test', pt: 'Intenção clara, reutilizável, fácil de testar' }, { en: 'Functions are faster', pt: 'Funções são mais rápidas' }, { en: 'Python requires it', pt: 'Python exige' }, { en: 'No reason', pt: 'Sem razão' }], correctIndex: 0, explanation: { en: 'create(db,"Alice") is clearer than db.append({"id":...}). Functions give operations meaningful names.', pt: 'create(db,"Alice") é mais claro que db.append({"id":...}). Funções dão nomes significativos.' } },
+    { id: 'q25_3', question: { en: 'db[:] = [c for c in db if c["id"] != cid] does:', pt: 'db[:] = [c for c in db if c["id"] != cid] faz:' }, options: [{ en: 'Removes item with cid in-place', pt: 'Remove item com cid no lugar' }, { en: 'Creates a new list', pt: 'Cria uma nova lista' }, { en: 'Clears entire db', pt: 'Limpa todo o db' }, { en: 'Nothing', pt: 'Nada' }], correctIndex: 0, explanation: { en: 'db[:] = modifies existing list in-place. Comprehension filters out the target item.', pt: 'db[:] = modifica a lista existente no lugar. Comprehension filtra o item alvo.' } },
+    { id: 'q25_4', question: { en: 'Auto-increment ID: id = len(db) + 1 gives:', pt: 'ID auto-incremental: id = len(db) + 1 dá:' }, options: [{ en: 'Next sequential ID', pt: 'Próximo ID sequencial' }, { en: 'Random ID', pt: 'ID aleatório' }, { en: 'Last ID', pt: 'Último ID' }, { en: 'First ID always', pt: 'Sempre o primeiro ID' }], correctIndex: 0, explanation: { en: 'len(db) = current count. +1 = next ID. Simple and works for sequential lists.', pt: 'len(db) = contagem atual. +1 = próximo ID. Simples e funciona para listas sequenciais.' } }
+  ],
+  exam: {
+    title: { en: 'Claims Management System', pt: 'Sistema de Gestão de Sinistros' },
+    scenario: { en: 'Build a full CRUD claims system and run a demo.', pt: 'Construa um sistema CRUD completo de sinistros e execute um demo.' },
+    requirements: { en: ['create/read_all/update/delete functions', 'Create 4 claims', 'Update #2 to 9000', 'Delete #4', 'Read final state'], pt: ['Funções create/read_all/update/delete', 'Criar 4 sinistros', 'Atualizar #2 para 9000', 'Deletar #4', 'Ler estado final'] },
+    starterCode: `def create(db, client, damage):
+    db.append({"id": len(db)+1, "client": client, "damage": damage})
+
+def read_all(db):
+    for c in db: print(f"#{c['id']} {c['client']} ${c['damage']}")
+
+def update(db, cid, new_damage):
+    for c in db:
+        if c["id"] == cid: c["damage"] = new_damage; return True
+
+def delete(db, cid):
+    db[:] = [c for c in db if c["id"] != cid]
+
+db = []
+create(db, "Alice",5230); create(db, "Bob",1200)
+create(db, "Carlos",8000); create(db, "Diana",900)
+print("Initial:"); read_all(db)
+update(db, 2, 9000); delete(db, 4)
+print("Final:"); read_all(db)`,
+    testCases: [
+      { id: 'tc25_1', description: { en: 'Alice in output', pt: 'Alice no output' }, inputs: [], checks: [{ type: 'contains', value: 'Alice' }], points: 20 },
+      { id: 'tc25_2', description: { en: 'Bob updated to 9000', pt: 'Bob atualizado para 9000' }, inputs: [], checks: [{ type: 'contains', value: '9000' }], points: 30 },
+      { id: 'tc25_3', description: { en: 'Final state shown', pt: 'Estado final mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Final' }], points: 25 },
+      { id: 'tc25_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
+    ]
+  }
 }
 
 export const phase26: Phase = {
   id: 26,
   title: { en: 'Project: Data Analysis', pt: 'Projeto: Análise de Dados' },
-  description: { en: 'Read, analyze, report on data.', pt: 'Leia, analise, relate sobre dados.' },
-  icon: '📈',
+  description: { en: 'Analyze a dataset to find patterns, totals, and insights.', pt: 'Analise um conjunto de dados para encontrar padrões, totais e insights.' },
+  icon: '📊',
   libraries: [],
-  lesson: { title: { en: 'Data Analysis', pt: 'Análise de Dados' }, blocks: [{ type: 'text', content: { en: 'Analyze claims data for insights', pt: 'Analise dados de sinistros para insights' } }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Analysis Report', pt: 'Relatório de Análise' }, scenario: { en: `Generate statistics from claims data.`, pt: `Gere estatísticas de dados de sinistros.` }, requirements: { en: ['Data loading', 'Calculations', 'Reporting'], pt: ['Carregamento de dados', 'Cálculos', 'Relatório'] }, starterCode: `damages = [1000, 2500, 5000, 3000, 1500]\naverage = sum(damages) / len(damages)\nmax_damage = max(damages)\nmin_damage = min(damages)\nprint("Average:", average, "Max:", max_damage, "Min:", min_damage)`, testCases: [{ id: 'tc26_1', description: { en: 'Analysis works', pt: 'Análise funciona' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
+  lesson: {
+    title: { en: 'Turning Raw Data into Decisions', pt: 'Transformando Dados Brutos em Decisões' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 Data analysis is the highest-paid Python skill', pt: '🌍 Análise de dados é a habilidade Python mais bem paga' } },
+      { type: 'text', content: {
+        en: 'Junior data analysts average $85,000/year.\nThey load raw data → clean → calculate stats → find patterns → report.\n\nYou\'re learning to do exactly that.',
+        pt: 'Analistas de dados júnior ganham em média US$85.000/ano.\nEles carregam dados → limpam → calculam estatísticas → encontram padrões → reportam.\n\nVocê está aprendendo a fazer exatamente isso.'
+      }},
+      { type: 'heading', content: { en: '🆚 Raw dump vs Real insight', pt: '🆚 Despejo bruto vs Insight real' } },
+      { type: 'code', code: `# ❌ RAW: meaningless dump
+data = [5230, 1200, 8000, 450, 3100, 9200]
+print(data)` },
+      { type: 'code', code: `# ✅ ANALYZED: real insights extracted
+data = [5230, 1200, 8000, 450, 3100, 9200]
+
+total   = sum(data)
+average = total / len(data)
+maximum = max(data)
+minimum = min(data)
+median  = sorted(data)[len(data) // 2]
+critical = len([d for d in data if d > 5000])
+
+print(f"Total:    ${total:,}")
+print(f"Average:  ${average:,.0f}")
+print(f"Max/Min:  ${maximum} / ${minimum}")
+print(f"Median:   ${median}")
+print(f"Critical: {critical} claims")` },
+      { type: 'tip', content: {
+        en: '💡 sorted(data, reverse=True)[:3] → top 3 highest\n   sorted(data)[:3] → bottom 3\n   sum(x for x in data if x > 5000) → sum with filter',
+        pt: '💡 sorted(data, reverse=True)[:3] → top 3 maiores\n   sorted(data)[:3] → 3 menores\n   sum(x for x in data if x > 5000) → soma com filtro'
+      }}
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex26_recog',
+      title: { en: '🟡 Add Missing Statistics', pt: '🟡 Adicione Estatísticas Faltantes' },
+      description: { en: 'Basic stats done. Add median and critical count.', pt: 'Estatísticas básicas prontas. Adicione mediana e contagem crítica.' },
+      starterCode: `claims = [5230, 1200, 8000, 450, 3100, 9200, 620, 4500]
+
+total   = sum(claims)
+average = total / len(claims)
+
+sorted_c = sorted(claims)
+median   = sorted_c[___]              # fill: middle index
+
+critical = len([c for c in claims if c ___ 5000])  # fill: operator
+
+print(f"Average: ${average:.0f}")
+print(f"Median:  ${median}")
+print(f"Critical: {critical}")`,
+      hints: [
+        { en: 'Middle index = len(list) // 2', pt: 'Índice do meio = len(lista) // 2' },
+        { en: 'Condition: c > 5000', pt: 'Condição: c > 5000' }
+      ],
+      sampleOutput: { en: 'Average: $4038\nMedian: $3100\nCritical: 3', pt: 'Average: $4038\nMedian: $3100\nCritical: 3' }
+    },
+    {
+      id: 'ex26_zero',
+      title: { en: '🔴 Full Data Report', pt: '🔴 Relatório Completo' },
+      description: { en: 'Analyze 10 claims:\n• total, average, min, max, median\n• Count Critical/Urgent/Normal\n• Top 3 highest\n• Total payout ($250 deductible)', pt: 'Analise 10 sinistros:\n• total, média, mín, máx, mediana\n• Contagem Crítico/Urgente/Normal\n• Top 3 maiores\n• Total payout (R$250 franquia)' },
+      starterCode: `claims = [5230,1200,8000,450,3100,9200,620,4500,7800,2300]
+
+total    = sum(claims)
+average  = total / len(claims)
+minimum  = min(claims)
+maximum  = max(claims)
+median   = sorted(claims)[len(claims)//2]
+payout   = sum(c - 250 for c in claims)
+critical = len([c for c in claims if c > 8000])
+urgent   = len([c for c in claims if 3000 <= c <= 8000])
+normal   = len([c for c in claims if c < 3000])
+top3     = sorted(claims, reverse=True)[:3]
+
+print(f"=== REPORT ===")
+print(f"Total: ${total:,} | Avg: ${average:,.0f}")
+print(f"Min: ${minimum} | Max: ${maximum} | Median: ${median}")
+print(f"Payout: ${payout:,}")
+print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
+print(f"Top 3: {top3}")`,
+      hints: [{ en: 'sorted(claims, reverse=True)[:3] gets top 3', pt: 'sorted(claims, reverse=True)[:3] pega top 3' }],
+      sampleOutput: { en: '=== REPORT ===\nTotal: $42,400', pt: '=== RELATÓRIO ===\nTotal: $42.400' }
+    }
+  ],
+  quiz: [
+    { id: 'q26_1', question: { en: 'How to get highest value in a list?', pt: 'Como obter o maior valor de uma lista?' }, options: [{ en: 'max(list)', pt: 'max(lista)' }, { en: 'list.highest()', pt: 'lista.highest()' }, { en: 'list.max()', pt: 'lista.max()' }, { en: 'highest(list)', pt: 'highest(lista)' }], correctIndex: 0, explanation: { en: 'max() is a Python built-in. Also works: sorted(list)[-1].', pt: 'max() é embutido do Python. Também funciona: sorted(lista)[-1].' } },
+    { id: 'q26_2', question: { en: 'Average of a list?', pt: 'Média de uma lista?' }, options: [{ en: 'sum(list) / len(list)', pt: 'sum(lista) / len(lista)' }, { en: 'average(list)', pt: 'average(lista)' }, { en: 'list.mean()', pt: 'lista.mean()' }, { en: 'mean(list)', pt: 'mean(lista)' }], correctIndex: 0, explanation: { en: 'No built-in average. Use sum()/len() or import statistics.', pt: 'Sem average embutido. Use sum()/len() ou importe statistics.' } },
+    { id: 'q26_3', question: { en: 'sorted(data, reverse=True)[:3] gives:', pt: 'sorted(data, reverse=True)[:3] dá:' }, options: [{ en: 'Top 3 highest values', pt: 'Top 3 maiores valores' }, { en: 'Bottom 3', pt: 'Os 3 menores' }, { en: 'First 3 items', pt: 'Primeiros 3 itens' }, { en: 'Reversed list', pt: 'Lista invertida' }], correctIndex: 0, explanation: { en: 'reverse=True → descending. [:3] → first 3 of that = top 3 highest.', pt: 'reverse=True → decrescente. [:3] → primeiros 3 = top 3 maiores.' } },
+    { id: 'q26_4', question: { en: 'Median of [1,3,5,7,9]?', pt: 'Mediana de [1,3,5,7,9]?' }, options: [{ en: '5', pt: '5' }, { en: '4', pt: '4' }, { en: '25', pt: '25' }, { en: '3', pt: '3' }], correctIndex: 0, explanation: { en: 'Median = middle value when sorted. 5 items → index 2 → value 5.', pt: 'Mediana = valor do meio quando ordenado. 5 itens → índice 2 → valor 5.' } }
+  ],
+  exam: {
+    title: { en: 'Monthly Claims Analysis', pt: 'Análise Mensal de Sinistros' },
+    scenario: { en: 'Produce a full statistical report from monthly data.', pt: 'Produza um relatório estatístico completo dos dados mensais.' },
+    requirements: { en: ['total, avg, min, max, median', 'Critical/Urgent/Normal counts', 'Total payout ($250 ded)', 'Top 3 claims', 'Formatted output'], pt: ['total, média, mín, máx, mediana', 'Contagens Crítico/Urgente/Normal', 'Total payout (R$250 franquia)', 'Top 3 sinistros', 'Output formatado'] },
+    starterCode: `claims = [5230,1200,8000,450,3100,9200,620,4500,7800,2300,6500,890,11000,3800,720]
+
+total    = sum(claims)
+average  = total / len(claims)
+minimum  = min(claims)
+maximum  = max(claims)
+median   = sorted(claims)[len(claims)//2]
+payout   = sum(c - 250 for c in claims)
+critical = len([c for c in claims if c > 8000])
+urgent   = len([c for c in claims if 3000 <= c <= 8000])
+normal   = len([c for c in claims if c < 3000])
+top3     = sorted(claims, reverse=True)[:3]
+
+print(f"Claims: {len(claims)} | Total: ${total:,}")
+print(f"Avg: ${average:,.0f} | Median: ${median:,}")
+print(f"Min: ${minimum:,} | Max: ${maximum:,}")
+print(f"Payout: ${payout:,}")
+print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
+print(f"Top 3: {top3}")`,
+    testCases: [
+      { id: 'tc26_1', description: { en: 'Total shown', pt: 'Total mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 20 },
+      { id: 'tc26_2', description: { en: 'Critical count', pt: 'Contagem crítica' }, inputs: [], checks: [{ type: 'contains', value: 'Critical' }], points: 20 },
+      { id: 'tc26_3', description: { en: 'Top 3 shown', pt: 'Top 3 mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Top 3' }], points: 20 },
+      { id: 'tc26_4', description: { en: 'Payout shown', pt: 'Payout mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Payout' }], points: 20 },
+      { id: 'tc26_5', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
+    ]
+  }
 }
 
 export const phase27: Phase = {
   id: 27,
-  title: { en: 'Capstone: Full System', pt: 'Capstone: Sistema Completo' },
-  description: { en: 'Integrate everything. Final project.', pt: 'Integre tudo. Projeto final.' },
+  title: { en: 'Capstone: Claims System', pt: 'Capstone: Sistema de Sinistros' },
+  description: { en: 'Build a complete, production-ready claims management system.', pt: 'Construa um sistema completo de gestão de sinistros pronto para produção.' },
   icon: '🏆',
   libraries: [],
-  lesson: { title: { en: 'System Integration', pt: 'Integração de Sistema' }, blocks: [{ type: 'text', content: { en: 'Build a complete claims processing system', pt: 'Crie um sistema completo de processamento de sinistros' } }] },
-  exercises: [],
-  quiz: [],
-  exam: { title: { en: 'Full System', pt: 'Sistema Completo' }, scenario: { en: `Create interactive menu-driven claims system.`, pt: `Crie sistema de sinistros acionado por menu interativo.` }, requirements: { en: ['Menu loop', 'Full CRUD', 'File I/O', 'Error handling', 'Functions'], pt: ['Loop de menu', 'CRUD completo', 'I/O de arquivo', 'Tratamento de erro', 'Funções'] }, starterCode: `# Claims System\ndef show_menu():\n  print("1. Add Claim")\n  print("2. View Claims")\n  print("3. Exit")\n\nwhile True:\n  show_menu()\n  choice = input("Choice: ")\n  if choice == "3":\n    break`, testCases: [{ id: 'tc27_1', description: { en: 'System runs', pt: 'Sistema roda' }, inputs: ['3'], inputMap: { 'choice': '3' }, checks: [{ type: 'no_error', value: '' }], points: 100 }] }
+  lesson: {
+    title: { en: 'Everything Together', pt: 'Tudo Junto' },
+    blocks: [
+      { type: 'heading', content: { en: '🌍 You\'ve learned what professionals use daily', pt: '🌍 Você aprendeu o que profissionais usam diariamente' } },
+      { type: 'text', content: {
+        en: 'Across 27 phases you covered:\n• Variables, types, input (1–4)\n• Decisions and loops (5–8)\n• Data structures (9–12)\n• Functions and scope (13–16)\n• Files, JSON, libraries (17–22)\n• Error handling (23)\n• Full projects (24–26)\n\nThis capstone combines ALL of it.',
+        pt: 'Ao longo de 27 fases você cobriu:\n• Variáveis, tipos, input (1–4)\n• Decisões e loops (5–8)\n• Estruturas de dados (9–12)\n• Funções e escopo (13–16)\n• Arquivos, JSON, bibliotecas (17–22)\n• Tratamento de erros (23)\n• Projetos completos (24–26)\n\nEste capstone combina TUDO isso.'
+      }},
+      { type: 'heading', content: { en: '🆚 Script vs Production System', pt: '🆚 Script vs Sistema de Produção' } },
+      { type: 'code', code: `# ❌ SCRIPT: works once, brittle
+damage = 5230
+print(damage - 250)` },
+      { type: 'code', code: `# ✅ SYSTEM: structured, persistent, robust
+from datetime import datetime
+
+def create_claim(db, client, damage, ded=250):
+    """Create claim with full metadata."""
+    if damage <= 0: raise ValueError("Must be positive")
+    priority = ("Critical" if damage > 10000
+                else "Urgent" if damage > 5000
+                else "Normal")
+    db.append({
+        "id":       len(db) + 1,
+        "client":   client,
+        "damage":   damage,
+        "ded":      ded,
+        "payout":   damage - ded,
+        "priority": priority,
+        "status":   "open",
+        "date":     datetime.now().strftime("%Y-%m-%d")
+    })
+
+def read_all(db):
+    for c in db:
+        print(f"#{c['id']} {c['client']} ${c['damage']} [{c['priority']}] {c['status']}")
+
+def update_status(db, cid, status):
+    for c in db:
+        if c["id"] == cid: c["status"] = status; return True
+
+def analyze(db):
+    if not db: return
+    total  = sum(c["damage"] for c in db)
+    payout = sum(c["payout"] for c in db)
+    print(f"Total: ${total:,} | Payout: ${payout:,} | Claims: {len(db)}")` }
+    ]
+  },
+  exercises: [
+    {
+      id: 'ex27_recog',
+      title: { en: '🟡 Complete the System Functions', pt: '🟡 Complete as Funções do Sistema' },
+      description: { en: 'create_claim() is done. Complete update_status() and delete_claim().', pt: 'create_claim() está pronta. Complete update_status() e delete_claim().' },
+      starterCode: `from datetime import datetime
+
+def create_claim(db, client, damage):
+    db.append({"id": len(db)+1, "client": client, "damage": damage, "status": "open"})
+
+def update_status(db, cid, new_status):
+    for c in db:
+        if c["___"] == cid:       # fill: compare by id
+            c["___"] = new_status  # fill: update status
+            return True
+    return False
+
+def delete_claim(db, cid):
+    db[:] = [c for c in db if c["___"] != cid]  # fill: filter by id
+
+db = []
+create_claim(db, "Alice", 5230)
+create_claim(db, "Bob",   1200)
+update_status(db, 1, "approved")
+delete_claim(db, 2)
+for c in db: print(c)`,
+      hints: [
+        { en: 'All three blanks use the "id" key', pt: 'Os três espaços usam a chave "id"' },
+        { en: 'The status blank uses the "status" key', pt: 'O espaço de status usa a chave "status"' }
+      ],
+      sampleOutput: { en: '{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}', pt: '{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}' }
+    },
+    {
+      id: 'ex27_zero',
+      title: { en: '🔴 Build the Full System', pt: '🔴 Construa o Sistema Completo' },
+      description: { en: 'Build complete claims system:\n• CRUD + priority + error handling + analysis\n• 5 claims demo\n• Update 2, delete 1\n• Print final state + stats', pt: 'Construa sistema completo:\n• CRUD + prioridade + erros + análise\n• Demo com 5 sinistros\n• Atualizar 2, deletar 1\n• Imprimir estado final + estatísticas' },
+      starterCode: `from datetime import datetime
+
+def create_claim(db, client, damage, ded=250):
+    if damage <= 0: raise ValueError("Must be positive")
+    priority = "Critical" if damage > 10000 else "Urgent" if damage > 5000 else "Normal"
+    db.append({"id": len(db)+1, "client": client, "damage": damage,
+               "payout": damage-ded, "priority": priority, "status": "open",
+               "date": datetime.now().strftime("%Y-%m-%d")})
+
+def read_all(db):
+    for c in db:
+        print(f"#{c['id']} {c['client']} ${c['damage']} [{c['priority']}] {c['status']}")
+
+def update_status(db, cid, status):
+    for c in db:
+        if c["id"] == cid: c["status"] = status; return True
+
+def delete_claim(db, cid):
+    db[:] = [c for c in db if c["id"] != cid]
+
+def analyze(db):
+    total = sum(c["damage"] for c in db)
+    payout = sum(c["payout"] for c in db)
+    print(f"Claims:{len(db)} | Damage:${total:,} | Payout:${payout:,}")
+
+db = []
+try:
+    create_claim(db, "Alice",  12000)
+    create_claim(db, "Bob",     3500)
+    create_claim(db, "Carlos",  7800)
+    create_claim(db, "Diana",    900)
+    create_claim(db, "Eduardo",   -1)  # should error
+except ValueError as e:
+    print(f"Error: {e}")
+
+update_status(db, 1, "approved")
+update_status(db, 3, "approved")
+delete_claim(db, 4)
+
+print("=== SYSTEM ==="); read_all(db)
+print("=== STATS ==="); analyze(db)`,
+      hints: [{ en: 'Eduardo with -1 should trigger the ValueError', pt: 'Eduardo com -1 deve acionar o ValueError' }],
+      sampleOutput: { en: 'Error: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved', pt: 'Error: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved' }
+    }
+  ],
+  quiz: [
+    { id: 'q27_1', question: { en: 'What handles "Must be positive" validation cleanly?', pt: 'O que trata "Must be positive" de forma limpa?' }, options: [{ en: 'raise ValueError inside function', pt: 'raise ValueError dentro da função' }, { en: 'if/else with print', pt: 'if/else com print' }, { en: 'return False', pt: 'return False' }, { en: 'assert statement', pt: 'instrução assert' }], correctIndex: 0, explanation: { en: 'raise ValueError lets the caller catch it with try/except. The function signals bad input and stops.', pt: 'raise ValueError deixa o chamador capturar com try/except. A função sinaliza entrada ruim e para.' } },
+    { id: 'q27_2', question: { en: 'Why store date as string in the claim dict?', pt: 'Por que armazenar data como string no dict?' }, options: [{ en: 'Strings are JSON-serializable; datetime objects are not', pt: 'Strings são serializáveis em JSON; objetos datetime não são' }, { en: 'Strings are faster', pt: 'Strings são mais rápidas' }, { en: 'Datetime can\'t be in dicts', pt: 'Datetime não pode estar em dicts' }, { en: 'No reason', pt: 'Sem razão' }], correctIndex: 0, explanation: { en: 'json.dump() can\'t serialize datetime. Convert first: datetime.now().strftime("%Y-%m-%d").', pt: 'json.dump() não serializa datetime. Converta antes: datetime.now().strftime("%Y-%m-%d").' } },
+    { id: 'q27_3', question: { en: 'What makes this a "system" vs a "script"?', pt: 'O que faz isso ser "sistema" vs "script"?' }, options: [{ en: 'Functions, validation, error handling, reusability', pt: 'Funções, validação, tratamento de erros, reusabilidade' }, { en: 'More lines of code', pt: 'Mais linhas de código' }, { en: 'Using import statements', pt: 'Usar instruções import' }, { en: 'Running in terminal', pt: 'Rodar em terminal' }], correctIndex: 0, explanation: { en: 'A system has clear structure, handles errors, validates data, and can be extended. A script solves one problem once.', pt: 'Um sistema tem estrutura clara, trata erros, valida dados e pode ser expandido. Um script resolve um problema uma vez.' } },
+    { id: 'q27_4', question: { en: 'You completed 27 phases. What can you build now?', pt: 'Você completou 27 fases. O que pode construir agora?' }, options: [{ en: 'Backend systems, data pipelines, automation tools', pt: 'Sistemas backend, pipelines de dados, ferramentas de automação' }, { en: 'Only calculators', pt: 'Apenas calculadoras' }, { en: 'Only web apps', pt: 'Apenas apps web' }, { en: 'Only scripts', pt: 'Apenas scripts' }], correctIndex: 0, explanation: { en: 'You have the foundation for backend APIs, data analysis, automation, ETL pipelines, and more.', pt: 'Você tem a base para APIs backend, análise de dados, automação, pipelines ETL e muito mais.' } }
+  ],
+  exam: {
+    title: { en: 'Final Capstone: Complete Claims System', pt: 'Capstone Final: Sistema Completo' },
+    scenario: { en: 'Build and demo the complete insurance claims system combining all 27 phases.', pt: 'Construa e demonstre o sistema completo combinando todas as 27 fases.' },
+    requirements: { en: ['Full CRUD', 'Priority classification', 'Error handling', 'Statistical analysis', '5+ claims in demo', 'No crashes'], pt: ['CRUD completo', 'Classificação de prioridade', 'Tratamento de erros', 'Análise estatística', '5+ sinistros no demo', 'Sem crashes'] },
+    starterCode: `from datetime import datetime
+
+def create_claim(db, client, damage, ded=250):
+    if damage <= 0: raise ValueError("Must be positive")
+    priority = "Critical" if damage > 10000 else "Urgent" if damage > 5000 else "Normal"
+    db.append({"id": len(db)+1, "client": client, "damage": damage,
+               "payout": damage-ded, "priority": priority, "status": "open",
+               "date": datetime.now().strftime("%Y-%m-%d")})
+
+def read_all(db):
+    for c in db:
+        print(f"#{c['id']} {c['client']} ${c['damage']} [{c['priority']}] {c['status']}")
+
+def update_status(db, cid, status):
+    for c in db:
+        if c["id"] == cid: c["status"] = status; return True
+
+def delete_claim(db, cid):
+    db[:] = [c for c in db if c["id"] != cid]
+
+def analyze(db):
+    total = sum(c["damage"] for c in db)
+    payout = sum(c["payout"] for c in db)
+    print(f"Claims:{len(db)} | Total:${total:,} | Payout:${payout:,}")
+
+db = []
+try:
+    create_claim(db, "Alice",  12000)
+    create_claim(db, "Bob",     3500)
+    create_claim(db, "Carlos",  7800)
+    create_claim(db, "Diana",    900)
+    create_claim(db, "Eduardo", 5500)
+except ValueError as e:
+    print("Error:", e)
+
+update_status(db, 1, "approved")
+update_status(db, 3, "approved")
+delete_claim(db, 4)
+
+print("=== FINAL ==="); read_all(db)
+print("=== STATS ==="); analyze(db)`,
+    testCases: [
+      { id: 'tc27_1', description: { en: 'Alice Critical approved', pt: 'Alice Critical aprovada' }, inputs: [], checks: [{ type: 'contains', value: 'Critical' }], points: 20 },
+      { id: 'tc27_2', description: { en: 'Alice status approved', pt: 'Status Alice approved' }, inputs: [], checks: [{ type: 'contains', value: 'approved' }], points: 20 },
+      { id: 'tc27_3', description: { en: 'Stats total shown', pt: 'Total de stats mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 20 },
+      { id: 'tc27_4', description: { en: 'Payout shown', pt: 'Payout mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Payout' }], points: 20 },
+      { id: 'tc27_5', description: { en: 'No crash', pt: 'Sem crash' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
+    ]
+  }
 }
 
