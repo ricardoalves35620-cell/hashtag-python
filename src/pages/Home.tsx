@@ -6,14 +6,19 @@ import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { loadFTProgress } from '../lib/fasttrackProgress'
 import { getOverallProgress } from '../lib/progress'
+import { getDueSkillStates, getLearningSummary, getWeakestSkillStates } from '../lib/learningEngine'
+import { getSkill } from '../data/skills'
 
 export default function Home() {
-  const { lang, displayName, progress, user, refreshProgress } = useApp()
+  const { lang, displayName, progress, user, refreshProgress, learningState, refreshLearningState } = useApp()
   const navigate = useNavigate()
   const totalPhases = ALL_PHASES.length
   const overall = getOverallProgress(progress)
   const passed = progress.filter(item => item.exam_passed && ALL_PHASES.some(phase => phase.id === item.phase_id)).length
   const [ftDone, setFtDone] = useState<number[]>([])
+  const learningSummary = getLearningSummary(learningState)
+  const dueReviews = getDueSkillStates(learningState)
+  const weakestSkills = getWeakestSkillStates(learningState, 3)
 
   useEffect(() => {
     if (user) loadFTProgress(user.id).then(setFtDone)
@@ -24,6 +29,7 @@ export default function Home() {
       if (!user) return
       loadFTProgress(user.id).then(setFtDone)
       refreshProgress()
+      refreshLearningState()
     }
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') refresh()
@@ -34,7 +40,7 @@ export default function Home() {
       window.removeEventListener('focus', refresh)
       document.removeEventListener('visibilitychange', handleVisibility)
     }
-  }, [user, refreshProgress])
+  }, [user, refreshProgress, refreshLearningState])
 
   const ftCompleted = ftDone.length === 7
 
@@ -45,6 +51,8 @@ export default function Home() {
       foundationTitle: 'Current module: Python foundation',
       foundationText: 'These phases build the base. Professional and advanced Python continue in the complete roadmap.',
       roadmap: 'See the complete learning roadmap',
+      learningTitle: 'Your learning today', reviewDue: dueReviews.length ? `${dueReviews.length} review${dueReviews.length === 1 ? '' : 's'} due` : 'Practice your weakest skills',
+      diagnostic: 'Take the initial diagnostic', mastery: 'Average skill mastery', gaps: 'Priority gaps', seeProgress: 'Open learning dashboard',
       ftTitle: '⚡ FastTrack',
       ftSub: ftCompleted ? '7/7 days complete ✓' : ftDone.length > 0 ? `Day ${ftDone.length + 1} of 7 up next` : '7 days · 20 min/day · Orientation only',
       ftBtn: ftCompleted ? 'Review' : ftDone.length > 0 ? 'Continue' : 'Start'
@@ -55,6 +63,8 @@ export default function Home() {
       foundationTitle: 'Módulo atual: fundamentos de Python',
       foundationText: 'Estas fases constroem a base. Python profissional e avançado continuam no mapa completo.',
       roadmap: 'Ver o mapa completo de aprendizagem',
+      learningTitle: 'Seu aprendizado hoje', reviewDue: dueReviews.length ? `${dueReviews.length} revis${dueReviews.length === 1 ? 'ão pendente' : 'ões pendentes'}` : 'Praticar habilidades mais fracas',
+      diagnostic: 'Fazer o diagnóstico inicial', mastery: 'Domínio médio das habilidades', gaps: 'Lacunas prioritárias', seeProgress: 'Abrir painel de aprendizagem',
       ftTitle: '⚡ FastTrack',
       ftSub: ftCompleted ? '7/7 dias completos ✓' : ftDone.length > 0 ? `Dia ${ftDone.length + 1} de 7 a seguir` : '7 dias · 20 min/dia · Apenas orientação',
       ftBtn: ftCompleted ? 'Revisar' : ftDone.length > 0 ? 'Continuar' : 'Começar'
@@ -83,6 +93,34 @@ export default function Home() {
             <span className="text-2xl">🗺️</span>
           </div>
         </button>
+
+        <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div>
+              <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🧠 {t.learningTitle}</div>
+              <div className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>{t.mastery}: {learningSummary.averageMastery}%</div>
+            </div>
+            <button onClick={() => navigate('/progress')} className="text-xs font-medium" style={{ color: 'var(--c-purple-l)', background: 'none', border: 'none' }}>{t.seeProgress} →</button>
+          </div>
+          {!learningState.diagnosticCompletedAt ? (
+            <button onClick={() => navigate('/diagnostic')} className="w-full rounded-lg py-2.5 text-sm font-medium text-white" style={{ background: 'var(--c-purple)' }}>{t.diagnostic}</button>
+          ) : (
+            <>
+              <button onClick={() => navigate('/review')} className="w-full rounded-lg py-2.5 text-sm font-medium" style={{ background: 'var(--c-purple-f)', color: 'var(--c-purple-l)', border: '1px solid var(--c-purple-dm)' }}>{t.reviewDue} →</button>
+              {weakestSkills.length > 0 && (
+                <div className="mt-3">
+                  <div className="text-[11px] uppercase tracking-wide mb-2" style={{ color: 'var(--c-muted)' }}>{t.gaps}</div>
+                  <div className="flex flex-wrap gap-2">
+                    {weakestSkills.map(state => {
+                      const skill = getSkill(state.skillId)
+                      return skill ? <span key={state.skillId} className="text-xs px-2 py-1 rounded-full" style={{ background: 'var(--c-bg)', color: 'var(--c-text2)' }}>{skill.title[lang]} · {state.mastery}%</span> : null
+                    })}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
 
         <button
           onClick={() => navigate('/fasttrack')}

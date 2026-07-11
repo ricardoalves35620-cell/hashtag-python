@@ -10,25 +10,40 @@ Aplicação bilíngue para ensinar Python desde conhecimentos digitais básicos 
 - A trilha principal continua por Python profissional, Python avançado, engenharia de software e capstones.
 - A trilha opcional de IA local começa somente depois dos pré-requisitos de Python.
 
-## Mudanças da revisão 1.2
+## Mudanças da revisão 1.3
+
+- Catálogo de 17 habilidades cobrindo todas as fases publicadas.
+- Diagnóstico inicial de dez conceitos, sem bloquear o curso.
+- Domínio calculado por habilidade a partir de exercícios, quizzes, exames e revisões.
+- Histórico local das últimas 500 tentativas por usuário.
+- Dicas progressivas, reveladas uma por vez.
+- Revisão espaçada em ciclos de 1, 3, 7, 14, 30 e 60 dias.
+- Respostas incorretas entram na fila de revisão no mesmo dia.
+- Painel de aprendizagem com domínio médio, lacunas e histórico.
+- Recomendações de revisão na Home.
+- Nova aba **Progresso** na navegação principal.
+- 29 testes automatizados.
+
+## Base técnica da revisão 1.2
 
 - Execução Python isolada em Web Worker descartável.
 - Timeout real de 6 segundos para interromper loops infinitos.
 - Análise estrutural usando a AST do Python.
-- Suporte a testes públicos e ocultos com valores não mostrados ao aluno.
-- Primeiros testes ocultos de funções aplicados à Fase 13.
-- Erros de configuração exibem instruções em vez de tela branca.
-- Error Boundary para falhas inesperadas da interface.
+- Suporte a testes públicos e ocultos.
+- Error Boundary e tela de configuração em vez de tela branca.
 - Cache do runtime Pyodide após a primeira carga.
-- Vitest com 21 testes automatizados.
-- `npm run check` valida typecheck, testes e build.
+- `npm run check` valida tipagem, testes e build.
 - Lockfile fixado no registro público do npm.
+
+## Persistência adaptativa
+
+O progresso formal das fases continua no Supabase. O diagnóstico, domínio por habilidade, histórico adaptativo e agenda de revisão da v1.3 ficam salvos localmente por usuário no navegador. A sincronização multi-dispositivo dessa camada será uma migração posterior, sem bloquear este deploy.
 
 ## Requisitos
 
 - Node.js 22.12 ou superior.
 - npm 10 ou superior.
-- Projeto Supabase configurado para login e sincronização.
+- Projeto Supabase configurado para login e sincronização do progresso formal.
 
 ## Instalação
 
@@ -50,7 +65,6 @@ npm audit
 ## Documentação
 
 - `docs/CURRICULUM_STRATEGY.md`: estratégia pedagógica e ordem das futuras entregas.
-- `docs/GIT_MIGRATION_WINDOWS.md`: como colocar esta versão limpa em uma nova pasta preservando o Git atual.
-- `docs/GRADING_AUTHORING.md`: como criar testes estruturais e testes ocultos de comportamento.
-- `docs/RELEASE_NOTES_1.2.md`: alterações e limites conhecidos desta entrega.
-- `docs/UPDATE_1.2_WINDOWS.md`: atualização direta do diretório atual no Windows.
+- `docs/GRADING_AUTHORING.md`: criação de testes estruturais e ocultos.
+- `docs/RELEASE_NOTES_1.2.md`: motor isolado e avaliador verificado.
+- `docs/RELEASE_NOTES_1.3.md`: aprendizagem adaptativa e revisão espaçada.

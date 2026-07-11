@@ -10,7 +10,7 @@ export default function BottomNav() {
     { path: '/', label: lang === 'en' ? 'Course' : 'Curso', icon: '📚' },
     { path: '/roadmap', label: lang === 'en' ? 'Paths' : 'Trilhas', icon: '🗺️' },
     { path: '/fasttrack', label: 'FastTrack', icon: '⚡' },
-    { path: '/group', label: lang === 'en' ? 'Group' : 'Grupo', icon: '👥' },
+    { path: '/progress', label: lang === 'en' ? 'Progress' : 'Progresso', icon: '📈' },
     { path: '/profile', label: lang === 'en' ? 'Profile' : 'Perfil', icon: '👤' },
   ]
 

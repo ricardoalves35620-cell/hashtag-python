@@ -11,11 +11,13 @@ import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
 import { preparePythonEngine } from '../lib/pyodide'
 import { gradeExercise, type ValidationItem } from '../lib/learningValidation'
+import { getSkillsForPhase } from '../data/skills'
+import { extractErrorCategory } from '../lib/learningEngine'
 
 export default function Exercises() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user, refreshProgress } = useApp()
+  const { lang, user, refreshProgress, recordLearningAttempt } = useApp()
   const phase = ALL_PHASES.find(item => item.id === Number(id))
 
   const [activeEx, setActiveEx] = useState(0)
@@ -29,7 +31,7 @@ export default function Exercises() {
   const [showRawError, setShowRawError] = useState(false)
   const [running, setRunning] = useState(false)
   const [pyodideLoading, setPyodideLoading] = useState(false)
-  const [hintsShown, setHintsShown] = useState<Record<string, boolean>>({})
+  const [hintLevels, setHintLevels] = useState<Record<string, number>>({})
   const [customInputs, setCustomInputs] = useState<Record<string, string>>({})
   const [validated, setValidated] = useState<Record<string, boolean>>({})
   const [validationMessage, setValidationMessage] = useState('')
@@ -80,6 +82,19 @@ export default function Exercises() {
       setValidated(previous => ({ ...previous, [exercise.id]: grade.passed }))
       setValidationMessage(grade.message)
 
+      const passedChecks = grade.checks.filter(check => check.passed).length
+      const attemptScore = grade.checks.length ? Math.round((passedChecks / grade.checks.length) * 100) : 0
+      recordLearningAttempt({
+        phaseId: phase.id,
+        activity: 'exercise',
+        itemId: exercise.id,
+        skillIds: getSkillsForPhase(phase.id),
+        score: grade.passed ? 100 : attemptScore,
+        passed: grade.passed,
+        hintsUsed: hintLevels[exercise.id] || 0,
+        errorCategory: extractErrorCategory(grade.error, grade.timedOut),
+      })
+
       if (grade.error) {
         setOutput(`❌ Error: ${grade.error}\n\n${grade.output}`)
         setErrorExplanation(explainError(grade.error, codes[exercise.id]))
@@ -105,13 +120,13 @@ export default function Exercises() {
   const t = {
     en: {
       exercise: 'Exercise', run: 'Run and validate', running: 'Running...', loading: 'Loading Python...',
-      hint: 'Show hints', hideHint: 'Hide hints', output: 'Output', complete: 'All validated — go to knowledge check →',
+      hint: 'Reveal first hint', nextHint: 'Reveal next hint', allHints: 'All hints revealed', output: 'Output', complete: 'All validated — go to knowledge check →',
       next: 'Next exercise →', phase: 'Phase', sampleOutput: 'Expected output',
       lockedNext: 'Run this exercise successfully to continue.', validated: 'Validated'
     },
     pt: {
       exercise: 'Exercício', run: 'Executar e validar', running: 'Executando...', loading: 'Carregando Python...',
-      hint: 'Ver dicas', hideHint: 'Esconder dicas', output: 'Saída', complete: 'Todos validados — ir para verificação →',
+      hint: 'Revelar primeira dica', nextHint: 'Revelar próxima dica', allHints: 'Todas as dicas reveladas', output: 'Saída', complete: 'Todos validados — ir para verificação →',
       next: 'Próximo exercício →', phase: 'Fase', sampleOutput: 'Saída esperada',
       lockedNext: 'Execute este exercício corretamente para continuar.', validated: 'Validado'
     }
@@ -219,13 +234,23 @@ export default function Exercises() {
 
         {exercise.hints.length > 0 && (
           <div style={{ marginTop: 10 }}>
-            <button onClick={() => setHintsShown(previous => ({ ...previous, [exercise.id]: !previous[exercise.id] }))} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--c-purple-l)', fontSize: 13 }}>
-              💡 {hintsShown[exercise.id] ? t.hideHint : t.hint}
+            <button
+              onClick={() => setHintLevels(previous => ({
+                ...previous,
+                [exercise.id]: Math.min((previous[exercise.id] || 0) + 1, exercise.hints.length),
+              }))}
+              disabled={(hintLevels[exercise.id] || 0) >= exercise.hints.length}
+              style={{ background: 'none', border: 'none', padding: 0, color: 'var(--c-purple-l)', fontSize: 13, opacity: (hintLevels[exercise.id] || 0) >= exercise.hints.length ? 0.65 : 1 }}
+            >
+              💡 {(hintLevels[exercise.id] || 0) === 0 ? t.hint : (hintLevels[exercise.id] || 0) < exercise.hints.length ? t.nextHint : t.allHints}
+              {(hintLevels[exercise.id] || 0) > 0 ? ` · ${hintLevels[exercise.id]}/${exercise.hints.length}` : ''}
             </button>
-            {hintsShown[exercise.id] && (
+            {(hintLevels[exercise.id] || 0) > 0 && (
               <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {exercise.hints.map((hint, index) => (
-                  <div key={index} style={{ fontSize: 13, background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)', borderRadius: 8, padding: '8px 12px', color: 'var(--c-purple-l)' }}>{hint[lang]}</div>
+                {exercise.hints.slice(0, hintLevels[exercise.id] || 0).map((hint, index) => (
+                  <div key={index} style={{ fontSize: 13, background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)', borderRadius: 8, padding: '8px 12px', color: 'var(--c-purple-l)' }}>
+                    <strong>{lang === 'en' ? `Hint ${index + 1}: ` : `Dica ${index + 1}: `}</strong>{hint[lang]}
+                  </div>
                 ))}
               </div>
             )}

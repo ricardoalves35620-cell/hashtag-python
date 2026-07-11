@@ -4,6 +4,11 @@ import { getSupabase } from '../lib/supabase'
 import { fetchProgress } from '../lib/progress'
 import type { Lang, UserProgress } from '../data/types'
 import type { User } from '@supabase/supabase-js'
+import {
+  applyLearningAttempt, applyLearningAttempts, createEmptyLearningState, loadLearningState,
+  markDiagnosticComplete as markDiagnosticCompleteState, saveLearningState,
+  type LearningAttemptInput, type LearningState,
+} from '../lib/learningEngine'
 
 export type Theme = 'dark' | 'light' | 'system'
 
@@ -19,6 +24,11 @@ interface AppContextType {
   refreshUser: () => Promise<void>
   displayName: string
   avatarUrl: string | null
+  learningState: LearningState
+  recordLearningAttempt: (attempt: LearningAttemptInput) => void
+  recordLearningAttempts: (attempts: LearningAttemptInput[]) => void
+  completeDiagnostic: () => void
+  refreshLearningState: () => void
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -50,6 +60,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<UserProgress[]>([])
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('Student')
+  const [learningState, setLearningState] = useState<LearningState>(() => createEmptyLearningState())
 
   const setLang = (l: Lang) => { setLangState(l); localStorage.setItem('hp_lang', l) }
 
@@ -102,8 +113,43 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => { if (user) refreshProgress() }, [user, refreshProgress])
 
+  const refreshLearningState = useCallback(() => {
+    if (!user) {
+      setLearningState(createEmptyLearningState())
+      return
+    }
+    setLearningState(loadLearningState(user.id))
+  }, [user])
+
+  useEffect(() => { refreshLearningState() }, [refreshLearningState])
+
+  const persistLearningState = useCallback((updater: (state: LearningState) => LearningState) => {
+    if (!user) return
+    setLearningState(previous => {
+      const next = updater(previous)
+      saveLearningState(user.id, next)
+      return next
+    })
+  }, [user])
+
+  const recordLearningAttempt = useCallback((attempt: LearningAttemptInput) => {
+    persistLearningState(state => applyLearningAttempt(state, attempt))
+  }, [persistLearningState])
+
+  const recordLearningAttempts = useCallback((attempts: LearningAttemptInput[]) => {
+    persistLearningState(state => applyLearningAttempts(state, attempts))
+  }, [persistLearningState])
+
+  const completeDiagnostic = useCallback(() => {
+    persistLearningState(state => markDiagnosticCompleteState(state))
+  }, [persistLearningState])
+
   return (
-    <AppContext.Provider value={{ lang, setLang, theme, setTheme, user, loading, progress, refreshProgress, refreshUser, displayName, avatarUrl }}>
+    <AppContext.Provider value={{
+      lang, setLang, theme, setTheme, user, loading, progress, refreshProgress, refreshUser,
+      displayName, avatarUrl, learningState, recordLearningAttempt, recordLearningAttempts,
+      completeDiagnostic, refreshLearningState,
+    }}>
       {children}
     </AppContext.Provider>
   )

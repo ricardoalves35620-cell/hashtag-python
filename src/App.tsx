@@ -15,6 +15,9 @@ import Roadmap from './pages/Roadmap'
 import Onboarding from './pages/Onboarding'
 import ResetPassword from './pages/ResetPassword'
 import ConfigurationScreen from './components/ConfigurationScreen'
+import LearningProgress from './pages/LearningProgress'
+import Review from './pages/Review'
+import Diagnostic from './pages/Diagnostic'
 import { appConfiguration } from './lib/config'
 
 // Redirect to /login if not authenticated
@@ -58,6 +61,9 @@ function AppRoutes() {
 
       {/* Other pages */}
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route path="/progress" element={<PrivateRoute><LearningProgress /></PrivateRoute>} />
+      <Route path="/review" element={<PrivateRoute><Review /></PrivateRoute>} />
+      <Route path="/diagnostic" element={<PrivateRoute><Diagnostic /></PrivateRoute>} />
       <Route path="/roadmap" element={<PrivateRoute><Roadmap /></PrivateRoute>} />
       <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
       <Route path="/group" element={<PrivateRoute><Group /></PrivateRoute>} />

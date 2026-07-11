@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
+import { getSkillsForPhase } from '../data/skills'
 
 const QUIZ_PASS_SCORE = 80
 
 export default function Quiz() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user, refreshProgress } = useApp()
+  const { lang, user, refreshProgress, recordLearningAttempt } = useApp()
   const phase = ALL_PHASES.find(item => item.id === Number(id))
 
   const [current, setCurrent] = useState(0)
@@ -18,6 +19,7 @@ export default function Quiz() {
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [showResult, setShowResult] = useState(false)
   const [saving, setSaving] = useState(false)
+  const attemptRecorded = useRef(false)
 
   if (!phase || phase.quiz.length === 0) {
     return (
@@ -41,6 +43,19 @@ export default function Quiz() {
 
   const handleNext = () => {
     if (current + 1 >= phase.quiz.length) {
+      if (!attemptRecorded.current) {
+        const correct = Object.entries(answers).filter(([questionIndex, answer]) => phase.quiz[Number(questionIndex)]?.correctIndex === answer).length
+        const score = Math.round((correct / phase.quiz.length) * 100)
+        recordLearningAttempt({
+          phaseId: phase.id,
+          activity: 'quiz',
+          itemId: `phase-${phase.id}-quiz`,
+          skillIds: getSkillsForPhase(phase.id),
+          score,
+          passed: score >= QUIZ_PASS_SCORE,
+        })
+        attemptRecorded.current = true
+      }
       setShowResult(true)
       return
     }
@@ -65,6 +80,7 @@ export default function Quiz() {
     setSelected(null)
     setAnswers({})
     setShowResult(false)
+    attemptRecorded.current = false
   }
 
   const t = {

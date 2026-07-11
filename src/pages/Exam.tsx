@@ -14,13 +14,15 @@ import { loadExamDraft, saveExamDraft, clearExamDraft } from '../lib/examDraft'
 import LessonBlock from '../components/LessonBlock'
 import { analyzeCode, preparePythonEngine, runCode, runExam, type TestResult } from '../lib/pyodide'
 import { validateExamStructure } from '../lib/learningValidation'
+import { getSkillsForPhase } from '../data/skills'
+import { extractErrorCategory } from '../lib/learningEngine'
 
 type Tab = 'scenario' | 'code' | 'results'
 
 export default function Exam() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user, refreshProgress, progress } = useApp()
+  const { lang, user, refreshProgress, progress, recordLearningAttempt } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
   const phaseProgress = progress.find(p => p.phase_id === Number(id))
 
@@ -126,6 +128,15 @@ export default function Exam() {
       const structure = validateExamStructure(phase.id, analysis, lang)
       if (!structure.passed) {
         setSubmitError((lang === 'en' ? 'Structure check: ' : 'Verificação de estrutura: ') + structure.message)
+        recordLearningAttempt({
+          phaseId: phase.id,
+          activity: 'exam',
+          itemId: `phase-${phase.id}-exam`,
+          skillIds: getSkillsForPhase(phase.id),
+          score: 0,
+          passed: false,
+          errorCategory: 'StructureError',
+        })
         setTab('code')
         scrollToTop()
         return
@@ -139,6 +150,17 @@ export default function Exam() {
       setScore(finalScore)
       const didPass = finalScore >= 90
       setPassed(didPass)
+      recordLearningAttempt({
+        phaseId: phase.id,
+        activity: 'exam',
+        itemId: `phase-${phase.id}-exam`,
+        skillIds: getSkillsForPhase(phase.id),
+        score: finalScore,
+        passed: didPass,
+        errorCategory: testResults.find(result => result.error)?.error
+          ? extractErrorCategory(testResults.find(result => result.error)?.error)
+          : null,
+      })
       setTab('results')
       scrollToTop()
       if (didPass) clearExamDraft(user.id, phase.id)
@@ -154,6 +176,15 @@ export default function Exam() {
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
+      recordLearningAttempt({
+        phaseId: phase.id,
+        activity: 'exam',
+        itemId: `phase-${phase.id}-exam`,
+        skillIds: getSkillsForPhase(phase.id),
+        score: 0,
+        passed: false,
+        errorCategory: extractErrorCategory(message),
+      })
       setSubmitError((lang === 'en' ? 'Error while grading: ' : 'Erro na correção: ') + message)
     } finally {
       setSubmitting(false)
