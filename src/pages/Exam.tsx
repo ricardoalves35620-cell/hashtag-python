@@ -244,6 +244,35 @@ export default function Exam() {
             {t.tip}
           </div>
 
+          {/* Fixed values notice */}
+          <div style={{
+            background: '#1a1200', border: '1px solid #92400e',
+            borderRadius: 10, padding: 14, marginBottom: 16,
+          }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#fbbf24', marginBottom: 8 }}>
+              ⚠️ {lang === 'en' ? 'Grading uses fixed test values' : 'A correção usa valores fixos'}
+            </div>
+            <p style={{ fontSize: 13, color: '#fde68a', margin: '0 0 8px', lineHeight: 1.6 }}>
+              {lang === 'en'
+                ? 'When you click "Submit for grading", your code runs automatically with the values shown in the test inputs box. Your logic must work correctly with those exact values.'
+                : 'Ao clicar em "Enviar para correção", seu código roda automaticamente com os valores mostrados na caixa de entradas de teste. Sua lógica precisa funcionar corretamente com esses valores exatos.'}
+            </p>
+            <div style={{
+              background: '#0f0a00', borderRadius: 8, padding: '8px 12px',
+              fontSize: 12, color: '#86efac', fontFamily: "'JetBrains Mono', monospace",
+              marginBottom: 8, lineHeight: 1.8,
+            }}>
+              {lang === 'en' ? '▶ Run my code' : '▶ Executar meu código'} → {lang === 'en' ? 'uses YOUR inputs (test freely with any values)' : 'usa SUAS entradas (teste livremente com qualquer valor)'}
+              <br />
+              {lang === 'en' ? '✓ Submit for grading' : '✓ Enviar para correção'} → {lang === 'en' ? 'uses FIXED inputs from this scenario' : 'usa as entradas FIXAS deste cenário'}
+            </div>
+            <p style={{ fontSize: 12, color: '#d97706', margin: 0, lineHeight: 1.5 }}>
+              💡 {lang === 'en'
+                ? 'Want to test with your own name or data? Use "Run my code" — change the test inputs freely. Just make sure your logic also works with the scenario values before submitting.'
+                : 'Quer testar com seu nome ou dados próprios? Use "Executar meu código" — mude as entradas livremente. Só garanta que sua lógica também funciona com os valores do enunciado antes de enviar.'}
+            </p>
+          </div>
+
           <button
             onClick={() => setTab('code')}
             style={{
@@ -270,8 +299,37 @@ export default function Exam() {
             label={lang === 'en' ? 'editable' : 'editável'}
           />
 
-          {/* Test input — smart labels */}
-          <div style={{ marginTop: 12 }}>
+          {/* Fixed grading values — read only */}
+          <div style={{
+            marginTop: 12, background: '#0f1a2e',
+            border: '1px solid #1e3a5f', borderRadius: 8, padding: '10px 14px',
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: '#7dd3fc', marginBottom: 6 }}>
+              🔒 {lang === 'en' ? 'Grading inputs (fixed — cannot change):' : 'Entradas da correção (fixas — não altere):'}
+            </div>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#93c5fd', lineHeight: 1.8 }}>
+              {phase.exam.testCases[0]?.inputs.length > 0
+                ? phase.exam.testCases[0].inputs.map((v, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 8 }}>
+                      <span style={{ color: '#475569', minWidth: 16 }}>{i + 1}.</span>
+                      <span>{v}</span>
+                    </div>
+                  ))
+                : <span style={{ color: '#475569' }}>{lang === 'en' ? '(no inputs needed)' : '(sem entradas necessárias)'}</span>
+              }
+            </div>
+            <div style={{ fontSize: 11, color: '#64748b', marginTop: 8, lineHeight: 1.5 }}>
+              {lang === 'en'
+                ? '↑ "Submit for grading" always uses these values. Use "Run my code" below to test with your own inputs.'
+                : '↑ "Enviar para correção" sempre usa esses valores. Use "Executar meu código" abaixo para testar com suas próprias entradas.'}
+            </div>
+          </div>
+
+          {/* Custom test inputs for "Run my code" only */}
+          <div style={{ marginTop: 8 }}>
+            <div style={{ fontSize: 11, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4 }}>
+              {lang === 'en' ? '▶ Your test inputs (for "Run my code" only):' : '▶ Suas entradas (somente para "Executar"):'}
+            </div>
             <TestInputEditor
               code={code}
               value={testInput}
