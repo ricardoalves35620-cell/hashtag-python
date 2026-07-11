@@ -31,6 +31,7 @@ export default function Exam() {
   const [results, setResults] = useState<TestResult[] | null>(null)
   const [score, setScore] = useState<number | null>(phaseProgress?.exam_score ?? null)
   const [passed, setPassed] = useState(phaseProgress?.exam_passed ?? false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
   const [showRawError, setShowRawError] = useState(false)
 
@@ -109,6 +110,8 @@ export default function Exam() {
       console.error(e)
       setResults(null)
       setScore(null)
+      const msg = e instanceof Error ? e.message : String(e)
+      setSubmitError(msg || 'Unknown error during grading. Check your code for syntax errors and try again.')
       setTab('code')
     } finally {
       setSubmitting(false)
@@ -295,9 +298,28 @@ export default function Exam() {
             </div>
           )}
 
+          {/* Submit error */}
+          {submitError && (
+            <div style={{
+              marginTop: 10, background: 'rgba(239,68,68,0.1)',
+              border: '1px solid rgba(239,68,68,0.4)',
+              borderRadius: 8, padding: '12px 14px',
+            }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#f87171', marginBottom: 4 }}>
+                {lang === 'en' ? '❌ Submission failed' : '❌ Envio falhou'}
+              </div>
+              <div style={{ fontSize: 12, color: '#fca5a5', lineHeight: 1.6 }}>{submitError}</div>
+              <div style={{ fontSize: 11, color: '#f87171', marginTop: 6 }}>
+                {lang === 'en'
+                  ? 'Check your code for syntax errors, then try again. Use "▶ Run my code" first to test.'
+                  : 'Verifique erros de sintaxe no código e tente novamente. Use "▶ Executar" primeiro para testar.'}
+              </div>
+            </div>
+          )}
+
           {/* Submit */}
           <button
-            onClick={handleSubmit}
+            onClick={() => { setSubmitError(null); handleSubmit() }}
             disabled={submitting || pyodideLoading}
             style={{
               width: '100%', marginTop: 14, padding: '14px',
@@ -364,28 +386,33 @@ export default function Exam() {
                           {result.passed ? '✅' : '❌'}
                         </span>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, color: 'var(--c-text)' }}>
+                          <div style={{ fontSize: 13, color: 'var(--c-text)', marginBottom: 4 }}>
                             {result.description[lang]}
                           </div>
-                          {!result.passed && result.output && (
-                            <div style={{ marginTop: 4 }}>
-                              <span style={{ fontSize: 11, color: 'var(--c-muted)' }}>
-                                {lang === 'en' ? 'Got:' : 'Obteve:'}
-                              </span>
-                              <span style={{
-                                fontSize: 11, fontFamily: "'JetBrains Mono', monospace",
-                                color: '#f48771', marginLeft: 4,
-                              }}>
-                                {result.output.slice(0, 80)}
-                              </span>
-                            </div>
-                          )}
-                          {result.error && (
-                            <div style={{
-                              fontSize: 11, fontFamily: "'JetBrains Mono', monospace",
-                              color: '#f48771', marginTop: 4,
-                            }}>
-                              {result.error.slice(0, 100)}
+                          {!result.passed && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              {result.error ? (
+                                <>
+                                  <div style={{ fontSize: 10, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    {lang === 'en' ? '⚡ Error in your code:' : '⚡ Erro no código:'}
+                                  </div>
+                                  <div style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: '#f48771', background: '#1a0505', borderRadius: 4, padding: '6px 8px', wordBreak: 'break-all' }}>
+                                    {result.error.slice(0, 200)}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div style={{ fontSize: 10, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    {lang === 'en' ? '📤 Your output:' : '📤 Sua saída:'}
+                                  </div>
+                                  <div style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: '#fca5a5', background: '#1a0505', borderRadius: 4, padding: '6px 8px', maxHeight: 80, overflowY: 'auto' }}>
+                                    {result.output ? result.output.slice(0, 300) : (lang === 'en' ? '(no output produced)' : '(nenhuma saída produzida)')}
+                                  </div>
+                                  <div style={{ fontSize: 11, color: '#fbbf24', lineHeight: 1.5 }}>
+                                    💡 {lang === 'en' ? 'This test checked: ' : 'Este teste verificou: '}<em>{result.description[lang]}</em>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           )}
                         </div>

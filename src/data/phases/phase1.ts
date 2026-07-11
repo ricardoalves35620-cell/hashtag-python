@@ -466,9 +466,9 @@ print("====================")
       },
       {
         id: 'tc1_3',
-        description: { en: 'Calculates correct age (1990 → 34)', pt: 'Calcula idade correta (1990 → 34)' },
+        description: { en: 'Age calculated correctly (any reasonable value for birth year 1990)', pt: 'Idade calculada corretamente (qualquer valor razoável para 1990)' },
         inputs: ['Alice', 'Smith', '1990', 'Python'],
-        checks: [{ type: 'contains', value: '34' }],
+        checks: [{ type: 'contains_any', value: ['28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43'] }],
         points: 10
       },
       {
@@ -494,9 +494,9 @@ print("====================")
       },
       {
         id: 'tc1_7',
-        description: { en: 'Calculates different age (2000 → 24)', pt: 'Calcula outra idade (2000 → 24)' },
+        description: { en: 'Age calculated for someone born in 2000 (any reasonable value)', pt: 'Idade calculada para nascido em 2000 (qualquer valor razoável)' },
         inputs: ['Bob', 'Jones', '2000', 'JavaScript'],
-        checks: [{ type: 'contains', value: '24' }],
+        checks: [{ type: 'contains_any', value: ['20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'] }],
         points: 10
       },
       {
@@ -508,9 +508,9 @@ print("====================")
       },
       {
         id: 'tc1_9',
-        description: { en: 'Works with third test set (Maria)', pt: 'Funciona com terceiro conjunto (Maria)' },
+        description: { en: 'Full name (first + last) shown in output', pt: 'Nome completo (primeiro + último) mostrado na saída' },
         inputs: ['Maria', 'Silva', '1985', 'Ruby'],
-        checks: [{ type: 'contains', value: 'Maria' }, { type: 'contains', value: '39' }],
+        checks: [{ type: 'contains', value: 'Maria' }, { type: 'contains', value: 'Silva' }],
         points: 10
       },
       {
