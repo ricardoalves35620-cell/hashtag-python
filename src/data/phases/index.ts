@@ -1,1 +1,1 @@
-export { ALL_PHASES } from "./phase1";
+export { ALL_PHASES } from './phase1';
