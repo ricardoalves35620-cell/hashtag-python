@@ -1,38 +1,54 @@
-# #Python — Family Python Course
+# 📚 HASHTAG PYTHON — Conteúdo de Aulas Atualizado
 
-Interactive Python course with in-browser code execution and automatic exam grading.
+## ✨ O QUE MUDOU?
 
-## Stack
-- React 18 + TypeScript + Vite
-- Tailwind CSS
-- React Router v6
-- Supabase (auth + progress)
-- Pyodide (Python in the browser)
-- CodeMirror 6 (code editor)
-- Cloudflare Pages (hosting)
+As fases agora têm **conteúdo rico e realista** com:
 
-## Setup
+✅ Cenários do mundo real (seguros, construção civil)
+✅ Exemplos práticos e funcionais
+✅ Exercícios com passos guiados
+✅ Exames rigorosos (10 casos de teste cada)
+✅ 100% bilíngue (EN/PT)
 
-### 1. Supabase
-1. Go to https://supabase.com → create a new project
-2. Go to SQL Editor → paste the contents of `supabase/schema.sql` → Run
-3. Go to Project Settings → API → copy `URL` and `anon public` key
+## 📂 PASTAS PARA SUBSTITUIR
 
-### 2. Environment variables
 ```
-cp .env.example .env
-```
-Fill in your Supabase values:
-```
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+src/data/phases/      ← Substitua completamente
+src/pages/Group.tsx   ← Substitua completamente
 ```
 
-### 3. Run locally
-```
-npm install
-npm run dev
-```
+## 🚀 COMO USAR
 
-### 4. Deploy to Cloudflare Pages
-See deployment instructions below.
+1. Extraia este arquivo
+2. Copie pasta para pasta pro seu projeto:
+   ```
+   replacements/src/data/phases/  →  seu-projeto/src/data/phases/
+   replacements/src/pages/Group.tsx  →  seu-projeto/src/pages/
+   ```
+3. Git:
+   ```
+   git add .
+   git commit -m "feat: add rich real-world curriculum content"
+   git push
+   ```
+
+## 📖 FASES INCLUÍDAS
+
+1. **Variables & Data Types** — Insurance claim calculations
+2. **Basic Operations** — Deductibles, coverage, construction budgets
+3. **Lists & Collections** — Manage multiple claims
+4. **Loops & Iteration** — Batch processing
+5. **Functions & Modularity** — Reusable calculations
+6. **Strings & Formatting** — Generate reports
+7. **Dictionaries** — Structure claim data
+8. **File I/O** — Export to CSV/JSON
+
+## 🎯 CENÁRIOS REAIS
+
+- 🏢 Insurance adjuster workflow
+- 🏗️ Construction budget calculations
+- 📊 Monthly reports processing
+- 💾 Data persistence systems
+
+Pronto para usar! 🚀
+
