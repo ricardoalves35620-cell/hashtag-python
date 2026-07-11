@@ -93,28 +93,55 @@ export default function Exam() {
   const handleSubmit = async () => {
     if (!user) return
     setSubmitting(true)
+    setSubmitError(null)
+
+    // Step 1: Load Pyodide
+    let py: Awaited<ReturnType<typeof getPyodide>>
     try {
       setPyodideLoading(true)
-      const py = await getPyodide()
+      py = await getPyodide()
       setPyodideLoading(false)
-      const { results: testResults, score: finalScore } = await runExam(py, code, phase.exam.testCases)
-      setResults(testResults)
-      setScore(finalScore)
-      const didPass = finalScore >= 90
-      setPassed(didPass)
-      await saveExamScore(user.id, phase.id, finalScore)
-      await refreshProgress()
-      setTab('results')
-      scrollToTop()
     } catch (e) {
-      console.error(e)
-      setResults(null)
-      setScore(null)
-      const msg = e instanceof Error ? e.message : String(e)
-      setSubmitError(msg || 'Unknown error during grading. Check your code for syntax errors and try again.')
-      setTab('code')
-    } finally {
+      setSubmitError(lang === 'en'
+        ? 'Failed to load Python engine. Check connection and try again.'
+        : 'Falha ao carregar Python. Verifique sua conexão e tente novamente.')
       setSubmitting(false)
+      return
+    }
+
+    // Step 2: Run all test cases
+    let testResults: TestResult[]
+    let finalScore: number
+    try {
+      const examResult = await runExam(py!, code, phase.exam.testCases)
+      testResults = examResult.results
+      finalScore = examResult.score
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      setSubmitError((lang === 'en' ? 'Error while grading: ' : 'Erro na correção: ') + (msg || 'unknown'))
+      setSubmitting(false)
+      return
+    }
+
+    // Step 3: Show results IMMEDIATELY — never block the user on save
+    setResults(testResults!)
+    setScore(finalScore!)
+    const didPass = finalScore! >= 90
+    setPassed(didPass)
+    setTab('results')
+    setSubmitting(false)
+    scrollToTop()
+
+    // Step 4: Save to Supabase in background (non-blocking)
+    try {
+      await saveExamScore(user.id, phase.id, finalScore!)
+      await refreshProgress()
+    } catch (e) {
+      console.error('Save failed:', e)
+      // Show a non-blocking warning — user already sees results
+      setSubmitError(lang === 'en'
+        ? '⚠️ Results shown but failed to save. Check connection.'
+        : '⚠️ Resultados exibidos, mas falha ao salvar. Verifique conexão.')
     }
   }
 
