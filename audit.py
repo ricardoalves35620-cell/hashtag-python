@@ -1,105 +1,95 @@
 #!/usr/bin/env python3
 """
-Hashtag Python — Pre-deployment audit script
+Hashtag Python — Pre-deployment audit
 Run: python3 audit.py
+Catches: duplicate imports, unbalanced brackets, bad routes,
+invalid CheckTypes, and UNESCAPED ${ in template literals (breaks tsc).
 """
-import re, os, sys
+import re, os, sys, glob
 
-SRC = os.path.join(os.path.dirname(__file__), 'src')
-
-PHASE_FILES = [
-    'data/phases/phase1.ts',
-    'data/phases/phases_2_to_8.ts',
-    'data/phases/phases_9_to_27_stubs.ts',
-    'data/phases/index.ts',
-]
-PAGE_FILES = [
-    'App.tsx',
-    'pages/Login.tsx',
-    'pages/PhaseOverview.tsx',
-    'pages/Lesson.tsx',
-    'pages/Exercises.tsx',
-    'pages/Quiz.tsx',
-    'pages/Exam.tsx',
-    'components/Layout.tsx',
-    'components/BottomNav.tsx',
-]
-
-VALID_CHECK_TYPES = {'contains', 'contains_any', 'not_contains', 'no_error'}
-VALID_BLOCK_TYPES = {'heading', 'text', 'code', 'tip', 'warning', 'video'}
+SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src')
+VALID_CHECK = {'contains', 'contains_any', 'not_contains', 'no_error'}
 
 def audit_file(fpath):
     issues = []
-    if not os.path.exists(fpath):
-        return [f"FILE NOT FOUND: {fpath}"]
-
-    with open(fpath) as f:
+    with open(fpath, encoding='utf-8') as f:
         content = f.read()
-        lines = content.split('\n')
+    lines = content.split('\n')
 
     # 1. Duplicate imports
-    imports = [l for l in lines if l.startswith('import')]
     seen = set()
-    for imp in imports:
-        if imp in seen:
-            issues.append(f"DUPLICATE IMPORT: {imp.strip()}")
-        seen.add(imp)
+    for line in lines:
+        if line.startswith('import'):
+            if line in seen:
+                issues.append(f"DUPLICATE IMPORT: {line.strip()[:70]}")
+            seen.add(line)
 
-    # 2. Balanced brackets
-    b = content.count('{') - content.count('}')
-    s = content.count('[') - content.count(']')
-    p = content.count('(') - content.count(')')
-    if b != 0: issues.append(f"Unbalanced braces: {b:+}")
-    if s != 0: issues.append(f"Unbalanced squares: {s:+}")
-    if p != 0: issues.append(f"Unbalanced parens: {p:+}")
+    # 2. Balanced brackets — hard error only in data files.
+    #    Components may have brackets inside strings (false positives);
+    #    the definitive check for those is `npm run build`.
+    is_data_file = '/data/phases/' in fpath.replace('\\', '/')
+    if is_data_file:
+        for c, d in [('{','}'), ('[',']'), ('(',')')]:
+            diff = content.count(c) - content.count(d)
+            if diff:
+                issues.append(f"Unbalanced {c}{d}: {diff:+}")
 
-    # 3. Bad /home routes (not the redirect)
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-        if ('navigate("/home")' in stripped or "navigate('/home')" in stripped
-            or ('to="/home"' in stripped and 'Navigate' not in stripped)
-            or ('to=\'/home\'' in stripped and 'Navigate' not in stripped)):
-            issues.append(f"Line {i+1}: BAD /home route: {stripped[:80]}")
+    # 3. Bad /home routes
+    for i, line in enumerate(lines, 1):
+        s = line.strip()
+        if ('navigate("/home")' in s or "navigate('/home')" in s
+            or ('to="/home"' in s and 'Navigate' not in s)):
+            issues.append(f"Line {i}: bad /home route")
 
-    # 4. Invalid CheckType in exercise/exam checks arrays
-    for m in re.finditer(r'checks:\s*\[.*?type:\s*[\'"]([^\'"]+)[\'"]', content, re.DOTALL):
-        t = m.group(1)
-        if t not in VALID_CHECK_TYPES:
-            issues.append(f"Invalid CheckType in checks[]: '{t}'")
+    # 4. Invalid CheckType in checks[]
+    for m in re.finditer(r'checks:\s*\[([^\]]+)\]', content, re.DOTALL):
+        for t in re.findall(r"type:\s*['\"]([^'\"]+)['\"]", m.group(1)):
+            if t not in VALID_CHECK:
+                issues.append(f"Invalid CheckType: '{t}'")
+
+    # 5. CRITICAL: unescaped ${ inside template literals in DATA files
+    #    (Python f-strings like f"${amount:.2f}" break the TS parser)
+    if '/data/phases/' in fpath.replace('\\', '/'):
+        for i, line in enumerate(lines, 1):
+            for m in re.finditer(r'(?<!\\)\$\{', line):
+                issues.append(f"Line {i}: UNESCAPED ${{ in template literal (use \\${{): {line.strip()[:60]}")
 
     return issues
 
 def main():
-    all_files = PHASE_FILES + PAGE_FILES
-    all_ok = True
+    files = sorted(
+        glob.glob(os.path.join(SRC, 'data', 'phases', '*.ts'))
+        + glob.glob(os.path.join(SRC, '*.tsx'))
+        + glob.glob(os.path.join(SRC, 'pages', '*.tsx'))
+        + glob.glob(os.path.join(SRC, 'components', '*.tsx'))
+    )
 
     print("=" * 60)
     print("HASHTAG PYTHON — PRE-DEPLOY AUDIT")
     print("=" * 60)
 
-    for rel_path in all_files:
-        fpath = os.path.join(SRC, rel_path)
+    all_ok = True
+    for fpath in files:
         issues = audit_file(fpath)
         name = os.path.basename(fpath)
-
         if issues:
             all_ok = False
             print(f"\n❌ {name}")
             for issue in issues:
                 print(f"   → {issue}")
         else:
-            with open(fpath) as f:
-                n = len(f.readlines())
+            with open(fpath, encoding='utf-8') as f:
+                n = sum(1 for _ in f)
             print(f"✅ {name} ({n} lines)")
 
     print("\n" + "=" * 60)
     if all_ok:
-        print("✅ ALL FILES CLEAN — safe to deploy")
+        print("✅ AUDIT PASSED")
+        print("   Recommended final check: npm run build")
         sys.exit(0)
     else:
         print("❌ FIX ISSUES BEFORE DEPLOYING")
         sys.exit(1)
-    print("=" * 60)
 
 if __name__ == '__main__':
     main()

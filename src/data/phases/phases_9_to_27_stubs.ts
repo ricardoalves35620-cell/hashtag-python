@@ -516,7 +516,7 @@ for claim in claims:
         approved_count += 1
         print("✅", claim["client"], "→ $", payout)
 
-print(f"Total: ${total} across {approved_count} claims")`
+print(f"Total: \${total} across {approved_count} claims")`
       }
     ]
   },
@@ -844,7 +844,7 @@ print("Big only:", big_payouts)`,
 
 all_payouts   = [d - 250 for d in damages]
 big_payouts   = [d - 250 for d in damages if d > 3000]
-client_labels = [f"Client #{i+1}: ${damages[i]-250}" for i in range(len(damages))]
+client_labels = [f"Client #{i+1}: \${damages[i]-250}" for i in range(len(damages))]
 
 print(all_payouts)
 print(big_payouts)
@@ -1138,7 +1138,7 @@ print(calculate_payout(5000, 100, 1.0)) # 4900.0`
       {
         type: 'code',
         code: `def register_claim(client, damage, status="pending", priority="normal"):
-    print(f"Claim for {client}: ${damage} | {status} | {priority}")
+    print(f"Claim for {client}: \${damage} | {status} | {priority}")
 
 # Positional (in order):
 register_claim("Alice", 5000)
@@ -1206,15 +1206,15 @@ print(payout(5000, 100)) # 4900`,
 
 # Test 1: all defaults
 payout, priority, status = full_claim_report("Alice", 6000)
-print(f"Alice: ${payout} | {priority} | {status}")
+print(f"Alice: \${payout} | {priority} | {status}")
 
 # Test 2: custom deductible
 payout, priority, status = full_claim_report("Bob", 12000, deductible=500)
-print(f"Bob: ${payout} | {priority} | {status}")
+print(f"Bob: \${payout} | {priority} | {status}")
 
 # Test 3: custom coverage
 payout, priority, status = full_claim_report("Carlos", 3000, coverage=1.0)
-print(f"Carlos: ${payout} | {priority} | {status}")`,
+print(f"Carlos: \${payout} | {priority} | {status}")`,
       hints: [
         { en: 'Return multiple values: return payout, priority, status', pt: 'Retorne múltiplos valores: return payout, priority, status' },
         { en: 'Unpack: payout, priority, status = function_call()', pt: 'Desempacote: payout, priority, status = chamada_funcao()' }
@@ -1510,7 +1510,7 @@ def summary(client, damage, ded):
     """
     p = payout(damage, ded)
     r = priority(damage)
-    print(f"{client} | {r} | ${p}")
+    print(f"{client} | {r} | \${p}")
 
 claims = [("Alice", 12000, 300), ("Bob", 4500, 250), ("Carlos", 7800, 400)]
 for name, dmg, ded in claims:
@@ -2314,7 +2314,7 @@ for i in range(5):
     payout = damage - 250
     risk = "HIGH" if damage > 5000 else "normal"
     if damage > 5000: high_risk += 1
-    print(f"Claim {i+1}: ${damage} → ${payout} [{risk}]")
+    print(f"Claim {i+1}: \${damage} → \${payout} [{risk}]")
 
 print("High risk:", high_risk)`,
       hints: [{ en: 'random.randint(500, 12000) generates the damage', pt: 'random.randint(500, 12000) gera o dano' }],
@@ -2344,7 +2344,7 @@ for i in range(10):
     if damage > 8000:   level = "CRITICAL"; critical += 1
     elif damage >= 3000: level = "URGENT";  urgent += 1
     else:                level = "normal";  normal_c += 1
-    print(f"#{i+1}: ${damage} → ${payout} [{level}]")
+    print(f"#{i+1}: \${damage} → \${payout} [{level}]")
 
 print(f"Critical:{critical} Urgent:{urgent} Normal:{normal_c}")
 print("Total: $", total)`,
@@ -2389,7 +2389,7 @@ print(math.floor(4.9))  # 4 — always DOWN
 # Compound interest formula: A = P * (1+r)^t
 principal = 10000
 amount = principal * math.pow(1.08, 5)
-print(f"After 5 years: ${amount:.2f}")` },
+print(f"After 5 years: \${amount:.2f}")` },
       { type: 'tip', content: {
         en: '💡 ceil vs floor vs round:\n• ceil(4.1) = 5  (always UP)\n• floor(4.9) = 4  (always DOWN)\n• round(4.5) = 4  (banker\'s rounding)',
         pt: '💡 ceil vs floor vs round:\n• ceil(4.1) = 5  (sempre PARA CIMA)\n• floor(4.9) = 4  (sempre PARA BAIXO)\n• round(4.5) = 4  (arredondamento bancário)'
@@ -2427,8 +2427,8 @@ years = 5
 amount = principal * math.pow(1 + rate, years)
 rounded = math.ceil(amount)
 
-print(f"After {years} years: ${amount:.2f}")
-print(f"Rounded up: ${rounded}")`,
+print(f"After {years} years: \${amount:.2f}")
+print(f"Rounded up: \${rounded}")`,
       hints: [{ en: 'math.pow(base, exp) raises base to power', pt: 'math.pow(base, exp) eleva base à potência' }],
       sampleOutput: { en: 'After 5 years: $14693.28\nRounded up: $14694', pt: 'After 5 years: $14693.28\nRounded up: $14694' }
     }
@@ -2454,7 +2454,7 @@ sites = [
 for s in sites:
     area = s["a"] * s["b"] if s["type"] == "rect" else math.pi * s["a"]**2
     cost = math.ceil(area * 150)
-    print(f"{s['name']}: {area:.1f} m² → ${cost}")`,
+    print(f"{s['name']}: {area:.1f} m² → \${cost}")`,
     testCases: [
       { id: 'tc22_1', description: { en: 'Warehouse 150000', pt: 'Warehouse 150000' }, inputs: [], checks: [{ type: 'contains', value: '150000' }], points: 30 },
       { id: 'tc22_2', description: { en: 'Tank shown', pt: 'Tank mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Tank' }], points: 30 },
@@ -2573,7 +2573,7 @@ for name, raw in entries:
     try:
         damage = int(raw)
         if damage <= 0: raise ValueError("Must be positive")
-        print(f"✅ {name}: ${damage - 250}")
+        print(f"✅ {name}: \${damage - 250}")
     except ValueError as e:
         print(f"❌ {name}: {e}")`,
     testCases: [
@@ -2726,7 +2726,7 @@ history = []
 for name, base, risk, years in clients:
     try:
         premium = calc_premium(base, risk, years)
-        entry = f"{name}: ${premium:.2f}"
+        entry = f"{name}: \${premium:.2f}"
         history.append(entry)
         print("✅", entry)
     except ValueError as e:
@@ -2769,7 +2769,7 @@ def create(db, client, damage):
     db.append({"id": len(db)+1, "client": client, "damage": damage})
 
 def read_all(db):
-    for c in db: print(f"#{c['id']} {c['client']} ${c['damage']}")
+    for c in db: print(f"#{c['id']} {c['client']} \${c['damage']}")
 
 def update(db, cid, new_damage):
     for c in db:
@@ -2828,7 +2828,7 @@ read_all(db)`,
     db.append({"id": len(db)+1, "client": client, "damage": damage})
 
 def read_all(db):
-    for c in db: print(f"#{c['id']} {c['client']} ${c['damage']}")
+    for c in db: print(f"#{c['id']} {c['client']} \${c['damage']}")
 
 def update(db, cid, new_damage):
     for c in db:
@@ -2866,7 +2866,7 @@ print("Final:"); read_all(db)`,
     db.append({"id": len(db)+1, "client": client, "damage": damage})
 
 def read_all(db):
-    for c in db: print(f"#{c['id']} {c['client']} ${c['damage']}")
+    for c in db: print(f"#{c['id']} {c['client']} \${c['damage']}")
 
 def update(db, cid, new_damage):
     for c in db:
@@ -2918,10 +2918,10 @@ minimum = min(data)
 median  = sorted(data)[len(data) // 2]
 critical = len([d for d in data if d > 5000])
 
-print(f"Total:    ${total:,}")
-print(f"Average:  ${average:,.0f}")
-print(f"Max/Min:  ${maximum} / ${minimum}")
-print(f"Median:   ${median}")
+print(f"Total:    \${total:,}")
+print(f"Average:  \${average:,.0f}")
+print(f"Max/Min:  \${maximum} / \${minimum}")
+print(f"Median:   \${median}")
 print(f"Critical: {critical} claims")` },
       { type: 'tip', content: {
         en: '💡 sorted(data, reverse=True)[:3] → top 3 highest\n   sorted(data)[:3] → bottom 3\n   sum(x for x in data if x > 5000) → sum with filter',
@@ -2944,8 +2944,8 @@ median   = sorted_c[___]              # fill: middle index
 
 critical = len([c for c in claims if c ___ 5000])  # fill: operator
 
-print(f"Average: ${average:.0f}")
-print(f"Median:  ${median}")
+print(f"Average: \${average:.0f}")
+print(f"Median:  \${median}")
 print(f"Critical: {critical}")`,
       hints: [
         { en: 'Middle index = len(list) // 2', pt: 'Índice do meio = len(lista) // 2' },
@@ -2971,9 +2971,9 @@ normal   = len([c for c in claims if c < 3000])
 top3     = sorted(claims, reverse=True)[:3]
 
 print(f"=== REPORT ===")
-print(f"Total: ${total:,} | Avg: ${average:,.0f}")
-print(f"Min: ${minimum} | Max: ${maximum} | Median: ${median}")
-print(f"Payout: ${payout:,}")
+print(f"Total: \${total:,} | Avg: \${average:,.0f}")
+print(f"Min: \${minimum} | Max: \${maximum} | Median: \${median}")
+print(f"Payout: \${payout:,}")
 print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
 print(f"Top 3: {top3}")`,
       hints: [{ en: 'sorted(claims, reverse=True)[:3] gets top 3', pt: 'sorted(claims, reverse=True)[:3] pega top 3' }],
@@ -3003,10 +3003,10 @@ urgent   = len([c for c in claims if 3000 <= c <= 8000])
 normal   = len([c for c in claims if c < 3000])
 top3     = sorted(claims, reverse=True)[:3]
 
-print(f"Claims: {len(claims)} | Total: ${total:,}")
-print(f"Avg: ${average:,.0f} | Median: ${median:,}")
-print(f"Min: ${minimum:,} | Max: ${maximum:,}")
-print(f"Payout: ${payout:,}")
+print(f"Claims: {len(claims)} | Total: \${total:,}")
+print(f"Avg: \${average:,.0f} | Median: \${median:,}")
+print(f"Min: \${minimum:,} | Max: \${maximum:,}")
+print(f"Payout: \${payout:,}")
 print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
 print(f"Top 3: {top3}")`,
     testCases: [
@@ -3059,7 +3059,7 @@ def create_claim(db, client, damage, ded=250):
 
 def read_all(db):
     for c in db:
-        print(f"#{c['id']} {c['client']} ${c['damage']} [{c['priority']}] {c['status']}")
+        print(f"#{c['id']} {c['client']} \${c['damage']} [{c['priority']}] {c['status']}")
 
 def update_status(db, cid, status):
     for c in db:
@@ -3069,7 +3069,7 @@ def analyze(db):
     if not db: return
     total  = sum(c["damage"] for c in db)
     payout = sum(c["payout"] for c in db)
-    print(f"Total: ${total:,} | Payout: ${payout:,} | Claims: {len(db)}")` }
+    print(f"Total: \${total:,} | Payout: \${payout:,} | Claims: {len(db)}")` }
     ]
   },
   exercises: [
@@ -3119,7 +3119,7 @@ def create_claim(db, client, damage, ded=250):
 
 def read_all(db):
     for c in db:
-        print(f"#{c['id']} {c['client']} ${c['damage']} [{c['priority']}] {c['status']}")
+        print(f"#{c['id']} {c['client']} \${c['damage']} [{c['priority']}] {c['status']}")
 
 def update_status(db, cid, status):
     for c in db:
@@ -3131,7 +3131,7 @@ def delete_claim(db, cid):
 def analyze(db):
     total = sum(c["damage"] for c in db)
     payout = sum(c["payout"] for c in db)
-    print(f"Claims:{len(db)} | Damage:${total:,} | Payout:${payout:,}")
+    print(f"Claims:{len(db)} | Damage:\${total:,} | Payout:\${payout:,}")
 
 db = []
 try:
@@ -3174,7 +3174,7 @@ def create_claim(db, client, damage, ded=250):
 
 def read_all(db):
     for c in db:
-        print(f"#{c['id']} {c['client']} ${c['damage']} [{c['priority']}] {c['status']}")
+        print(f"#{c['id']} {c['client']} \${c['damage']} [{c['priority']}] {c['status']}")
 
 def update_status(db, cid, status):
     for c in db:
@@ -3186,7 +3186,7 @@ def delete_claim(db, cid):
 def analyze(db):
     total = sum(c["damage"] for c in db)
     payout = sum(c["payout"] for c in db)
-    print(f"Claims:{len(db)} | Total:${total:,} | Payout:${payout:,}")
+    print(f"Claims:{len(db)} | Total:\${total:,} | Payout:\${payout:,}")
 
 db = []
 try:
