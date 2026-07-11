@@ -19,7 +19,7 @@ export default function Layout({ children, showBack, backTo = '/home', backLabel
   const showNav = !hideNav
 
   return (
-    <div className="flex flex-col max-w-lg mx-auto" style={{ minHeight: '100dvh', background: 'var(--c-bg)' }}>
+    <div className="flex flex-col max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto" style={{ minHeight: '100dvh', background: 'var(--c-bg)' }}>
 
       {/* ── Header ── */}
       <header

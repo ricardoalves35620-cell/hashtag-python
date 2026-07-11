@@ -9,10 +9,17 @@ import { getPhaseStatus } from '../lib/progress'
 export default function PhaseOverview() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, progress } = useApp()
+  const { lang, progress, refreshProgress } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
 
   useEffect(() => { scrollToTop() }, [])
+
+  // Refresh progress when page gains focus — catches updates from other devices
+  useEffect(() => {
+    const refresh = () => refreshProgress()
+    window.addEventListener('focus', refresh)
+    return () => window.removeEventListener('focus', refresh)
+  }, [refreshProgress])
 
   if (!phase) return <div className="p-4 text-muted">Phase not found</div>
 

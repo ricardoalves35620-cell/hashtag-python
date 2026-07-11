@@ -58,7 +58,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed left-0 right-0 bottom-0 z-30 flex max-w-lg mx-auto"
+      className="fixed left-0 right-0 bottom-0 z-30 flex max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto"
       style={{
         background: 'var(--c-header)',
         borderTop: '0.5px solid var(--c-border)',

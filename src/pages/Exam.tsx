@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { scrollToTop } from '../lib/scroll'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
@@ -10,6 +10,8 @@ import type { ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { saveExamScore } from '../lib/progress'
+import { loadExamDraft, saveExamDraft, clearExamDraft } from '../lib/examDraft'
+import LessonBlock from '../components/LessonBlock'
 import { getPyodide, runCode, runExam, type TestResult } from '../lib/pyodide'
 
 type Tab = 'scenario' | 'code' | 'results'
@@ -23,6 +25,22 @@ export default function Exam() {
 
   const [tab, setTab] = useState<Tab>('scenario')
   const [code, setCode] = useState(phase?.exam.starterCode || '')
+  const [draftLoaded, setDraftLoaded] = useState(false)
+
+  // Load saved draft on mount — restores code across devices/sessions
+  useEffect(() => {
+    if (!user || !phase) return
+    loadExamDraft(user.id, phase.id, phase.exam.starterCode).then(draft => {
+      setCode(draft)
+      setDraftLoaded(true)
+    })
+  }, [user, phase?.id])
+
+  // Auto-save draft as user types (debounced inside saveExamDraft)
+  useEffect(() => {
+    if (!user || !phase || !draftLoaded) return
+    saveExamDraft(user.id, phase.id, code)
+  }, [code, user, phase?.id, draftLoaded])
   const [testOutput, setTestOutput] = useState('')
   const [testInput, setTestInput] = useState('')
   const [running, setRunning] = useState(false)
@@ -33,6 +51,7 @@ export default function Exam() {
   const [passed, setPassed] = useState(phaseProgress?.exam_passed ?? false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showScenario, setShowScenario] = useState(false)
+  const [showReference, setShowReference] = useState(false)
   const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
   const [showRawError, setShowRawError] = useState(false)
 
@@ -132,6 +151,7 @@ export default function Exam() {
     setTab('results')
     setSubmitting(false)
     scrollToTop()
+    if (didPass && user) clearExamDraft(user.id, phase.id)
 
     // Step 4: Save to Supabase in background (non-blocking)
     try {
@@ -291,21 +311,49 @@ export default function Exam() {
       {/* ── CODE TAB ── */}
       {tab === 'code' && (
         <div style={{ padding: '16px' }}>
-          {/* Collapsible scenario panel */}
-          <div style={{ marginBottom: 10 }}>
+          {/* Collapsible scenario + reference panels */}
+          <div style={{ marginBottom: 10, display: 'flex', gap: 8 }}>
             <button
-              onClick={() => setShowScenario(s => !s)}
+              onClick={() => { setShowScenario(s => !s); setShowReference(false) }}
               style={{
-                width: '100%', padding: '10px 14px', borderRadius: 10,
-                background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
-                color: 'var(--c-text2)', fontSize: 13, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                flex: 1, padding: '10px 14px', borderRadius: 10,
+                background: showScenario ? 'var(--c-purple-dm)' : 'var(--c-card)',
+                border: '0.5px solid var(--c-border)',
+                color: showScenario ? 'var(--c-purple-l)' : 'var(--c-text2)', fontSize: 13, cursor: 'pointer',
               }}
             >
-              <span>📋 {lang === 'en' ? 'See scenario & requirements' : 'Ver cenário e requisitos'}</span>
-              <span style={{ fontSize: 12, color: 'var(--c-muted)' }}>{showScenario ? '▲ hide' : '▼ show'}</span>
+              📋 {lang === 'en' ? 'Scenario' : 'Cenário'}
             </button>
-            {showScenario && (
+            <button
+              onClick={() => { setShowReference(r => !r); setShowScenario(false) }}
+              style={{
+                flex: 1, padding: '10px 14px', borderRadius: 10,
+                background: showReference ? 'var(--c-purple-dm)' : 'var(--c-card)',
+                border: '0.5px solid var(--c-border)',
+                color: showReference ? 'var(--c-purple-l)' : 'var(--c-text2)', fontSize: 13, cursor: 'pointer',
+              }}
+            >
+              📖 {lang === 'en' ? 'Lesson reference' : 'Consultar aula'}
+            </button>
+          </div>
+
+          {/* Reference panel — shows the phase's lesson content without leaving the exam */}
+          {showReference && (
+            <div style={{
+              marginBottom: 10, background: 'var(--c-card)',
+              border: '0.5px solid var(--c-border)', borderRadius: 10, padding: 14,
+              maxHeight: 400, overflowY: 'auto',
+            }}>
+              <div style={{ fontSize: 12, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
+                {lang === 'en' ? `${phase.title.en} — lesson content` : `${phase.title.pt} — conteúdo da aula`}
+              </div>
+              {phase.lesson.blocks.map((block, i) => (
+                <LessonBlock key={i} block={block} lang={lang} />
+              ))}
+            </div>
+          )}
+
+          {showScenario && (
               <div style={{
                 marginTop: 6, background: 'var(--c-card)',
                 border: '0.5px solid var(--c-border)', borderRadius: 10, padding: 14,
@@ -326,7 +374,6 @@ export default function Exam() {
                 ))}
               </div>
             )}
-          </div>
 
           {/* VS Code Editor */}
           <VSCodeEditor

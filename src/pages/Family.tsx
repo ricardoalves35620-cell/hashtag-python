@@ -73,7 +73,15 @@ export default function Family() {
         setMembers(withProgress)
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load family data')
+      const msg = e instanceof Error ? e.message : 'Failed to load family data'
+      // Check if it's a table-not-found error
+      if (msg.includes('relation') || msg.includes('does not exist') || msg.includes('42P01')) {
+        setError(lang === 'en'
+          ? 'Family tables not set up yet. Ask the app admin to run supabase/schema.sql in the Supabase SQL Editor.'
+          : 'Tabelas de família não configuradas. Peça ao admin para executar supabase/schema.sql no Supabase SQL Editor.')
+      } else {
+        setError(msg)
+      }
     } finally {
       setLoading(false)
     }

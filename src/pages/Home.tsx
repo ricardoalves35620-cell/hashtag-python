@@ -8,7 +8,7 @@ import { loadFTProgress } from '../lib/fasttrackProgress'
 import { getOverallProgress } from '../lib/progress'
 
 export default function Home() {
-  const { lang, displayName, progress, user } = useApp()
+  const { lang, displayName, progress, user, refreshProgress } = useApp()
   const navigate = useNavigate()
   const overall = getOverallProgress(progress)
   const passed = progress.filter(p => p.exam_passed).length
@@ -18,6 +18,21 @@ export default function Home() {
   useEffect(() => {
     if (user) loadFTProgress(user.id).then(setFtDone)
   }, [user])
+
+  // Re-fetch everything when the page regains focus — catches changes made on other devices
+  useEffect(() => {
+    const refresh = () => {
+      if (user) {
+        loadFTProgress(user.id).then(setFtDone)
+        refreshProgress()
+      }
+    }
+    window.addEventListener('focus', refresh)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') refresh()
+    })
+    return () => window.removeEventListener('focus', refresh)
+  }, [user, refreshProgress])
   const ftCompleted = ftDone.length === 7
 
   const t = {
