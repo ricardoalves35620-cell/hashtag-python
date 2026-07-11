@@ -1,5 +1,4 @@
 import type { Phase } from '../types'
-import type { Phase } from '../types'
 
 // ============================================================================
 // PHASE 2 — Matemática e Operadores
