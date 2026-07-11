@@ -952,12 +952,17 @@ days = int(input("Days since policy: "))
   }
 }
 
+
+// ============================================================================
+// PHASE 6 — If/Elif/Else · EXPANDIDO · TEMPLATE B
+// ============================================================================
+
 export const phase6: Phase = {
   id: 6,
   title: { en: 'If / Elif / Else', pt: 'If / Elif / Else' },
   description: {
-    en: 'Handle more than 2 outcomes — the full power of conditional logic.',
-    pt: 'Lide com mais de 2 resultados — o poder total da lógica condicional.'
+    en: 'Handle multiple outcomes — priority systems, grading, and tiered pricing.',
+    pt: 'Lide com múltiplos resultados — sistemas de prioridade, notas e preços em faixas.'
   },
   icon: '⚙️',
   libraries: [],
@@ -966,400 +971,477 @@ export const phase6: Phase = {
     title: { en: 'Multiple Branches', pt: 'Múltiplos Caminhos' },
     blocks: [
 
-      { type: 'heading', content: { en: '🌍 Uber uses elif for every ride price', pt: '🌍 O Uber usa elif para cada preço' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Uber calculates your price through a chain of conditions:\n• Under 2km → base fare\n• 2–5km → standard rate\n• 5–15km → medium rate\n• Over 15km → long distance\n• Surge active? → multiply everything\n\nThat\'s elif in production, serving 130 million users.',
-          pt: 'O Uber calcula seu preço por uma cadeia de condições:\n• Menos de 2km → tarifa base\n• 2–5km → tarifa padrão\n• 5–15km → tarifa média\n• Mais de 15km → longa distância\n• Surge ativo? → multiplica tudo\n\nIsso é elif em produção, servindo 130 milhões de usuários.'
-        }
-      },
+      { type: 'heading', content: { en: '🌍 Uber prices 20 million rides a day with elif', pt: '🌍 O Uber precifica 20 milhões de corridas por dia com elif' } },
+      { type: 'text', content: {
+        en: 'Every Uber price is an elif chain:\n• Under 2km → base fare\n• 2–5km → standard rate\n• 5–15km → medium rate\n• Over 15km → long distance rate\n• Surge active? → multiply everything by 1.5x\n\nInsurance works the same: your premium is calculated through elif chains checking age brackets, claim history tiers, and coverage levels. Tax brackets? Also elif. Shipping costs? Elif. The whole pricing world runs on it.',
+        pt: 'Todo preço do Uber é uma cadeia de elif:\n• Menos de 2km → tarifa base\n• 2–5km → tarifa padrão\n• 5–15km → tarifa média\n• Mais de 15km → longa distância\n• Surge ativo? → multiplica tudo por 1,5x\n\nSeguros funcionam igual: seu prêmio é calculado por cadeias elif verificando faixas de idade, histórico de sinistros e níveis de cobertura. Faixas de imposto? Também elif. Custos de frete? Elif. O mundo inteiro da precificação roda nisso.'
+      }},
 
-      // ── ANALOGIA MÃE ──────────────────────────────────────────────────────
-      { type: 'heading', content: { en: '🧩 A sorting conveyor belt', pt: '🧩 Uma esteira classificadora' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Imagine a factory conveyor belt sorting packages:\n📦 Heavy → Dock A\n📦 Medium → Dock B\n📦 Light → Dock C\n📦 Unknown → Rejected\n\nThe belt checks each condition IN ORDER and stops at the first match.\nelif works exactly the same — top to bottom, first True wins.',
-          pt: 'Imagine uma esteira de fábrica classificando pacotes:\n📦 Pesado → Doca A\n📦 Médio → Doca B\n📦 Leve → Doca C\n📦 Desconhecido → Rejeitado\n\nA esteira verifica cada condição EM ORDEM e para no primeiro match.\nelif funciona exatamente assim — de cima para baixo, o primeiro True vence.'
-        }
-      },
+      { type: 'heading', content: { en: '🧩 The sorting conveyor belt', pt: '🧩 A esteira classificadora' } },
+      { type: 'text', content: {
+        en: 'A factory conveyor belt sorting packages:\n📦 Heavy? → Dock A. Done, next package.\n📦 Not heavy but medium? → Dock B. Done.\n📦 Not medium but light? → Dock C. Done.\n📦 None of the above? → Rejects bin (else).\n\nKey rule: the belt checks IN ORDER and STOPS at the first match.\nA package never visits two docks. Exactly one destination, always.',
+        pt: 'Uma esteira de fábrica classificando pacotes:\n📦 Pesado? → Doca A. Pronto, próximo pacote.\n📦 Não pesado mas médio? → Doca B. Pronto.\n📦 Não médio mas leve? → Doca C. Pronto.\n📦 Nenhum dos acima? → Caixa de rejeitados (else).\n\nRegra chave: a esteira verifica EM ORDEM e PARA no primeiro match.\nUm pacote nunca visita duas docas. Exatamente um destino, sempre.'
+      }},
 
-      // ── CÓDIGO PROGRESSIVO (Template B) ───────────────────────────────────
-      { type: 'heading', content: { en: '🐍 Step 1 — just if/else (you already know this)', pt: '🐍 Passo 1 — só if/else (você já sabe)' } },
-      {
-        type: 'code',
-        code: `damage = 4500
+      { type: 'heading', content: { en: '🐍 Step 1 — you already know if/else', pt: '🐍 Passo 1 — você já sabe if/else' } },
+      { type: 'code', code: `damage = 4500
 
 if damage > 5000:
     print("Urgent")
 else:
-    print("Normal")   # ← everything else goes here`
-      },
+    print("Normal")   # everything else lands here
 
-      { type: 'heading', content: { en: '🐍 Step 2 — add elif for a middle case', pt: '🐍 Passo 2 — adicione elif para um caso do meio' } },
-      {
-        type: 'code',
-        code: `damage = 4500
+# Problem: real business has MORE than 2 categories!` },
+
+      { type: 'heading', content: { en: '🐍 Step 2 — elif adds middle lanes', pt: '🐍 Passo 2 — elif adiciona faixas do meio' } },
+      { type: 'code', code: `damage = 4500
 
 if damage > 10000:
     print("Critical")
-elif damage > 5000:       # ← new middle case
+elif damage > 5000:      # checked ONLY if first was False
     print("Urgent")
 else:
-    print("Normal")`
-      },
+    print("Normal")
 
-      { type: 'heading', content: { en: '🐍 Step 3 — full priority system (4 levels)', pt: '🐍 Passo 3 — sistema completo (4 níveis)' } },
-      {
-        type: 'code',
-        code: `damage = 4500
+# Python reads TOP to BOTTOM and stops at the FIRST True.
+# 4500: >10000? No. >5000? No. → else → "Normal"` },
+
+      { type: 'heading', content: { en: '🐍 Step 3 — full production system', pt: '🐍 Passo 3 — sistema completo de produção' } },
+      { type: 'code', code: `damage = 7200
 
 if damage > 10000:
     priority = "Critical"
-    sla = "2 hours"
+    sla_hours = 2
+    team = "Senior adjusters"
 elif damage > 5000:
     priority = "Urgent"
-    sla = "4 hours"
+    sla_hours = 4
+    team = "Standard adjusters"
 elif damage >= 1000:
     priority = "Normal"
-    sla = "24 hours"
+    sla_hours = 24
+    team = "Auto-queue"
 else:
     priority = "Low"
-    sla = "72 hours"
+    sla_hours = 72
+    team = "Self-service portal"
 
-print("Priority:", priority)
-print("SLA:", sla)`
-      },
-      {
-        type: 'tip',
-        content: {
-          en: '💡 Order is critical! Put the MOST SPECIFIC condition first.\nIf you put > 1000 before > 5000, damage of 8000 would match the first condition and never reach "Urgent".',
-          pt: '💡 A ordem é crítica! Coloque a condição MAIS ESPECÍFICA primeiro.\nSe colocar > 1000 antes de > 5000, um dano de 8000 corresponderia à primeira condição e nunca chegaria a "Urgent".'
-        }
-      }
+print(f"Priority: {priority}")
+print(f"Respond within: {sla_hours}h")
+print(f"Assigned to: {team}")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Insurance premium brackets', pt: '🏗️ Cenário Real 1: Faixas de prêmio de seguro' } },
+      { type: 'code', code: `# Age-based car insurance premium (real industry pattern)
+age = int(input("Driver age: "))
+base = 1000
+
+if age < 21:
+    premium = base * 2.2      # young drivers: highest risk
+    bracket = "Young driver"
+elif age < 26:
+    premium = base * 1.6
+    bracket = "Under 26"
+elif age < 60:
+    premium = base * 1.0      # prime bracket: base rate
+    bracket = "Standard"
+elif age < 75:
+    premium = base * 1.3
+    bracket = "Senior"
+else:
+    premium = base * 1.8
+    bracket = "75+"
+
+print(f"Bracket: {bracket}")
+print(f"Annual premium: \${premium}")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Concrete strength grading', pt: '🏗️ Cenário Real 2: Classificação de resistência de concreto' } },
+      { type: 'code', code: `# Construction QC: grade concrete by test strength (MPa)
+strength = float(input("Test strength (MPa): "))
+
+if strength >= 40:
+    print("Grade: C40 — structural columns ✅")
+elif strength >= 30:
+    print("Grade: C30 — beams and slabs ✅")
+elif strength >= 20:
+    print("Grade: C20 — foundations only ⚠️")
+else:
+    print("REJECTED — below minimum standard 🚫")
+    print("Batch must be discarded")` },
+
+      { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
+      { type: 'code', code: `damage = 8000
+
+# ❌ MISTAKE 1: wrong ORDER — broad condition first
+if damage > 1000:            # 8000 > 1000? True → STOPS HERE!
+    print("Normal")           # WRONG! Should be Urgent
+elif damage > 5000:
+    print("Urgent")           # never reached!
+
+# ✅ FIX: most SPECIFIC (highest) condition first
+if damage > 10000:
+    print("Critical")
+elif damage > 5000:
+    print("Urgent")            # now 8000 lands correctly
+elif damage > 1000:
+    print("Normal")
+
+# ❌ MISTAKE 2: using multiple ifs instead of elif
+if damage > 5000:
+    print("Urgent")            # prints!
+if damage > 1000:
+    print("Normal")            # ALSO prints! Two ifs = independent checks
+
+# ✅ elif makes them exclusive — only ONE branch ever runs` },
+
+      { type: 'tip', content: {
+        en: '💡 PRO TIP: elif chains as waterfalls.\nWrite conditions from the TOP floor (highest value) down.\nWater (your value) falls until it lands on the first floor that catches it.\nDesign the waterfall on paper before coding — 30 seconds of sketching saves 30 minutes of debugging.',
+        pt: '💡 DICA PRO: cadeias elif como cachoeiras.\nEscreva condições do andar de CIMA (maior valor) para baixo.\nA água (seu valor) cai até pousar no primeiro andar que a captura.\nDesenhe a cachoeira no papel antes de codar — 30 segundos de esboço economizam 30 minutos de debug.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'text', content: {
+        en: '✅ elif = "else if" — adds middle branches between if and else\n✅ Checked top to bottom — FIRST True wins, rest are skipped\n✅ Order matters: most specific/highest condition first\n✅ Exactly ONE branch runs (else catches leftovers)\n✅ Multiple separate ifs = independent checks (usually a bug!)\n✅ Unlimited elifs allowed\n\nNext: repeating actions with while loops. 🔄',
+        pt: '✅ elif = "else if" — adiciona ramos do meio entre if e else\n✅ Verificado de cima para baixo — PRIMEIRO True vence, resto é pulado\n✅ Ordem importa: condição mais específica/alta primeiro\n✅ Exatamente UM ramo roda (else captura sobras)\n✅ Múltiplos ifs separados = verificações independentes (geralmente um bug!)\n✅ Elifs ilimitados permitidos\n\nPróxima: repetindo ações com loops while. 🔄'
+      }}
     ]
   },
 
   exercises: [
     {
-      id: 'ex6_fill',
-      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      id: 'ex6_guided',
+      title: { en: '🟢 Guided: Watch the Waterfall', pt: '🟢 Guiado: Veja a Cachoeira' },
       description: {
-        en: 'Complete the missing condition in this grading system.',
-        pt: 'Complete a condição faltante neste sistema de notas.'
+        en: 'Run 3 times with: 12000, 7000, 500.\nTrace which branch catches each value. Notice only ONE prints each time.',
+        pt: 'Execute 3 vezes com: 12000, 7000, 500.\nRastreie qual ramo captura cada valor. Note que só UM imprime a cada vez.'
       },
-      starterCode: `score = int(input("Score (0-100): "))
+      starterCode: `damage = int(input("Damage: $"))
 
-if score >= 90:
-    print("A — Excellent!")
-elif ___:               # fill in: score >= 80
-    print("B — Great!")
-elif score >= 70:
-    print("C — Good")
+if damage > 10000:
+    print("🔴 CRITICAL — 2h SLA")
+elif damage > 5000:
+    print("🟠 URGENT — 4h SLA")
+elif damage >= 1000:
+    print("🟡 NORMAL — 24h SLA")
 else:
-    print("F — Try again")`,
+    print("🟢 LOW — 72h SLA")`,
       hints: [
-        { en: 'The condition should catch scores between 80 and 89', pt: 'A condição deve capturar notas entre 80 e 89' }
+        { en: '12000 stops at the first check; 7000 passes it and stops at the second', pt: '12000 para na primeira verificação; 7000 passa e para na segunda' }
       ],
-      sampleOutput: { en: 'B — Great!', pt: 'B — Great!' }
+      sampleOutput: { en: '🔴 CRITICAL — 2h SLA', pt: '🔴 CRITICAL — 2h SLA' }
+    },
+    {
+      id: 'ex6_fill',
+      title: { en: '🟡 Fill: Premium Brackets', pt: '🟡 Preencha: Faixas de Prêmio' },
+      description: {
+        en: 'Complete the age bracket conditions. Remember: order matters!',
+        pt: 'Complete as condições de faixa etária. Lembre: a ordem importa!'
+      },
+      starterCode: `age = int(input("Age: "))
+base = 1000
+
+if age ___ 21:              # fill: youngest bracket
+    premium = base * 2.2
+elif age < ___:             # fill: under 26
+    premium = base * 1.6
+elif age < 60:
+    premium = base * 1.0
+___:                        # fill: catches everyone else
+    premium = base * 1.5
+
+print("Premium:", premium)`,
+      hints: [
+        { en: 'Youngest: age < 21', pt: 'Mais jovem: age < 21' },
+        { en: 'The catch-all is else:', pt: 'O captura-tudo é else:' }
+      ],
+      sampleOutput: { en: 'Premium: 1600.0', pt: 'Premium: 1600.0' }
     },
     {
       id: 'ex6_zero',
-      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      title: { en: '🔴 From Scratch: Concrete QC', pt: '🔴 Do Zero: QC de Concreto' },
       description: {
-        en: 'Build a 4-tier claim priority router:\n• > $15k → "CRITICAL — CEO alert"\n• > $5k → "URGENT — manager review"\n• > $500 → "NORMAL — standard queue"\n• Anything else → "LOW — self-service portal"',
-        pt: 'Construa um roteador de prioridade de 4 níveis:\n• > R$15k → "CRÍTICO — alerta CEO"\n• > R$5k → "URGENTE — revisão gerencial"\n• > R$500 → "NORMAL — fila padrão"\n• Qualquer outro → "BAIXO — portal self-service"'
+        en: 'Build the concrete grading system:\n• Ask strength in MPa (float)\n• >= 40 → "C40 structural"\n• >= 30 → "C30 beams"\n• >= 20 → "C20 foundations"\n• below → "REJECTED"',
+        pt: 'Construa o sistema de classificação de concreto:\n• Pergunte resistência em MPa (float)\n• >= 40 → "C40 estrutural"\n• >= 30 → "C30 vigas"\n• >= 20 → "C20 fundações"\n• abaixo → "REJEITADO"'
       },
-      starterCode: `damage = int(input("Damage amount: $"))
-
-# Build your 4-tier if/elif/else below:`,
+      starterCode: `# Concrete quality control:`,
       hints: [
-        { en: 'Start with the highest condition: if damage > 15000:', pt: 'Comece com a condição mais alta: if damage > 15000:' },
-        { en: 'Use 3 elif blocks + 1 else', pt: 'Use 3 blocos elif + 1 else' }
+        { en: 'Start from the HIGHEST: if strength >= 40:', pt: 'Comece do MAIS ALTO: if strength >= 40:' },
+        { en: '3 branches + else', pt: '3 ramos + else' }
       ],
-      sampleOutput: { en: 'URGENT — manager review', pt: 'URGENTE — revisão gerencial' }
+      sampleOutput: { en: 'C30 beams', pt: 'C30 vigas' }
     }
   ],
 
   quiz: [
-    {
-      id: 'q6_1',
-      question: { en: 'Does the ORDER of elif conditions matter?', pt: 'A ORDEM das condições elif importa?' },
-      options: [
-        { en: 'Yes — Python checks top to bottom, stops at first True', pt: 'Sim — Python verifica de cima para baixo, para no primeiro True' },
-        { en: 'No — Python checks all of them', pt: 'Não — Python verifica todas' },
-        { en: 'Only for strings', pt: 'Apenas para strings' },
-        { en: 'Python auto-sorts them', pt: 'Python as ordena automaticamente' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'Python stops at the FIRST True condition. If you put a broad condition first, specific ones below are never reached.', pt: 'Python para na PRIMEIRA condição True. Se colocar uma condição ampla primeiro, as específicas abaixo nunca são alcançadas.' }
-    },
-    {
-      id: 'q6_2',
-      question: { en: 'score = 85\nif score >= 90: print("A")\nelif score >= 80: print("B")\nWhat prints?', pt: 'score = 85\nif score >= 90: print("A")\nelif score >= 80: print("B")\nO que imprime?' },
-      options: [
-        { en: 'B', pt: 'B' },
-        { en: 'A', pt: 'A' },
-        { en: 'A and B', pt: 'A e B' },
-        { en: 'Nothing', pt: 'Nada' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '85 >= 90 is False → skip. 85 >= 80 is True → print "B". Done. Only one block runs.', pt: '85 >= 90 é False → pula. 85 >= 80 é True → imprime "B". Fim. Apenas um bloco roda.' }
-    },
-    {
-      id: 'q6_3',
-      question: { en: 'Is else required at the end of if/elif?', pt: 'else é obrigatório no final de if/elif?' },
-      options: [
-        { en: 'No — it\'s optional', pt: 'Não — é opcional' },
-        { en: 'Yes — always required', pt: 'Sim — sempre obrigatório' },
-        { en: 'Required only with 3+ elif', pt: 'Obrigatório apenas com 3+ elif' },
-        { en: 'Required only for numbers', pt: 'Obrigatório apenas para números' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'else is optional. If no condition is True and there\'s no else, nothing happens — and that\'s perfectly fine.', pt: 'else é opcional. Se nenhuma condição é True e não há else, nada acontece — e isso é perfeitamente válido.' }
-    },
-    {
-      id: 'q6_4',
-      question: { en: 'How many elif blocks can you have?', pt: 'Quantos blocos elif você pode ter?' },
-      options: [
-        { en: 'As many as needed — no limit', pt: 'Quantos precisar — sem limite' },
-        { en: 'Maximum 3', pt: 'Máximo 3' },
-        { en: 'Maximum 10', pt: 'Máximo 10' },
-        { en: 'Only 1', pt: 'Apenas 1' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'Python allows unlimited elif blocks. Real apps often have dozens of conditions — all using this same structure.', pt: 'Python permite blocos elif ilimitados. Apps reais frequentemente têm dezenas de condições — todas usando essa mesma estrutura.' }
-    }
+    { id: 'q6_1', question: { en: 'Does elif order matter?', pt: 'A ordem do elif importa?' }, options: [{ en: 'Yes — top to bottom, FIRST True wins', pt: 'Sim — de cima para baixo, PRIMEIRO True vence' }, { en: 'No — all are checked', pt: 'Não — todos são verificados' }, { en: 'Only with numbers', pt: 'Só com números' }, { en: 'Python sorts automatically', pt: 'Python ordena sozinho' }], correctIndex: 0, explanation: { en: 'Python stops at the first True. Broad conditions first = specific ones never reached.', pt: 'Python para no primeiro True. Condições amplas primeiro = específicas nunca alcançadas.' } },
+    { id: 'q6_2', question: { en: 'damage = 8000\nif damage > 1000: print("A")\nelif damage > 5000: print("B")\nWhat prints?', pt: 'damage = 8000\nif damage > 1000: print("A")\nelif damage > 5000: print("B")\nO que imprime?' }, options: [{ en: 'A — first condition matched, B is skipped', pt: 'A — primeira condição bateu, B é pulado' }, { en: 'B', pt: 'B' }, { en: 'A and B', pt: 'A e B' }, { en: 'Nothing', pt: 'Nada' }], correctIndex: 0, explanation: { en: '8000 > 1000 is True → "A" prints and the elif is never checked. Classic wrong-order bug!', pt: '8000 > 1000 é True → "A" imprime e o elif nunca é verificado. Clássico bug de ordem errada!' } },
+    { id: 'q6_3', question: { en: 'Two separate ifs (not elif) means:', pt: 'Dois ifs separados (não elif) significa:' }, options: [{ en: 'Independent checks — both can run', pt: 'Verificações independentes — ambos podem rodar' }, { en: 'Same as elif', pt: 'Igual ao elif' }, { en: 'Only the first runs', pt: 'Só o primeiro roda' }, { en: 'Syntax error', pt: 'Erro de sintaxe' }], correctIndex: 0, explanation: { en: 'Separate ifs are evaluated independently. elif makes branches EXCLUSIVE — only one runs.', pt: 'Ifs separados são avaliados independentemente. elif torna os ramos EXCLUSIVOS — só um roda.' } },
+    { id: 'q6_4', question: { en: 'Is else required after elif?', pt: 'O else é obrigatório após elif?' }, options: [{ en: 'No — optional. Without it, no match = nothing happens', pt: 'Não — opcional. Sem ele, sem match = nada acontece' }, { en: 'Yes, always', pt: 'Sim, sempre' }, { en: 'Only with 3+ elifs', pt: 'Só com 3+ elifs' }, { en: 'Yes, in Python 3', pt: 'Sim, no Python 3' }], correctIndex: 0, explanation: { en: 'else is the optional catch-all. Skipping it is valid — sometimes "do nothing" is the right default.', pt: 'else é o captura-tudo opcional. Pular é válido — às vezes "não fazer nada" é o padrão certo.' } },
+    { id: 'q6_5', question: { en: 'score=85: if score>=90:"A" elif score>=80:"B" elif score>=70:"C" →', pt: 'score=85: if score>=90:"A" elif score>=80:"B" elif score>=70:"C" →' }, options: [{ en: 'B — 85 fails >=90, passes >=80, stops', pt: 'B — 85 falha >=90, passa >=80, para' }, { en: 'C', pt: 'C' }, { en: 'B and C', pt: 'B e C' }, { en: 'A', pt: 'A' }], correctIndex: 0, explanation: { en: '85 >= 90? No. 85 >= 80? Yes → B, and the chain stops immediately.', pt: '85 >= 90? Não. 85 >= 80? Sim → B, e a cadeia para imediatamente.' } },
+    { id: 'q6_6', question: { en: 'How many elifs can a chain have?', pt: 'Quantos elifs uma cadeia pode ter?' }, options: [{ en: 'Unlimited', pt: 'Ilimitados' }, { en: 'Max 3', pt: 'Máx 3' }, { en: 'Max 10', pt: 'Máx 10' }, { en: 'One per if', pt: 'Um por if' }], correctIndex: 0, explanation: { en: 'No limit. Real pricing systems have dozens of elif branches.', pt: 'Sem limite. Sistemas reais de precificação têm dezenas de ramos elif.' } }
   ],
 
   exam: {
-    title: { en: 'Full Triage System', pt: 'Sistema Completo de Triagem' },
+    title: { en: 'Full Triage + Premium System', pt: 'Sistema Completo de Triagem + Prêmio' },
     scenario: {
-      en: 'Build the complete 4-tier triage system for the insurance company. Each level has a different SLA and action required.',
-      pt: 'Construa o sistema completo de triagem de 4 níveis para a seguradora. Cada nível tem um SLA diferente e ação requerida.'
+      en: 'Build the complete 4-tier triage used by the claims department. Each tier has a different SLA. Order your conditions carefully!',
+      pt: 'Construa a triagem completa de 4 níveis usada pelo departamento de sinistros. Cada nível tem SLA diferente. Ordene suas condições com cuidado!'
     },
     requirements: {
-      en: ['>$10k = CRITICAL (2h)', '$5k–$10k = URGENT (4h)', '$1k–$5k = NORMAL (24h)', '<$1k = LOW (72h)'],
-      pt: ['>R$10k = CRÍTICO (2h)', 'R$5k–R$10k = URGENTE (4h)', 'R$1k–R$5k = NORMAL (24h)', '<R$1k = BAIXO (72h)']
+      en: ['Ask damage amount', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'else → "LOW - 72 hours"'],
+      pt: ['Pergunte o valor do dano', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'senão → "LOW - 72 hours"']
     },
-    starterCode: `damage = int(input("Damage amount: $"))
+    starterCode: `damage = int(input("Damage: $"))
 
-if damage > 10000:
-    print("CRITICAL — respond in 2 hours")
-elif damage > 5000:
-    print("URGENT — respond in 4 hours")
-elif damage >= 1000:
-    print("NORMAL — respond in 24 hours")
-else:
-    print("LOW — respond in 72 hours")`,
+# Build the 4-tier waterfall (highest first!):`,
     testCases: [
-      { id: 'tc6_1', description: { en: 'Critical level triggered', pt: 'Nível crítico acionado' }, inputs: ['15000'], checks: [{ type: 'contains', value: 'CRITICAL' }], points: 25 },
-      { id: 'tc6_2', description: { en: 'Urgent level triggered', pt: 'Nível urgente acionado' }, inputs: ['7000'], checks: [{ type: 'contains', value: 'URGENT' }], points: 25 },
-      { id: 'tc6_3', description: { en: 'Normal level triggered', pt: 'Nível normal acionado' }, inputs: ['2000'], checks: [{ type: 'contains', value: 'NORMAL' }], points: 25 },
-      { id: 'tc6_4', description: { en: 'Low level triggered', pt: 'Nível baixo acionado' }, inputs: ['500'], checks: [{ type: 'contains', value: 'LOW' }], points: 25 }
+      { id: 'tc6_1', description: { en: 'Critical tier', pt: 'Nível crítico' }, inputs: ['15000'], checks: [{ type: 'contains', value: 'CRITICAL' }], points: 25 },
+      { id: 'tc6_2', description: { en: 'Urgent tier', pt: 'Nível urgente' }, inputs: ['7000'], checks: [{ type: 'contains', value: 'URGENT' }], points: 25 },
+      { id: 'tc6_3', description: { en: 'Normal tier', pt: 'Nível normal' }, inputs: ['2000'], checks: [{ type: 'contains', value: 'NORMAL' }], points: 25 },
+      { id: 'tc6_4', description: { en: 'Low tier', pt: 'Nível baixo' }, inputs: ['500'], checks: [{ type: 'contains', value: 'LOW' }], points: 25 }
     ]
   }
 }
 
 // ============================================================================
-// PHASE 7 — While Loop
-// TEMPLATE A: Conceito Novo / Isolado
+// PHASE 7 — While · EXPANDIDO
 // ============================================================================
 
 export const phase7: Phase = {
   id: 7,
   title: { en: 'While Loops', pt: 'Loops While' },
   description: {
-    en: 'Repeat actions automatically until a condition changes.',
-    pt: 'Repita ações automaticamente até uma condição mudar.'
+    en: 'Automate repetition — counters, accumulators, and input validation loops.',
+    pt: 'Automatize repetição — contadores, acumuladores e loops de validação de entrada.'
   },
   icon: '🔄',
   libraries: [],
 
   lesson: {
-    title: { en: 'Automate Repetition', pt: 'Automatize a Repetição' },
+    title: { en: 'The Loop That Keeps Going', pt: 'O Loop que Continua' },
     blocks: [
 
-      { type: 'heading', content: { en: '🌍 While loops never sleep', pt: '🌍 While loops nunca dormem' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Instagram\'s notification system is a while loop that has run 24/7 since 2010:\n\n"WHILE server is running:\n   check for new likes\n   send notifications\n   repeat"\n\nSame concept — endlessly repeated.',
-          pt: 'O sistema de notificações do Instagram é um while loop que roda 24/7 desde 2010:\n\n"ENQUANTO servidor estiver rodando:\n   verificar novos likes\n   enviar notificações\n   repetir"\n\nMesmo conceito — repetido sem fim.'
-        }
-      },
+      { type: 'heading', content: { en: '🌍 Loops that never sleep', pt: '🌍 Loops que nunca dormem' } },
+      { type: 'text', content: {
+        en: 'Instagram\'s notification engine is a while loop running non-stop since 2010:\n"WHILE server is on: check new likes → send notifications → repeat"\n\nYour bank\'s fraud monitor? A while loop checking transactions 24/7.\nEvery game you\'ve played? One giant while loop: "WHILE player is alive: draw frame → read controls → update world" — 60 times per second.\n\nComputers exist to repeat boring things perfectly. while is how you command it.',
+        pt: 'O motor de notificações do Instagram é um while loop rodando sem parar desde 2010:\n"ENQUANTO servidor ligado: verificar likes → enviar notificações → repetir"\n\nO monitor de fraude do seu banco? Um while loop verificando transações 24/7.\nTodo jogo que você jogou? Um while loop gigante: "ENQUANTO jogador vivo: desenhar frame → ler controles → atualizar mundo" — 60 vezes por segundo.\n\nComputadores existem para repetir coisas chatas perfeitamente. while é como você comanda isso.'
+      }},
 
-      { type: 'heading', content: { en: '🧩 A factory assembly line', pt: '🧩 Uma linha de montagem' } },
-      {
-        type: 'text',
-        content: {
-          en: 'A car factory assembly line:\n🏭 WHILE cars remain on the line → paint one → move to next\n🏭 STOP when the last car is done\n\nWhile loop = repeat as long as condition is True.\nThe moment it becomes False → stop.',
-          pt: 'Uma linha de montagem de carros:\n🏭 ENQUANTO houver carros na linha → pinte um → mova para o próximo\n🏭 PARE quando o último carro estiver pronto\n\nLoop while = repete enquanto a condição é True.\nNo momento em que se torna False → pare.'
-        }
-      },
+      { type: 'heading', content: { en: '🧩 The assembly line', pt: '🧩 A linha de montagem' } },
+      { type: 'text', content: {
+        en: 'A car painting station:\n🏭 WHILE there are cars in the queue:\n   → paint one\n   → move it forward (queue shrinks by 1)\n🏭 Queue empty? Station stops.\n\nThree pieces every while loop needs:\n1️⃣ A starting state (queue of 5 cars / count = 1)\n2️⃣ A condition to keep going (cars remain / count <= 5)\n3️⃣ Progress toward the end (each car leaves / count += 1)\n\nMiss piece 3 and the line runs FOREVER.',
+        pt: 'Uma estação de pintura de carros:\n🏭 ENQUANTO houver carros na fila:\n   → pinte um\n   → mova adiante (fila diminui em 1)\n🏭 Fila vazia? Estação para.\n\nTrês peças que todo while precisa:\n1️⃣ Um estado inicial (fila de 5 carros / count = 1)\n2️⃣ Uma condição para continuar (restam carros / count <= 5)\n3️⃣ Progresso rumo ao fim (cada carro sai / count += 1)\n\nEsqueça a peça 3 e a linha roda PARA SEMPRE.'
+      }},
 
-      { type: 'heading', content: { en: '🐍 While loop syntax', pt: '🐍 Sintaxe do while loop' } },
-      {
-        type: 'code',
-        code: `# Process 5 claims, one at a time
-count = 1                      # start the counter
+      { type: 'heading', content: { en: '🐍 The fundamentals', pt: '🐍 Os fundamentos' } },
+      { type: 'code', code: `# The 3-piece anatomy
+count = 1                       # 1️⃣ starting state
 
-while count <= 5:              # condition: keep going while True
+while count <= 5:               # 2️⃣ keep-going condition
     print("Processing claim #", count)
-    count = count + 1          # CRITICAL: move counter forward!
+    count += 1                  # 3️⃣ progress! (CRITICAL)
 
-print("All claims processed!")  # runs after the loop`
-      },
-      {
-        type: 'warning',
-        content: {
-          en: '⚠️ Infinite loop trap!\nIf you forget count = count + 1, the condition is always True → loop runs forever.\nAlways make sure something inside the loop brings you closer to False.',
-          pt: '⚠️ Armadilha do loop infinito!\nSe esquecer count = count + 1, a condição é sempre True → loop roda para sempre.\nSempre garanta que algo dentro do loop te aproxima de False.'
-        }
-      },
-      {
-        type: 'code',
-        code: `# Shorthand operators
-count = 0
+print("All done!")              # runs after loop ends
 
-count += 1   # same as: count = count + 1
-count -= 1   # same as: count = count - 1
-count *= 2   # same as: count = count * 2`
-      }
+# Trace it: count goes 1→2→3→4→5→6.
+# When count=6, 6<=5 is False → loop exits.` },
+
+      { type: 'heading', content: { en: '🐍 Deeper: accumulators, break, and validation loops', pt: '🐍 Aprofundando: acumuladores, break e loops de validação' } },
+      { type: 'code', code: `# PATTERN 1: accumulator inside a loop
+total = 0
+count = 1
+while count <= 3:
+    value = int(input("Amount: "))
+    total += value              # accumulate
+    count += 1                  # progress
+print("Total:", total)
+
+# PATTERN 2: break — emergency exit
+while True:                     # infinite on purpose!
+    cmd = input("Command (quit to exit): ")
+    if cmd == "quit":
+        break                   # jumps out immediately
+    print("You typed:", cmd)
+
+# PATTERN 3: validation loop (ask until valid)
+age = -1
+while age < 0 or age > 120:
+    age = int(input("Age (0-120): "))
+print("Valid age:", age)` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Batch claim processing', pt: '🏗️ Cenário Real 1: Processamento em lote' } },
+      { type: 'code', code: `# End of day: process all pending claims
+print("=== BATCH PROCESSOR ===")
+pending = int(input("How many claims to process? "))
+
+count = 1
+total_payout = 0
+
+while count <= pending:
+    print(f"--- Claim {count} of {pending} ---")
+    damage = int(input("Damage: $"))
+    payout = damage - 250
+    total_payout += payout
+    print(f"Payout: \${payout}")
+    count += 1
+
+print()
+print(f"Batch complete: {pending} claims")
+print(f"Total payout: \${total_payout}")
+print(f"Average: \${total_payout / pending}")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Material stock countdown', pt: '🏗️ Cenário Real 2: Contagem regressiva de estoque' } },
+      { type: 'code', code: `# Site warehouse: consume cement until stock runs low
+stock = 47                      # bags in warehouse
+day = 1
+
+while stock >= 12:              # 12 bags = daily usage
+    stock -= 12                 # consume a day of work
+    print(f"Day {day}: used 12 bags, {stock} remaining")
+    day += 1
+
+print(f"⚠️ Day {day}: only {stock} bags left — REORDER NOW")` },
+
+      { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
+      { type: 'code', code: `# ❌ MISTAKE 1: forgetting to update the counter
+# count = 1
+# while count <= 5:
+#     print(count)          # count never changes → INFINITE LOOP!
+
+# ✅ FIX: always include the progress line
+count = 1
+while count <= 5:
+    print(count)
+    count += 1
+
+# ❌ MISTAKE 2: updating in the wrong place
+count = 1
+while count <= 3:
+    count += 1              # updated BEFORE using...
+    print(count)            # prints 2, 3, 4 — not 1, 2, 3!
+
+# ✅ FIX: use first, update last
+count = 1
+while count <= 3:
+    print(count)            # prints 1, 2, 3 ✅
+    count += 1
+
+# ❌ MISTAKE 3: condition that starts False
+count = 10
+while count <= 5:           # 10 <= 5? False → loop NEVER runs
+    print("never printed")` },
+
+      { type: 'tip', content: {
+        en: '💡 PRO TIP: stuck in an infinite loop while testing?\nThe stop button (⏹) kills the program. In VS Code terminal: Ctrl+C.\nBefore running any while, mentally answer: "what line brings the condition closer to False?" If you can\'t point at it — don\'t run it.',
+        pt: '💡 DICA PRO: preso num loop infinito testando?\nO botão de parar (⏹) mata o programa. No terminal do VS Code: Ctrl+C.\nAntes de rodar qualquer while, responda mentalmente: "qual linha aproxima a condição de False?" Se não conseguir apontar — não rode.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'text', content: {
+        en: '✅ 3 pieces: start state → condition → progress\n✅ Forgetting progress = infinite loop\n✅ += accumulates totals across iterations\n✅ break exits immediately (great with while True)\n✅ Validation loop: repeat until input is acceptable\n✅ Use value first, update counter last\n\nNext: for loops + lists — looping over collections. 📋',
+        pt: '✅ 3 peças: estado inicial → condição → progresso\n✅ Esquecer o progresso = loop infinito\n✅ += acumula totais entre iterações\n✅ break sai imediatamente (ótimo com while True)\n✅ Loop de validação: repete até entrada aceitável\n✅ Use o valor primeiro, atualize o contador por último\n\nPróxima: for loops + listas — percorrendo coleções. 📋'
+      }}
     ]
   },
 
   exercises: [
     {
-      id: 'ex7_fill',
-      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      id: 'ex7_guided',
+      title: { en: '🟢 Guided: Trace the Counter', pt: '🟢 Guiado: Rastreie o Contador' },
       description: {
-        en: 'The while loop below processes 3 claims but is missing the counter update.\nFill it in to prevent an infinite loop.',
-        pt: 'O while loop abaixo processa 3 sinistros mas está faltando a atualização do contador.\nPreencha para evitar um loop infinito.'
+        en: 'Run and follow count changing: 1→2→3→4→5→6 (exits at 6).\nThen change <= 5 to <= 3 and predict the output before running.',
+        pt: 'Execute e acompanhe count mudando: 1→2→3→4→5→6 (sai no 6).\nDepois mude <= 5 para <= 3 e preveja a saída antes de rodar.'
       },
       starterCode: `count = 1
+while count <= 5:
+    print("Claim #", count, "processed")
+    count += 1
 
-while count <= 3:
-    print("Processing claim #", count)
-    ___               # increment count here!
-
-print("Done!")`,
+print("Final count value:", count)`,
       hints: [
-        { en: 'Use: count += 1', pt: 'Use: count += 1' }
+        { en: 'After the loop, count is 6 — the first value that failed the condition', pt: 'Após o loop, count é 6 — o primeiro valor que falhou na condição' }
       ],
-      sampleOutput: { en: 'Processing claim # 1\nProcessing claim # 2\nProcessing claim # 3\nDone!', pt: 'Processing claim # 1\nProcessing claim # 2\nProcessing claim # 3\nDone!' }
+      sampleOutput: { en: 'Claim # 1 processed\nClaim # 2 processed\nClaim # 3 processed\nClaim # 4 processed\nClaim # 5 processed\nFinal count value: 6', pt: 'Claim # 1 processed\n...\nFinal count value: 6' }
+    },
+    {
+      id: 'ex7_fill',
+      title: { en: '🟡 Fill: Stock Countdown', pt: '🟡 Preencha: Contagem de Estoque' },
+      description: {
+        en: 'Complete the warehouse countdown: consume 10 bags/day while stock lasts.',
+        pt: 'Complete a contagem do almoxarifado: consuma 10 sacos/dia enquanto o estoque durar.'
+      },
+      starterCode: `stock = 45
+day = 1
+
+while stock ___ 10:          # fill: keep going while stock is at least 10
+    stock ___ 10             # fill: consume 10
+    print(f"Day {day}: {stock} bags left")
+    day ___ 1                # fill: next day
+
+print("Reorder needed!")`,
+      hints: [
+        { en: 'Condition: stock >= 10', pt: 'Condição: stock >= 10' },
+        { en: 'Consume: stock -= 10 | Next day: day += 1', pt: 'Consumir: stock -= 10 | Próximo dia: day += 1' }
+      ],
+      sampleOutput: { en: 'Day 1: 35 bags left\nDay 2: 25 bags left\nDay 3: 15 bags left\nDay 4: 5 bags left\nReorder needed!', pt: 'Day 1: 35 bags left\n...\nReorder needed!' }
     },
     {
       id: 'ex7_zero',
-      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      title: { en: '🔴 From Scratch: Batch + Average', pt: '🔴 Do Zero: Lote + Média' },
       description: {
-        en: 'Build a claim batch processor:\n• Ask for 4 damage amounts (loop 4 times)\n• Subtract $250 deductible from each\n• Add payout to a running total\n• Print the grand total at the end',
-        pt: 'Construa um processador em lote:\n• Pergunte 4 valores de dano (loop 4 vezes)\n• Subtraia R$250 de franquia de cada\n• Adicione o pagamento a um total acumulado\n• Imprima o total geral no final'
+        en: 'Build the batch processor:\n• Loop exactly 4 times\n• Ask damage each time, subtract $200 deductible\n• Accumulate total payout\n• After the loop: print total AND average',
+        pt: 'Construa o processador em lote:\n• Loop exatamente 4 vezes\n• Pergunte o dano, subtraia R$200 de franquia\n• Acumule o pagamento total\n• Após o loop: imprima total E média'
       },
-      starterCode: `total_payout = 0
-count = 1
-
-# Write your while loop here:`,
+      starterCode: `# Batch processor (4 claims):`,
       hints: [
-        { en: 'while count <= 4: → get input → calculate payout → add to total → count += 1', pt: 'while count <= 4: → pegar input → calcular pagamento → adicionar ao total → count += 1' },
-        { en: 'total_payout += payout adds each payout to the running total', pt: 'total_payout += payout adiciona cada pagamento ao total acumulado' }
+        { en: 'total = 0 and count = 1 before the loop', pt: 'total = 0 e count = 1 antes do loop' },
+        { en: 'Average: total / 4 (after the loop)', pt: 'Média: total / 4 (após o loop)' }
       ],
-      sampleOutput: { en: 'Total payout: $ 13750', pt: 'Total payout: $ 13750' }
+      sampleOutput: { en: 'Total: 10200\nAverage: 2550.0', pt: 'Total: 10200\nAverage: 2550.0' }
     }
   ],
 
   quiz: [
-    {
-      id: 'q7_1',
-      question: { en: 'What causes an infinite loop?', pt: 'O que causa um loop infinito?' },
-      options: [
-        { en: 'The condition never becomes False', pt: 'A condição nunca se torna False' },
-        { en: 'Too many iterations', pt: 'Iterações demais' },
-        { en: 'Missing print() statement', pt: 'Faltando print()' },
-        { en: 'Using while instead of for', pt: 'Usar while em vez de for' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'If the condition stays True forever (e.g., forgot to increment counter), the loop never stops. Always verify you\'re moving toward False.', pt: 'Se a condição fica True para sempre (ex: esqueceu de incrementar o contador), o loop nunca para. Sempre verifique que você está avançando em direção ao False.' }
-    },
-    {
-      id: 'q7_2',
-      question: { en: 'What does count += 1 mean?', pt: 'O que count += 1 significa?' },
-      options: [
-        { en: 'count = count + 1', pt: 'count = count + 1' },
-        { en: 'count = 1', pt: 'count = 1' },
-        { en: 'Check if count equals 1', pt: 'Verificar se count é 1' },
-        { en: 'Reset count to zero', pt: 'Reiniciar count para zero' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '+= is shorthand for "add to itself". count += 1 means count = count + 1. Saves keystrokes!', pt: '+= é atalho para "adicione a si mesmo". count += 1 significa count = count + 1. Economiza digitação!' }
-    },
-    {
-      id: 'q7_3',
-      question: { en: 'count = 1\nwhile count < 4:\n   count += 1\nprint(count) → result?', pt: 'count = 1\nwhile count < 4:\n   count += 1\nprint(count) → resultado?' },
-      options: [
-        { en: '4', pt: '4' },
-        { en: '3', pt: '3' },
-        { en: '1', pt: '1' },
-        { en: 'Infinite loop', pt: 'Loop infinito' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'count goes 1→2→3→4. When count=4, 4<4 is False, loop stops. print(4).', pt: 'count vai 1→2→3→4. Quando count=4, 4<4 é False, loop para. print(4).' }
-    },
-    {
-      id: 'q7_4',
-      question: { en: 'When does a while loop STOP?', pt: 'Quando um loop while PARA?' },
-      options: [
-        { en: 'When its condition becomes False', pt: 'Quando sua condição se torna False' },
-        { en: 'After exactly 10 iterations', pt: 'Após exatamente 10 iterações' },
-        { en: 'When print() is called', pt: 'Quando print() é chamado' },
-        { en: 'At the end of the file', pt: 'No final do arquivo' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'A while loop runs as long as its condition is True. The moment the condition becomes False, execution continues after the loop.', pt: 'Um loop while roda enquanto sua condição é True. No momento em que a condição se torna False, a execução continua após o loop.' }
-    }
+    { id: 'q7_1', question: { en: 'The 3 pieces of every while loop:', pt: 'As 3 peças de todo while:' }, options: [{ en: 'Start state, condition, progress', pt: 'Estado inicial, condição, progresso' }, { en: 'if, elif, else', pt: 'if, elif, else' }, { en: 'input, print, exit', pt: 'input, print, exit' }, { en: 'try, except, finally', pt: 'try, except, finally' }], correctIndex: 0, explanation: { en: 'Miss the progress piece and the condition never becomes False → infinite loop.', pt: 'Esqueça a peça do progresso e a condição nunca vira False → loop infinito.' } },
+    { id: 'q7_2', question: { en: 'What causes an infinite loop?', pt: 'O que causa loop infinito?' }, options: [{ en: 'The condition never becomes False', pt: 'A condição nunca se torna False' }, { en: 'Too many prints', pt: 'Prints demais' }, { en: 'Using while True with break', pt: 'Usar while True com break' }, { en: 'Large numbers', pt: 'Números grandes' }], correctIndex: 0, explanation: { en: 'Usually a forgotten counter update. while True + break is fine — break IS the exit.', pt: 'Geralmente um contador esquecido. while True + break é válido — break É a saída.' } },
+    { id: 'q7_3', question: { en: 'count = 1\nwhile count < 4: count += 1\nprint(count) →', pt: 'count = 1\nwhile count < 4: count += 1\nprint(count) →' }, options: [{ en: '4', pt: '4' }, { en: '3', pt: '3' }, { en: '1', pt: '1' }, { en: 'Infinite', pt: 'Infinito' }], correctIndex: 0, explanation: { en: '1→2→3→4. At 4, 4<4 is False → exit. print shows 4.', pt: '1→2→3→4. No 4, 4<4 é False → sai. print mostra 4.' } },
+    { id: 'q7_4', question: { en: 'What does break do?', pt: 'O que break faz?' }, options: [{ en: 'Exits the loop immediately', pt: 'Sai do loop imediatamente' }, { en: 'Pauses the loop', pt: 'Pausa o loop' }, { en: 'Skips one iteration', pt: 'Pula uma iteração' }, { en: 'Crashes the program', pt: 'Quebra o programa' }], correctIndex: 0, explanation: { en: 'break jumps straight out of the loop, skipping remaining iterations. (continue skips ONE iteration.)', pt: 'break pula direto para fora do loop. (continue pula UMA iteração.)' } },
+    { id: 'q7_5', question: { en: 'count = 10\nwhile count <= 5: print("x")\nWhat happens?', pt: 'count = 10\nwhile count <= 5: print("x")\nO que acontece?' }, options: [{ en: 'Nothing prints — condition is False from the start', pt: 'Nada imprime — condição é False desde o início' }, { en: 'Infinite loop', pt: 'Loop infinito' }, { en: 'Prints x once', pt: 'Imprime x uma vez' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: '10 <= 5 is False on the very first check → loop body never runs. Zero iterations is valid!', pt: '10 <= 5 é False já na primeira verificação → corpo nunca roda. Zero iterações é válido!' } },
+    { id: 'q7_6', question: { en: 'Best pattern to ask input until valid:', pt: 'Melhor padrão para pedir input até ser válido:' }, options: [{ en: 'while loop that repeats when input is invalid', pt: 'Loop while que repete quando entrada é inválida' }, { en: 'if/else once', pt: 'if/else uma vez' }, { en: '10 copied ifs', pt: '10 ifs copiados' }, { en: 'Impossible in Python', pt: 'Impossível em Python' }], correctIndex: 0, explanation: { en: 'Validation loop: while value_is_invalid: ask again. Standard in every professional form.', pt: 'Loop de validação: while valor_invalido: pergunte de novo. Padrão em todo formulário profissional.' } }
   ],
 
   exam: {
-    title: { en: 'Monthly Batch Processor', pt: 'Processador Mensal em Lote' },
+    title: { en: 'Monthly Batch + Statistics', pt: 'Lote Mensal + Estatísticas' },
     scenario: {
-      en: 'End of month. Process exactly 5 claims, apply the $300 deductible to each, and report the total company payout.',
-      pt: 'Fim do mês. Processe exatamente 5 sinistros, aplique a franquia de R$300 em cada, e reporte o pagamento total da empresa.'
+      en: 'Month-end batch: process 5 claims with a $300 deductible each, then report total, average, and how many were above $3000 payout.',
+      pt: 'Lote de fim de mês: processe 5 sinistros com R$300 de franquia cada, depois reporte total, média e quantos ficaram acima de R$3000 de pagamento.'
     },
     requirements: {
-      en: ['Loop exactly 5 times', 'Ask for damage each iteration', 'Subtract $300 deductible', 'Accumulate total payout', 'Print final total'],
-      pt: ['Loop exatamente 5 vezes', 'Pergunte o dano em cada iteração', 'Subtraia R$300 de franquia', 'Acumule o pagamento total', 'Imprima o total final']
+      en: ['Loop exactly 5 times', 'Ask damage, subtract 300', 'Accumulate total', 'Count payouts above 3000', 'Print total, average and count'],
+      pt: ['Loop exatamente 5 vezes', 'Pergunte dano, subtraia 300', 'Acumule total', 'Conte pagamentos acima de 3000', 'Imprima total, média e contagem']
     },
-    starterCode: `total_payout = 0
+    starterCode: `total = 0
+big_count = 0
 count = 1
-deductible = 300
 
-while count <= 5:
-    damage = int(input("Claim #" + str(count) + " damage: $"))
-    payout = damage - deductible
-    total_payout += payout
-    count += 1
-
-print("Total payout: $", total_payout)`,
+# Build the loop:`,
     testCases: [
-      { id: 'tc7_1', description: { en: 'Processes 5 claims correctly', pt: 'Processa 5 sinistros corretamente' }, inputs: ['1000','2000','3000','4000','5000'], checks: [{ type: 'contains', value: '13500' }], points: 50 },
-      { id: 'tc7_2', description: { en: 'No errors', pt: 'Sem erros' }, inputs: ['100','200','300','400','500'], checks: [{ type: 'no_error', value: '' }], points: 30 },
-      { id: 'tc7_3', description: { en: 'Shows total', pt: 'Mostra total' }, inputs: ['600','600','600','600','600'], checks: [{ type: 'contains', value: '1500' }], points: 20 }
+      { id: 'tc7_1', description: { en: 'Total correct', pt: 'Total correto' }, inputs: ['1000','2000','3000','4000','5000'], checks: [{ type: 'contains', value: '13500' }], points: 40 },
+      { id: 'tc7_2', description: { en: 'Average correct', pt: 'Média correta' }, inputs: ['1000','2000','3000','4000','5000'], checks: [{ type: 'contains', value: '2700' }], points: 30 },
+      { id: 'tc7_3', description: { en: 'No errors', pt: 'Sem erros' }, inputs: ['500','500','500','500','500'], checks: [{ type: 'no_error', value: '' }], points: 30 }
     ]
   }
 }
 
 // ============================================================================
-// PHASE 8 — For Loops + Listas
-// TEMPLATE B: Conceito Composto (for + lists interdependent)
+// PHASE 8 — For + Listas · EXPANDIDO · TEMPLATE B
 // ============================================================================
 
 export const phase8: Phase = {
   id: 8,
   title: { en: 'For Loops & Lists', pt: 'For Loops e Listas' },
   description: {
-    en: 'Store collections of data and process them all automatically.',
-    pt: 'Armazene coleções de dados e processe todas automaticamente.'
+    en: 'Store collections and process them automatically — the heart of data work.',
+    pt: 'Armazene coleções e processe-as automaticamente — o coração do trabalho com dados.'
   },
   icon: '📋',
   libraries: [],
@@ -1368,189 +1450,231 @@ export const phase8: Phase = {
     title: { en: 'Collections + Automation', pt: 'Coleções + Automação' },
     blocks: [
 
-      { type: 'heading', content: { en: '🌍 Spotify loops through 600M users every morning', pt: '🌍 O Spotify percorre 600M usuários toda manhã' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Every morning, Spotify\'s system loops through a list of every user:\n"for user in all_users: generate their Daily Mix playlist"\n\nLists hold the data. For loops do the work.\nTogether, they power every bulk operation on the internet.',
-          pt: 'Toda manhã, o sistema do Spotify percorre uma lista de todos os usuários:\n"for usuario in todos_usuarios: gerar playlist Daily Mix"\n\nListas guardam os dados. For loops fazem o trabalho.\nJuntos, alimentam toda operação em massa na internet.'
-        }
-      },
+      { type: 'heading', content: { en: '🌍 Spotify loops 600 million users every morning', pt: '🌍 O Spotify percorre 600 milhões de usuários toda manhã' } },
+      { type: 'text', content: {
+        en: 'Every morning Spotify\'s servers run something like:\n"for user in all_600_million_users: generate Daily Mix"\n\nYour bank statement? A list of transactions, looped to calculate your balance.\nAmazon\'s "orders arriving today"? A list, looped for notifications.\nEvery Excel sheet you\'ve ever seen? Rows = a list, formulas = the loop.\n\nLists hold data. For loops do the work. Together = 90% of all data processing on Earth.',
+        pt: 'Toda manhã os servidores do Spotify rodam algo como:\n"for usuario in todos_600_milhoes: gerar Daily Mix"\n\nSeu extrato bancário? Uma lista de transações, percorrida para calcular saldo.\nOs "pedidos chegando hoje" da Amazon? Uma lista, percorrida para notificações.\nToda planilha Excel que você já viu? Linhas = uma lista, fórmulas = o loop.\n\nListas guardam dados. For loops fazem o trabalho. Juntos = 90% de todo processamento de dados da Terra.'
+      }},
 
-      // ── ANALOGIA MÃE ──────────────────────────────────────────────────────
-      { type: 'heading', content: { en: '🧩 A shopping list + automatic checkout', pt: '🧩 Uma lista de compras + caixa automático' } },
-      {
-        type: 'text',
-        content: {
-          en: 'List = your grocery list: [milk, eggs, bread, coffee]\nFor loop = automatic checkout scanner:\n  → scans milk → processes it\n  → scans eggs → processes it\n  → ... until list is empty\n\nThe scanner doesn\'t care how many items. It just goes through all of them.',
-          pt: 'Lista = sua lista de compras: [leite, ovos, pão, café]\nFor loop = caixa automático de escaneamento:\n  → escaneia leite → processa\n  → escaneia ovos → processa\n  → ... até a lista acabar\n\nO caixa não se importa com quantos itens. Ele percorre todos.'
-        }
-      },
+      { type: 'heading', content: { en: '🧩 Shopping list + automatic checkout', pt: '🧩 Lista de compras + caixa automático' } },
+      { type: 'text', content: {
+        en: 'List = your grocery list: [milk, eggs, bread, coffee]\nFor loop = the checkout scanner:\n→ grabs milk, processes it\n→ grabs eggs, processes it\n→ ...until the basket is empty\n\nThe scanner doesn\'t care if there are 4 items or 4 million.\nSame code. That\'s the superpower.',
+        pt: 'Lista = sua lista de compras: [leite, ovos, pão, café]\nFor loop = o scanner do caixa:\n→ pega o leite, processa\n→ pega os ovos, processa\n→ ...até a cesta esvaziar\n\nO scanner não liga se são 4 itens ou 4 milhões.\nMesmo código. Esse é o superpoder.'
+      }},
 
-      // ── CÓDIGO PROGRESSIVO (Template B) ───────────────────────────────────
-      { type: 'heading', content: { en: '🐍 Step 1 — create a list', pt: '🐍 Passo 1 — crie uma lista' } },
-      {
-        type: 'code',
-        code: `# Lists use square brackets [ ]
-clients = ["Alice", "Bob", "Carlos"]
+      { type: 'heading', content: { en: '🐍 Step 1 — create and access lists', pt: '🐍 Passo 1 — criar e acessar listas' } },
+      { type: 'code', code: `# Square brackets create a list
+clients = ["Alice", "Bob", "Carlos", "Diana"]
 damages = [1200, 4500, 8000, 250]
 
-# Access by position (starts at 0!)
-print(clients[0])   # Alice
-print(clients[2])   # Carlos
-print(damages[1])   # 4500`
-      },
+# Access by POSITION — starts at 0!
+print(clients[0])     # Alice   (first)
+print(clients[3])     # Diana   (fourth)
+print(clients[-1])    # Diana   (negative = from the end!)
 
-      { type: 'heading', content: { en: '🐍 Step 2 — loop through a list', pt: '🐍 Passo 2 — percorra uma lista' } },
-      {
-        type: 'code',
-        code: `clients = ["Alice", "Bob", "Carlos"]
+# Useful list tools
+print(len(clients))   # 4 — how many items
+clients.append("Eva") # add to the end
+print(clients)        # [..., 'Eva']
+print(sum(damages))   # 13950 — sum all numbers
+print(max(damages))   # 8000 — biggest` },
 
+      { type: 'heading', content: { en: '🐍 Step 2 — the for loop', pt: '🐍 Passo 2 — o for loop' } },
+      { type: 'code', code: `clients = ["Alice", "Bob", "Carlos"]
+
+# "for EACH name IN the list"
 for name in clients:
     print("Hello,", name)
 
-# Output:
-# Hello, Alice
-# Hello, Bob
-# Hello, Carlos`
-      },
+# The loop variable (name) holds ONE item per turn:
+# turn 1: name = "Alice"
+# turn 2: name = "Bob"
+# turn 3: name = "Carlos"
+# list ends → loop ends. No counter needed!
 
-      { type: 'heading', content: { en: '🐍 Step 3 — loop + calculate', pt: '🐍 Passo 3 — loop + calcular' } },
-      {
-        type: 'code',
-        code: `damages = [1200, 4500, 8000, 250]
+# range() generates number sequences to loop over:
+for i in range(3):        # 0, 1, 2
+    print("Attempt", i + 1)` },
+
+      { type: 'heading', content: { en: '🐍 Step 3 — loop + filter + accumulate', pt: '🐍 Passo 3 — loop + filtro + acumular' } },
+      { type: 'code', code: `damages = [1200, 4500, 8000, 250, 3100]
 total = 0
+big_claims = 0
 
 for damage in damages:
-    payout = damage - 250        # apply deductible
-    total += payout              # add to running total
-    print("Payout:", payout)
+    payout = damage - 250
+    total += payout               # accumulate
+    if damage > 3000:             # filter inside the loop!
+        big_claims += 1
+        print(f"⚠️ Big claim: \${damage}")
 
-print("Grand total:", total)`
-      },
-      {
-        type: 'tip',
-        content: {
-          en: '📍 Lists start at index 0 — always!\nFirst item = [0], second = [1], third = [2]\nTrying to access [4] on a 4-item list → IndexError.',
-          pt: '📍 Listas começam no índice 0 — sempre!\nPrimeiro item = [0], segundo = [1], terceiro = [2]\nTentar acessar [4] em lista de 4 itens → IndexError.'
-        }
-      }
+print(f"Total payout: \${total}")
+print(f"Big claims: {big_claims} of {len(damages)}")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claims dashboard', pt: '🏗️ Cenário Real 1: Dashboard de sinistros' } },
+      { type: 'code', code: `# Morning dashboard: process the overnight claim queue
+damages = [5230, 1200, 8000, 450, 3100, 9200]
+total = 0
+critical = 0
+
+print("=== MORNING QUEUE ===")
+for damage in damages:
+    payout = damage - 250
+    total += payout
+    if damage > 8000:
+        critical += 1
+        print(f"🔴 \${damage} → CRITICAL, escalating")
+    else:
+        print(f"🟢 \${damage} → payout \${payout}")
+
+print()
+print(f"Queue: {len(damages)} claims")
+print(f"Critical: {critical}")
+print(f"Total payout: \${total}")
+print(f"Average: \${total / len(damages):.2f}")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Multi-site inspection round', pt: '🏗️ Cenário Real 2: Ronda de inspeção multi-obra' } },
+      { type: 'code', code: `# Friday inspection: visit every active site
+sites = ["Warehouse A", "Tower B", "Mall C", "School D"]
+progress = [85, 42, 97, 60]        # % complete, same order!
+
+for i in range(len(sites)):        # loop by INDEX to pair two lists
+    site = sites[i]
+    pct = progress[i]
+    if pct >= 90:
+        status = "🏁 Final inspection"
+    elif pct >= 50:
+        status = "🔨 On track"
+    else:
+        status = "⚠️ Behind schedule"
+    print(f"{site}: {pct}% — {status}")` },
+
+      { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
+      { type: 'code', code: `items = ["a", "b", "c"]
+
+# ❌ MISTAKE 1: forgetting lists start at 0
+# print(items[3])       → IndexError! Positions are 0, 1, 2
+# ✅ Last item: items[2] or items[-1]
+print(items[-1])         # c
+
+# ❌ MISTAKE 2: resetting the accumulator INSIDE the loop
+for x in [10, 20, 30]:
+    total = 0            # ← resets every turn! Always ends at 30
+    total += x
+# ✅ FIX: initialize BEFORE the loop
+total = 0
+for x in [10, 20, 30]:
+    total += x
+print(total)             # 60 ✅
+
+# ❌ MISTAKE 3: modifying a list while looping over it
+# for item in items:
+#     items.remove(item)   → skips items unpredictably!
+# ✅ FIX: loop over a COPY: for item in items[:]` },
+
+      { type: 'tip', content: {
+        en: '💡 PRO TIP: name the loop variable as the SINGULAR of the list.\nfor client in clients / for damage in damages / for site in sites\nYour code reads like English and bugs become obvious: "for damage in clients" instantly looks wrong.',
+        pt: '💡 DICA PRO: nomeie a variável do loop como o SINGULAR da lista.\nfor cliente in clientes / for dano in danos / for obra in obras\nSeu código lê como português e bugs ficam óbvios: "for dano in clientes" parece errado na hora.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'text', content: {
+        en: '✅ Lists: [a, b, c] — ordered, indexed from 0, negative counts from end\n✅ Tools: len(), append(), sum(), max(), min()\n✅ for item in list: — one item per turn, no counter needed\n✅ range(n) generates 0..n-1 for numeric loops\n✅ Accumulator goes BEFORE the loop\n✅ Pair two lists with for i in range(len(list))\n\nNext: nested lists — spreadsheets in code. 🗂️',
+        pt: '✅ Listas: [a, b, c] — ordenadas, índice do 0, negativo conta do fim\n✅ Ferramentas: len(), append(), sum(), max(), min()\n✅ for item in lista: — um item por vez, sem contador\n✅ range(n) gera 0..n-1 para loops numéricos\n✅ Acumulador vai ANTES do loop\n✅ Emparelhe duas listas com for i in range(len(lista))\n\nPróxima: listas aninhadas — planilhas em código. 🗂️'
+      }}
     ]
   },
 
   exercises: [
     {
-      id: 'ex8_fill',
-      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      id: 'ex8_guided',
+      title: { en: '🟢 Guided: One Item Per Turn', pt: '🟢 Guiado: Um Item Por Vez' },
       description: {
-        en: 'Complete the for loop to greet each client.',
-        pt: 'Complete o for loop para cumprimentar cada cliente.'
+        en: 'Run and watch the loop variable take each value.\nThen add "Eva" to the list with append and run again — the loop adapts automatically!',
+        pt: 'Execute e veja a variável do loop assumir cada valor.\nDepois adicione "Eva" à lista com append e rode de novo — o loop se adapta sozinho!'
       },
-      starterCode: `clients = ["Alice", "Bob", "Diana", "Carlos"]
+      starterCode: `clients = ["Alice", "Bob", "Carlos"]
+print("Queue size:", len(clients))
 
-for ___ in clients:             # fill in the loop variable
-    print("Hello,", ___)       # use it here`,
+for name in clients:
+    print("Processing:", name)
+
+print("Queue complete!")`,
       hints: [
-        { en: 'Choose any name for the loop variable: for name in clients', pt: 'Escolha qualquer nome para a variável do loop: for nome in clients' },
-        { en: 'Use the same variable in the print()', pt: 'Use a mesma variável no print()' }
+        { en: 'Add before the loop: clients.append("Eva")', pt: 'Adicione antes do loop: clients.append("Eva")' }
       ],
-      sampleOutput: { en: 'Hello, Alice\nHello, Bob\nHello, Diana\nHello, Carlos', pt: 'Hello, Alice\nHello, Bob\nHello, Diana\nHello, Carlos' }
+      sampleOutput: { en: 'Queue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!', pt: 'Queue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!' }
+    },
+    {
+      id: 'ex8_fill',
+      title: { en: '🟡 Fill: Filter + Accumulate', pt: '🟡 Preencha: Filtrar + Acumular' },
+      description: {
+        en: 'Complete the dashboard: accumulate payouts and count big claims.',
+        pt: 'Complete o dashboard: acumule pagamentos e conte sinistros grandes.'
+      },
+      starterCode: `damages = [1200, 4500, 8000, 650]
+total = ___                     # fill: accumulator start
+
+for damage in damages:
+    payout = damage - 250
+    total ___ payout            # fill: accumulate
+    if damage ___ 3000:         # fill: bigger than
+        print("Big claim:", damage)
+
+print("Total:", total)`,
+      hints: [
+        { en: 'Start at 0, accumulate with +=', pt: 'Comece em 0, acumule com +=' },
+        { en: 'Bigger than: >', pt: 'Maior que: >' }
+      ],
+      sampleOutput: { en: 'Big claim: 4500\nBig claim: 8000\nTotal: 13350', pt: 'Big claim: 4500\nBig claim: 8000\nTotal: 13350' }
     },
     {
       id: 'ex8_zero',
-      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      title: { en: '🔴 From Scratch: Inspection Round', pt: '🔴 Do Zero: Ronda de Inspeção' },
       description: {
-        en: 'Create a list of 4 damage amounts.\nLoop through them, apply a $200 deductible to each, and print individual payouts + grand total.',
-        pt: 'Crie uma lista com 4 valores de dano.\nPercorra-os, aplique R$200 de franquia em cada um, e imprima os pagamentos individuais + total geral.'
+        en: 'Build the multi-site report:\n• sites = 3 names, progress = 3 percentages\n• Loop by index pairing both lists\n• >= 90 → "Final inspection" | >= 50 → "On track" | else → "Behind"\n• Print each site with status',
+        pt: 'Construa o relatório multi-obra:\n• obras = 3 nomes, progresso = 3 percentuais\n• Loop por índice emparelhando as listas\n• >= 90 → "Inspeção final" | >= 50 → "No prazo" | senão → "Atrasado"\n• Imprima cada obra com status'
       },
-      starterCode: `damages = [___,___,___,___]   # fill in 4 damage amounts
-total = 0
+      starterCode: `sites = ["Tower A", "Mall B", "School C"]
+progress = [95, 60, 30]
 
-# Write your for loop here:`,
+# Loop by index and print each status:`,
       hints: [
-        { en: 'for damage in damages: → calculate payout → print → add to total', pt: 'for dano in damages: → calcular pagamento → imprimir → adicionar ao total' },
-        { en: 'Print total AFTER the loop (not inside it)', pt: 'Imprima o total APÓS o loop (não dentro dele)' }
+        { en: 'for i in range(len(sites)):', pt: 'for i in range(len(sites)):' },
+        { en: 'Access pairs: sites[i] and progress[i]', pt: 'Acesse pares: sites[i] e progress[i]' }
       ],
-      sampleOutput: { en: 'Payout: 1000\nPayout: 2800\nPayout: 3800\nPayout: 1050\nGrand total: 8650', pt: 'Payout: 1000\nPayout: 2800\nPayout: 3800\nPayout: 1050\nGrand total: 8650' }
+      sampleOutput: { en: 'Tower A: 95% — Final inspection\nMall B: 60% — On track\nSchool C: 30% — Behind', pt: 'Tower A: 95% — Inspeção final\nMall B: 60% — No prazo\nSchool C: 30% — Atrasado' }
     }
   ],
 
   quiz: [
-    {
-      id: 'q8_1',
-      question: { en: 'How do you create a list in Python?', pt: 'Como criar uma lista em Python?' },
-      options: [
-        { en: '[item1, item2, item3]', pt: '[item1, item2, item3]' },
-        { en: '(item1, item2, item3)', pt: '(item1, item2, item3)' },
-        { en: '{item1, item2, item3}', pt: '{item1, item2, item3}' },
-        { en: 'list(item1, item2, item3)', pt: 'list(item1, item2, item3)' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'Lists use square brackets [ ]. Parentheses = tuple. Curly braces = set or dict.', pt: 'Listas usam colchetes [ ]. Parênteses = tupla. Chaves = set ou dict.' }
-    },
-    {
-      id: 'q8_2',
-      question: { en: 'items = ["a","b","c"]\nWhat is items[1]?', pt: 'items = ["a","b","c"]\nQual é items[1]?' },
-      options: [
-        { en: '"b"', pt: '"b"' },
-        { en: '"a"', pt: '"a"' },
-        { en: '"c"', pt: '"c"' },
-        { en: 'Error', pt: 'Erro' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'Lists start at 0. items[0]="a", items[1]="b", items[2]="c".', pt: 'Listas começam em 0. items[0]="a", items[1]="b", items[2]="c".' }
-    },
-    {
-      id: 'q8_3',
-      question: { en: 'nums = [10, 20, 30]\nfor n in nums: print(n)\nHow many lines print?', pt: 'nums = [10, 20, 30]\nfor n in nums: print(n)\nQuantas linhas imprimem?' },
-      options: [
-        { en: '3', pt: '3' },
-        { en: '1', pt: '1' },
-        { en: '30', pt: '30' },
-        { en: '0', pt: '0' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'The for loop runs once per item. 3 items in the list = 3 print() calls = 3 lines.', pt: 'O for loop roda uma vez por item. 3 itens na lista = 3 chamadas print() = 3 linhas.' }
-    },
-    {
-      id: 'q8_4',
-      question: { en: 'How to add "Diana" to: names = ["Alice"]?', pt: 'Como adicionar "Diana" a: nomes = ["Alice"]?' },
-      options: [
-        { en: 'names.append("Diana")', pt: 'nomes.append("Diana")' },
-        { en: 'names.add("Diana")', pt: 'nomes.add("Diana")' },
-        { en: 'names + "Diana"', pt: 'nomes + "Diana"' },
-        { en: 'names.push("Diana")', pt: 'nomes.push("Diana")' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '.append() adds one item to the END of a list. That\'s the standard way in Python.', pt: '.append() adiciona um item no FINAL da lista. Esse é o jeito padrão em Python.' }
-    }
+    { id: 'q8_1', question: { en: 'items = ["a","b","c"] — items[1] is:', pt: 'items = ["a","b","c"] — items[1] é:' }, options: [{ en: '"b" — indexing starts at 0', pt: '"b" — índice começa no 0' }, { en: '"a"', pt: '"a"' }, { en: '"c"', pt: '"c"' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: '[0]="a", [1]="b", [2]="c". First item is always index 0.', pt: '[0]="a", [1]="b", [2]="c". Primeiro item é sempre índice 0.' } },
+    { id: 'q8_2', question: { en: 'items[-1] returns:', pt: 'items[-1] retorna:' }, options: [{ en: 'The LAST item', pt: 'O ÚLTIMO item' }, { en: 'The first item', pt: 'O primeiro item' }, { en: 'Error', pt: 'Erro' }, { en: 'An empty item', pt: 'Um item vazio' }], correctIndex: 0, explanation: { en: 'Negative indexes count from the end: -1 last, -2 second-to-last.', pt: 'Índices negativos contam do fim: -1 último, -2 penúltimo.' } },
+    { id: 'q8_3', question: { en: 'nums=[10,20,30]\nfor n in nums: print(n)\nHow many lines?', pt: 'nums=[10,20,30]\nfor n in nums: print(n)\nQuantas linhas?' }, options: [{ en: '3 — one per item', pt: '3 — uma por item' }, { en: '1', pt: '1' }, { en: '30', pt: '30' }, { en: '60', pt: '60' }], correctIndex: 0, explanation: { en: 'The loop body runs once per item. 3 items = 3 prints.', pt: 'O corpo do loop roda uma vez por item. 3 itens = 3 prints.' } },
+    { id: 'q8_4', question: { en: 'How to add "Eva" to names?', pt: 'Como adicionar "Eva" a names?' }, options: [{ en: 'names.append("Eva")', pt: 'names.append("Eva")' }, { en: 'names.add("Eva")', pt: 'names.add("Eva")' }, { en: 'names + "Eva"', pt: 'names + "Eva"' }, { en: 'names.push("Eva")', pt: 'names.push("Eva")' }], correctIndex: 0, explanation: { en: '.append() adds to the END. (.add is for sets, .push is JavaScript!)', pt: '.append() adiciona ao FINAL. (.add é de sets, .push é JavaScript!)' } },
+    { id: 'q8_5', question: { en: 'range(3) generates:', pt: 'range(3) gera:' }, options: [{ en: '0, 1, 2', pt: '0, 1, 2' }, { en: '1, 2, 3', pt: '1, 2, 3' }, { en: '0, 1, 2, 3', pt: '0, 1, 2, 3' }, { en: '3, 3, 3', pt: '3, 3, 3' }], correctIndex: 0, explanation: { en: 'range(n) starts at 0 and STOPS BEFORE n. Three numbers: 0, 1, 2.', pt: 'range(n) começa em 0 e PARA ANTES de n. Três números: 0, 1, 2.' } },
+    { id: 'q8_6', question: { en: 'Where does the accumulator (total = 0) go?', pt: 'Onde vai o acumulador (total = 0)?' }, options: [{ en: 'BEFORE the loop — inside resets it every turn', pt: 'ANTES do loop — dentro o reseta a cada volta' }, { en: 'Inside the loop', pt: 'Dentro do loop' }, { en: 'After the loop', pt: 'Depois do loop' }, { en: 'Anywhere', pt: 'Qualquer lugar' }], correctIndex: 0, explanation: { en: 'Inside the loop, total = 0 wipes the sum every iteration — classic bug. Initialize before!', pt: 'Dentro do loop, total = 0 apaga a soma a cada iteração — bug clássico. Inicialize antes!' } }
   ],
 
   exam: {
-    title: { en: 'Automated Client Report', pt: 'Relatório Automatizado de Clientes' },
+    title: { en: 'Full Claims Dashboard', pt: 'Dashboard Completo de Sinistros' },
     scenario: {
-      en: 'Month-end report time. Loop through 5 clients, greet each one, show their damage and payout, then display the total payout.',
-      pt: 'Hora do relatório de fim de mês. Percorra 5 clientes, cumprimente cada um, mostre o dano e o pagamento, depois exiba o total.'
+      en: 'Build the morning dashboard: process the overnight queue, apply deductibles, flag critical claims, and report full statistics.',
+      pt: 'Construa o dashboard matinal: processe a fila da madrugada, aplique franquias, sinalize sinistros críticos e reporte estatísticas completas.'
     },
     requirements: {
-      en: ['Create list of 5 client names', 'Create list of 5 matching damage amounts', 'Loop through both', 'Print greeting + payout per client ($250 deductible)', 'Print grand total after loop'],
-      pt: ['Crie lista com 5 nomes de clientes', 'Crie lista com 5 valores de dano correspondentes', 'Percorra as duas', 'Imprima saudação + pagamento por cliente (R$250 de franquia)', 'Imprima total geral após o loop']
+      en: ['Use the provided damages list', 'Loop applying $250 deductible', 'Count claims above $5000', 'Print total payout, count of claims, count of big ones'],
+      pt: ['Use a lista de danos fornecida', 'Percorra aplicando R$250 de franquia', 'Conte sinistros acima de R$5000', 'Imprima pagamento total, quantidade de sinistros, quantidade de grandes']
     },
-    starterCode: `clients = ["Alice", "Bob", "Carlos", "Diana", "Eduardo"]
-damages = [1200, 4500, 8000, 650, 3100]
-total = 0
+    starterCode: `damages = [5230, 1200, 8000, 450, 3100, 9200]
 
-for i in range(len(clients)):
-    payout = damages[i] - 250
-    total += payout
-    print("Hello,", clients[i], "— payout: $", payout)
-
-print("Grand total: $", total)`,
+# Build your dashboard:`,
     testCases: [
-      { id: 'tc8_1', description: { en: 'Greets Alice', pt: 'Cumprimenta Alice' }, inputs: [], checks: [{ type: 'contains', value: 'Alice' }], points: 20 },
-      { id: 'tc8_2', description: { en: 'Shows a payout value', pt: 'Mostra um valor de pagamento' }, inputs: [], checks: [{ type: 'contains', value: '950' }], points: 20 },
-      { id: 'tc8_3', description: { en: 'Grand total = 16000', pt: 'Total geral = 16000' }, inputs: [], checks: [{ type: 'contains', value: '16000' }], points: 40 },
+      { id: 'tc8_1', description: { en: 'Total payout 25680', pt: 'Pagamento total 25680' }, inputs: [], checks: [{ type: 'contains', value: '25680' }], points: 40 },
+      { id: 'tc8_2', description: { en: 'Claim count 6', pt: 'Contagem 6' }, inputs: [], checks: [{ type: 'contains', value: '6' }], points: 20 },
+      { id: 'tc8_3', description: { en: 'Big claims counted', pt: 'Grandes contados' }, inputs: [], checks: [{ type: 'contains', value: '3' }], points: 20 },
       { id: 'tc8_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
     ]
   }
 }
+
