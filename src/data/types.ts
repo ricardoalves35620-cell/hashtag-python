@@ -43,7 +43,8 @@ export interface Check {
 export interface TestCase {
   id: string
   description: Bilingual
-  inputs: string[]
+  inputs: string[]           // fallback positional inputs
+  inputMap?: Record<string, string>  // keyword→value for order-independent matching
   checks: Check[]
   points: number
 }

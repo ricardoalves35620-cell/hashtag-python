@@ -454,6 +454,12 @@ print("====================")
         id: 'tc1_1',
         description: { en: 'Shows first name (Alice)', pt: 'Mostra primeiro nome (Alice)' },
         inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
         checks: [{ type: 'contains', value: 'Alice' }],
         points: 10
       },
@@ -461,6 +467,12 @@ print("====================")
         id: 'tc1_2',
         description: { en: 'Shows last name (Smith)', pt: 'Mostra sobrenome (Smith)' },
         inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
         checks: [{ type: 'contains', value: 'Smith' }],
         points: 10
       },
@@ -468,6 +480,12 @@ print("====================")
         id: 'tc1_3',
         description: { en: 'Age calculated correctly (any reasonable value for birth year 1990)', pt: 'Idade calculada corretamente (qualquer valor razoável para 1990)' },
         inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
         checks: [{ type: 'contains_any', value: ['28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43'] }],
         points: 10
       },
@@ -475,6 +493,12 @@ print("====================")
         id: 'tc1_4',
         description: { en: 'Shows birth year (1990)', pt: 'Mostra ano de nascimento (1990)' },
         inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
         checks: [{ type: 'contains', value: '1990' }],
         points: 10
       },
@@ -482,6 +506,12 @@ print("====================")
         id: 'tc1_5',
         description: { en: 'Shows favorite language (Python)', pt: 'Mostra linguagem favorita (Python)' },
         inputs: ['Alice', 'Smith', '1990', 'Python'],
+        inputMap: {
+          'first name': 'Alice', 'first': 'Alice',
+          'last name': 'Smith', 'last': 'Smith', 'surname': 'Smith', 'sobrenome': 'Smith',
+          'birth year': '1990', 'born': '1990', 'year': '1990', 'ano': '1990',
+          'language': 'Python', 'favorit': 'Python', 'programming': 'Python', 'linguagem': 'Python'
+        },
         checks: [{ type: 'contains', value: 'Python' }],
         points: 10
       },
@@ -489,6 +519,12 @@ print("====================")
         id: 'tc1_6',
         description: { en: 'Works with different name (Bob Jones)', pt: 'Funciona com outro nome (Bob Jones)' },
         inputs: ['Bob', 'Jones', '2000', 'JavaScript'],
+        inputMap: {
+          'first name': 'Bob', 'first': 'Bob',
+          'last name': 'Jones', 'last': 'Jones', 'surname': 'Jones', 'sobrenome': 'Jones',
+          'birth year': '2000', 'born': '2000', 'year': '2000', 'ano': '2000',
+          'language': 'JavaScript', 'favorit': 'JavaScript', 'programming': 'JavaScript', 'linguagem': 'JavaScript'
+        },
         checks: [{ type: 'contains', value: 'Bob' }],
         points: 10
       },
@@ -496,6 +532,12 @@ print("====================")
         id: 'tc1_7',
         description: { en: 'Age calculated for someone born in 2000 (any reasonable value)', pt: 'Idade calculada para nascido em 2000 (qualquer valor razoável)' },
         inputs: ['Bob', 'Jones', '2000', 'JavaScript'],
+        inputMap: {
+          'first name': 'Bob', 'first': 'Bob',
+          'last name': 'Jones', 'last': 'Jones', 'surname': 'Jones', 'sobrenome': 'Jones',
+          'birth year': '2000', 'born': '2000', 'year': '2000', 'ano': '2000',
+          'language': 'JavaScript', 'favorit': 'JavaScript', 'programming': 'JavaScript', 'linguagem': 'JavaScript'
+        },
         checks: [{ type: 'contains_any', value: ['20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35'] }],
         points: 10
       },
@@ -503,6 +545,12 @@ print("====================")
         id: 'tc1_8',
         description: { en: 'Shows different language (JavaScript)', pt: 'Mostra outra linguagem (JavaScript)' },
         inputs: ['Bob', 'Jones', '2000', 'JavaScript'],
+        inputMap: {
+          'first name': 'Bob', 'first': 'Bob',
+          'last name': 'Jones', 'last': 'Jones', 'surname': 'Jones', 'sobrenome': 'Jones',
+          'birth year': '2000', 'born': '2000', 'year': '2000', 'ano': '2000',
+          'language': 'JavaScript', 'favorit': 'JavaScript', 'programming': 'JavaScript', 'linguagem': 'JavaScript'
+        },
         checks: [{ type: 'contains', value: 'JavaScript' }],
         points: 10
       },
@@ -510,6 +558,12 @@ print("====================")
         id: 'tc1_9',
         description: { en: 'Full name (first + last) shown in output', pt: 'Nome completo (primeiro + último) mostrado na saída' },
         inputs: ['Maria', 'Silva', '1985', 'Ruby'],
+        inputMap: {
+          'first name': 'Maria', 'first': 'Maria',
+          'last name': 'Silva', 'last': 'Silva', 'surname': 'Silva', 'sobrenome': 'Silva',
+          'birth year': '1985', 'born': '1985', 'year': '1985', 'ano': '1985',
+          'language': 'Ruby', 'favorit': 'Ruby', 'programming': 'Ruby', 'linguagem': 'Ruby'
+        },
         checks: [{ type: 'contains', value: 'Maria' }, { type: 'contains', value: 'Silva' }],
         points: 10
       },

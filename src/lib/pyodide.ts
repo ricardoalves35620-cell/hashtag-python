@@ -16,48 +16,41 @@ let pyodideReady: Promise<PyodideInstance> | null = null
 
 export function getPyodide(): Promise<PyodideInstance> {
   if (pyodideReady) return pyodideReady
-
   pyodideReady = new Promise((resolve, reject) => {
-    if (window._pyodideInstance) {
-      resolve(window._pyodideInstance)
-      return
-    }
-
+    if (window._pyodideInstance) { resolve(window._pyodideInstance); return }
     const script = document.createElement('script')
     script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js'
     script.onload = async () => {
       try {
-        const pyodide = await window.loadPyodide({
-          indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/'
-        })
+        const pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' })
         window._pyodideInstance = pyodide
         resolve(pyodide)
-      } catch (e) {
-        reject(e)
-      }
+      } catch (e) { reject(e) }
     }
     script.onerror = () => reject(new Error('Failed to load Pyodide'))
     document.head.appendChild(script)
   })
-
   return pyodideReady
 }
 
 export async function runCode(
   pyodide: PyodideInstance,
   code: string,
-  inputs: string[] = []
+  inputs: string[] = [],
+  inputMap?: Record<string, string>
 ): Promise<{ output: string; error: string | null }> {
-  const inputsJson = JSON.stringify(inputs.map(String))
 
-  // IMPORTANT: Count every line here — user code starts at line 27
-  // Offset = 26 (lines 1-26 are wrapper, user line 1 = pyodide line 27)
+  const inputsJson = JSON.stringify(inputs.map(String))
+  const inputMapJson = JSON.stringify(inputMap || {})
+
+  // IMPORTANT: User code starts at line 27 (offset = 26)
   const wrapper = `
 import sys
 import builtins
 from io import StringIO
 
 _hp_inputs = ${inputsJson}
+_hp_map = ${inputMapJson}
 _hp_idx = [0]
 _hp_buf = StringIO()
 _hp_err = None
@@ -67,6 +60,18 @@ _orig_stdout = sys.stdout
 
 def _hp_input(prompt=''):
     _hp_buf.write(str(prompt))
+    p = str(prompt).lower()
+
+    # Smart keyword matching — order-independent
+    if _hp_map:
+        # Sort by key length descending (longer = more specific)
+        for key in sorted(_hp_map.keys(), key=len, reverse=True):
+            if key.lower() in p:
+                val = _hp_map[key]
+                _hp_buf.write(val + '\\n')
+                return val
+
+    # Fall back to positional
     if _hp_idx[0] < len(_hp_inputs):
         val = str(_hp_inputs[_hp_idx[0]])
         _hp_idx[0] += 1
@@ -100,31 +105,25 @@ _hp_output = _hp_buf.getvalue()
     const error = pyodide.globals.get('_hp_err')
     return { output, error: error ? String(error) : null }
   } catch (e) {
-    // SyntaxError and other compile-time errors come here as PythonError
     return { output: '', error: String(e) }
   }
 }
 
 function checkOutput(output: string, check: Check): boolean {
   const o = check.caseSensitive ? output : output.toLowerCase()
-
   if (check.type === 'no_error') return true
-
   if (check.type === 'contains') {
     const v = check.caseSensitive ? String(check.value) : String(check.value).toLowerCase()
     return o.includes(v)
   }
-
   if (check.type === 'contains_any') {
     const values = Array.isArray(check.value) ? check.value : [check.value as string]
     return values.some(v => o.includes(check.caseSensitive ? v : v.toLowerCase()))
   }
-
   if (check.type === 'not_contains') {
     const v = check.caseSensitive ? String(check.value) : String(check.value).toLowerCase()
     return !o.includes(v)
   }
-
   return false
 }
 
@@ -145,10 +144,9 @@ export async function runExam(
   const results: TestResult[] = []
 
   for (const tc of testCases) {
-    const { output, error } = await runCode(pyodide, code, tc.inputs)
+    const { output, error } = await runCode(pyodide, code, tc.inputs, tc.inputMap)
 
     let passed = true
-
     if (error && tc.checks.some(c => c.type !== 'no_error')) {
       passed = false
     } else {
@@ -161,19 +159,12 @@ export async function runExam(
       }
     }
 
-    results.push({
-      id: tc.id,
-      description: tc.description,
-      passed,
-      points: passed ? tc.points : 0,
-      output,
-      error
-    })
+    results.push({ id: tc.id, description: tc.description, passed, points: passed ? tc.points : 0, output, error })
   }
 
   const totalPoints = testCases.reduce((s, tc) => s + tc.points, 0)
   const earnedPoints = results.reduce((s, r) => s + r.points, 0)
-  const score = Math.round((earnedPoints / totalPoints) * 100)
+  const score = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0
 
   return { results, score }
 }

@@ -32,6 +32,7 @@ export default function Exam() {
   const [score, setScore] = useState<number | null>(phaseProgress?.exam_score ?? null)
   const [passed, setPassed] = useState(phaseProgress?.exam_passed ?? false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [showScenario, setShowScenario] = useState(false)
   const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
   const [showRawError, setShowRawError] = useState(false)
 
@@ -290,6 +291,43 @@ export default function Exam() {
       {/* ── CODE TAB ── */}
       {tab === 'code' && (
         <div style={{ padding: '16px' }}>
+          {/* Collapsible scenario panel */}
+          <div style={{ marginBottom: 10 }}>
+            <button
+              onClick={() => setShowScenario(s => !s)}
+              style={{
+                width: '100%', padding: '10px 14px', borderRadius: 10,
+                background: 'var(--c-card)', border: '0.5px solid var(--c-border)',
+                color: 'var(--c-text2)', fontSize: 13, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              }}
+            >
+              <span>📋 {lang === 'en' ? 'See scenario & requirements' : 'Ver cenário e requisitos'}</span>
+              <span style={{ fontSize: 12, color: 'var(--c-muted)' }}>{showScenario ? '▲ hide' : '▼ show'}</span>
+            </button>
+            {showScenario && (
+              <div style={{
+                marginTop: 6, background: 'var(--c-card)',
+                border: '0.5px solid var(--c-border)', borderRadius: 10, padding: 14,
+              }}>
+                <div style={{ fontSize: 12, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
+                  {lang === 'en' ? 'What to build:' : 'O que construir:'}
+                </div>
+                <pre style={{ fontSize: 12, color: 'var(--c-text2)', whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: '0 0 12px', lineHeight: 1.6 }}>
+                  {phase.exam.scenario[lang]}
+                </pre>
+                <div style={{ fontSize: 12, color: 'var(--c-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>
+                  {lang === 'en' ? 'Requirements:' : 'Requisitos:'}
+                </div>
+                {phase.exam.requirements[lang].map((req, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--c-text2)', marginBottom: 4 }}>
+                    <span style={{ color: 'var(--c-purple-l)', flexShrink: 0 }}>→</span>{req}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* VS Code Editor */}
           <VSCodeEditor
             value={code}
