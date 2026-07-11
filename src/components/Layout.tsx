@@ -11,7 +11,7 @@ interface Props {
   hideNav?: boolean
 }
 
-export default function Layout({ children, showBack, backTo = '/home', backLabel, title, hideNav }: Props) {
+export default function Layout({ children, showBack, backTo = "/", backLabel, title, hideNav }: Props) {
   const { lang, setLang } = useApp()
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -48,7 +48,7 @@ export default function Layout({ children, showBack, backTo = '/home', backLabel
           </button>
         ) : (
           <Link
-            to="/home"
+            to="/"
             className="font-mono text-lg font-medium tracking-tight flex-shrink-0"
             style={{ color: 'var(--c-purple-l)', minHeight: 44, display: 'flex', alignItems: 'center', textDecoration: 'none' }}
           >

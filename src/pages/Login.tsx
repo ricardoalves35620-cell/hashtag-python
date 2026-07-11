@@ -62,14 +62,14 @@ export default function Login() {
       if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        navigate('/home')
+        navigate("/")
       } else if (mode === 'register') {
         const { error } = await supabase.auth.signUp({
           email, password,
           options: { data: { display_name: displayName } }
         })
         if (error) throw error
-        navigate('/home')
+        navigate("/")
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`
