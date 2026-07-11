@@ -228,8 +228,8 @@ print("Remaining: $", remaining)`,
       { id: 'tc2_6', description: { en: 'Per site ~57500', pt: 'Por site ~57500' }, inputs: [], checks: [{ type: 'contains_any', value: ['57500', '57500.0'] }], points: 10 },
       { id: 'tc2_7', description: { en: 'Overhead 23000', pt: 'Despesas 23000' }, inputs: [], checks: [{ type: 'contains_any', value: ['23000', '23000.0'] }], points: 10 },
       { id: 'tc2_8', description: { en: 'Remaining 207000', pt: 'Restante 207000' }, inputs: [], checks: [{ type: 'contains_any', value: ['207000', '207000.0'] }], points: 10 },
-      { id: 'tc2_9', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error' }], points: 10 },
-      { id: 'tc2_10', description: { en: 'Formatted output', pt: 'Saída formatada' }, inputs: [], checks: [{ type: 'no_error' }], points: 10 }
+      { id: 'tc2_9', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 },
+      { id: 'tc2_10', description: { en: 'Formatted output', pt: 'Saída formatada' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 }
     ]
   }
 }

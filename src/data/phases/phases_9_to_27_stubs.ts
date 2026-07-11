@@ -156,7 +156,7 @@ export const phase14: Phase = {
   lesson: { title: { en: 'Advanced Parameters', pt: 'Parâmetros Avançados' }, blocks: [{ type: 'code', code: `def payout(damage, deductible=250):\n  return damage - deductible\n\nprint(payout(5000))        # Uses default 250\nprint(payout(5000, 100))   # Uses 100` }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Default Payout', pt: 'Pagamento Padrão' }, scenario: { en: `Function with default deductible.`, pt: `Função com franquia padrão.` }, requirements: { en: ['Default parameter', 'Works with and without'], pt: ['Parâmetro padrão', 'Funciona com e sem'] }, starterCode: `def payout(damage, deductible=250):\n  return damage - deductible\n\nprint(payout(5000))\nprint(payout(3000, 100))`, testCases: [{ id: 'tc14_1', description: { en: 'Uses defaults', pt: 'Usa padrões' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Default Payout', pt: 'Pagamento Padrão' }, scenario: { en: `Function with default deductible.`, pt: `Função com franquia padrão.` }, requirements: { en: ['Default parameter', 'Works with and without'], pt: ['Parâmetro padrão', 'Funciona com e sem'] }, starterCode: `def payout(damage, deductible=250):\n  return damage - deductible\n\nprint(payout(5000))\nprint(payout(3000, 100))`, testCases: [{ id: 'tc14_1', description: { en: 'Uses defaults', pt: 'Usa padrões' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase15: Phase = {
@@ -168,7 +168,7 @@ export const phase15: Phase = {
   lesson: { title: { en: 'Function Documentation', pt: 'Documentação de Função' }, blocks: [{ type: 'code', code: `def calculate_payout(damage, deductible):\n  \"\"\"Calculate insurance payout.\n  Args: damage (int), deductible (int)\n  Returns: int - amount company pays\"\"\"\n  return damage - deductible` }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Documented Function', pt: 'Função Documentada' }, scenario: { en: `Add docstring to function.`, pt: `Adicione docstring à função.` }, requirements: { en: ['Function', 'Docstring'], pt: ['Função', 'Docstring'] }, starterCode: `def calculate_payout(damage, deductible):\n  \"\"\"Your docstring here.\"\"\"\n  return damage - deductible\n\nprint(calculate_payout(5000, 250))`, testCases: [{ id: 'tc15_1', description: { en: 'Has docstring', pt: 'Tem docstring' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Documented Function', pt: 'Função Documentada' }, scenario: { en: `Add docstring to function.`, pt: `Adicione docstring à função.` }, requirements: { en: ['Function', 'Docstring'], pt: ['Função', 'Docstring'] }, starterCode: `def calculate_payout(damage, deductible):\n  \"\"\"Your docstring here.\"\"\"\n  return damage - deductible\n\nprint(calculate_payout(5000, 250))`, testCases: [{ id: 'tc15_1', description: { en: 'Has docstring', pt: 'Tem docstring' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase16: Phase = {
@@ -193,7 +193,7 @@ export const phase17: Phase = {
   lesson: { title: { en: 'File I/O', pt: 'I/O de Arquivo' }, blocks: [{ type: 'code', code: `with open("data.txt", "r") as f:\n  lines = f.readlines()\n  for line in lines:\n    print(line)` }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Read File', pt: 'Ler Arquivo' }, scenario: { en: `Read and process file lines.`, pt: `Leia e processe linhas de arquivo.` }, requirements: { en: ['Open file', 'Read lines', 'Process'], pt: ['Abra arquivo', 'Leia linhas', 'Processe'] }, starterCode: `with open("claims.txt", "r") as f:\n  for line in f:\n    print(line)`, testCases: [{ id: 'tc17_1', description: { en: 'Reads file', pt: 'Lê arquivo' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Read File', pt: 'Ler Arquivo' }, scenario: { en: `Read and process file lines.`, pt: `Leia e processe linhas de arquivo.` }, requirements: { en: ['Open file', 'Read lines', 'Process'], pt: ['Abra arquivo', 'Leia linhas', 'Processe'] }, starterCode: `with open("claims.txt", "r") as f:\n  for line in f:\n    print(line)`, testCases: [{ id: 'tc17_1', description: { en: 'Reads file', pt: 'Lê arquivo' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase18: Phase = {
@@ -205,7 +205,7 @@ export const phase18: Phase = {
   lesson: { title: { en: 'File Writing', pt: 'Escrita de Arquivo' }, blocks: [{ type: 'code', code: `with open("report.txt", "w") as f:\n  f.write("Claim #2501\\n")\n  f.write("Damage: $5,000\\n")` }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Save Report', pt: 'Salvar Relatório' }, scenario: { en: `Write data to file.`, pt: `Escreva dados em arquivo.` }, requirements: { en: ['Open for writing', 'Write lines', 'Close'], pt: ['Abra para escrita', 'Escreva linhas', 'Feche'] }, starterCode: `with open("output.txt", "w") as f:\n  f.write("Line 1\\n")\n  f.write("Line 2\\n")`, testCases: [{ id: 'tc18_1', description: { en: 'Writes file', pt: 'Escreve arquivo' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Save Report', pt: 'Salvar Relatório' }, scenario: { en: `Write data to file.`, pt: `Escreva dados em arquivo.` }, requirements: { en: ['Open for writing', 'Write lines', 'Close'], pt: ['Abra para escrita', 'Escreva linhas', 'Feche'] }, starterCode: `with open("output.txt", "w") as f:\n  f.write("Line 1\\n")\n  f.write("Line 2\\n")`, testCases: [{ id: 'tc18_1', description: { en: 'Writes file', pt: 'Escreve arquivo' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase19: Phase = {
@@ -217,7 +217,7 @@ export const phase19: Phase = {
   lesson: { title: { en: 'JSON Format', pt: 'Formato JSON' }, blocks: [{ type: 'code', code: `import json\n\ndata = {"id": 2501, "damage": 5000}\njson_str = json.dumps(data)\nprint(json_str)` }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'JSON I/O', pt: 'I/O JSON' }, scenario: { en: `Read/write JSON data.`, pt: `Leia/escreva dados JSON.` }, requirements: { en: ['Import json', 'dumps/loads', 'File ops'], pt: ['Importe json', 'dumps/loads', 'Operações de arquivo'] }, starterCode: `import json\n\ndata = {"id": 1, "name": "Alice"}\nwith open("data.json", "w") as f:\n  json.dump(data, f)`, testCases: [{ id: 'tc19_1', description: { en: 'JSON works', pt: 'JSON funciona' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'JSON I/O', pt: 'I/O JSON' }, scenario: { en: `Read/write JSON data.`, pt: `Leia/escreva dados JSON.` }, requirements: { en: ['Import json', 'dumps/loads', 'File ops'], pt: ['Importe json', 'dumps/loads', 'Operações de arquivo'] }, starterCode: `import json\n\ndata = {"id": 1, "name": "Alice"}\nwith open("data.json", "w") as f:\n  json.dump(data, f)`, testCases: [{ id: 'tc19_1', description: { en: 'JSON works', pt: 'JSON funciona' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase20: Phase = {
@@ -241,7 +241,7 @@ export const phase21: Phase = {
   lesson: { title: { en: 'Random Module', pt: 'Módulo Random' }, blocks: [{ type: 'code', code: `import random\n\nnum = random.randint(1, 100)\nprint(num)` }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Random Sim', pt: 'Simulação Aleatória' }, scenario: { en: `Simulate random claim selection.`, pt: `Simule seleção aleatória de sinistro.` }, requirements: { en: ['Import random', 'Generate values', 'Use in logic'], pt: ['Importe random', 'Gere valores', 'Use em lógica'] }, starterCode: `import random\n\nclients = ["Alice", "Bob", "Diana"]\nselected = random.choice(clients)\nprint(selected)`, testCases: [{ id: 'tc21_1', description: { en: 'Chooses randomly', pt: 'Escolhe aleatoriamente' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Random Sim', pt: 'Simulação Aleatória' }, scenario: { en: `Simulate random claim selection.`, pt: `Simule seleção aleatória de sinistro.` }, requirements: { en: ['Import random', 'Generate values', 'Use in logic'], pt: ['Importe random', 'Gere valores', 'Use em lógica'] }, starterCode: `import random\n\nclients = ["Alice", "Bob", "Diana"]\nselected = random.choice(clients)\nprint(selected)`, testCases: [{ id: 'tc21_1', description: { en: 'Chooses randomly', pt: 'Escolhe aleatoriamente' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase22: Phase = {
@@ -278,7 +278,7 @@ export const phase24: Phase = {
   lesson: { title: { en: 'Calculator Project', pt: 'Projeto Calculadora' }, blocks: [{ type: 'text', content: { en: 'Build a damage calculator for insurance claims', pt: 'Crie uma calculadora de dano para sinistros de seguros' } }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Damage Calculator', pt: 'Calculadora de Dano' }, scenario: { en: `Calculate payout from damages and deductible.`, pt: `Calcule pagamento de danos e franquia.` }, requirements: { en: ['Functions', 'Input/output', 'Math', 'Error handling'], pt: ['Funções', 'Entrada/saída', 'Matemática', 'Tratamento de erro'] }, starterCode: `def calculate_payout(damage, deductible):\n  return damage - deductible\n\nprint("Insurance Calculator")\ndamage = int(input("Damage ($): "))\npayout = calculate_payout(damage, 250)\nprint("Payout: $", payout)`, testCases: [{ id: 'tc24_1', description: { en: 'Full project works', pt: 'Projeto completo funciona' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Damage Calculator', pt: 'Calculadora de Dano' }, scenario: { en: `Calculate payout from damages and deductible.`, pt: `Calcule pagamento de danos e franquia.` }, requirements: { en: ['Functions', 'Input/output', 'Math', 'Error handling'], pt: ['Funções', 'Entrada/saída', 'Matemática', 'Tratamento de erro'] }, starterCode: `def calculate_payout(damage, deductible):\n  return damage - deductible\n\nprint("Insurance Calculator")\ndamage = int(input("Damage ($): "))\npayout = calculate_payout(damage, 250)\nprint("Payout: $", payout)`, testCases: [{ id: 'tc24_1', description: { en: 'Full project works', pt: 'Projeto completo funciona' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase25: Phase = {
@@ -302,7 +302,7 @@ export const phase26: Phase = {
   lesson: { title: { en: 'Data Analysis', pt: 'Análise de Dados' }, blocks: [{ type: 'text', content: { en: 'Analyze claims data for insights', pt: 'Analise dados de sinistros para insights' } }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Analysis Report', pt: 'Relatório de Análise' }, scenario: { en: `Generate statistics from claims data.`, pt: `Gere estatísticas de dados de sinistros.` }, requirements: { en: ['Data loading', 'Calculations', 'Reporting'], pt: ['Carregamento de dados', 'Cálculos', 'Relatório'] }, starterCode: `damages = [1000, 2500, 5000, 3000, 1500]\naverage = sum(damages) / len(damages)\nmax_damage = max(damages)\nmin_damage = min(damages)\nprint("Average:", average, "Max:", max_damage, "Min:", min_damage)`, testCases: [{ id: 'tc26_1', description: { en: 'Analysis works', pt: 'Análise funciona' }, inputs: [], checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Analysis Report', pt: 'Relatório de Análise' }, scenario: { en: `Generate statistics from claims data.`, pt: `Gere estatísticas de dados de sinistros.` }, requirements: { en: ['Data loading', 'Calculations', 'Reporting'], pt: ['Carregamento de dados', 'Cálculos', 'Relatório'] }, starterCode: `damages = [1000, 2500, 5000, 3000, 1500]\naverage = sum(damages) / len(damages)\nmax_damage = max(damages)\nmin_damage = min(damages)\nprint("Average:", average, "Max:", max_damage, "Min:", min_damage)`, testCases: [{ id: 'tc26_1', description: { en: 'Analysis works', pt: 'Análise funciona' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
 export const phase27: Phase = {
@@ -314,6 +314,6 @@ export const phase27: Phase = {
   lesson: { title: { en: 'System Integration', pt: 'Integração de Sistema' }, blocks: [{ type: 'text', content: { en: 'Build a complete claims processing system', pt: 'Crie um sistema completo de processamento de sinistros' } }] },
   exercises: [],
   quiz: [],
-  exam: { title: { en: 'Full System', pt: 'Sistema Completo' }, scenario: { en: `Create interactive menu-driven claims system.`, pt: `Crie sistema de sinistros acionado por menu interativo.` }, requirements: { en: ['Menu loop', 'Full CRUD', 'File I/O', 'Error handling', 'Functions'], pt: ['Loop de menu', 'CRUD completo', 'I/O de arquivo', 'Tratamento de erro', 'Funções'] }, starterCode: `# Claims System\ndef show_menu():\n  print("1. Add Claim")\n  print("2. View Claims")\n  print("3. Exit")\n\nwhile True:\n  show_menu()\n  choice = input("Choice: ")\n  if choice == "3":\n    break`, testCases: [{ id: 'tc27_1', description: { en: 'System runs', pt: 'Sistema roda' }, inputs: ['3'], inputMap: { 'choice': '3' }, checks: [{ type: 'no_error' }], points: 100 }] }
+  exam: { title: { en: 'Full System', pt: 'Sistema Completo' }, scenario: { en: `Create interactive menu-driven claims system.`, pt: `Crie sistema de sinistros acionado por menu interativo.` }, requirements: { en: ['Menu loop', 'Full CRUD', 'File I/O', 'Error handling', 'Functions'], pt: ['Loop de menu', 'CRUD completo', 'I/O de arquivo', 'Tratamento de erro', 'Funções'] }, starterCode: `# Claims System\ndef show_menu():\n  print("1. Add Claim")\n  print("2. View Claims")\n  print("3. Exit")\n\nwhile True:\n  show_menu()\n  choice = input("Choice: ")\n  if choice == "3":\n    break`, testCases: [{ id: 'tc27_1', description: { en: 'System runs', pt: 'Sistema roda' }, inputs: ['3'], inputMap: { 'choice': '3' }, checks: [{ type: 'no_error', value: '' }], points: 100 }] }
 }
 
