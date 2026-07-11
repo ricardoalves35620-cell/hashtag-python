@@ -11,6 +11,9 @@ import Profile from './pages/Profile'
 import Group from './pages/Group'
 import FastTrackHome from './pages/FastTrackHome'
 import FastTrackDay from './pages/FastTrackDay'
+import Roadmap from './pages/Roadmap'
+import Onboarding from './pages/Onboarding'
+import ResetPassword from './pages/ResetPassword'
 
 // Redirect to /login if not authenticated
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -37,6 +40,7 @@ function AppRoutes() {
     <Routes>
       {/* Public */}
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Home */}
       <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
@@ -52,6 +56,8 @@ function AppRoutes() {
 
       {/* Other pages */}
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route path="/roadmap" element={<PrivateRoute><Roadmap /></PrivateRoute>} />
+      <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
       <Route path="/group" element={<PrivateRoute><Group /></PrivateRoute>} />
       <Route path="/fasttrack" element={<PrivateRoute><FastTrackHome /></PrivateRoute>} />
       <Route path="/fasttrack/:id" element={<PrivateRoute><FastTrackDay /></PrivateRoute>} />

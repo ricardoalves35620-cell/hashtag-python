@@ -8,7 +8,8 @@ export default function BottomNav() {
 
   const tabs = [
     { path: '/', label: lang === 'en' ? 'Course' : 'Curso', icon: '📚' },
-    { path: '/fasttrack', label: lang === 'en' ? 'FastTrack' : 'FastTrack', icon: '⚡' },
+    { path: '/roadmap', label: lang === 'en' ? 'Paths' : 'Trilhas', icon: '🗺️' },
+    { path: '/fasttrack', label: 'FastTrack', icon: '⚡' },
     { path: '/group', label: lang === 'en' ? 'Group' : 'Grupo', icon: '👥' },
     { path: '/profile', label: lang === 'en' ? 'Profile' : 'Perfil', icon: '👤' },
   ]
@@ -26,7 +27,7 @@ export default function BottomNav() {
         background: 'var(--c-card)',
         borderTop: '0.5px solid var(--c-border)',
         zIndex: 1000,
-        height: 'env(safe-area-inset-bottom, 0) + 60px',
+        height: 'calc(60px + env(safe-area-inset-bottom, 0px))',
         paddingBottom: 'env(safe-area-inset-bottom, 0)',
       }}
     >
@@ -49,12 +50,12 @@ export default function BottomNav() {
               gap: 4,
               padding: '8px 0',
               color: isActive ? 'var(--c-purple)' : 'var(--c-muted)',
-              fontSize: 12,
+              fontSize: 10,
               fontWeight: 500,
               transition: 'color 0.2s',
             }}
           >
-            <span style={{ fontSize: 20 }}>{tab.icon}</span>
+            <span style={{ fontSize: 18 }}>{tab.icon}</span>
             <span>{tab.label}</span>
           </button>
         )

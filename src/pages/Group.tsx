@@ -386,7 +386,7 @@ export default function Group() {
               <>
                 {members.map((m, i) => {
                   const passed = m.progress.filter(p => p.exam_passed).length
-                  const pct = Math.round((passed / 27) * 100)
+                  const pct = Math.round((passed / ALL_PHASES.length) * 100)
                   const isMe = m.user_id === user?.id
                   return (
                     <div key={m.user_id} style={card}>

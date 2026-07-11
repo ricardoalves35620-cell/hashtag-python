@@ -1276,10 +1276,10 @@ else:
       en: 'Notice how the functions are defined at the top, and the "main" code is at the bottom. Each function does ONE thing. This structure makes code easy to test, fix, and expand. Professional code always looks like this.',
       pt: 'Veja como as funções são definidas no topo e o código "principal" fica na parte de baixo. Cada função faz UMA coisa. Essa estrutura facilita testar, corrigir e expandir. Código profissional sempre se parece com isso.'
     }},
-    { type: 'heading', content: { en: 'What comes next — the full course', pt: 'O que vem a seguir — o curso completo' } },
+    { type: 'heading', content: { en: 'What comes next — the complete roadmap', pt: 'O que vem a seguir — o mapa completo' } },
     { type: 'text', content: {
-      en: 'This week you learned Python fundamentals. The full course goes much deeper: <strong>Object-Oriented Programming</strong> (classes, inheritance), <strong>Data Science</strong> (NumPy, Pandas, visualization), <strong>Web APIs</strong> (FastAPI, Django), <strong>Automation</strong> (browser control, Excel, scheduling), <strong>Machine Learning</strong>, and <strong>AI Integration</strong>. You now have the foundation to tackle all of it.',
-      pt: 'Essa semana você aprendeu os fundamentos de Python. O curso completo vai muito mais fundo: <strong>Programação Orientada a Objetos</strong> (classes, herança), <strong>Ciência de Dados</strong> (NumPy, Pandas, visualização), <strong>APIs Web</strong> (FastAPI, Django), <strong>Automação</strong> (controle de browser, Excel, agendamento), <strong>Machine Learning</strong> e <strong>Integração com IA</strong>. Você agora tem a base para tudo isso.'
+      en: 'This week you sampled Python fundamentals. The roadmap continues through <strong>professional Python</strong>, <strong>advanced language concepts</strong>, <strong>software engineering</strong> and optional specializations such as <strong>data</strong> and <strong>local AI</strong>. Some of those stages are planned and are clearly marked in the Paths screen.',
+      pt: 'Nesta semana você teve uma amostra dos fundamentos de Python. O mapa continua por <strong>Python profissional</strong>, <strong>conceitos avançados da linguagem</strong>, <strong>engenharia de software</strong> e especializações opcionais como <strong>dados</strong> e <strong>IA local</strong>. As etapas ainda não publicadas aparecem claramente como planejadas na tela Trilhas.'
     }}
   ],
   exercise: {

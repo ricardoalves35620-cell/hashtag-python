@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: 'Hashtag Python',
         short_name: '#Python',
-        description: 'Learn Python as a family — from beginner to expert',
+        description: 'Learn Python deeply from digital foundations to advanced paths',
         theme_color: '#5b21b6',
         background_color: '#0a0a18',
         display: 'standalone',
@@ -40,6 +40,19 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/@supabase')) return 'supabase'
+          if (id.includes('node_modules/@codemirror') || id.includes('node_modules/codemirror')) return 'editor'
+          if (id.includes('node_modules/react')) return 'react'
+          if (id.includes('/src/data/phases/')) return 'foundation-content'
+          if (id.includes('/src/data/fasttrack')) return 'fasttrack-content'
+        }
+      }
+    }
+  },
   optimizeDeps: {
     exclude: ['pyodide']
   },

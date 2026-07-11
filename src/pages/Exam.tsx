@@ -13,6 +13,7 @@ import { saveExamScore } from '../lib/progress'
 import { loadExamDraft, saveExamDraft, clearExamDraft } from '../lib/examDraft'
 import LessonBlock from '../components/LessonBlock'
 import { getPyodide, runCode, runExam, type TestResult } from '../lib/pyodide'
+import { validateExamStructure } from '../lib/learningValidation'
 
 type Tab = 'scenario' | 'code' | 'results'
 
@@ -114,6 +115,15 @@ export default function Exam() {
     if (!user) return
     setSubmitting(true)
     setSubmitError(null)
+
+    const structure = validateExamStructure(phase.id, code, lang)
+    if (!structure.passed) {
+      setSubmitError((lang === 'en' ? 'Structure check: ' : 'Verificação de estrutura: ') + structure.message)
+      setSubmitting(false)
+      setTab('code')
+      scrollToTop()
+      return
+    }
 
     // Step 1: Load Pyodide
     let py: Awaited<ReturnType<typeof getPyodide>>
@@ -601,7 +611,11 @@ export default function Exam() {
               {/* CTA */}
               {passed ? (
                 <button
-                  onClick={() => navigate(phase.id < 27 ? `/phase/${phase.id + 1}` : '/')}
+                  onClick={() => {
+                    const index = ALL_PHASES.findIndex(item => item.id === phase.id)
+                    const next = ALL_PHASES[index + 1]
+                    navigate(next ? `/phase/${next.id}` : '/roadmap')
+                  }}
                   style={{
                     width: '100%', padding: '14px', borderRadius: 12,
                     background: '#166534', color: '#fff',

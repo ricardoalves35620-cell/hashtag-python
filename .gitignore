@@ -1,6 +1,14 @@
-node_modules
-dist
+node_modules/
+dist/
 .env
-.env.local
+.env.*
+!.env.example
 .DS_Store
+Thumbs.db
 *.log
+*.bak
+.vscode/
+.idea/
+coverage/
+playwright-report/
+test-results/

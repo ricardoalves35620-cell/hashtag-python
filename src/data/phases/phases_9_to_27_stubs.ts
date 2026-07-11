@@ -3021,17 +3021,17 @@ print(f"Top 3: {top3}")`,
 
 export const phase27: Phase = {
   id: 27,
-  title: { en: 'Capstone: Claims System', pt: 'Capstone: Sistema de Sinistros' },
-  description: { en: 'Build a complete, production-ready claims management system.', pt: 'Construa um sistema completo de gestão de sinistros pronto para produção.' },
+  title: { en: 'Foundation Capstone: Claims System', pt: 'Capstone da Base: Sistema de Sinistros' },
+  description: { en: 'Combine the published Python foundations in a structured terminal project.', pt: 'Combine os fundamentos publicados de Python em um projeto estruturado de terminal.' },
   icon: '🏆',
   libraries: [],
   lesson: {
     title: { en: 'Everything Together', pt: 'Tudo Junto' },
     blocks: [
-      { type: 'heading', content: { en: '🌍 You\'ve learned what professionals use daily', pt: '🌍 Você aprendeu o que profissionais usam diariamente' } },
+      { type: 'heading', content: { en: '🌍 Consolidating the published foundation', pt: '🌍 Consolidando a base publicada' } },
       { type: 'text', content: {
-        en: 'Across 27 phases you covered:\n• Variables, types, input (1–4)\n• Decisions and loops (5–8)\n• Data structures (9–12)\n• Functions and scope (13–16)\n• Files, JSON, libraries (17–22)\n• Error handling (23)\n• Full projects (24–26)\n\nThis capstone combines ALL of it.',
-        pt: 'Ao longo de 27 fases você cobriu:\n• Variáveis, tipos, input (1–4)\n• Decisões e loops (5–8)\n• Estruturas de dados (9–12)\n• Funções e escopo (13–16)\n• Arquivos, JSON, bibliotecas (17–22)\n• Tratamento de erros (23)\n• Projetos completos (24–26)\n\nEste capstone combina TUDO isso.'
+        en: 'Across the published foundation phases you covered:\n• Variables, types and input\n• Decisions and loops\n• Data structures\n• Functions and scope\n• Files, JSON and standard libraries\n• Error handling\n• Applied terminal projects\n\nThis capstone combines that foundation. Professional and advanced Python continue in the roadmap.',
+        pt: 'Ao longo das fases de base publicadas você cobriu:\n• Variáveis, tipos e input\n• Decisões e loops\n• Estruturas de dados\n• Funções e escopo\n• Arquivos, JSON e bibliotecas padrão\n• Tratamento de erros\n• Projetos aplicados de terminal\n\nEste capstone combina essa base. Python profissional e avançado continuam no mapa.'
       }},
       { type: 'heading', content: { en: '🆚 Script vs Production System', pt: '🆚 Script vs Sistema de Produção' } },
       { type: 'code', code: `# ❌ SCRIPT: works once, brittle
@@ -3157,11 +3157,11 @@ print("=== STATS ==="); analyze(db)`,
     { id: 'q27_1', question: { en: 'What handles "Must be positive" validation cleanly?', pt: 'O que trata "Must be positive" de forma limpa?' }, options: [{ en: 'raise ValueError inside function', pt: 'raise ValueError dentro da função' }, { en: 'if/else with print', pt: 'if/else com print' }, { en: 'return False', pt: 'return False' }, { en: 'assert statement', pt: 'instrução assert' }], correctIndex: 0, explanation: { en: 'raise ValueError lets the caller catch it with try/except. The function signals bad input and stops.', pt: 'raise ValueError deixa o chamador capturar com try/except. A função sinaliza entrada ruim e para.' } },
     { id: 'q27_2', question: { en: 'Why store date as string in the claim dict?', pt: 'Por que armazenar data como string no dict?' }, options: [{ en: 'Strings are JSON-serializable; datetime objects are not', pt: 'Strings são serializáveis em JSON; objetos datetime não são' }, { en: 'Strings are faster', pt: 'Strings são mais rápidas' }, { en: 'Datetime can\'t be in dicts', pt: 'Datetime não pode estar em dicts' }, { en: 'No reason', pt: 'Sem razão' }], correctIndex: 0, explanation: { en: 'json.dump() can\'t serialize datetime. Convert first: datetime.now().strftime("%Y-%m-%d").', pt: 'json.dump() não serializa datetime. Converta antes: datetime.now().strftime("%Y-%m-%d").' } },
     { id: 'q27_3', question: { en: 'What makes this a "system" vs a "script"?', pt: 'O que faz isso ser "sistema" vs "script"?' }, options: [{ en: 'Functions, validation, error handling, reusability', pt: 'Funções, validação, tratamento de erros, reusabilidade' }, { en: 'More lines of code', pt: 'Mais linhas de código' }, { en: 'Using import statements', pt: 'Usar instruções import' }, { en: 'Running in terminal', pt: 'Rodar em terminal' }], correctIndex: 0, explanation: { en: 'A system has clear structure, handles errors, validates data, and can be extended. A script solves one problem once.', pt: 'Um sistema tem estrutura clara, trata erros, valida dados e pode ser expandido. Um script resolve um problema uma vez.' } },
-    { id: 'q27_4', question: { en: 'You completed 27 phases. What can you build now?', pt: 'Você completou 27 fases. O que pode construir agora?' }, options: [{ en: 'Backend systems, data pipelines, automation tools', pt: 'Sistemas backend, pipelines de dados, ferramentas de automação' }, { en: 'Only calculators', pt: 'Apenas calculadoras' }, { en: 'Only web apps', pt: 'Apenas apps web' }, { en: 'Only scripts', pt: 'Apenas scripts' }], correctIndex: 0, explanation: { en: 'You have the foundation for backend APIs, data analysis, automation, ETL pipelines, and more.', pt: 'Você tem a base para APIs backend, análise de dados, automação, pipelines ETL e muito mais.' } }
+    { id: 'q27_4', question: { en: 'What does completing this capstone prove?', pt: 'O que concluir este capstone comprova?' }, options: [{ en: 'Strong command of the current foundations and readiness for professional Python', pt: 'Bom domínio da base atual e preparo para Python profissional' }, { en: 'Mastery of every Python domain', pt: 'Domínio de todas as áreas de Python' }, { en: 'Ability to train a large language model from scratch', pt: 'Capacidade de treinar um grande modelo de linguagem do zero' }, { en: 'No need for further study', pt: 'Não precisar estudar mais' }], correctIndex: 0, explanation: { en: 'This project proves foundation mastery. Testing, architecture, databases, advanced Python and specializations come next.', pt: 'Este projeto comprova domínio da base. Testes, arquitetura, bancos, Python avançado e especializações vêm depois.' } }
   ],
   exam: {
     title: { en: 'Final Capstone: Complete Claims System', pt: 'Capstone Final: Sistema Completo' },
-    scenario: { en: 'Build and demo the complete insurance claims system combining all 27 phases.', pt: 'Construa e demonstre o sistema completo combinando todas as 27 fases.' },
+    scenario: { en: 'Build and demonstrate a structured claims system combining the published foundation phases.', pt: 'Construa e demonstre um sistema estruturado de sinistros combinando as fases de base publicadas.' },
     requirements: { en: ['Full CRUD', 'Priority classification', 'Error handling', 'Statistical analysis', '5+ claims in demo', 'No crashes'], pt: ['CRUD completo', 'Classificação de prioridade', 'Tratamento de erros', 'Análise estatística', '5+ sinistros no demo', 'Sem crashes'] },
     starterCode: `from datetime import datetime
 

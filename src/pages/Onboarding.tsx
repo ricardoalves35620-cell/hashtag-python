@@ -23,8 +23,8 @@ export default function Onboarding() {
       ftDesc: 'Get a solid overview of Python in one week. Perfect for meetings, conversations, or just getting started.',
       ftBadge: 'Best for beginners',
       course: '🎓 Full Course',
-      courseSub: '27 phases · beginner to expert',
-      courseDesc: 'Go deep — from complete beginner to professional Python developer. All three tracks: data science, web, automation.',
+      courseSub: '28 published foundation phases · complete roadmap',
+      courseDesc: 'Start with the published foundation, then continue through professional, advanced and specialization stages shown in the roadmap.',
       courseBadge: 'Professional path',
     },
     pt: {
@@ -35,8 +35,8 @@ export default function Onboarding() {
       ftDesc: 'Uma visão geral sólida de Python em uma semana. Perfeito para reuniões, conversas ou simplesmente começar.',
       ftBadge: 'Melhor para iniciantes',
       course: '🎓 Curso Completo',
-      courseSub: '27 fases · do zero ao expert',
-      courseDesc: 'Aprofunde-se — do zero ao desenvolvedor Python profissional. Três trilhas: dados, web, automação.',
+      courseSub: '28 fases de base publicadas · mapa completo',
+      courseDesc: 'Comece pela base publicada e continue pelas etapas profissional, avançada e especializações mostradas no mapa.',
       courseBadge: 'Caminho profissional',
     }
   }[lang]
