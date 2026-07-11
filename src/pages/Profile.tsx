@@ -29,7 +29,7 @@ const COUNTRY_CODES = [
 ]
 
 export default function Profile() {
-  const { lang, setLang, theme, setTheme, user, displayName, avatarUrl, refreshUser } = useApp()
+  const { lang, setLang, theme, setTheme, user, isGuest, exitGuest, displayName, avatarUrl, refreshUser } = useApp()
   const navigate = useNavigate()
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -75,6 +75,7 @@ export default function Profile() {
       save: 'Save changes', saving: 'Saving...', saved: '✅ Saved!',
       logout: 'Sign out', logoutConfirm: 'Are you sure you want to sign out?',
       cancel: 'Cancel', confirm: 'Sign out',
+      guestTitle: 'Visitor profile', guestText: 'Your progress is stored only in this browser. Create an account to use synchronization and access it on other devices.', guestAction: 'Create account or sign in',
     },
     pt: {
       title: 'Perfil',
@@ -91,8 +92,29 @@ export default function Profile() {
       save: 'Salvar alterações', saving: 'Salvando...', saved: '✅ Salvo!',
       logout: 'Sair', logoutConfirm: 'Tem certeza que deseja sair?',
       cancel: 'Cancelar', confirm: 'Sair',
+      guestTitle: 'Perfil visitante', guestText: 'Seu progresso fica apenas neste navegador. Crie uma conta para sincronizar e acessar em outros dispositivos.', guestAction: 'Criar conta ou entrar',
     }
   }[lang]
+
+  if (isGuest) {
+    return (
+      <Layout title={t.title}>
+        <div className="p-4 space-y-4">
+          <div className="rounded-2xl p-5 text-center" style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}>
+            <div className="text-5xl mb-3">👋</div>
+            <h1 className="text-xl font-semibold" style={{ color: 'var(--c-text)' }}>{t.guestTitle}</h1>
+            <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--c-text2)' }}>{t.guestText}</p>
+            <button onClick={() => { localStorage.setItem('hp_guest_transfer_pending', 'true'); exitGuest(); navigate('/login', { replace: true }) }} className="w-full rounded-xl py-3 mt-5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{t.guestAction}</button>
+          </div>
+          <div style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)', borderRadius: 14, padding: 16 }}>
+            <div className="text-xs uppercase tracking-wide mb-3" style={{ color: 'var(--c-muted)' }}>{t.preferences}</div>
+            <div className="grid grid-cols-3 gap-2 mb-4">{([{ value: 'dark', label: t.dark, icon: '🌙' }, { value: 'light', label: t.light, icon: '☀️' }, { value: 'system', label: t.system, icon: '📱' }] as const).map(option => <button key={option.value} onClick={() => setTheme(option.value)} className="rounded-xl p-3 text-xs" style={{ background: theme === option.value ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: theme === option.value ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}><div className="text-xl mb-1">{option.icon}</div>{option.label}</button>)}</div>
+            <div className="grid grid-cols-2 gap-2">{([{ code: 'en' as const, label: '🇨🇦 English' }, { code: 'pt' as const, label: '🇧🇷 Português' }]).map(option => <button key={option.code} onClick={() => setLang(option.code)} className="rounded-xl py-3 text-sm" style={{ background: lang === option.code ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: lang === option.code ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}>{option.label}</button>)}</div>
+          </div>
+        </div>
+      </Layout>
+    )
+  }
 
   // ── Photo upload ──
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

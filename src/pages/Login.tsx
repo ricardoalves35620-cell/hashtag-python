@@ -6,7 +6,7 @@ import { useApp } from '../contexts/AppContext'
 type Mode = 'login' | 'register' | 'forgot'
 
 export default function Login() {
-  const { lang, setLang } = useApp()
+  const { lang, setLang, continueAsGuest } = useApp()
   const navigate = useNavigate()
   const [mode, setMode] = useState<Mode>('login')
   const [email, setEmail] = useState('')
@@ -32,7 +32,8 @@ export default function Login() {
       switchToLogin: 'Already have an account? Sign in',
       forgotLink: 'Forgot your password?',
       orContinueWith: 'or continue with',
-      google: 'Continue with Google'
+      google: 'Continue with Google',
+      guest: 'Explore without an account', guestNote: 'Progress stays on this device until you create an account'
     },
     pt: {
       title: 'Aprenda Python em família',
@@ -48,7 +49,8 @@ export default function Login() {
       switchToLogin: 'Já tem conta? Entrar',
       forgotLink: 'Esqueceu a senha?',
       orContinueWith: 'ou continue com',
-      google: 'Continuar com Google'
+      google: 'Continuar com Google',
+      guest: 'Explorar sem criar conta', guestNote: 'O progresso fica neste aparelho até você criar uma conta'
     }
   }[lang]
 
@@ -120,6 +122,17 @@ export default function Login() {
       </div>
 
       <div className="w-full max-w-sm space-y-3">
+        {mode !== 'forgot' && (
+          <button
+            type="button"
+            onClick={() => { continueAsGuest(); navigate('/onboarding') }}
+            className="w-full rounded-xl p-4 text-left"
+            style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}
+          >
+            <div className="text-sm font-semibold" style={{ color: 'var(--c-purple-l)' }}>👋 {t.guest}</div>
+            <div className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>{t.guestNote}</div>
+          </button>
+        )}
 
         {/* Forgot password mode */}
         {mode === 'forgot' ? (

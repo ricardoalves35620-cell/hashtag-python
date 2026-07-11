@@ -121,6 +121,24 @@ export function applyLearningAttempts(
   return inputs.reduce((state, input, index) => applyLearningAttempt(state, input, now + index), current)
 }
 
+
+export function mergeLearningStates(primary: LearningState, secondary: LearningState): LearningState {
+  const attemptMap = new Map<string, LearningAttempt>()
+  for (const attempt of [...primary.attempts, ...secondary.attempts]) attemptMap.set(attempt.id, attempt)
+  const skills: Record<string, SkillState> = { ...primary.skills }
+  for (const [skillId, incoming] of Object.entries(secondary.skills)) {
+    const current = skills[skillId]
+    if (!current || incoming.lastPracticedAt > current.lastPracticedAt) skills[skillId] = incoming
+  }
+  return {
+    version: 1,
+    updatedAt: Math.max(primary.updatedAt, secondary.updatedAt, Date.now()),
+    diagnosticCompletedAt: Math.max(primary.diagnosticCompletedAt || 0, secondary.diagnosticCompletedAt || 0) || null,
+    attempts: [...attemptMap.values()].sort((a, b) => a.timestamp - b.timestamp).slice(-MAX_ATTEMPTS),
+    skills,
+  }
+}
+
 export function markDiagnosticComplete(current: LearningState, now = Date.now()): LearningState {
   return { ...current, diagnosticCompletedAt: now, updatedAt: now }
 }

@@ -10,7 +10,7 @@ import { getDueSkillStates, getLearningSummary, getWeakestSkillStates } from '..
 import { getSkill } from '../data/skills'
 
 export default function Home() {
-  const { lang, displayName, progress, user, refreshProgress, learningState, refreshLearningState } = useApp()
+  const { lang, displayName, progress, user, isGuest, learnerId, refreshProgress, learningState, refreshLearningState } = useApp()
   const navigate = useNavigate()
   const totalPhases = ALL_PHASES.length
   const overall = getOverallProgress(progress)
@@ -21,13 +21,13 @@ export default function Home() {
   const weakestSkills = getWeakestSkillStates(learningState, 3)
 
   useEffect(() => {
-    if (user) loadFTProgress(user.id).then(setFtDone)
-  }, [user])
+    if (learnerId) loadFTProgress(learnerId).then(setFtDone)
+  }, [learnerId])
 
   useEffect(() => {
     const refresh = () => {
-      if (!user) return
-      loadFTProgress(user.id).then(setFtDone)
+      if (!learnerId) return
+      loadFTProgress(learnerId).then(setFtDone)
       refreshProgress()
       refreshLearningState()
     }
@@ -40,7 +40,17 @@ export default function Home() {
       window.removeEventListener('focus', refresh)
       document.removeEventListener('visibilitychange', handleVisibility)
     }
-  }, [user, refreshProgress, refreshLearningState])
+  }, [learnerId, refreshProgress, refreshLearningState])
+
+  useEffect(() => {
+    if (!learnerId) return
+    if (localStorage.getItem('hp_onboarding_done')) return
+    if (user?.user_metadata?.onboarding_done) {
+      localStorage.setItem('hp_onboarding_done', user.user_metadata.track || 'course')
+      return
+    }
+    navigate('/onboarding', { replace: true })
+  }, [learnerId, user, navigate])
 
   const ftCompleted = ftDone.length === 7
 
@@ -55,7 +65,8 @@ export default function Home() {
       diagnostic: 'Take the initial diagnostic', mastery: 'Average skill mastery', gaps: 'Priority gaps', seeProgress: 'Open learning dashboard',
       ftTitle: '⚡ FastTrack',
       ftSub: ftCompleted ? '7/7 days complete ✓' : ftDone.length > 0 ? `Day ${ftDone.length + 1} of 7 up next` : '7 days · 20 min/day · Orientation only',
-      ftBtn: ftCompleted ? 'Review' : ftDone.length > 0 ? 'Continue' : 'Start'
+      ftBtn: ftCompleted ? 'Review' : ftDone.length > 0 ? 'Continue' : 'Start',
+      zeroTitle: 'Base Zero · Computer essentials', zeroText: 'Interactive practice with files, downloads, cloud, terminal and hardware.', zeroBtn: 'Open Base Zero', visualBtn: 'Visual Python lab', guest: 'Visitor mode · progress is stored on this device'
     },
     pt: {
       greeting: 'Bem-vindo de volta', progress: 'Progresso da base disponível', phases: 'Fases da base',
@@ -67,7 +78,8 @@ export default function Home() {
       diagnostic: 'Fazer o diagnóstico inicial', mastery: 'Domínio médio das habilidades', gaps: 'Lacunas prioritárias', seeProgress: 'Abrir painel de aprendizagem',
       ftTitle: '⚡ FastTrack',
       ftSub: ftCompleted ? '7/7 dias completos ✓' : ftDone.length > 0 ? `Dia ${ftDone.length + 1} de 7 a seguir` : '7 dias · 20 min/dia · Apenas orientação',
-      ftBtn: ftCompleted ? 'Revisar' : ftDone.length > 0 ? 'Continuar' : 'Começar'
+      ftBtn: ftCompleted ? 'Revisar' : ftDone.length > 0 ? 'Continuar' : 'Começar',
+      zeroTitle: 'Base Zero · Essenciais do computador', zeroText: 'Prática interativa com arquivos, downloads, nuvem, terminal e hardware.', zeroBtn: 'Abrir Base Zero', visualBtn: 'Laboratório visual de Python', guest: 'Modo visitante · progresso salvo neste aparelho'
     }
   }[lang]
 
@@ -77,6 +89,19 @@ export default function Home() {
         <div>
           <div className="text-xs" style={{ color: 'var(--c-muted)' }}>{t.greeting} 👋</div>
           <h1 className="text-xl font-medium" style={{ color: 'var(--c-text)' }}>{displayName}</h1>
+          {isGuest && <div className="text-xs mt-1" style={{ color: '#f8d477' }}>{t.guest}</div>}
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-3">
+          <button onClick={() => navigate('/base-zero')} className="rounded-xl p-4 text-left" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
+            <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🌱 {t.zeroTitle}</div>
+            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{t.zeroText}</div>
+            <div className="text-xs font-medium mt-3" style={{ color: 'var(--c-purple-l)' }}>{t.zeroBtn} →</div>
+          </button>
+          <button onClick={() => navigate('/visualizer')} className="rounded-xl p-4 text-left" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}>
+            <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🧩 {t.visualBtn}</div>
+            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Step through variables, conditions and loops.' : 'Avance passo a passo por variáveis, condições e laços.'}</div>
+          </button>
         </div>
 
         <button

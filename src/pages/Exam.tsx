@@ -22,7 +22,7 @@ type Tab = 'scenario' | 'code' | 'results'
 export default function Exam() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user, refreshProgress, progress, recordLearningAttempt } = useApp()
+  const { lang, learnerId, refreshProgress, progress, recordLearningAttempt } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
   const phaseProgress = progress.find(p => p.phase_id === Number(id))
 
@@ -32,18 +32,18 @@ export default function Exam() {
 
   // Load saved draft on mount — restores code across devices/sessions
   useEffect(() => {
-    if (!user || !phase) return
-    loadExamDraft(user.id, phase.id, phase.exam.starterCode).then(draft => {
+    if (!learnerId || !phase) return
+    loadExamDraft(learnerId, phase.id, phase.exam.starterCode).then(draft => {
       setCode(draft)
       setDraftLoaded(true)
     })
-  }, [user, phase?.id])
+  }, [learnerId, phase?.id])
 
   // Auto-save draft as user types (debounced inside saveExamDraft)
   useEffect(() => {
-    if (!user || !phase || !draftLoaded) return
-    saveExamDraft(user.id, phase.id, code)
-  }, [code, user, phase?.id, draftLoaded])
+    if (!learnerId || !phase || !draftLoaded) return
+    saveExamDraft(learnerId, phase.id, code)
+  }, [code, learnerId, phase?.id, draftLoaded])
   const [testOutput, setTestOutput] = useState('')
   const [testInput, setTestInput] = useState('')
   const [running, setRunning] = useState(false)
@@ -115,7 +115,7 @@ export default function Exam() {
   }
 
   const handleSubmit = async () => {
-    if (!user) return
+    if (!learnerId) return
     setSubmitting(true)
     setSubmitError(null)
 
@@ -163,10 +163,10 @@ export default function Exam() {
       })
       setTab('results')
       scrollToTop()
-      if (didPass) clearExamDraft(user.id, phase.id)
+      if (didPass) clearExamDraft(learnerId, phase.id)
 
       try {
-        await saveExamScore(user.id, phase.id, finalScore)
+        await saveExamScore(learnerId, phase.id, finalScore)
         await refreshProgress()
       } catch (error) {
         console.error('Save failed:', error)

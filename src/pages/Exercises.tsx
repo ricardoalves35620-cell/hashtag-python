@@ -17,7 +17,7 @@ import { extractErrorCategory } from '../lib/learningEngine'
 export default function Exercises() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user, refreshProgress, recordLearningAttempt } = useApp()
+  const { lang, learnerId, refreshProgress, recordLearningAttempt } = useApp()
   const phase = ALL_PHASES.find(item => item.id === Number(id))
 
   const [activeEx, setActiveEx] = useState(0)
@@ -110,8 +110,8 @@ export default function Exercises() {
   }
 
   const handleComplete = async () => {
-    if (!user || !allValidated) return
-    await markStepDone(user.id, phase.id, 'exercises')
+    if (!learnerId || !allValidated) return
+    await markStepDone(learnerId, phase.id, 'exercises')
     await refreshProgress()
     navigate(`/phase/${phase.id}/quiz`)
     scrollToTop(100)

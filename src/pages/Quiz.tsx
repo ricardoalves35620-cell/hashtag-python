@@ -11,7 +11,7 @@ const QUIZ_PASS_SCORE = 80
 export default function Quiz() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user, refreshProgress, recordLearningAttempt } = useApp()
+  const { lang, learnerId, refreshProgress, recordLearningAttempt } = useApp()
   const phase = ALL_PHASES.find(item => item.id === Number(id))
 
   const [current, setCurrent] = useState(0)
@@ -64,10 +64,10 @@ export default function Quiz() {
   }
 
   const handleContinue = async () => {
-    if (!user || !passed) return
+    if (!learnerId || !passed) return
     setSaving(true)
     try {
-      await markStepDone(user.id, phase.id, 'quiz')
+      await markStepDone(learnerId, phase.id, 'quiz')
       await refreshProgress()
       navigate(`/phase/${phase.id}/exam`)
     } finally {

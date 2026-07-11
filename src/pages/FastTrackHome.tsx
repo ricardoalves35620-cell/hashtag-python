@@ -6,7 +6,7 @@ import { FASTTRACK_DAYS } from '../data/fasttrack'
 import { loadFTProgress, resetFTProgress } from '../lib/fasttrackProgress'
 
 export default function FastTrackHome() {
-  const { lang, user } = useApp()
+  const { lang, learnerId } = useApp()
   const navigate = useNavigate()
   const [doneDays, setDoneDays] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
@@ -14,12 +14,12 @@ export default function FastTrackHome() {
 
   // Load from Supabase (multi-device sync) on mount
   useEffect(() => {
-    if (!user) return
-    loadFTProgress(user.id).then(days => {
+    if (!learnerId) return
+    loadFTProgress(learnerId).then(days => {
       setDoneDays(days)
       setLoading(false)
     })
-  }, [user])
+  }, [learnerId])
 
   const completed = doneDays.length === 7
 
@@ -66,10 +66,10 @@ export default function FastTrackHome() {
   })
 
   const handleReset = async () => {
-    if (!user) return
+    if (!learnerId) return
     if (!window.confirm(t.resetConfirm)) return
     setResetting(true)
-    await resetFTProgress(user.id)
+    await resetFTProgress(learnerId)
     setDoneDays([])
     setResetting(false)
   }

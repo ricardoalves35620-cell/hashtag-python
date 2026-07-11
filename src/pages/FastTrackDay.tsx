@@ -18,7 +18,7 @@ type Tab = 'lesson' | 'exercise'
 export default function FastTrackDay() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user } = useApp()
+  const { lang, learnerId } = useApp()
   const day = FASTTRACK_DAYS.find(d => d.id === Number(id))
 
   const [tab, setTab] = useState<Tab>('lesson')
@@ -52,12 +52,12 @@ export default function FastTrackDay() {
 
   // Load progress from Supabase on mount
   useEffect(() => {
-    if (user) loadFTProgress(user.id).then(setDoneDays)
-  }, [user])
+    if (learnerId) loadFTProgress(learnerId).then(setDoneDays)
+  }, [learnerId])
 
   const markDone = async () => {
-    if (!user) return
-    const updated = await markFTDayDone(user.id, day.id)
+    if (!learnerId) return
+    const updated = await markFTDayDone(learnerId, day.id)
     const next = FASTTRACK_DAYS.find(d => !updated.includes(d.id))
     if (next) {
       navigate(`/fasttrack/${next.id}`)

@@ -1,92 +1,70 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getSupabase } from '../lib/supabase'
 import { useApp } from '../contexts/AppContext'
 
+type Level = 'zero' | 'comfortable' | 'coded'
+
 export default function Onboarding() {
-  const { lang, user } = useApp()
+  const { lang, user, isGuest } = useApp()
   const navigate = useNavigate()
+  const [selected, setSelected] = useState<Level | null>(null)
+  const [saving, setSaving] = useState(false)
 
-  const choose = async (track: 'fasttrack' | 'course') => {
-    localStorage.setItem('hp_onboarding_done', track)
-    if (user) {
-      getSupabase().auth.updateUser({ data: { onboarding_done: true, track } })
-    }
-    navigate('/')
-  }
-
-  const t = {
-    en: {
-      welcome: 'Welcome to #Python',
-      sub: 'How do you want to start?',
-      ft: '⚡ FastTrack',
-      ftSub: '7 days · 20 min/day',
-      ftDesc: 'Get a solid overview of Python in one week. Perfect for meetings, conversations, or just getting started.',
-      ftBadge: 'Best for beginners',
-      course: '🎓 Full Course',
-      courseSub: '28 published foundation phases · complete roadmap',
-      courseDesc: 'Start with the published foundation, then continue through professional, advanced and specialization stages shown in the roadmap.',
-      courseBadge: 'Professional path',
-    },
-    pt: {
-      welcome: 'Bem-vindo ao #Python',
-      sub: 'Como você quer começar?',
-      ft: '⚡ FastTrack',
-      ftSub: '7 dias · 20 min/dia',
-      ftDesc: 'Uma visão geral sólida de Python em uma semana. Perfeito para reuniões, conversas ou simplesmente começar.',
-      ftBadge: 'Melhor para iniciantes',
-      course: '🎓 Curso Completo',
-      courseSub: '28 fases de base publicadas · mapa completo',
-      courseDesc: 'Comece pela base publicada e continue pelas etapas profissional, avançada e especializações mostradas no mapa.',
-      courseBadge: 'Caminho profissional',
-    }
+  const choices = {
+    en: [
+      { id: 'zero' as const, icon: '🌱', title: 'I am starting from zero', desc: 'I still get lost with files, folders, downloads or installing programs.', badge: 'Recommended for true beginners' },
+      { id: 'comfortable' as const, icon: '🧭', title: 'I use a computer comfortably', desc: 'I can organize files and install apps, but I have never programmed.', badge: 'Quick readiness check' },
+      { id: 'coded' as const, icon: '🐍', title: 'I have already tried programming', desc: 'I know basic computer use and want the app to find my Python starting point.', badge: 'Python diagnostic' },
+    ],
+    pt: [
+      { id: 'zero' as const, icon: '🌱', title: 'Estou começando do zero', desc: 'Ainda me perco com arquivos, pastas, downloads ou instalação de programas.', badge: 'Recomendado para iniciantes reais' },
+      { id: 'comfortable' as const, icon: '🧭', title: 'Uso o computador com tranquilidade', desc: 'Consigo organizar arquivos e instalar apps, mas nunca programei.', badge: 'Teste rápido de preparo' },
+      { id: 'coded' as const, icon: '🐍', title: 'Já tentei programar', desc: 'Domino o uso básico do computador e quero descobrir onde começar em Python.', badge: 'Diagnóstico de Python' },
+    ],
   }[lang]
 
+  const t = {
+    en: { eyebrow: 'Your first decision', title: 'Where should we start?', sub: 'There is no “good” or “bad” answer. The app changes the path so missing computer basics do not become Python problems.', continue: 'Build my starting path', guest: 'Visitor mode: progress is saved only on this device.' },
+    pt: { eyebrow: 'Sua primeira decisão', title: 'Por onde devemos começar?', sub: 'Não existe resposta “boa” ou “ruim”. O app adapta o caminho para que lacunas de computador não virem problemas em Python.', continue: 'Montar meu ponto de partida', guest: 'Modo visitante: o progresso fica salvo apenas neste aparelho.' },
+  }[lang]
+
+  const finish = async () => {
+    if (!selected) return
+    setSaving(true)
+    localStorage.setItem('hp_onboarding_done', 'course')
+    localStorage.setItem('hp_computer_level', selected)
+    if (user) {
+      try { await getSupabase().auth.updateUser({ data: { onboarding_done: true, track: 'course', computer_level: selected } }) } catch { /* local onboarding remains valid */ }
+    }
+    if (selected === 'zero') navigate('/base-zero')
+    else if (selected === 'comfortable') navigate('/base-zero?mode=check')
+    else navigate('/diagnostic')
+  }
+
   return (
-    <div
-      className="flex flex-col items-center justify-center p-6 text-center"
-      style={{
-        minHeight: '100dvh',
-        background: 'var(--c-bg)',
-        paddingTop: 'max(env(safe-area-inset-top, 0px), 24px)',
-        paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 24px)',
-      }}
-    >
-      <div className="font-mono text-4xl font-medium mb-2" style={{ color: 'var(--c-purple-l)' }}>#Python</div>
-      <h1 className="text-xl font-medium mb-1" style={{ color: 'var(--c-text)' }}>{t.welcome}</h1>
-      <p className="text-sm mb-8" style={{ color: 'var(--c-muted)' }}>{t.sub}</p>
+    <div className="min-h-screen p-4" style={{ background: 'var(--c-bg)', paddingTop: 'max(env(safe-area-inset-top, 0px), 24px)', paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 24px)' }}>
+      <div className="max-w-lg mx-auto">
+        <div className="font-mono text-3xl font-medium mb-8" style={{ color: 'var(--c-purple-l)' }}>#Python</div>
+        <div className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--c-purple-l)' }}>{t.eyebrow}</div>
+        <h1 className="text-2xl font-semibold" style={{ color: 'var(--c-text)' }}>{t.title}</h1>
+        <p className="text-sm leading-relaxed mt-2 mb-6" style={{ color: 'var(--c-text2)' }}>{t.sub}</p>
 
-      <div className="w-full max-w-sm space-y-4">
-        {/* FastTrack */}
-        <button
-          onClick={() => choose('fasttrack')}
-          className="w-full text-left rounded-2xl p-5 transition-all active:scale-98"
-          style={{ background: '#1a1040', border: '2px solid var(--c-purple)', display: 'block', minHeight: 'auto' }}
-        >
-          <div className="text-xs font-medium px-2 py-0.5 rounded-full inline-block mb-3" style={{ background: 'var(--c-purple)', color: '#fff', fontSize: '10px' }}>
-            {t.ftBadge}
-          </div>
-          <div className="text-xl font-medium mb-0.5" style={{ color: 'var(--c-purple-l)' }}>{t.ft}</div>
-          <div className="text-sm mb-3" style={{ color: 'var(--c-purple-l)', opacity: 0.7 }}>{t.ftSub}</div>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.ftDesc}</p>
-        </button>
+        {isGuest && <div className="rounded-xl p-3 text-xs mb-4" style={{ background: '#1f1000', color: '#fbbf24', border: '1px solid #4a2a00' }}>ℹ️ {t.guest}</div>}
 
-        {/* Full Course */}
-        <button
-          onClick={() => choose('course')}
-          className="w-full text-left rounded-2xl p-5 transition-all active:scale-98"
-          style={{ background: 'var(--c-card)', border: '0.5px solid var(--c-border)', display: 'block', minHeight: 'auto' }}
-        >
-          <div className="text-xs font-medium px-2 py-0.5 rounded-full inline-block mb-3" style={{ background: 'var(--c-card2)', color: 'var(--c-muted)', fontSize: '10px' }}>
-            {t.courseBadge}
-          </div>
-          <div className="text-xl font-medium mb-0.5" style={{ color: 'var(--c-text)' }}>{t.course}</div>
-          <div className="text-sm mb-3" style={{ color: 'var(--c-muted)' }}>{t.courseSub}</div>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.courseDesc}</p>
-        </button>
+        <div className="space-y-3">
+          {choices.map(choice => (
+            <button key={choice.id} onClick={() => setSelected(choice.id)} className="w-full rounded-2xl p-4 text-left transition-all" style={{ background: selected === choice.id ? 'var(--c-purple-f)' : 'var(--c-card)', border: `2px solid ${selected === choice.id ? 'var(--c-purple)' : 'var(--c-border)'}` }}>
+              <div className="flex gap-3">
+                <div className="text-3xl">{choice.icon}</div>
+                <div className="flex-1"><div className="text-xs mb-1" style={{ color: selected === choice.id ? 'var(--c-purple-l)' : 'var(--c-muted)' }}>{choice.badge}</div><div className="text-base font-semibold" style={{ color: 'var(--c-text)' }}>{choice.title}</div><p className="text-sm mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{choice.desc}</p></div>
+                <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ border: `2px solid ${selected === choice.id ? 'var(--c-purple)' : 'var(--c-border)'}`, background: selected === choice.id ? 'var(--c-purple)' : 'transparent', color: '#fff', fontSize: 11 }}>{selected === choice.id ? '✓' : ''}</div>
+              </div>
+            </button>
+          ))}
+        </div>
 
-        <p className="text-xs" style={{ color: 'var(--c-dimmer)' }}>
-          {lang === 'en' ? 'You can switch anytime from your profile.' : 'Você pode trocar a qualquer momento pelo perfil.'}
-        </p>
+        <button onClick={finish} disabled={!selected || saving} className="w-full rounded-xl py-4 mt-6 text-sm font-semibold text-white disabled:opacity-40" style={{ background: 'var(--c-purple)' }}>{saving ? '...' : t.continue} →</button>
       </div>
     </div>
   )

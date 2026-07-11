@@ -18,25 +18,27 @@ import ConfigurationScreen from './components/ConfigurationScreen'
 import LearningProgress from './pages/LearningProgress'
 import Review from './pages/Review'
 import Diagnostic from './pages/Diagnostic'
+import BaseZero from './pages/BaseZero'
+import Visualizer from './pages/Visualizer'
 import { appConfiguration } from './lib/config'
 
 // Redirect to /login if not authenticated
 function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useApp()
+  const { user, isGuest, loading } = useApp()
   if (loading) return (
     <div style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--c-bg)' }}>
       <div style={{ color: 'var(--c-muted)', fontSize: 14 }}>Loading...</div>
     </div>
   )
-  if (!user) return <Navigate to="/login" replace />
+  if (!user && !isGuest) return <Navigate to="/login" replace />
   return <>{children}</>
 }
 
 // Redirect to / if already authenticated
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useApp()
+  const { user, isGuest, loading } = useApp()
   if (loading) return null
-  if (user) return <Navigate to="/" replace />
+  if (user || isGuest) return <Navigate to="/" replace />
   return <>{children}</>
 }
 
@@ -64,6 +66,8 @@ function AppRoutes() {
       <Route path="/progress" element={<PrivateRoute><LearningProgress /></PrivateRoute>} />
       <Route path="/review" element={<PrivateRoute><Review /></PrivateRoute>} />
       <Route path="/diagnostic" element={<PrivateRoute><Diagnostic /></PrivateRoute>} />
+      <Route path="/base-zero" element={<PrivateRoute><BaseZero /></PrivateRoute>} />
+      <Route path="/visualizer" element={<PrivateRoute><Visualizer /></PrivateRoute>} />
       <Route path="/roadmap" element={<PrivateRoute><Roadmap /></PrivateRoute>} />
       <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
       <Route path="/group" element={<PrivateRoute><Group /></PrivateRoute>} />

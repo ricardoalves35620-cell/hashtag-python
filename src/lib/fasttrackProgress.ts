@@ -5,6 +5,7 @@ const LS_KEY = 'hp_ft_done'
 // ── Load completed days ──
 // Fetches from Supabase, merges with localStorage cache
 export async function loadFTProgress(userId: string): Promise<number[]> {
+  if (userId === 'guest') return JSON.parse(localStorage.getItem(LS_KEY) || '[]')
   try {
     const { data, error } = await getSupabase()
       .from('user_fasttrack')
@@ -39,6 +40,7 @@ export async function markFTDayDone(userId: string, dayId: number): Promise<numb
   localStorage.setItem(LS_KEY, JSON.stringify(updated))
 
   // Persist to Supabase
+  if (userId === 'guest') return updated
   try {
     await getSupabase()
       .from('user_fasttrack')
@@ -54,6 +56,7 @@ export async function markFTDayDone(userId: string, dayId: number): Promise<numb
 // ── Reset all progress ──
 export async function resetFTProgress(userId: string): Promise<void> {
   localStorage.removeItem(LS_KEY)
+  if (userId === 'guest') return
 
   try {
     await getSupabase()

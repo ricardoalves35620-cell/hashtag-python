@@ -4,11 +4,12 @@ import LessonBlock from '../components/LessonBlock'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
+import GlossaryPanel from '../components/glossary/GlossaryPanel'
 
 export default function Lesson() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, user, refreshProgress } = useApp()
+  const { lang, learnerId, refreshProgress } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
 
   if (!phase) return null
@@ -18,8 +19,8 @@ export default function Lesson() {
     phase.lesson.blocks.some(b => b.content?.en?.includes('being prepared'))
 
   const handleComplete = async () => {
-    if (!user) return
-    await markStepDone(user.id, phase.id, 'lesson')
+    if (!learnerId) return
+    await markStepDone(learnerId, phase.id, 'lesson')
     await refreshProgress()
     navigate(`/phase/${phase.id}/exercises`)
   }
@@ -37,9 +38,10 @@ export default function Lesson() {
       title={`${t.progress} · ${phase.title[lang]}`}
     >
       <div className="p-4 space-y-2">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-start gap-2 mb-4">
           <div className="text-2xl">{phase.icon}</div>
-          <h1 className="text-lg font-medium text-white">{phase.lesson.title[lang]}</h1>
+          <h1 className="text-lg font-medium text-white flex-1">{phase.lesson.title[lang]}</h1>
+          <GlossaryPanel lang={lang} />
         </div>
 
         {isStub && (

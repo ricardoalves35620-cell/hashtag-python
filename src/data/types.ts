@@ -13,6 +13,7 @@ export interface LessonBlock {
   videoUrl?: string
   videoTitle?: Bilingual
   videoDuration?: string
+  alternate?: Bilingual
 }
 
 export interface Exercise {

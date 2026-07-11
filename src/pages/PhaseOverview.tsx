@@ -34,7 +34,7 @@ export default function PhaseOverview() {
       desc: { en: 'Content + video examples', pt: 'Conteúdo + exemplos em vídeo' },
       done: !!phaseProgress?.lesson_done,
       active: true,
-      path: `/phase/${phase.id}/lesson`
+      path: phase.id === 0 ? '/base-zero' : `/phase/${phase.id}/lesson`
     },
     {
       id: 'exercises',

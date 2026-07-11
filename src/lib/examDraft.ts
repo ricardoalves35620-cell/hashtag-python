@@ -10,6 +10,8 @@ function lsKey(userId: string, phaseId: number) {
 export async function loadExamDraft(userId: string, phaseId: number, fallback: string): Promise<string> {
   const local = localStorage.getItem(lsKey(userId, phaseId))
 
+  if (userId === 'guest') return local || fallback
+
   try {
     const { data, error } = await getSupabase()
       .from('exam_drafts')
@@ -38,6 +40,7 @@ export function saveExamDraft(userId: string, phaseId: number, code: string) {
   localStorage.setItem(lsKey(userId, phaseId), code)
 
   // Debounced remote save (avoid hammering Supabase on every keystroke)
+  if (userId === 'guest') return
   if (saveTimeout) clearTimeout(saveTimeout)
   saveTimeout = setTimeout(async () => {
     try {
@@ -56,6 +59,7 @@ export function saveExamDraft(userId: string, phaseId: number, code: string) {
 // ── Clear draft after successful submission ──
 export async function clearExamDraft(userId: string, phaseId: number) {
   localStorage.removeItem(lsKey(userId, phaseId))
+  if (userId === 'guest') return
   try {
     await getSupabase().from('exam_drafts').delete().eq('user_id', userId).eq('phase_id', phaseId)
   } catch { /* non-critical */ }
