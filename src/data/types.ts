@@ -75,9 +75,11 @@ export interface Phase {
 
 export interface UserProgress {
   phase_id: number
+  user_id?: string
   lesson_done: boolean
   exercises_done: boolean
   quiz_done: boolean
+  exam_done?: boolean
   exam_score: number | null
   exam_passed: boolean
 }
