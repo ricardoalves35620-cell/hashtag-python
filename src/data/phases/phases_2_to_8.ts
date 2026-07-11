@@ -1,429 +1,496 @@
 import type { Phase } from '../types'
 
 // ============================================================================
-// PHASE 2 — Matemática e Operadores
-// TEMPLATE A: Conceito Novo / Isolado
+// PHASE 2 — Matemática · EXPANDIDO
 // ============================================================================
 
 export const phase2: Phase = {
   id: 2,
   title: { en: 'Math & Operators', pt: 'Matemática e Operadores' },
   description: {
-    en: 'Use Python as a calculator — for real insurance and budget calculations.',
-    pt: 'Use Python como calculadora — para cálculos reais de seguros e orçamentos.'
+    en: 'Master all Python math operators through real insurance and construction calculations.',
+    pt: 'Domine todos os operadores matemáticos com cálculos reais de seguros e construção.'
   },
   icon: '🧮',
   libraries: [],
 
   lesson: {
-    title: { en: 'Python as a Super Calculator', pt: 'Python como Super Calculadora' },
+    title: { en: 'Python as Your Super Calculator', pt: 'Python como sua Super Calculadora' },
     blocks: [
 
-      { type: 'heading', content: { en: '🌍 Numbers that move the world', pt: '🌍 Números que movem o mundo' } },
-      {
-        type: 'text',
-        content: {
-          en: 'NASA used Python math to land the Mars rover within 2.4 meters of its target — after 470 million km of travel. 🚀\n\nThe same operators you\'ll learn today power banking systems, insurance payouts, and every price you see on an app.',
-          pt: 'A NASA usou matemática Python para pousar o rover em Marte com 2,4 metros de precisão — após 470 milhões de km de viagem. 🚀\n\nOs mesmos operadores que você vai aprender hoje alimentam sistemas bancários, pagamentos de seguros e todo preço que você vê num app.'
-        }
-      },
+      { type: 'heading', content: { en: '🌍 Math that lands rovers on Mars', pt: '🌍 Matemática que pousa rovers em Marte' } },
+      { type: 'text', content: {
+        en: 'NASA used Python math to land the Perseverance rover within 2.4 meters of its target — after traveling 470 MILLION kilometers. 🚀\n\nCloser to home:\n• Uber calculates 20 million ride prices per day with these operators\n• Nubank processes millions of interest calculations per hour\n• Every insurance payout in the world uses subtraction and multiplication\n\nThe 6 operators you learn today power all of it.',
+        pt: 'A NASA usou matemática Python para pousar o rover Perseverance com 2,4 metros de precisão — após viajar 470 MILHÕES de quilômetros. 🚀\n\nMais perto de casa:\n• O Uber calcula 20 milhões de preços de corrida por dia com esses operadores\n• O Nubank processa milhões de cálculos de juros por hora\n• Todo pagamento de seguro no mundo usa subtração e multiplicação\n\nOs 6 operadores que você aprende hoje alimentam tudo isso.'
+      }},
 
-      { type: 'heading', content: { en: '🧩 Same as your calculator — but saveable', pt: '🧩 Igual sua calculadora — mas salvável' } },
-      {
-        type: 'text',
-        content: {
-          en: 'A pocket calculator gives you the answer, then it\'s gone.\nPython gives you the answer AND lets you save it in a variable to use later.\n\nThat\'s the only difference — but it changes everything.',
-          pt: 'Uma calculadora de bolso dá a resposta e acabou.\nPython dá a resposta E deixa você salvar numa variável para usar depois.\n\nEssa é a única diferença — mas muda tudo.'
-        }
-      },
+      { type: 'heading', content: { en: '🧩 A calculator with memory', pt: '🧩 Uma calculadora com memória' } },
+      { type: 'text', content: {
+        en: 'A pocket calculator gives you the answer, then forgets it.\nPython gives the answer AND remembers it — you can save results and reuse them in the next calculation.\n\nThat one difference is why Python replaced Excel in every serious financial company.',
+        pt: 'Uma calculadora de bolso dá a resposta e esquece.\nPython dá a resposta E lembra — você pode salvar resultados e reusá-los no próximo cálculo.\n\nEssa única diferença é o motivo pelo qual Python substituiu o Excel em toda empresa financeira séria.'
+      }},
 
       { type: 'heading', content: { en: '🐍 The 6 operators', pt: '🐍 Os 6 operadores' } },
-      {
-        type: 'code',
-        code: `print(10 + 3)   # Addition       → 13
-print(10 - 3)   # Subtraction    → 7
-print(10 * 3)   # Multiplication → 30
-print(10 / 3)   # Division       → 3.333...
-print(10 // 3)  # Floor division → 3  (drops decimal)
-print(10 % 3)   # Modulo         → 1  (remainder only)`
-      },
+      { type: 'code', code: `print(10 + 3)    # Addition        → 13
+print(10 - 3)    # Subtraction     → 7
+print(10 * 3)    # Multiplication  → 30
+print(10 / 3)    # Division        → 3.3333... (always decimal!)
+print(10 // 3)   # Floor division  → 3  (drops the decimal)
+print(10 % 3)    # Modulo          → 1  (only the remainder)
+print(2 ** 10)   # Power           → 1024  (2 to the 10th)` },
 
-      { type: 'heading', content: { en: '🏗️ Real example: insurance payout', pt: '🏗️ Exemplo real: pagamento de sinistro' } },
-      {
-        type: 'code',
-        code: `# Water damage claim
-damage    = 5230   # Total damage amount
-deductible = 250   # Customer always pays this
+      { type: 'heading', content: { en: '🐍 Deeper: division types and order of operations', pt: '🐍 Aprofundando: tipos de divisão e ordem das operações' } },
+      { type: 'code', code: `# / ALWAYS returns a decimal, even for exact divisions
+print(10 / 2)    # 5.0  (not 5!)
+print(10 // 2)   # 5    (// gives whole numbers)
+
+# When is % (modulo) useful? Checking even/odd, splitting evenly:
+print(10 % 2)    # 0 → 10 is even (remainder zero)
+print(11 % 2)    # 1 → 11 is odd
+print(100 % 30)  # 10 → splitting $100 in $30 boxes leaves $10
+
+# Order of operations: * and / BEFORE + and -
+print(2 + 3 * 4)     # 14  (not 20! multiplication first)
+print((2 + 3) * 4)   # 20  (parentheses force order)
+
+# Real trap: calculating average
+print(10 + 20 + 30 / 3)     # ❌ 40.0 — only 30 was divided!
+print((10 + 20 + 30) / 3)   # ✅ 20.0 — correct average` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Full insurance payout calculation', pt: '🏗️ Cenário Real 1: Cálculo completo de sinistro' } },
+      { type: 'text', content: {
+        en: 'A real water damage claim, step by step:\n🔸 Damage claimed: $5,230\n🔸 Deductible: $250 (customer pays this part)\n🔸 Coverage: 80% of the remainder\n🔸 Company processing fee: 2% of payout\n\nThis is EXACTLY how adjusters calculate every day:',
+        pt: 'Um sinistro real de dano de água, passo a passo:\n🔸 Dano reclamado: R$5.230\n🔸 Franquia: R$250 (cliente paga essa parte)\n🔸 Cobertura: 80% do restante\n🔸 Taxa de processamento: 2% do pagamento\n\nÉ EXATAMENTE assim que ajustadores calculam todo dia:'
+      }},
+      { type: 'code', code: `# Step-by-step insurance payout
+damage     = 5230
+deductible = 250
 
 # Step 1: subtract deductible
-after_ded = damage - deductible      # 4980
+after_ded = damage - deductible          # 4980
 
-# Step 2: apply 80% coverage policy
-payout = after_ded * 0.80            # 3984.0
+# Step 2: apply 80% coverage
+gross_payout = after_ded * 0.80          # 3984.0
 
-print("Company pays:", payout)        # 3984.0`
-      },
-      {
-        type: 'tip',
-        content: {
-          en: '💡 Order of operations: * and / happen BEFORE + and -.\nUse parentheses to control: (2 + 3) * 4 = 20, not 14.',
-          pt: '💡 Ordem das operações: * e / acontecem ANTES de + e -.\nUse parênteses para controlar: (2 + 3) * 4 = 20, não 14.'
-        }
-      }
+# Step 3: subtract 2% processing fee
+fee = gross_payout * 0.02                # 79.68
+net_payout = gross_payout - fee          # 3904.32
+
+print("Damage claimed:  $", damage)
+print("After deductible:$", after_ded)
+print("Gross payout:    $", gross_payout)
+print("Processing fee:  $", fee)
+print("NET PAYOUT:      $", net_payout)` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Construction budget breakdown', pt: '🏗️ Cenário Real 2: Divisão de orçamento de obra' } },
+      { type: 'code', code: `# $180,000 renovation budget split by category
+budget = 180000
+
+materials = budget * 0.40    # 40% → 72000.0
+labor     = budget * 0.35    # 35% → 63000.0
+equipment = budget * 0.15    # 15% → 27000.0
+admin     = budget * 0.10    # 10% → 18000.0
+
+print("Materials:", materials)
+print("Labor:", labor)
+print("Equipment:", equipment)
+print("Admin:", admin)
+
+# Sanity check: percentages must total 100%
+print("Check:", materials + labor + equipment + admin)  # 180000.0 ✅
+
+# How many $50 cement bags fit in the materials budget?
+print("Cement bags possible:", materials // 50)   # floor division!
+print("Money left over: $", materials % 50)       # remainder!` },
+
+      { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
+      { type: 'code', code: `# ❌ MISTAKE 1: expecting / to give whole numbers
+result = 10 / 2
+print(result)          # 5.0 — surprise! Division always gives float
+
+# ❌ MISTAKE 2: forgetting operator precedence
+average = 10 + 20 / 2
+print(average)         # 20.0 — WRONG! Only 20 was divided
+# ✅ FIX:
+average = (10 + 20) / 2
+print(average)         # 15.0 — correct
+
+# ❌ MISTAKE 3: using x for multiplication
+# print(5 x 3)         → SyntaxError! x is not an operator
+# ✅ FIX: always use *
+print(5 * 3)           # 15` },
+
+      { type: 'tip', content: {
+        en: '💡 PRO TIP: percentage cheat sheet\n• 80% of X → X * 0.80\n• X plus 10% → X * 1.10\n• X minus 25% → X * 0.75\nMemorize these three patterns — they appear in EVERY financial calculation.',
+        pt: '💡 DICA PRO: cola de percentuais\n• 80% de X → X * 0.80\n• X mais 10% → X * 1.10\n• X menos 25% → X * 0.75\nMemorize esses três padrões — aparecem em TODO cálculo financeiro.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'text', content: {
+        en: '✅ 7 operators: + - * / // % **\n✅ / always returns decimal; // drops the decimal; % gives remainder\n✅ * and / run BEFORE + and - — use ( ) to control order\n✅ Percentages: multiply by decimal (80% = 0.80)\n✅ Chained calculations: save each step, verify each step\n\nNext: saving values in variables so calculations get reusable. 📦',
+        pt: '✅ 7 operadores: + - * / // % **\n✅ / sempre retorna decimal; // descarta o decimal; % dá o resto\n✅ * e / rodam ANTES de + e - — use ( ) para controlar\n✅ Percentuais: multiplique pelo decimal (80% = 0.80)\n✅ Cálculos encadeados: salve cada passo, verifique cada passo\n\nPróxima: salvando valores em variáveis para reusar cálculos. 📦'
+      }}
     ]
   },
 
   exercises: [
     {
-      id: 'ex2_fill',
-      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      id: 'ex2_guided',
+      title: { en: '🟢 Guided: Explore the Operators', pt: '🟢 Guiado: Explore os Operadores' },
       description: {
-        en: 'A roof claim came in for $4,000. Deductible: $300.\nFill in the blank to calculate what the company pays.',
-        pt: 'Chegou um sinistro de telhado de R$4.000. Franquia: R$300.\nPreencha a lacuna para calcular o que a empresa paga.'
+        en: 'Run this code and study the output.\nThen: change 17 to 20 and predict each result BEFORE running again.',
+        pt: 'Execute este código e estude a saída.\nDepois: mude 17 para 20 e preveja cada resultado ANTES de rodar de novo.'
       },
-      starterCode: `damage = 4000
+      starterCode: `n = 17
+print(n, "+ 5 =", n + 5)
+print(n, "- 5 =", n - 5)
+print(n, "* 2 =", n * 2)
+print(n, "/ 5 =", n / 5)
+print(n, "// 5 =", n // 5)
+print(n, "% 5 =", n % 5)
+print(n, "** 2 =", n ** 2)`,
+      hints: [
+        { en: '17 // 5 = 3 because 5 fits 3 whole times in 17', pt: '17 // 5 = 3 porque 5 cabe 3 vezes inteiras em 17' },
+        { en: '17 % 5 = 2 because 17 = 5×3 + 2', pt: '17 % 5 = 2 porque 17 = 5×3 + 2' }
+      ],
+      sampleOutput: { en: '17 + 5 = 22\n17 - 5 = 12\n17 * 2 = 34\n17 / 5 = 3.4\n17 // 5 = 3\n17 % 5 = 2\n17 ** 2 = 289', pt: '17 + 5 = 22\n17 - 5 = 12\n17 * 2 = 34\n17 / 5 = 3.4\n17 // 5 = 3\n17 % 5 = 2\n17 ** 2 = 289' }
+    },
+    {
+      id: 'ex2_fill',
+      title: { en: '🟡 Fill the Gap: Payout Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
+      description: {
+        en: 'Complete the 3-step payout calculation:\ndeductible → coverage → final value.',
+        pt: 'Complete o cálculo de pagamento em 3 passos:\nfranquia → cobertura → valor final.'
+      },
+      starterCode: `damage = 8000
 deductible = 300
 
-company_pays = ___   # damage minus deductible
+after_ded = damage ___ deductible     # fill: subtract
+payout = after_ded ___ 0.75           # fill: apply 75% coverage
 
-print("Company pays:", company_pays)`,
+print("After deductible:", after_ded)
+print("Final payout:", payout)`,
       hints: [
-        { en: 'Use the subtraction operator: damage - deductible', pt: 'Use o operador de subtração: damage - deductible' }
+        { en: 'Subtraction: damage - deductible', pt: 'Subtração: damage - deductible' },
+        { en: '75% coverage = multiply by 0.75', pt: '75% de cobertura = multiplicar por 0.75' }
       ],
-      sampleOutput: { en: 'Company pays: 3700', pt: 'Company pays: 3700' }
+      sampleOutput: { en: 'After deductible: 7700\nFinal payout: 5775.0', pt: 'After deductible: 7700\nFinal payout: 5775.0' }
     },
     {
       id: 'ex2_zero',
-      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      title: { en: '🔴 From Scratch: Full Budget', pt: '🔴 Do Zero: Orçamento Completo' },
       description: {
-        en: 'A construction project has a $180,000 budget.\nCalculate and print each section:\n• Materials: 40%\n• Labor: 35%\n• Equipment: 15%\n• Admin: 10%',
-        pt: 'Uma obra tem orçamento de R$180.000.\nCalcule e imprima cada seção:\n• Materiais: 40%\n• Mão de obra: 35%\n• Equipamento: 15%\n• Admin: 10%'
+        en: 'A $240,000 project budget. Calculate and print:\n• Materials: 45%\n• Labor: 30%\n• Equipment: 15%\n• Admin: 10%\n• A check line proving they sum to 240000',
+        pt: 'Um orçamento de R$240.000. Calcule e imprima:\n• Materiais: 45%\n• Mão de obra: 30%\n• Equipamento: 15%\n• Admin: 10%\n• Uma linha de verificação provando que somam 240000'
       },
-      starterCode: `budget = 180000
+      starterCode: `budget = 240000
 
-# Calculate each section (hint: 40% = 0.40)
-materials  = 
-labor      = 
-equipment  = 
-admin      = 
-
-print("Materials:", materials)
-print("Labor:", labor)
-print("Equipment:", equipment)
-print("Admin:", admin)`,
+# Calculate each category and print all 5 lines:`,
       hints: [
-        { en: 'Multiply budget by 0.40 for 40%', pt: 'Multiplique o orçamento por 0.40 para 40%' },
-        { en: 'All 4 percentages should add up to 100% (1.0)', pt: 'Os 4 percentuais devem somar 100% (1.0)' }
+        { en: '45% = budget * 0.45', pt: '45% = budget * 0.45' },
+        { en: 'Check line: print all four added together', pt: 'Linha de verificação: imprima os quatro somados' }
       ],
-      sampleOutput: { en: 'Materials: 72000.0\nLabor: 63000.0\nEquipment: 27000.0\nAdmin: 18000.0', pt: 'Materials: 72000.0\nLabor: 63000.0\nEquipment: 27000.0\nAdmin: 18000.0' }
+      sampleOutput: { en: 'Materials: 108000.0\nLabor: 72000.0\nEquipment: 36000.0\nAdmin: 24000.0\nCheck: 240000.0', pt: 'Materials: 108000.0\nLabor: 72000.0\nEquipment: 36000.0\nAdmin: 24000.0\nCheck: 240000.0' }
     }
   ],
 
   quiz: [
-    {
-      id: 'q2_1',
-      question: { en: 'What does 10 // 3 return?', pt: 'O que 10 // 3 retorna?' },
-      options: [
-        { en: '3  (whole number only)', pt: '3  (apenas parte inteira)' },
-        { en: '3.33', pt: '3.33' },
-        { en: '1', pt: '1' },
-        { en: '0', pt: '0' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '// is floor division — it discards the decimal. 10 ÷ 3 = 3.33 → floor = 3.', pt: '// é divisão inteira — descarta o decimal. 10 ÷ 3 = 3.33 → inteiro = 3.' }
-    },
-    {
-      id: 'q2_2',
-      question: { en: 'What does 10 % 3 return?', pt: 'O que 10 % 3 retorna?' },
-      options: [
-        { en: '1  (the remainder)', pt: '1  (o resto)' },
-        { en: '3', pt: '3' },
-        { en: '0.33', pt: '0.33' },
-        { en: '10%', pt: '10%' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '% is modulo — returns only the remainder. 10 = 3×3 + 1, so the remainder is 1.', pt: '% é módulo — retorna apenas o resto. 10 = 3×3 + 1, então o resto é 1.' }
-    },
-    {
-      id: 'q2_3',
-      question: { en: 'Result of: (4 + 6) * 2?', pt: 'Resultado de: (4 + 6) * 2?' },
-      options: [
-        { en: '20', pt: '20' },
-        { en: '16', pt: '16' },
-        { en: '12', pt: '12' },
-        { en: '48', pt: '48' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'Parentheses first: (4+6)=10, then 10×2=20.', pt: 'Parênteses primeiro: (4+6)=10, depois 10×2=20.' }
-    },
-    {
-      id: 'q2_4',
-      question: { en: 'damage = 5000, coverage = 0.80\npayout = damage * coverage → result?', pt: 'damage = 5000, coverage = 0.80\npayout = damage * coverage → resultado?' },
-      options: [
-        { en: '4000.0', pt: '4000.0' },
-        { en: '5000.8', pt: '5000.8' },
-        { en: '400.0', pt: '400.0' },
-        { en: '0.80', pt: '0.80' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '5000 × 0.80 = 4000.0. This is exactly how 80% insurance coverage is calculated.', pt: '5000 × 0.80 = 4000.0. É exatamente assim que cobertura de 80% é calculada.' }
-    }
+    { id: 'q2_1', question: { en: '10 // 3 returns:', pt: '10 // 3 retorna:' }, options: [{ en: '3', pt: '3' }, { en: '3.33', pt: '3.33' }, { en: '1', pt: '1' }, { en: '4', pt: '4' }], correctIndex: 0, explanation: { en: '// is floor division — drops the decimal. 10÷3 = 3.33 → 3.', pt: '// é divisão inteira — descarta o decimal. 10÷3 = 3,33 → 3.' } },
+    { id: 'q2_2', question: { en: '10 % 3 returns:', pt: '10 % 3 retorna:' }, options: [{ en: '1 (the remainder)', pt: '1 (o resto)' }, { en: '3', pt: '3' }, { en: '3.33', pt: '3.33' }, { en: '0.1', pt: '0.1' }], correctIndex: 0, explanation: { en: '% gives only the remainder: 10 = 3×3 + 1.', pt: '% dá apenas o resto: 10 = 3×3 + 1.' } },
+    { id: 'q2_3', question: { en: '10 / 2 returns:', pt: '10 / 2 retorna:' }, options: [{ en: '5.0 (division always gives decimal)', pt: '5.0 (divisão sempre dá decimal)' }, { en: '5', pt: '5' }, { en: '5.5', pt: '5.5' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: '/ ALWAYS returns a float, even for exact divisions. Use // for whole numbers.', pt: '/ SEMPRE retorna float, mesmo em divisões exatas. Use // para inteiros.' } },
+    { id: 'q2_4', question: { en: '2 + 3 * 4 = ?', pt: '2 + 3 * 4 = ?' }, options: [{ en: '14 (multiplication first)', pt: '14 (multiplicação primeiro)' }, { en: '20', pt: '20' }, { en: '24', pt: '24' }, { en: '9', pt: '9' }], correctIndex: 0, explanation: { en: '* runs before +. 3×4=12, then 2+12=14. Use (2+3)*4 to get 20.', pt: '* roda antes de +. 3×4=12, depois 2+12=14. Use (2+3)*4 para obter 20.' } },
+    { id: 'q2_5', question: { en: 'To calculate 80% of 5000:', pt: 'Para calcular 80% de 5000:' }, options: [{ en: '5000 * 0.80', pt: '5000 * 0.80' }, { en: '5000 * 80', pt: '5000 * 80' }, { en: '5000 / 80', pt: '5000 / 80' }, { en: '5000 % 80', pt: '5000 % 80' }], correctIndex: 0, explanation: { en: 'Percentage as decimal: 80% = 0.80. 5000 × 0.80 = 4000.', pt: 'Percentual como decimal: 80% = 0,80. 5000 × 0,80 = 4000.' } },
+    { id: 'q2_6', question: { en: 'How to check if a number is even?', pt: 'Como verificar se um número é par?' }, options: [{ en: 'number % 2 equals 0', pt: 'number % 2 igual a 0' }, { en: 'number / 2 equals 0', pt: 'number / 2 igual a 0' }, { en: 'number // 2 equals 0', pt: 'number // 2 igual a 0' }, { en: 'number * 2 equals 0', pt: 'number * 2 igual a 0' }], correctIndex: 0, explanation: { en: 'Even numbers divide by 2 with no remainder: 10 % 2 = 0 → even. 11 % 2 = 1 → odd.', pt: 'Números pares dividem por 2 sem resto: 10 % 2 = 0 → par. 11 % 2 = 1 → ímpar.' } }
   ],
 
   exam: {
-    title: { en: 'Multi-Site Budget Report', pt: 'Relatório Multi-Site' },
+    title: { en: 'Multi-Site Budget Report', pt: 'Relatório de Orçamento Multi-Site' },
     scenario: {
-      en: 'You\'re managing 4 renovation sites. Build a budget report showing each site\'s allocation, the total, the average, and a 10% contingency reserve.',
-      pt: 'Você gerencia 4 obras. Crie um relatório de orçamento com a alocação de cada site, o total, a média e uma reserva de contingência de 10%.'
+      en: 'You manage 4 renovation sites. The CFO needs the complete budget report: individual budgets, total, average, a 10% contingency reserve, and what remains after the reserve.',
+      pt: 'Você gerencia 4 obras. O CFO precisa do relatório completo: orçamentos individuais, total, média, reserva de contingência de 10% e o que resta após a reserva.'
     },
     requirements: {
-      en: ['Print budget for each of the 4 sites', 'Print total (sum of all 4)', 'Print average per site', 'Print 10% contingency reserve', 'Print remaining after reserve'],
-      pt: ['Imprima o orçamento de cada um dos 4 sites', 'Imprima o total (soma dos 4)', 'Imprima a média por site', 'Imprima a reserva de contingência de 10%', 'Imprima o restante após a reserva']
+      en: ['Print each of the 4 site budgets', 'Print the total (sum)', 'Print the average per site', 'Print the 10% reserve', 'Print remaining after reserve'],
+      pt: ['Imprima cada um dos 4 orçamentos', 'Imprima o total (soma)', 'Imprima a média por site', 'Imprima a reserva de 10%', 'Imprima o restante após reserva']
     },
     starterCode: `site1 = 50000
 site2 = 75000
 site3 = 60000
 site4 = 45000
 
-total       = site1 + site2 + site3 + site4
-average     = total / 4
-reserve     = total * 0.10
-remaining   = total - reserve
-
-print(site1)
-print(site2)
-print(site3)
-print(site4)
-print(total)
-print(average)
-print(reserve)
-print(remaining)`,
+# Calculate: total, average, reserve (10%), remaining
+# Print everything`,
     testCases: [
-      { id: 'tc2_1', description: { en: 'Shows all 4 sites', pt: 'Mostra os 4 sites' }, inputs: [], checks: [{ type: 'contains', value: '50000' }], points: 10 },
+      { id: 'tc2_1', description: { en: 'Shows 50000', pt: 'Mostra 50000' }, inputs: [], checks: [{ type: 'contains', value: '50000' }], points: 10 },
       { id: 'tc2_2', description: { en: 'Shows 75000', pt: 'Mostra 75000' }, inputs: [], checks: [{ type: 'contains', value: '75000' }], points: 10 },
-      { id: 'tc2_3', description: { en: 'Total = 230000', pt: 'Total = 230000' }, inputs: [], checks: [{ type: 'contains', value: '230000' }], points: 20 },
-      { id: 'tc2_4', description: { en: 'Average = 57500', pt: 'Média = 57500' }, inputs: [], checks: [{ type: 'contains_any', value: ['57500', '57500.0'] }], points: 20 },
-      { id: 'tc2_5', description: { en: 'Reserve = 23000', pt: 'Reserva = 23000' }, inputs: [], checks: [{ type: 'contains_any', value: ['23000', '23000.0'] }], points: 20 },
-      { id: 'tc2_6', description: { en: 'Remaining = 207000', pt: 'Restante = 207000' }, inputs: [], checks: [{ type: 'contains_any', value: ['207000', '207000.0'] }], points: 10 },
-      { id: 'tc2_7', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 }
+      { id: 'tc2_3', description: { en: 'Total 230000', pt: 'Total 230000' }, inputs: [], checks: [{ type: 'contains', value: '230000' }], points: 25 },
+      { id: 'tc2_4', description: { en: 'Average 57500', pt: 'Média 57500' }, inputs: [], checks: [{ type: 'contains_any', value: ['57500', '57500.0'] }], points: 20 },
+      { id: 'tc2_5', description: { en: 'Reserve 23000', pt: 'Reserva 23000' }, inputs: [], checks: [{ type: 'contains_any', value: ['23000', '23000.0'] }], points: 20 },
+      { id: 'tc2_6', description: { en: 'Remaining 207000', pt: 'Restante 207000' }, inputs: [], checks: [{ type: 'contains_any', value: ['207000', '207000.0'] }], points: 15 }
     ]
   }
 }
 
 // ============================================================================
-// PHASE 3 — Variáveis
-// TEMPLATE A: Conceito Novo / Isolado
+// PHASE 3 — Variáveis · EXPANDIDO
 // ============================================================================
 
 export const phase3: Phase = {
   id: 3,
   title: { en: 'Variables', pt: 'Variáveis' },
   description: {
-    en: 'Store information and reuse it — the building block of every program.',
-    pt: 'Armazene informações e as reutilize — o bloco fundamental de todo programa.'
+    en: 'Store, name, and reuse data — the foundation every program is built on.',
+    pt: 'Armazene, nomeie e reutilize dados — a fundação de todo programa.'
   },
   icon: '📦',
   libraries: [],
 
   lesson: {
-    title: { en: 'Variables: Labelled Boxes', pt: 'Variáveis: Caixas com Etiqueta' },
+    title: { en: 'Variables: Labelled Boxes for Data', pt: 'Variáveis: Caixas Etiquetadas para Dados' },
     blocks: [
 
-      { type: 'heading', content: { en: '🌍 Every app runs on variables', pt: '🌍 Todo app roda com variáveis' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Right now, WhatsApp has a variable storing your name.\nInstagram has one for your follower count.\nNetflix has one for what you watched last.\n\nMillions of variables — all created the same way you\'re about to learn.',
-          pt: 'Agora mesmo, o WhatsApp tem uma variável com seu nome.\nO Instagram tem uma com seu número de seguidores.\nA Netflix tem uma com o que você assistiu por último.\n\nMilhões de variáveis — todas criadas do mesmo jeito que você vai aprender.'
-        }
-      },
+      { type: 'heading', content: { en: '🌍 Every app is millions of variables', pt: '🌍 Todo app é milhões de variáveis' } },
+      { type: 'text', content: {
+        en: 'Right now, this very second:\n• WhatsApp holds a variable with your name\n• Instagram holds one with your follower count\n• Your bank holds one with your balance\n• Netflix holds one with the exact second you paused\n\nInstagram alone manages an estimated 500 BILLION variables in memory at peak hours. Every single one created with the same = sign you learn today.',
+        pt: 'Agora mesmo, neste segundo:\n• O WhatsApp guarda uma variável com seu nome\n• O Instagram guarda uma com seus seguidores\n• Seu banco guarda uma com seu saldo\n• A Netflix guarda uma com o segundo exato em que você pausou\n\nSó o Instagram gerencia cerca de 500 BILHÕES de variáveis na memória em horários de pico. Cada uma criada com o mesmo sinal de = que você aprende hoje.'
+      }},
 
-      { type: 'heading', content: { en: '🧩 A labelled shoe box', pt: '🧩 Uma caixa de sapato etiquetada' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Imagine a shelf with labelled boxes:\n📦 "name" box → holds "Alice"\n📦 "age" box → holds 28\n📦 "balance" box → holds 4980.50\n\nA variable = a box with a label.\nYou put something in. You take it out whenever you need.',
-          pt: 'Imagine uma prateleira com caixas etiquetadas:\n📦 Caixa "nome" → guarda "Alice"\n📦 Caixa "idade" → guarda 28\n📦 Caixa "saldo" → guarda 4980.50\n\nVariável = caixa com etiqueta.\nVocê coloca algo dentro. Pega quando precisar.'
-        }
-      },
+      { type: 'heading', content: { en: '🧩 The labelled shoe box', pt: '🧩 A caixa de sapato etiquetada' } },
+      { type: 'text', content: {
+        en: 'Imagine a shelf of shoe boxes, each with a label:\n📦 "client_name" → contains "Alice Costa"\n📦 "claim_amount" → contains 5230\n📦 "is_approved" → contains True\n\nCreating a variable = writing a label and putting something in the box.\nUsing a variable = reading the label and taking out what\'s inside.\nReassigning = swapping the contents (label stays).',
+        pt: 'Imagine uma prateleira de caixas de sapato, cada uma com etiqueta:\n📦 "nome_cliente" → contém "Alice Costa"\n📦 "valor_sinistro" → contém 5230\n📦 "aprovado" → contém True\n\nCriar variável = escrever a etiqueta e colocar algo na caixa.\nUsar variável = ler a etiqueta e tirar o que está dentro.\nReatribuir = trocar o conteúdo (etiqueta permanece).'
+      }},
 
       { type: 'heading', content: { en: '🐍 Creating and using variables', pt: '🐍 Criando e usando variáveis' } },
-      {
-        type: 'code',
-        code: `# Create a variable: label = value
-client_name = "Alice Costa"   # text → needs quotes
-claim_amount = 5230            # number → no quotes
-is_approved = True             # True or False (no quotes)
+      { type: 'code', code: `# label = value
+client_name = "Alice Costa"    # str  (text, needs quotes)
+claim_amount = 5230             # int  (whole number)
+coverage_rate = 0.80            # float (decimal number)
+is_approved = True              # bool (True or False, capital first letter!)
 
-# Use variables by typing their label
-print(client_name)             # Alice Costa
-print(claim_amount)            # 5230
-print(is_approved)             # True
+# Use them by name
+print(client_name)              # Alice Costa
+print(claim_amount)             # 5230
 
-# Calculate with them
-deductible = 250
-payout = claim_amount - deductible
-print("Payout:", payout)       # Payout: 4980`
-      },
-      {
-        type: 'tip',
-        content: {
-          en: '📏 Naming rules:\n✅ client_name  ✅ totalCost  ✅ amount1\n❌ 1name  ❌ client-name  ❌ my name\nNo spaces. No hyphens. Don\'t start with a number.',
-          pt: '📏 Regras de nomes:\n✅ nome_cliente  ✅ totalCusto  ✅ valor1\n❌ 1nome  ❌ nome-cliente  ❌ meu nome\nSem espaços. Sem hífens. Não comece com número.'
-        }
-      }
+# Combine in calculations
+payout = claim_amount * coverage_rate
+print("Payout:", payout)        # Payout: 4184.0
+
+# Check any variable's type
+print(type(client_name))        # <class 'str'>
+print(type(claim_amount))       # <class 'int'>` },
+
+      { type: 'heading', content: { en: '🐍 Deeper: updating, swapping, and building strings', pt: '🐍 Aprofundando: atualizar, trocar e montar strings' } },
+      { type: 'code', code: `# Variables can be UPDATED anytime
+score = 0
+score = score + 10      # read current (0), add 10, store back → 10
+score += 5              # shorthand: same as score = score + 5 → 15
+print(score)            # 15
+
+# Building text with + (concatenation)
+first = "Ana"
+last = "Souza"
+full = first + " " + last       # don't forget the space!
+print(full)                      # Ana Souza
+
+# Building text with f-strings (the modern way)
+age = 32
+message = f"{full} is {age} years old"
+print(message)                   # Ana Souza is 32 years old
+
+# f-strings can even do math inside the braces:
+print(f"In 10 years: {age + 10}")   # In 10 years: 42` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Client onboarding file', pt: '🏗️ Cenário Real 1: Ficha de cadastro de cliente' } },
+      { type: 'code', code: `# New insurance client registration
+client_name     = "Ricardo Alves"
+client_age      = 32
+city            = "Oshawa"
+monthly_premium = 385
+policy_active   = True
+
+# Derived values (calculated FROM other variables)
+annual_premium  = monthly_premium * 12
+weekly_cost     = annual_premium / 52
+
+print(f"=== CLIENT FILE ===")
+print(f"Name:    {client_name}")
+print(f"Age:     {client_age}")
+print(f"City:    {city}")
+print(f"Monthly: {monthly_premium}")
+print(f"Annual:  {annual_premium}")
+print(f"Per week: {weekly_cost}")
+print(f"Active:  {policy_active}")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Tracking a running total', pt: '🏗️ Cenário Real 2: Rastreando um total acumulado' } },
+      { type: 'text', content: {
+        en: 'The most important variable pattern in all of programming: the ACCUMULATOR.\nStart at zero, keep adding. Every shopping cart, every payroll system, every claim batch uses this:',
+        pt: 'O padrão de variável mais importante de toda a programação: o ACUMULADOR.\nComece em zero, continue somando. Todo carrinho de compras, toda folha de pagamento, todo lote de sinistros usa isso:'
+      }},
+      { type: 'code', code: `# Construction site: tracking daily material costs
+total_spent = 0                    # start the accumulator at zero
+
+# Monday: bought cement
+total_spent = total_spent + 960    # 0 + 960 = 960
+
+# Tuesday: bought steel
+total_spent += 1275                # shorthand → 2235
+
+# Wednesday: bought paint
+total_spent += 800                 # → 3035
+
+print("Total spent this week: $", total_spent)
+
+# The variable REMEMBERS between operations.
+# That's the superpower a calculator doesn't have.` },
+
+      { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
+      { type: 'code', code: `# ❌ MISTAKE 1: using a variable before creating it
+# print(salary)        → NameError: name 'salary' is not defined
+# ✅ FIX: create first, use after
+salary = 5000
+print(salary)
+
+# ❌ MISTAKE 2: invalid variable names
+# 2client = "Ana"      → SyntaxError (can't start with number)
+# client-name = "Ana"  → SyntaxError (no hyphens)
+# client name = "Ana"  → SyntaxError (no spaces)
+# ✅ FIX: letters, numbers, underscore — start with letter
+client_name2 = "Ana"
+
+# ❌ MISTAKE 3: confusing = with ==
+# = STORES a value.  == COMPARES two values.
+x = 5           # store 5 in x
+print(x == 5)   # compare: is x equal to 5? → True` },
+
+      { type: 'tip', content: {
+        en: '💡 PRO TIP: name variables like you\'d explain them to a colleague.\n❌ x, a, temp, data2\n✅ client_name, total_payout, monthly_premium\nGood names make code self-documenting. 6 months from now, "x" tells you nothing.',
+        pt: '💡 DICA PRO: nomeie variáveis como explicaria a um colega.\n❌ x, a, temp, data2\n✅ nome_cliente, total_pagamento, premio_mensal\nBons nomes tornam o código auto-documentado. Daqui 6 meses, "x" não te diz nada.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'text', content: {
+        en: '✅ variable = value creates a labelled box\n✅ 4 basic types: str (text), int (whole), float (decimal), bool (True/False)\n✅ += adds to existing value (accumulator pattern)\n✅ f-strings build text: f"Name: {name}, Age: {age + 1}"\n✅ = stores, == compares\n✅ Names: letters/numbers/underscore, no spaces, don\'t start with a number\n\nNext: making programs interactive with input(). ⌨️',
+        pt: '✅ variavel = valor cria uma caixa etiquetada\n✅ 4 tipos básicos: str (texto), int (inteiro), float (decimal), bool (True/False)\n✅ += soma ao valor existente (padrão acumulador)\n✅ f-strings montam texto: f"Nome: {nome}, Idade: {idade + 1}"\n✅ = armazena, == compara\n✅ Nomes: letras/números/underscore, sem espaços, não começar com número\n\nPróxima: tornando programas interativos com input(). ⌨️'
+      }}
     ]
   },
 
   exercises: [
     {
-      id: 'ex3_fill',
-      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      id: 'ex3_guided',
+      title: { en: '🟢 Guided: Watch Variables Change', pt: '🟢 Guiado: Veja Variáveis Mudarem' },
       description: {
-        en: 'A new client just registered. Fill in the variable values below.',
-        pt: 'Um novo cliente acabou de se cadastrar. Preencha os valores das variáveis abaixo.'
+        en: 'Run this and follow the accumulator step by step.\nThen add a 4th purchase of 500 and verify the new total.',
+        pt: 'Execute e acompanhe o acumulador passo a passo.\nDepois adicione uma 4ª compra de 500 e verifique o novo total.'
       },
-      starterCode: `# Fill in the blanks with real values:
-client_name    = ___        # any name as text
-policy_number  = ___        # any number
-city           = ___        # any city as text
-is_active      = ___        # True or False
+      starterCode: `total = 0
+print("Start:", total)
 
-print(client_name)
-print(policy_number)
-print(city)
-print(is_active)`,
+total += 960
+print("After cement:", total)
+
+total += 1275
+print("After steel:", total)
+
+total += 800
+print("After paint:", total)`,
       hints: [
-        { en: 'Text values need quotes: "Maria Silva"', pt: 'Valores de texto precisam de aspas: "Maria Silva"' },
-        { en: 'True and False have capital T and F — no quotes', pt: 'True e False têm T e F maiúsculos — sem aspas' }
+        { en: 'Add: total += 500 then another print', pt: 'Adicione: total += 500 e mais um print' },
+        { en: 'New total should be 3535', pt: 'Novo total deve ser 3535' }
       ],
-      sampleOutput: { en: 'Maria Silva\n10023\nCuritiba\nTrue', pt: 'Maria Silva\n10023\nCuritiba\nTrue' }
+      sampleOutput: { en: 'Start: 0\nAfter cement: 960\nAfter steel: 2235\nAfter paint: 3035', pt: 'Start: 0\nAfter cement: 960\nAfter steel: 2235\nAfter paint: 3035' }
+    },
+    {
+      id: 'ex3_fill',
+      title: { en: '🟡 Fill the Gap: Client File', pt: '🟡 Preencha: Ficha de Cliente' },
+      description: {
+        en: 'Complete the client file: fill the values with correct types and calculate the annual premium.',
+        pt: 'Complete a ficha: preencha os valores com tipos corretos e calcule o prêmio anual.'
+      },
+      starterCode: `client_name     = ___          # any name — text needs quotes!
+client_age      = ___          # any age — number, no quotes
+monthly_premium = 450
+policy_active   = ___          # True or False
+
+annual_premium = monthly_premium ___ 12    # fill the operator
+
+print(f"Client: {client_name}, age {client_age}")
+print(f"Annual: {annual_premium}")
+print(f"Active: {policy_active}")`,
+      hints: [
+        { en: 'Text: "Maria" | Number: 35 | Bool: True (capital T)', pt: 'Texto: "Maria" | Número: 35 | Bool: True (T maiúsculo)' },
+        { en: 'Annual = monthly × 12 → use *', pt: 'Anual = mensal × 12 → use *' }
+      ],
+      sampleOutput: { en: 'Client: Maria, age 35\nAnnual: 5400\nActive: True', pt: 'Client: Maria, age 35\nAnnual: 5400\nActive: True' }
     },
     {
       id: 'ex3_zero',
-      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      title: { en: '🔴 From Scratch: Weekly Cost Tracker', pt: '🔴 Do Zero: Rastreador Semanal' },
       description: {
-        en: 'Create a mini client profile:\n• name, age, city (any values you choose)\n• monthly_premium = 450\n• Calculate: annual_premium = monthly * 12\n• Print everything',
-        pt: 'Crie um mini perfil de cliente:\n• nome, idade, cidade (valores que você escolher)\n• premium_mensal = 450\n• Calcule: premium_anual = mensal * 12\n• Imprima tudo'
+        en: 'Build an accumulator that tracks 3 material purchases:\n• Start total at 0\n• Add: 1200 (wood), 850 (tiles), 430 (paint)\n• Print the total after EACH purchase\n• Print a final f-string: "Week total: $X"',
+        pt: 'Construa um acumulador que rastreia 3 compras:\n• Comece total em 0\n• Adicione: 1200 (madeira), 850 (azulejos), 430 (tinta)\n• Imprima o total após CADA compra\n• Imprima f-string final: "Total da semana: $X"'
       },
-      starterCode: `# Build the client profile:`,
+      starterCode: `# Build your accumulator:`,
       hints: [
-        { en: '5 variables: name, age, city, monthly_premium, annual_premium', pt: '5 variáveis: nome, idade, cidade, premium_mensal, premium_anual' },
-        { en: 'Calculate annual: monthly_premium * 12', pt: 'Calcule anual: premium_mensal * 12' }
+        { en: 'total = 0, then total += 1200, print, repeat', pt: 'total = 0, depois total += 1200, print, repita' },
+        { en: 'Final: print(f"Week total: {total}")', pt: 'Final: print(f"Total da semana: {total}")' }
       ],
-      sampleOutput: { en: 'João Silva\n35\nSão Paulo\n450\n5400', pt: 'João Silva\n35\nSão Paulo\n450\n5400' }
+      sampleOutput: { en: '1200\n2050\n2480\nWeek total: 2480', pt: '1200\n2050\n2480\nTotal da semana: 2480' }
     }
   ],
 
   quiz: [
-    {
-      id: 'q3_1',
-      question: { en: 'What does x = 10 do?', pt: 'O que x = 10 faz?' },
-      options: [
-        { en: 'Stores the value 10 in a box labelled x', pt: 'Armazena o valor 10 numa caixa chamada x' },
-        { en: 'Checks if x equals 10', pt: 'Verifica se x é igual a 10' },
-        { en: 'Prints 10 on screen', pt: 'Imprime 10 na tela' },
-        { en: 'Does nothing', pt: 'Não faz nada' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '= is assignment — it stores a value. == is comparison — it checks equality. Very different!', pt: '= é atribuição — armazena um valor. == é comparação — verifica igualdade. Muito diferentes!' }
-    },
-    {
-      id: 'q3_2',
-      question: { en: 'Which variable name is VALID?', pt: 'Qual nome de variável é VÁLIDO?' },
-      options: [
-        { en: 'client_name', pt: 'client_name' },
-        { en: '2client', pt: '2client' },
-        { en: 'client-name', pt: 'client-name' },
-        { en: 'client name', pt: 'client name' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'Only letters, numbers, and underscores. Must start with a letter or underscore. No spaces or hyphens.', pt: 'Apenas letras, números e underscores. Deve começar com letra ou underscore. Sem espaços ou hífens.' }
-    },
-    {
-      id: 'q3_3',
-      question: { en: 'x = 100\nx = x + 50\nprint(x) → result?', pt: 'x = 100\nx = x + 50\nprint(x) → resultado?' },
-      options: [
-        { en: '150', pt: '150' },
-        { en: '100', pt: '100' },
-        { en: '50', pt: '50' },
-        { en: 'x + 50', pt: 'x + 50' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'x starts at 100. Then x = 100 + 50 = 150. Variables can be updated anytime.', pt: 'x começa em 100. Depois x = 100 + 50 = 150. Variáveis podem ser atualizadas a qualquer hora.' }
-    },
-    {
-      id: 'q3_4',
-      question: { en: 'What are the 4 basic data types in Python?', pt: 'Quais são os 4 tipos de dados básicos em Python?' },
-      options: [
-        { en: 'str, int, float, bool', pt: 'str, int, float, bool' },
-        { en: 'text, number, decimal, logic', pt: 'texto, número, decimal, lógica' },
-        { en: 'string, integer, character, boolean', pt: 'string, inteiro, caractere, booleano' },
-        { en: 'word, num, dec, true/false', pt: 'palavra, num, dec, verdadeiro/falso' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'str (text), int (whole number), float (decimal), bool (True/False). These 4 cover almost everything.', pt: 'str (texto), int (inteiro), float (decimal), bool (True/False). Esses 4 cobrem quase tudo.' }
-    }
+    { id: 'q3_1', question: { en: 'What does x = 10 do?', pt: 'O que x = 10 faz?' }, options: [{ en: 'Stores 10 in a box labelled x', pt: 'Armazena 10 numa caixa chamada x' }, { en: 'Compares x to 10', pt: 'Compara x com 10' }, { en: 'Prints 10', pt: 'Imprime 10' }, { en: 'Creates the number 10', pt: 'Cria o número 10' }], correctIndex: 0, explanation: { en: '= is assignment (store). == is comparison (check equality).', pt: '= é atribuição (armazenar). == é comparação (verificar igualdade).' } },
+    { id: 'q3_2', question: { en: 'Which name is VALID?', pt: 'Qual nome é VÁLIDO?' }, options: [{ en: 'total_payout', pt: 'total_pagamento' }, { en: '2total', pt: '2total' }, { en: 'total-payout', pt: 'total-pagamento' }, { en: 'total payout', pt: 'total pagamento' }], correctIndex: 0, explanation: { en: 'Letters, numbers, underscore only. Can\'t start with a number. No hyphens or spaces.', pt: 'Apenas letras, números e underscore. Não pode começar com número. Sem hífens ou espaços.' } },
+    { id: 'q3_3', question: { en: 'x = 100\nx += 50\nprint(x) → ?', pt: 'x = 100\nx += 50\nprint(x) → ?' }, options: [{ en: '150', pt: '150' }, { en: '100', pt: '100' }, { en: '50', pt: '50' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: '+= means "add to current". 100 + 50 = 150.', pt: '+= significa "adicione ao atual". 100 + 50 = 150.' } },
+    { id: 'q3_4', question: { en: 'The 4 basic types are:', pt: 'Os 4 tipos básicos são:' }, options: [{ en: 'str, int, float, bool', pt: 'str, int, float, bool' }, { en: 'text, num, dec, bit', pt: 'text, num, dec, bit' }, { en: 'string, number, real, logic', pt: 'string, number, real, logic' }, { en: 'char, int, double, boolean', pt: 'char, int, double, boolean' }], correctIndex: 0, explanation: { en: 'str (text), int (whole), float (decimal), bool (True/False). These four cover most programs.', pt: 'str (texto), int (inteiro), float (decimal), bool (True/False). Esses quatro cobrem a maioria dos programas.' } },
+    { id: 'q3_5', question: { en: 'f"Age: {30 + 5}" produces:', pt: 'f"Idade: {30 + 5}" produz:' }, options: [{ en: 'Age: 35', pt: 'Idade: 35' }, { en: 'Age: {30 + 5}', pt: 'Idade: {30 + 5}' }, { en: 'Age: 30 + 5', pt: 'Idade: 30 + 5' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: 'f-strings evaluate expressions inside braces. 30+5 is calculated → 35.', pt: 'f-strings avaliam expressões dentro das chaves. 30+5 é calculado → 35.' } },
+    { id: 'q3_6', question: { en: 'True in Python must be written:', pt: 'True em Python deve ser escrito:' }, options: [{ en: 'True (capital T, no quotes)', pt: 'True (T maiúsculo, sem aspas)' }, { en: 'true', pt: 'true' }, { en: '"True"', pt: '"True"' }, { en: 'TRUE', pt: 'TRUE' }], correctIndex: 0, explanation: { en: 'Booleans: True and False, capitalized, no quotes. "True" with quotes is a string, true lowercase is an error.', pt: 'Booleanos: True e False, com maiúscula, sem aspas. "True" com aspas é string, true minúsculo é erro.' } }
   ],
 
   exam: {
-    title: { en: 'Client File Creation', pt: 'Criação de Ficha de Cliente' },
+    title: { en: 'Complete Client Profile', pt: 'Perfil Completo de Cliente' },
     scenario: {
-      en: 'First day at the insurance company. Your task: create a digital profile for a new client and calculate their first-year premium.',
-      pt: 'Primeiro dia na seguradora. Sua tarefa: criar um perfil digital para um novo cliente e calcular o prêmio do primeiro ano.'
+      en: 'Create a full client profile with derived calculations: annual premium, weekly cost, and a 5% loyalty discount on the annual value.',
+      pt: 'Crie um perfil completo com cálculos derivados: prêmio anual, custo semanal e desconto de fidelidade de 5% sobre o valor anual.'
     },
     requirements: {
       en: [
-        'Create variable: name = "Ricardo Alves"',
-        'Create variable: age = 32',
-        'Create variable: city = "Oshawa"',
-        'Create variable: monthly_premium = 385',
+        'name = "Ricardo Alves", age = 32, monthly_premium = 385',
         'Calculate annual_premium (monthly × 12)',
-        'Print all 5 values'
+        'Calculate discounted (annual × 0.95)',
+        'Print name, age, annual and discounted values'
       ],
       pt: [
-        'Crie a variável: nome = "Ricardo Alves"',
-        'Crie a variável: idade = 32',
-        'Crie a variável: cidade = "Oshawa"',
-        'Crie a variável: premium_mensal = 385',
-        'Calcule premium_anual (mensal × 12)',
-        'Imprima todos os 5 valores'
+        'nome = "Ricardo Alves", idade = 32, premio_mensal = 385',
+        'Calcule premio_anual (mensal × 12)',
+        'Calcule com_desconto (anual × 0.95)',
+        'Imprima nome, idade, valor anual e com desconto'
       ]
     },
-    starterCode: `# New client profile
-name           = 
-age            = 
-city           = 
-monthly_premium = 
-
-annual_premium  = 
-
-print(name)
-print(age)
-print(city)
-print(monthly_premium)
-print(annual_premium)`,
+    starterCode: `# Client profile with calculations:`,
     testCases: [
-      { id: 'tc3_1', description: { en: 'Shows name', pt: 'Mostra nome' }, inputs: [], checks: [{ type: 'contains', value: 'Ricardo' }], points: 15 },
+      { id: 'tc3_1', description: { en: 'Shows name', pt: 'Mostra nome' }, inputs: [], checks: [{ type: 'contains', value: 'Ricardo' }], points: 20 },
       { id: 'tc3_2', description: { en: 'Shows age 32', pt: 'Mostra idade 32' }, inputs: [], checks: [{ type: 'contains', value: '32' }], points: 15 },
-      { id: 'tc3_3', description: { en: 'Shows city', pt: 'Mostra cidade' }, inputs: [], checks: [{ type: 'contains', value: 'Oshawa' }], points: 15 },
-      { id: 'tc3_4', description: { en: 'Annual = 4620', pt: 'Anual = 4620' }, inputs: [], checks: [{ type: 'contains', value: '4620' }], points: 40 },
-      { id: 'tc3_5', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 15 }
+      { id: 'tc3_3', description: { en: 'Annual = 4620', pt: 'Anual = 4620' }, inputs: [], checks: [{ type: 'contains', value: '4620' }], points: 30 },
+      { id: 'tc3_4', description: { en: 'Discounted = 4389', pt: 'Com desconto = 4389' }, inputs: [], checks: [{ type: 'contains', value: '4389' }], points: 25 },
+      { id: 'tc3_5', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 }
     ]
   }
 }
 
+
 // ============================================================================
-// PHASE 4 — Input do Usuário
-// TEMPLATE A: Conceito Novo / Isolado
+// PHASE 4 — Input · EXPANDIDO
 // ============================================================================
 
 export const phase4: Phase = {
   id: 4,
   title: { en: 'Getting User Input', pt: 'Entrada do Usuário' },
   description: {
-    en: 'Make your program interactive — ask and receive answers from users.',
-    pt: 'Torne seu programa interativo — pergunte e receba respostas dos usuários.'
+    en: 'Make programs interactive — ask questions, receive answers, convert types safely.',
+    pt: 'Torne programas interativos — faça perguntas, receba respostas, converta tipos com segurança.'
   },
   icon: '⌨️',
   libraries: [],
@@ -432,193 +499,224 @@ export const phase4: Phase = {
     title: { en: 'input() — Your Program Asks Questions', pt: 'input() — Seu Programa Faz Perguntas' },
     blocks: [
 
-      { type: 'heading', content: { en: '🌍 The invisible input() in your life', pt: '🌍 O input() invisível na sua vida' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Every form you fill online — Google login, bank transfer, delivery address — is input() in disguise.\n\nThe website asks → you type → the program stores your answer and acts on it.\nThat\'s the entire internet, simplified.',
-          pt: 'Todo formulário online — login do Google, transferência bancária, endereço de entrega — é input() disfarçado.\n\nO site pergunta → você digita → o programa armazena e age.\nÉ a internet inteira, simplificada.'
-        }
-      },
+      { type: 'heading', content: { en: '🌍 The invisible input() everywhere', pt: '🌍 O input() invisível em todo lugar' } },
+      { type: 'text', content: {
+        en: 'Every form you\'ve ever filled online is input() in disguise:\n• Google login: 2 inputs (email, password)\n• Bank transfer: 3 inputs (account, amount, description)\n• iFood checkout: 6+ inputs (address, payment, notes...)\n\nGoogle processes 8.5 BILLION searches per day — each one starts with a single input box. The pattern you learn today is the front door of the entire internet.',
+        pt: 'Todo formulário que você já preencheu online é input() disfarçado:\n• Login Google: 2 inputs (email, senha)\n• Transferência bancária: 3 inputs (conta, valor, descrição)\n• Checkout iFood: 6+ inputs (endereço, pagamento, observações...)\n\nO Google processa 8,5 BILHÕES de buscas por dia — cada uma começa numa única caixa de input. O padrão que você aprende hoje é a porta de entrada da internet inteira.'
+      }},
 
-      { type: 'heading', content: { en: '🧩 A receptionist taking notes', pt: '🧩 Uma recepcionista anotando' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Imagine a receptionist at an insurance office:\n"Your name?" → writes it down\n"Damage amount?" → writes it down\n"When did it happen?" → writes it down\n\ninput() does exactly that — asks, waits, and stores your answer.',
-          pt: 'Imagine uma recepcionista numa seguradora:\n"Seu nome?" → anota\n"Valor do dano?" → anota\n"Quando aconteceu?" → anota\n\ninput() faz exatamente isso — pergunta, espera e armazena.'
-        }
-      },
+      { type: 'heading', content: { en: '🧩 The receptionist analogy', pt: '🧩 A analogia da recepcionista' } },
+      { type: 'text', content: {
+        en: 'A receptionist at an insurance office:\n1. Asks a question: "What\'s your name?"\n2. WAITS for the answer (doesn\'t move until you speak)\n3. Writes it down on the form\n\ninput() works identically:\n1. Shows your question on screen\n2. PAUSES the program, waiting\n3. Stores whatever was typed into a variable\n\n⚠️ Critical detail: the receptionist writes EVERYTHING as text. Even if you say "42", she writes the characters 4-2, not the number.',
+        pt: 'Uma recepcionista numa seguradora:\n1. Faz a pergunta: "Qual seu nome?"\n2. ESPERA a resposta (não se move até você falar)\n3. Anota no formulário\n\ninput() funciona identicamente:\n1. Mostra sua pergunta na tela\n2. PAUSA o programa, esperando\n3. Armazena o que foi digitado numa variável\n\n⚠️ Detalhe crítico: a recepcionista anota TUDO como texto. Mesmo se você disser "42", ela escreve os caracteres 4-2, não o número.'
+      }},
 
-      { type: 'heading', content: { en: '🐍 How input() works', pt: '🐍 Como input() funciona' } },
-      {
-        type: 'code',
-        code: `# input() always returns TEXT (string)
-name = input("Client name: ")
+      { type: 'heading', content: { en: '🐍 The fundamentals', pt: '🐍 Os fundamentos' } },
+      { type: 'code', code: `# input() shows a message and waits for typing
+name = input("What is your name? ")
 print("Hello,", name)
 
-# ⚠️  To use as a NUMBER, you must convert:
-damage_str = input("Damage amount: $")
-damage = int(damage_str)       # convert text → whole number
+# The message is the PROMPT — always end with ": " or "? "
+# so the user knows it's their turn to type
 
-deductible = 250
-payout = damage - deductible
-print("Company pays: $", payout)`
-      },
-      {
-        type: 'warning',
-        content: {
-          en: '⚠️ Critical rule: input() ALWAYS returns text.\nIf you try to do math without converting, Python crashes.\nAlways use int() or float() before arithmetic.',
-          pt: '⚠️ Regra crítica: input() SEMPRE retorna texto.\nSe tentar fazer matemática sem converter, Python quebra.\nSempre use int() ou float() antes de aritmética.'
-        }
-      },
-      {
-        type: 'code',
-        code: `# Shorthand: combine input + conversion in one line
-age    = int(input("Your age: "))         # whole number
-height = float(input("Height in meters: ")) # decimal
+city = input("Your city: ")
+print(f"Nice! {city} is a great place.")` },
 
-# Now you can do math:
-print("In 10 years you'll be:", age + 10)`
-      }
+      { type: 'heading', content: { en: '🐍 Deeper: the conversion problem (and solution)', pt: '🐍 Aprofundando: o problema da conversão (e a solução)' } },
+      { type: 'code', code: `# ⚠️ input() ALWAYS returns a string — even numbers!
+age = input("Your age: ")        # user types 30
+print(type(age))                  # <class 'str'>  ← it's TEXT "30"
+
+# print(age + 5)                  # ❌ TypeError! text + number = crash
+
+# ✅ THE FIX: convert with int() or float()
+age = int(input("Your age: "))       # int() converts "30" → 30
+print(age + 5)                        # 35 ✅
+
+height = float(input("Height (m): ")) # float() for decimals: "1.75" → 1.75
+print(height * 100, "cm")
+
+# CONVERSION CHEAT SHEET:
+# int(x)    → whole number    int("42") → 42
+# float(x)  → decimal          float("3.14") → 3.14
+# str(x)    → back to text     str(42) → "42"` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claim intake form', pt: '🏗️ Cenário Real 1: Formulário de sinistro' } },
+      { type: 'code', code: `# Complete claim intake — mixing text and number inputs
+print("=== NEW CLAIM INTAKE ===")
+
+client   = input("Client name: ")               # text, no conversion
+phone    = input("Phone: ")                     # phone is TEXT (has dashes!)
+damage   = int(input("Damage amount: $"))       # number for math
+ded      = int(input("Deductible: $"))          # number for math
+
+payout = damage - ded
+
+print()
+print(f"=== CLAIM SUMMARY ===")
+print(f"Client: {client}")
+print(f"Phone:  {phone}")
+print(f"Damage: {damage}")
+print(f"Payout: {payout}")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Construction estimate calculator', pt: '🏗️ Cenário Real 2: Calculadora de orçamento de obra' } },
+      { type: 'code', code: `# Interactive area & cost estimator
+print("=== RENOVATION ESTIMATE ===")
+
+room    = input("Room name: ")
+width   = float(input("Width (m): "))     # float — meters have decimals!
+length  = float(input("Length (m): "))
+rate    = float(input("Cost per m²: $"))
+
+area = width * length
+cost = area * rate
+
+print()
+print(f"Room: {room}")
+print(f"Area: {area} m²")
+print(f"Estimated cost: {cost}")` },
+
+      { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
+      { type: 'code', code: `# ❌ MISTAKE 1: math on unconverted input
+x = input("Number: ")     # user types 5 → x holds "5" (text)
+# print(x + 5)            → TypeError: can't add str + int
+
+# ✅ FIX:
+x = int(input("Number: "))
+print(x + 5)
+
+# ❌ MISTAKE 2: int() on decimal input
+# n = int(input("Height: "))   → user types 1.75 → ValueError!
+# ✅ FIX: use float() when decimals are possible
+n = float(input("Height: "))
+
+# ❌ MISTAKE 3: converting things that AREN'T numbers
+# phone = int(input("Phone: "))  → "555-1234" crashes int()!
+# ✅ RULE: only convert what you'll do MATH with.
+# Phone, ZIP code, ID numbers → keep as text!` },
+
+      { type: 'tip', content: {
+        en: '💡 PRO TIP: the "will I do math with it?" test.\n• Damage amount → math → int/float\n• Age → math → int\n• Phone number → NO math → keep str\n• ZIP code → NO math → keep str\nConverting everything blindly is a rookie mistake.',
+        pt: '💡 DICA PRO: o teste "vou fazer matemática com isso?".\n• Valor do dano → matemática → int/float\n• Idade → matemática → int\n• Telefone → SEM matemática → mantém str\n• CEP → SEM matemática → mantém str\nConverter tudo cegamente é erro de iniciante.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'text', content: {
+        en: '✅ input("prompt") pauses and waits for typing\n✅ input() ALWAYS returns str — even for numbers\n✅ int() converts to whole number, float() to decimal\n✅ Combine: age = int(input("Age: "))\n✅ Only convert values you\'ll do math with\n✅ Phone/ZIP/ID = text, keep as str\n\nNext: teaching programs to make decisions with if/else. 🚦',
+        pt: '✅ input("pergunta") pausa e espera digitação\n✅ input() SEMPRE retorna str — até para números\n✅ int() converte para inteiro, float() para decimal\n✅ Combine: idade = int(input("Idade: "))\n✅ Só converta valores com os quais fará matemática\n✅ Telefone/CEP/ID = texto, mantenha str\n\nPróxima: ensinando programas a decidir com if/else. 🚦'
+      }}
     ]
   },
 
   exercises: [
     {
-      id: 'ex4_fill',
-      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      id: 'ex4_guided',
+      title: { en: '🟢 Guided: See the Type Problem', pt: '🟢 Guiado: Veja o Problema do Tipo' },
       description: {
-        en: 'The code below asks for a damage amount but is missing the conversion.\nFill in the blank so we can do the math.',
-        pt: 'O código abaixo pede um valor de dano mas está faltando a conversão.\nPreencha a lacuna para que possamos fazer a matemática.'
+        en: 'Run this code, enter 25 when asked, and watch the type() outputs.\nNotice how the SAME typed value becomes different types.',
+        pt: 'Execute, digite 25 quando pedido, e observe as saídas do type().\nNote como o MESMO valor digitado vira tipos diferentes.'
       },
-      starterCode: `damage = ___(input("Damage amount: $"))  # convert to integer
-deductible = 250
+      starterCode: `raw = input("Type a number: ")
+print("Raw value:", raw)
+print("Raw type:", type(raw))
 
-payout = damage - deductible
-print("Payout:", payout)`,
+converted = int(raw)
+print("Converted:", converted)
+print("New type:", type(converted))
+
+print("Math now works:", converted * 2)`,
       hints: [
-        { en: 'Use int() to convert the text to a whole number', pt: 'Use int() para converter o texto em número inteiro' }
+        { en: 'The raw type is str even though you typed digits', pt: 'O tipo bruto é str mesmo você digitando dígitos' }
       ],
-      sampleOutput: { en: 'Payout: 4750', pt: 'Payout: 4750' }
+      sampleOutput: { en: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>\nMath now works: 50', pt: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>\nMath now works: 50' }
+    },
+    {
+      id: 'ex4_fill',
+      title: { en: '🟡 Fill the Gap: Convert Correctly', pt: '🟡 Preencha: Converta Corretamente' },
+      description: {
+        en: 'Fill in the RIGHT conversion for each input.\nThink: math or no math? Decimals or whole?',
+        pt: 'Preencha a conversão CERTA para cada input.\nPense: matemática ou não? Decimais ou inteiro?'
+      },
+      starterCode: `name   = ___(input("Name: "))          # no conversion needed — remove ___ and parens or use str
+age    = ___(input("Age: "))            # whole number math
+height = ___(input("Height (m): "))     # decimal math
+phone  = input("Phone: ")               # already correct — no math on phones!
+
+print(f"{name}, {age} years, {height}m")
+print(f"Next year: {age + 1}")
+print(f"Phone: {phone}")`,
+      hints: [
+        { en: 'name: just input(...) — or str() which changes nothing', pt: 'name: apenas input(...) — ou str() que não muda nada' },
+        { en: 'age → int() | height → float()', pt: 'idade → int() | altura → float()' }
+      ],
+      sampleOutput: { en: 'Maria, 35 years, 1.68m\nNext year: 36\nPhone: 555-1234', pt: 'Maria, 35 anos, 1.68m\nAno que vem: 36\nTelefone: 555-1234' }
     },
     {
       id: 'ex4_zero',
-      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      title: { en: '🔴 From Scratch: Estimate Calculator', pt: '🔴 Do Zero: Calculadora de Orçamento' },
       description: {
-        en: 'Build a mini claim intake form:\n1. Ask for client name (text)\n2. Ask for damage amount (number)\n3. Subtract $300 deductible\n4. Print: "Client: [name] — Payout: $[amount]"',
-        pt: 'Construa um mini formulário de sinistro:\n1. Pergunte o nome do cliente (texto)\n2. Pergunte o valor do dano (número)\n3. Subtraia R$300 de franquia\n4. Imprima: "Cliente: [nome] — Pagamento: R$[valor]"'
+        en: 'Build the renovation estimator:\n1. Ask room name (text)\n2. Ask width and length in meters (decimals)\n3. Ask cost per m² (decimal)\n4. Calculate area and total cost\n5. Print a summary with f-strings',
+        pt: 'Construa o orçamentador de reforma:\n1. Pergunte nome do cômodo (texto)\n2. Pergunte largura e comprimento em metros (decimais)\n3. Pergunte custo por m² (decimal)\n4. Calcule área e custo total\n5. Imprima resumo com f-strings'
       },
-      starterCode: `# Mini claim intake form`,
+      starterCode: `# Renovation estimator:`,
       hints: [
-        { en: 'name = input("Client name: ")', pt: 'nome = input("Nome do cliente: ")' },
-        { en: 'damage = int(input("Damage: $"))', pt: 'dano = int(input("Dano: R$"))' },
-        { en: 'Use print() with multiple values separated by commas', pt: 'Use print() com múltiplos valores separados por vírgulas' }
+        { en: 'width = float(input("Width (m): "))', pt: 'largura = float(input("Largura (m): "))' },
+        { en: 'area = width * length, cost = area * rate', pt: 'area = largura * comprimento, custo = area * taxa' }
       ],
-      sampleOutput: { en: 'Client: Maria Silva — Payout: $4700', pt: 'Cliente: Maria Silva — Pagamento: R$4700' }
+      sampleOutput: { en: 'Room: Kitchen\nArea: 12.0 m²\nTotal: 1800.0', pt: 'Cômodo: Cozinha\nÁrea: 12.0 m²\nTotal: 1800.0' }
     }
   ],
 
   quiz: [
-    {
-      id: 'q4_1',
-      question: { en: 'What type does input() ALWAYS return?', pt: 'Que tipo input() SEMPRE retorna?' },
-      options: [
-        { en: 'str (text)', pt: 'str (texto)' },
-        { en: 'int (integer)', pt: 'int (inteiro)' },
-        { en: 'Whatever the user types', pt: 'O que o usuário digitar' },
-        { en: 'float (decimal)', pt: 'float (decimal)' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'input() ALWAYS returns str, even if the user types "42". You must convert with int() or float() to do math.', pt: 'input() SEMPRE retorna str, mesmo se o usuário digitar "42". Você deve converter com int() ou float() para fazer matemática.' }
-    },
-    {
-      id: 'q4_2',
-      question: { en: 'x = input("Value: ") with input "5"\nprint(x + 5) → what happens?', pt: 'x = input("Valor: ") com entrada "5"\nprint(x + 5) → o que acontece?' },
-      options: [
-        { en: 'Error — can\'t add text + number', pt: 'Erro — não pode somar texto + número' },
-        { en: 'Prints 10', pt: 'Imprime 10' },
-        { en: 'Prints "55"', pt: 'Imprime "55"' },
-        { en: 'Prints 5', pt: 'Imprime 5' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'x holds the string "5", not the number 5. "5" + 5 is a TypeError. Fix: x = int(input("Value: "))', pt: 'x guarda a string "5", não o número 5. "5" + 5 é um TypeError. Corrija: x = int(input("Valor: "))' }
-    },
-    {
-      id: 'q4_3',
-      question: { en: 'How to ask for a decimal number (like 3.14)?', pt: 'Como pedir um número decimal (como 3.14)?' },
-      options: [
-        { en: 'float(input("Value: "))', pt: 'float(input("Valor: "))' },
-        { en: 'int(input("Value: "))', pt: 'int(input("Valor: "))' },
-        { en: 'decimal(input("Value: "))', pt: 'decimal(input("Valor: "))' },
-        { en: 'input("Value: ") directly', pt: 'input("Valor: ") diretamente' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'float() converts text to decimal. int() converts to whole number. For "3.14", you need float().', pt: 'float() converte texto para decimal. int() converte para inteiro. Para "3.14", você precisa de float().' }
-    },
-    {
-      id: 'q4_4',
-      question: { en: 'The message inside input() — what does it do?', pt: 'A mensagem dentro de input() — o que ela faz?' },
-      options: [
-        { en: 'Shows a prompt so the user knows what to type', pt: 'Mostra um prompt para o usuário saber o que digitar' },
-        { en: 'Sets a default value', pt: 'Define um valor padrão' },
-        { en: 'Required — without it, Python crashes', pt: 'Obrigatória — sem ela, Python quebra' },
-        { en: 'Nothing — it\'s just decoration', pt: 'Nada — é só decoração' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'The message is optional but always recommended. It tells users what to type. input() with no message just shows a blank cursor.', pt: 'A mensagem é opcional mas sempre recomendada. Diz ao usuário o que digitar. input() sem mensagem mostra só um cursor em branco.' }
-    }
+    { id: 'q4_1', question: { en: 'input() ALWAYS returns:', pt: 'input() SEMPRE retorna:' }, options: [{ en: 'str (text)', pt: 'str (texto)' }, { en: 'int', pt: 'int' }, { en: 'Whatever was typed', pt: 'O que foi digitado' }, { en: 'float', pt: 'float' }], correctIndex: 0, explanation: { en: 'Always str. Even "42" is the TEXT four-two until you convert it.', pt: 'Sempre str. Até "42" é o TEXTO quatro-dois até você converter.' } },
+    { id: 'q4_2', question: { en: 'x = input() gets "5". print(x + 5) →', pt: 'x = input() recebe "5". print(x + 5) →' }, options: [{ en: 'TypeError — can\'t add str + int', pt: 'TypeError — não soma str + int' }, { en: '10', pt: '10' }, { en: '"55"', pt: '"55"' }, { en: '5', pt: '5' }], correctIndex: 0, explanation: { en: '"5" is text. Text + number crashes. Convert first: int(x) + 5 = 10.', pt: '"5" é texto. Texto + número quebra. Converta antes: int(x) + 5 = 10.' } },
+    { id: 'q4_3', question: { en: 'User will type 1.75. Which conversion?', pt: 'Usuário digitará 1.75. Qual conversão?' }, options: [{ en: 'float(input(...))', pt: 'float(input(...))' }, { en: 'int(input(...))', pt: 'int(input(...))' }, { en: 'str(input(...))', pt: 'str(input(...))' }, { en: 'No conversion', pt: 'Sem conversão' }], correctIndex: 0, explanation: { en: 'int("1.75") crashes with ValueError. Decimals need float().', pt: 'int("1.75") quebra com ValueError. Decimais precisam de float().' } },
+    { id: 'q4_4', question: { en: 'Should you convert a phone number input?', pt: 'Deve converter um telefone digitado?' }, options: [{ en: 'No — no math on phones, and dashes crash int()', pt: 'Não — sem matemática em telefones, e traços quebram int()' }, { en: 'Yes, always int()', pt: 'Sim, sempre int()' }, { en: 'Yes, always float()', pt: 'Sim, sempre float()' }, { en: 'Convert to bool', pt: 'Converter para bool' }], correctIndex: 0, explanation: { en: 'Rule: only convert what you\'ll calculate with. "555-1234" would crash int() anyway.', pt: 'Regra: só converta o que vai calcular. "555-1234" quebraria int() de qualquer forma.' } },
+    { id: 'q4_5', question: { en: 'The text inside input("...") is:', pt: 'O texto dentro de input("...") é:' }, options: [{ en: 'The prompt shown to the user', pt: 'O prompt mostrado ao usuário' }, { en: 'The default answer', pt: 'A resposta padrão' }, { en: 'A comment', pt: 'Um comentário' }, { en: 'Required syntax', pt: 'Sintaxe obrigatória' }], correctIndex: 0, explanation: { en: 'It\'s the question displayed. Optional but essential — without it, users see a blank cursor.', pt: 'É a pergunta exibida. Opcional mas essencial — sem ela, o usuário vê só um cursor.' } },
+    { id: 'q4_6', question: { en: 'int("abc") does what?', pt: 'int("abc") faz o quê?' }, options: [{ en: 'ValueError — "abc" isn\'t a valid number', pt: 'ValueError — "abc" não é número válido' }, { en: 'Returns 0', pt: 'Retorna 0' }, { en: 'Returns None', pt: 'Retorna None' }, { en: 'Converts letters to numbers', pt: 'Converte letras em números' }], correctIndex: 0, explanation: { en: 'int() only accepts text that LOOKS like a whole number. "abc" → crash. (You\'ll handle this with try/except in Phase 23!)', pt: 'int() só aceita texto que PARECE número inteiro. "abc" → crash. (Você tratará isso com try/except na Fase 23!)' } }
   ],
 
   exam: {
-    title: { en: 'Interactive Claim Form', pt: 'Formulário Interativo' },
+    title: { en: 'Interactive Claim System', pt: 'Sistema Interativo de Sinistros' },
     scenario: {
-      en: 'Build an interactive claim intake system. Ask for all details, calculate the payout, and display a summary.',
-      pt: 'Construa um sistema interativo de abertura de sinistros. Pergunte todos os detalhes, calcule o pagamento e exiba um resumo.'
+      en: 'Build the complete claim intake: collect client data with proper types, calculate the payout with an 85% coverage rate, and print a professional summary.',
+      pt: 'Construa a entrada completa de sinistro: colete dados com tipos corretos, calcule o pagamento com cobertura de 85% e imprima um resumo profissional.'
     },
     requirements: {
       en: [
-        'Ask for client name (text)',
-        'Ask for damage amount (convert to number)',
-        'Ask for deductible (convert to number)',
-        'Calculate: payout = damage - deductible',
-        'Print a summary showing name and payout'
+        'Ask client name (text)',
+        'Ask damage amount (convert to int)',
+        'Ask deductible (convert to int)',
+        'Calculate: payout = (damage - deductible) * 0.85',
+        'Print name and payout in a summary'
       ],
       pt: [
-        'Pergunte o nome do cliente (texto)',
-        'Pergunte o valor do dano (converta para número)',
-        'Pergunte a franquia (converta para número)',
-        'Calcule: pagamento = dano - franquia',
-        'Imprima um resumo com nome e pagamento'
+        'Pergunte nome do cliente (texto)',
+        'Pergunte valor do dano (converta para int)',
+        'Pergunte franquia (converta para int)',
+        'Calcule: pagamento = (dano - franquia) * 0.85',
+        'Imprima nome e pagamento num resumo'
       ]
     },
-    starterCode: `name       = input("Client name: ")
-damage     = int(input("Damage amount: $"))
-deductible = int(input("Deductible: $"))
-
-payout = damage - deductible
-
-print("Client:", name)
-print("Payout: $", payout)`,
+    starterCode: `# Interactive claim intake:`,
     testCases: [
-      { id: 'tc4_1', description: { en: 'Correct payout calculation', pt: 'Cálculo de pagamento correto' }, inputs: ['Ana Lima', '5000', '250'], checks: [{ type: 'contains', value: '4750' }], points: 40 },
+      { id: 'tc4_1', description: { en: 'Correct payout (85%)', pt: 'Pagamento correto (85%)' }, inputs: ['Ana Lima', '5000', '250'], checks: [{ type: 'contains_any', value: ['4037.5', '4037'] }], points: 45 },
       { id: 'tc4_2', description: { en: 'Shows client name', pt: 'Mostra nome do cliente' }, inputs: ['Ana Lima', '5000', '250'], checks: [{ type: 'contains', value: 'Ana' }], points: 30 },
-      { id: 'tc4_3', description: { en: 'No errors', pt: 'Sem erros' }, inputs: ['Test', '1000', '200'], checks: [{ type: 'no_error', value: '' }], points: 30 }
+      { id: 'tc4_3', description: { en: 'No errors', pt: 'Sem erros' }, inputs: ['Test', '1000', '100'], checks: [{ type: 'no_error', value: '' }], points: 25 }
     ]
   }
 }
 
 // ============================================================================
-// PHASE 5 — If / Else
-// TEMPLATE A: Conceito Novo / Isolado
+// PHASE 5 — If/Else · EXPANDIDO
 // ============================================================================
 
 export const phase5: Phase = {
   id: 5,
   title: { en: 'If / Else', pt: 'If / Else' },
   description: {
-    en: 'Teach your program to make decisions based on conditions.',
-    pt: 'Ensine seu programa a tomar decisões baseadas em condições.'
+    en: 'Teach programs to make decisions — conditions, comparisons and logical operators.',
+    pt: 'Ensine programas a decidir — condições, comparações e operadores lógicos.'
   },
   icon: '🚦',
   libraries: [],
@@ -627,174 +725,232 @@ export const phase5: Phase = {
     title: { en: 'The Decision Maker', pt: 'O Tomador de Decisões' },
     blocks: [
 
-      { type: 'heading', content: { en: '🌍 Netflix runs on if/else', pt: '🌍 A Netflix roda com if/else' } },
-      {
-        type: 'text',
-        content: {
-          en: 'Every recommendation you get from Netflix, Spotify or YouTube is an if/else decision.\n\n"IF user watched 3 thrillers → recommend more thrillers\nELSE → show trending content"\n\n400 million users, billions of if/else decisions per second.',
-          pt: 'Toda recomendação que você recebe da Netflix, Spotify ou YouTube é uma decisão if/else.\n\n"SE usuário assistiu 3 thrillers → recomende mais thrillers\nSENÃO → mostre conteúdo em alta"\n\n400 milhões de usuários, bilhões de decisões if/else por segundo.'
-        }
-      },
+      { type: 'heading', content: { en: '🌍 Billions of decisions per second', pt: '🌍 Bilhões de decisões por segundo' } },
+      { type: 'text', content: {
+        en: 'Every "smart" behavior in software is if/else:\n• Netflix: IF you watched 3 thrillers → recommend thrillers\n• Gmail: IF message has suspicious links → spam folder\n• Nubank: IF purchase is far from your city → fraud alert\n• Tesla Autopilot: IF obstacle ahead → brake\n\nVisa alone runs ~65,000 transactions per second, each passing through DOZENS of if checks: valid card? enough balance? suspicious pattern? blocked country?\n\nEvery one uses the exact syntax you learn now.',
+        pt: 'Todo comportamento "inteligente" em software é if/else:\n• Netflix: SE você viu 3 thrillers → recomende thrillers\n• Gmail: SE mensagem tem links suspeitos → pasta spam\n• Nubank: SE compra é longe da sua cidade → alerta de fraude\n• Tesla Autopilot: SE obstáculo à frente → freie\n\nSó a Visa roda ~65.000 transações por segundo, cada uma passando por DEZENAS de verificações if: cartão válido? saldo suficiente? padrão suspeito? país bloqueado?\n\nTodas usam a sintaxe exata que você aprende agora.'
+      }},
 
-      { type: 'heading', content: { en: '🧩 A traffic light', pt: '🧩 Um semáforo' } },
-      {
-        type: 'text',
-        content: {
-          en: 'A traffic light has one rule:\n🔴 IF light is red → STOP\n🟢 IF light is green → GO\n\nYour program works exactly like that:\nIF condition is True → do THIS\nELSE → do THAT\n\nOnly ONE path runs. Never both.',
-          pt: 'Um semáforo tem uma regra:\n🔴 SE sinal é vermelho → PARE\n🟢 SE sinal é verde → PASSE\n\nSeu programa funciona exatamente assim:\nSE condição é True → faça ISSO\nSENÃO → faça AQUILO\n\nApenas UM caminho roda. Nunca os dois.'
-        }
-      },
+      { type: 'heading', content: { en: '🧩 The traffic light', pt: '🧩 O semáforo' } },
+      { type: 'text', content: {
+        en: 'A traffic light is pure if/else:\n🔴 IF red → STOP\n🟢 ELSE → GO\n\nKey insight: only ONE path executes. Never both.\nThe condition is a yes/no question. Python evaluates it to True or False, then picks the path.',
+        pt: 'Um semáforo é if/else puro:\n🔴 SE vermelho → PARE\n🟢 SENÃO → SIGA\n\nInsight chave: apenas UM caminho executa. Nunca os dois.\nA condição é uma pergunta sim/não. Python a avalia como True ou False, e escolhe o caminho.'
+      }},
 
-      { type: 'heading', content: { en: '🐍 if/else in Python', pt: '🐍 if/else em Python' } },
-      {
-        type: 'code',
-        code: `damage = 8000
+      { type: 'heading', content: { en: '🐍 The fundamentals', pt: '🐍 Os fundamentos' } },
+      { type: 'code', code: `damage = 8000
 
-if damage > 5000:
-    print("🔴 HIGH PRIORITY")
-    print("Send expert adjuster")
+if damage > 5000:                  # condition + colon
+    print("🔴 HIGH PRIORITY")      # indented = inside the if
+    print("Send expert adjuster")  # still inside
 else:
-    print("🟢 Standard claim")
-    print("Process normally")`
-      },
+    print("🟢 Standard claim")     # runs only if condition is False
 
-      { type: 'heading', content: { en: '📐 Comparison operators', pt: '📐 Operadores de comparação' } },
-      {
-        type: 'code',
-        code: `x = 10
+print("Done.")                      # NOT indented = always runs
 
-print(x > 5)    # True  — greater than
-print(x < 5)    # False — less than
-print(x >= 10)  # True  — greater or equal
-print(x <= 10)  # True  — less or equal
-print(x == 10)  # True  — exactly equal
-print(x != 5)   # True  — NOT equal`
-      },
-      {
-        type: 'tip',
-        content: {
-          en: '💡 Indentation is NOT optional.\nThe 4 spaces before print() tell Python "this belongs to the if block".\nMissing indentation = error.',
-          pt: '💡 Indentação NÃO é opcional.\nOs 4 espaços antes de print() dizem ao Python "isto pertence ao bloco if".\nIndentação faltando = erro.'
-        }
-      }
+# THE 6 COMPARISON OPERATORS:
+x = 10
+print(x > 5)     # True   greater than
+print(x < 5)     # False  less than
+print(x >= 10)   # True   greater OR equal
+print(x <= 9)    # False  less OR equal
+print(x == 10)   # True   equal (TWO equals signs!)
+print(x != 7)    # True   NOT equal` },
+
+      { type: 'heading', content: { en: '🐍 Deeper: combining conditions with and / or / not', pt: '🐍 Aprofundando: combinando condições com and / or / not' } },
+      { type: 'code', code: `damage = 7000
+days_since_policy = 15
+
+# AND — both must be True
+if damage > 5000 and days_since_policy < 30:
+    print("⚠️ Large claim soon after policy — investigate")
+
+# OR — at least one must be True
+region = "flood_zone"
+if region == "flood_zone" or damage > 10000:
+    print("Requires senior review")
+
+# NOT — inverts the condition
+is_approved = False
+if not is_approved:
+    print("Still pending")
+
+# Comparing TEXT works too (case-sensitive!)
+status = "approved"
+if status == "approved":
+    print("✅ Release payment")
+# "Approved" != "approved" — capital letters matter!` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Fraud detection gate', pt: '🏗️ Cenário Real 1: Portão de detecção de fraude' } },
+      { type: 'text', content: {
+        en: 'Insurance companies flag claims filed suspiciously soon after a policy starts. A real rule used in the industry: claim within 30 days of policy start AND above $5,000 → automatic investigation.',
+        pt: 'Seguradoras sinalizam sinistros abertos suspeitosamente cedo após o início da apólice. Uma regra real usada no setor: sinistro em até 30 dias do início E acima de R$5.000 → investigação automática.'
+      }},
+      { type: 'code', code: `print("=== FRAUD CHECK ===")
+damage = int(input("Damage amount: $"))
+days = int(input("Days since policy start: "))
+
+if damage > 5000 and days < 30:
+    print("🚨 FLAGGED: large claim soon after policy start")
+    print("Routing to Special Investigations Unit")
+else:
+    print("✅ Passed fraud check")
+    print("Routing to standard processing")` },
+
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Construction safety check', pt: '🏗️ Cenário Real 2: Verificação de segurança de obra' } },
+      { type: 'code', code: `# Site safety gate: wind speed and crane operations
+wind_speed = float(input("Wind speed (km/h): "))
+crane_active = input("Crane operating? (yes/no): ")
+
+if wind_speed > 40 and crane_active == "yes":
+    print("🚨 STOP CRANE OPERATIONS IMMEDIATELY")
+    print("Wind exceeds 40 km/h safety limit")
+elif wind_speed > 40:
+    print("⚠️ High wind — cranes must stay offline")
+else:
+    print("✅ Conditions safe for all operations")` },
+
+      { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
+      { type: 'code', code: `x = 10
+
+# ❌ MISTAKE 1: single = in condition
+# if x = 10:          → SyntaxError! = assigns, == compares
+# ✅ FIX:
+if x == 10:
+    print("ten")
+
+# ❌ MISTAKE 2: forgetting the colon
+# if x > 5            → SyntaxError: expected ':'
+# ✅ FIX:
+if x > 5:
+    print("big")
+
+# ❌ MISTAKE 3: wrong indentation
+# if x > 5:
+# print("big")        → IndentationError!
+# ✅ FIX: indent 4 spaces inside the if
+if x > 5:
+    print("big")
+
+# ❌ MISTAKE 4: comparing number with text
+guess = input("Guess: ")    # returns "10" (text!)
+# if guess == 10:            → always False! "10" != 10
+# ✅ FIX: convert first
+if int(guess) == 10:
+    print("Correct!")` },
+
+      { type: 'tip', content: {
+        en: '💡 PRO TIP: read conditions out loud.\nif damage > 5000 and days < 30 →\n"IF damage is over five thousand AND days is under thirty"\nIf the sentence sounds wrong out loud, the logic is probably wrong too.',
+        pt: '💡 DICA PRO: leia condições em voz alta.\nif dano > 5000 and dias < 30 →\n"SE o dano é maior que cinco mil E os dias são menos que trinta"\nSe a frase soa errada em voz alta, a lógica provavelmente está errada também.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'text', content: {
+        en: '✅ if condition: → runs indented block only when True\n✅ else: → catches everything False\n✅ 6 comparisons: > < >= <= == !=\n✅ == compares (two signs!), = assigns\n✅ and (both), or (at least one), not (invert)\n✅ Colon + 4-space indentation are mandatory\n✅ Text comparisons are case-sensitive\n\nNext: multiple branches with elif. ⚙️',
+        pt: '✅ if condição: → roda bloco indentado só quando True\n✅ else: → captura tudo que é False\n✅ 6 comparações: > < >= <= == !=\n✅ == compara (dois sinais!), = atribui\n✅ and (ambos), or (pelo menos um), not (inverte)\n✅ Dois pontos + indentação de 4 espaços são obrigatórios\n✅ Comparações de texto diferenciam maiúsculas\n\nPróxima: múltiplos caminhos com elif. ⚙️'
+      }}
     ]
   },
 
   exercises: [
     {
-      id: 'ex5_fill',
-      title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
+      id: 'ex5_guided',
+      title: { en: '🟢 Guided: Trace the Decision', pt: '🟢 Guiado: Rastreie a Decisão' },
       description: {
-        en: 'Complete the condition to flag claims above the coverage limit.',
-        pt: 'Complete a condição para sinalizar sinistros acima do limite de cobertura.'
+        en: 'Run with damage 8000 → see the HIGH path.\nRun again with 2000 → see the standard path.\nNotice: only ONE branch ever prints.',
+        pt: 'Execute com dano 8000 → veja o caminho ALTO.\nExecute de novo com 2000 → veja o caminho padrão.\nNote: apenas UM ramo imprime.'
       },
       starterCode: `damage = int(input("Damage: $"))
-limit = 10000
 
-if damage ___ limit:        # fill in the operator
-    print("⚠️  Exceeds limit — needs approval")
+if damage > 5000:
+    print("🔴 HIGH PRIORITY")
+    print("Expert adjuster assigned")
 else:
-    print("✅ Within coverage")`,
+    print("🟢 Standard processing")
+    print("Auto-queue assigned")
+
+print("--- check complete ---")`,
       hints: [
-        { en: 'Use > to check if damage is greater than limit', pt: 'Use > para verificar se o dano é maior que o limite' }
+        { en: 'The last print always runs — it\'s outside the if', pt: 'O último print sempre roda — está fora do if' }
       ],
-      sampleOutput: { en: '⚠️  Exceeds limit — needs approval', pt: '⚠️  Exceeds limit — needs approval' }
+      sampleOutput: { en: '🔴 HIGH PRIORITY\nExpert adjuster assigned\n--- check complete ---', pt: '🔴 HIGH PRIORITY\nExpert adjuster assigned\n--- check complete ---' }
+    },
+    {
+      id: 'ex5_fill',
+      title: { en: '🟡 Fill the Gap: Fraud Gate', pt: '🟡 Preencha: Portão de Fraude' },
+      description: {
+        en: 'Complete the fraud detection: large claim AND recent policy = flag.',
+        pt: 'Complete a detecção de fraude: sinistro grande E apólice recente = sinalizar.'
+      },
+      starterCode: `damage = int(input("Damage: $"))
+days = int(input("Days since policy start: "))
+
+if damage ___ 5000 ___ days ___ 30:    # fill: >, and, <
+    print("🚨 FLAGGED for investigation")
+else:
+    print("✅ Passed fraud check")`,
+      hints: [
+        { en: 'Large: damage > 5000 | Recent: days < 30', pt: 'Grande: damage > 5000 | Recente: days < 30' },
+        { en: 'Both must be true → and', pt: 'Ambos devem ser verdadeiros → and' }
+      ],
+      sampleOutput: { en: '🚨 FLAGGED for investigation', pt: '🚨 FLAGGED for investigation' }
     },
     {
       id: 'ex5_zero',
-      title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
+      title: { en: '🔴 From Scratch: Safety Gate', pt: '🔴 Do Zero: Portão de Segurança' },
       description: {
-        en: 'Build a fraud detection check:\n• Ask for days since policy started\n• If less than 30 days → print "⚠️ Fraud risk — escalate"\n• Else → print "✅ Claim timing is normal"',
-        pt: 'Construa uma verificação de fraude:\n• Pergunte os dias desde o início da apólice\n• Se menos de 30 dias → imprima "⚠️ Risco de fraude — escale"\n• Senão → imprima "✅ Tempo do sinistro é normal"'
+        en: 'Build the crane safety check:\n1. Ask wind speed (float)\n2. If wind > 40 → print "STOP OPERATIONS"\n3. Else → print "Safe to operate"\n4. Bonus: also ask hour (int); if wind > 40 OR hour > 18 → stop',
+        pt: 'Construa a verificação de segurança do guindaste:\n1. Pergunte velocidade do vento (float)\n2. Se vento > 40 → imprima "PARAR OPERAÇÕES"\n3. Senão → imprima "Seguro operar"\n4. Bônus: pergunte também a hora (int); se vento > 40 OU hora > 18 → parar'
       },
-      starterCode: `# Fraud detection check`,
+      starterCode: `# Crane safety gate:`,
       hints: [
-        { en: 'days = int(input("Days since policy start: "))', pt: 'dias = int(input("Dias desde início da apólice: "))' },
-        { en: 'Use if days < 30:', pt: 'Use if dias < 30:' }
+        { en: 'wind = float(input("Wind: "))', pt: 'vento = float(input("Vento: "))' },
+        { en: 'Bonus: if wind > 40 or hour > 18:', pt: 'Bônus: if vento > 40 or hora > 18:' }
       ],
-      sampleOutput: { en: '⚠️ Fraud risk — escalate', pt: '⚠️ Risco de fraude — escale' }
+      sampleOutput: { en: 'STOP OPERATIONS', pt: 'PARAR OPERAÇÕES' }
     }
   ],
 
   quiz: [
-    {
-      id: 'q5_1',
-      question: { en: 'What does >= mean?', pt: 'O que >= significa?' },
-      options: [
-        { en: 'Greater than OR equal to', pt: 'Maior que OU igual a' },
-        { en: 'Greater than only', pt: 'Apenas maior que' },
-        { en: 'Equal to only', pt: 'Apenas igual a' },
-        { en: 'Not equal to', pt: 'Não igual a' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '>= is True when left is greater than OR equal to right. So 10 >= 10 is True, and 11 >= 10 is also True.', pt: '>= é True quando a esquerda é maior que OU igual à direita. Então 10 >= 10 é True, e 11 >= 10 também é True.' }
-    },
-    {
-      id: 'q5_2',
-      question: { en: 'When does the else block run?', pt: 'Quando o bloco else executa?' },
-      options: [
-        { en: 'When the if condition is False', pt: 'Quando a condição if é False' },
-        { en: 'When the if condition is True', pt: 'Quando a condição if é True' },
-        { en: 'Always, no matter what', pt: 'Sempre, independente do que' },
-        { en: 'Never — else is just decoration', pt: 'Nunca — else é só decoração' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'else runs ONLY when the if condition is False. If if runs → else is skipped. They never both run.', pt: 'else executa SOMENTE quando a condição if é False. Se if executa → else é pulado. Os dois nunca rodam juntos.' }
-    },
-    {
-      id: 'q5_3',
-      question: { en: 'x = 5\nif x == 10:\n    print("ten")\nWhat happens?', pt: 'x = 5\nif x == 10:\n    print("dez")\nO que acontece?' },
-      options: [
-        { en: 'Nothing — the condition is False', pt: 'Nada — a condição é False' },
-        { en: 'Prints "ten"', pt: 'Imprime "dez"' },
-        { en: 'Prints 5', pt: 'Imprime 5' },
-        { en: 'Error', pt: 'Erro' }
-      ],
-      correctIndex: 0,
-      explanation: { en: '5 == 10 is False. The if block is skipped. No else exists, so nothing prints.', pt: '5 == 10 é False. O bloco if é pulado. Não há else, então nada imprime.' }
-    },
-    {
-      id: 'q5_4',
-      question: { en: 'What is WRONG with this code?\nif x > 5\n    print("big")', pt: 'O que está ERRADO neste código?\nif x > 5\n    print("grande")' },
-      options: [
-        { en: 'Missing colon : after the condition', pt: 'Faltando dois pontos : após a condição' },
-        { en: 'Wrong indentation', pt: 'Indentação errada' },
-        { en: 'x is not defined', pt: 'x não está definido' },
-        { en: 'Nothing is wrong', pt: 'Nada está errado' }
-      ],
-      correctIndex: 0,
-      explanation: { en: 'Every if needs a colon at the end: if x > 5: — Without the colon, Python doesn\'t know the condition is over.', pt: 'Todo if precisa de dois pontos no final: if x > 5: — Sem os dois pontos, Python não sabe que a condição terminou.' }
-    }
+    { id: 'q5_1', question: { en: 'The difference between = and ==:', pt: 'A diferença entre = e ==:' }, options: [{ en: '= assigns a value; == compares values', pt: '= atribui um valor; == compara valores' }, { en: 'They\'re identical', pt: 'São idênticos' }, { en: '== assigns; = compares', pt: '== atribui; = compara' }, { en: '== is for text only', pt: '== é só para texto' }], correctIndex: 0, explanation: { en: 'x = 5 stores. x == 5 asks "is x equal to 5?" and returns True/False.', pt: 'x = 5 armazena. x == 5 pergunta "x é igual a 5?" e retorna True/False.' } },
+    { id: 'q5_2', question: { en: 'When does else run?', pt: 'Quando o else roda?' }, options: [{ en: 'Only when the if condition is False', pt: 'Somente quando a condição if é False' }, { en: 'Always', pt: 'Sempre' }, { en: 'When the if is True', pt: 'Quando o if é True' }, { en: 'Never automatically', pt: 'Nunca automaticamente' }], correctIndex: 0, explanation: { en: 'if and else are exclusive paths — exactly one runs, never both.', pt: 'if e else são caminhos exclusivos — exatamente um roda, nunca os dois.' } },
+    { id: 'q5_3', question: { en: 'A and B is True when:', pt: 'A and B é True quando:' }, options: [{ en: 'BOTH A and B are True', pt: 'AMBOS A e B são True' }, { en: 'At least one is True', pt: 'Pelo menos um é True' }, { en: 'A is True', pt: 'A é True' }, { en: 'Neither is True', pt: 'Nenhum é True' }], correctIndex: 0, explanation: { en: 'and requires both. or requires at least one. not inverts.', pt: 'and exige ambos. or exige pelo menos um. not inverte.' } },
+    { id: 'q5_4', question: { en: 'What\'s wrong: if x > 5\\n    print("big")', pt: 'O que está errado: if x > 5\\n    print("big")' }, options: [{ en: 'Missing colon after the condition', pt: 'Faltando dois pontos após a condição' }, { en: 'Wrong indentation', pt: 'Indentação errada' }, { en: 'x undefined', pt: 'x indefinido' }, { en: 'Nothing', pt: 'Nada' }], correctIndex: 0, explanation: { en: 'Every if needs : at the end: if x > 5:', pt: 'Todo if precisa de : no final: if x > 5:' } },
+    { id: 'q5_5', question: { en: 'status = "Approved"\nif status == "approved": → runs?', pt: 'status = "Approved"\nif status == "approved": → roda?' }, options: [{ en: 'No — comparisons are case-sensitive', pt: 'Não — comparações diferenciam maiúsculas' }, { en: 'Yes', pt: 'Sim' }, { en: 'Error', pt: 'Erro' }, { en: 'Depends on Python version', pt: 'Depende da versão' }], correctIndex: 0, explanation: { en: '"Approved" != "approved". Capital A makes them different strings.', pt: '"Approved" != "approved". O A maiúsculo as torna strings diferentes.' } },
+    { id: 'q5_6', question: { en: 'x = 3\nif x > 5 or x < 4: → runs?', pt: 'x = 3\nif x > 5 or x < 4: → roda?' }, options: [{ en: 'Yes — x < 4 is True, or needs just one', pt: 'Sim — x < 4 é True, or precisa só de um' }, { en: 'No — x > 5 is False', pt: 'Não — x > 5 é False' }, { en: 'Error', pt: 'Erro' }, { en: 'Both branches run', pt: 'Ambos os ramos rodam' }], correctIndex: 0, explanation: { en: 'or is True if AT LEAST ONE side is True. 3 < 4 → True → block runs.', pt: 'or é True se PELO MENOS UM lado é True. 3 < 4 → True → bloco roda.' } }
   ],
 
   exam: {
-    title: { en: 'Smart Claim Validator', pt: 'Validador Inteligente de Sinistros' },
+    title: { en: 'Smart Claim Gateway', pt: 'Gateway Inteligente de Sinistros' },
     scenario: {
-      en: 'Build a claim approval gateway. The system asks for the damage amount and automatically routes it: over $10,000 needs management sign-off; under is automatically approved.',
-      pt: 'Construa um gateway de aprovação de sinistros. O sistema pede o valor do dano e encaminha automaticamente: acima de R$10.000 precisa de aprovação gerencial; abaixo é aprovado automaticamente.'
+      en: 'Build the claim approval gateway with fraud detection: large claims need approval, and large+recent claims get flagged for investigation.',
+      pt: 'Construa o gateway de aprovação com detecção de fraude: sinistros grandes precisam de aprovação, e grandes+recentes são sinalizados para investigação.'
     },
     requirements: {
-      en: ['Ask for damage amount', 'If > $10,000 → "REQUIRES MANAGEMENT APPROVAL"', 'Else → "AUTO-APPROVED — processing"'],
-      pt: ['Pergunte o valor do dano', 'Se > R$10.000 → "REQUER APROVAÇÃO GERENCIAL"', 'Senão → "APROVADO AUTOMATICAMENTE — processando"']
+      en: [
+        'Ask damage amount and days since policy start',
+        'If damage > 5000 AND days < 30 → print "INVESTIGATE"',
+        'Else if damage > 10000 → print "NEEDS APPROVAL"',
+        'Else → print "AUTO-APPROVED"'
+      ],
+      pt: [
+        'Pergunte valor do dano e dias desde início da apólice',
+        'Se dano > 5000 E dias < 30 → imprima "INVESTIGATE"',
+        'Senão se dano > 10000 → imprima "NEEDS APPROVAL"',
+        'Senão → imprima "AUTO-APPROVED"'
+      ]
     },
-    starterCode: `damage = int(input("Damage amount: $"))
+    starterCode: `damage = int(input("Damage: $"))
+days = int(input("Days since policy: "))
 
-if damage > 10000:
-    print("REQUIRES MANAGEMENT APPROVAL")
-else:
-    print("AUTO-APPROVED — processing")`,
+# Build your decision logic:`,
     testCases: [
-      { id: 'tc5_1', description: { en: 'High damage → approval required', pt: 'Dano alto → aprovação necessária' }, inputs: ['15000'], checks: [{ type: 'contains', value: 'APPROVAL' }], points: 35 },
-      { id: 'tc5_2', description: { en: 'Normal damage → auto approved', pt: 'Dano normal → aprovado automaticamente' }, inputs: ['3000'], checks: [{ type: 'contains', value: 'AUTO' }], points: 35 },
-      { id: 'tc5_3', description: { en: 'No errors', pt: 'Sem erros' }, inputs: ['5000'], checks: [{ type: 'no_error', value: '' }], points: 30 }
+      { id: 'tc5_1', description: { en: 'Fraud case flagged', pt: 'Caso de fraude sinalizado' }, inputs: ['8000', '10'], checks: [{ type: 'contains', value: 'INVESTIGATE' }], points: 35 },
+      { id: 'tc5_2', description: { en: 'Big old claim needs approval', pt: 'Sinistro grande antigo precisa aprovação' }, inputs: ['15000', '200'], checks: [{ type: 'contains', value: 'APPROVAL' }], points: 35 },
+      { id: 'tc5_3', description: { en: 'Normal claim auto-approved', pt: 'Sinistro normal auto-aprovado' }, inputs: ['2000', '100'], checks: [{ type: 'contains', value: 'AUTO' }], points: 30 }
     ]
   }
 }
-
-// ============================================================================
-// PHASE 6 — If / Elif / Else
-// TEMPLATE B: Conceito Composto (extends if with multiple branches)
-// ============================================================================
 
 export const phase6: Phase = {
   id: 6,
