@@ -11,7 +11,7 @@ import ErrorExplainer from '../components/ErrorExplainer'
 import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { FASTTRACK_DAYS } from '../data/fasttrack'
-import { getPyodide, runCode } from '../lib/pyodide'
+import { preparePythonEngine, runCode } from '../lib/pyodide'
 
 type Tab = 'lesson' | 'exercise'
 
@@ -75,10 +75,10 @@ export default function FastTrackDay() {
     setShowRawError(false)
     try {
       setPyLoading(true)
-      const py = await getPyodide()
+      await preparePythonEngine()
       setPyLoading(false)
       const inputs = customInput.split('\n').map(l => l.trim()).filter(l => l !== '')
-      const { output: out, error } = await runCode(py, code, inputs)
+      const { output: out, error } = await runCode(code, inputs)
       if (error) {
         setOutput(`❌ ${error}\n\n${out}`)
         setErrorExplanation(explainError(error, code))

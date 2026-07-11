@@ -10,17 +10,19 @@ Aplicação bilíngue para ensinar Python desde conhecimentos digitais básicos 
 - A trilha principal continua por Python profissional, Python avançado, engenharia de software e capstones.
 - A trilha opcional de IA local começa somente depois dos pré-requisitos de Python.
 
-## Mudanças da revisão 1.1
+## Mudanças da revisão 1.2
 
-- Fase 0 desbloqueada corretamente.
-- Contadores usam `ALL_PHASES.length`; não existem mais totais fixos em 27.
-- Fases só desbloqueiam com exame aprovado em 90%.
-- Exercícios precisam ser executados e validados antes de concluir.
-- Verificação de conhecimento exige 80% e permite tentar novamente.
-- Exames possuem uma verificação estrutural inicial para reduzir respostas impressas e fixas.
-- Rotas de onboarding e recuperação de senha conectadas.
-- Novo mapa de formação profunda e especialização em IA local.
-- Estrutura do pacote limpa: sem `.git`, `node_modules` ou projeto duplicado.
+- Execução Python isolada em Web Worker descartável.
+- Timeout real de 6 segundos para interromper loops infinitos.
+- Análise estrutural usando a AST do Python.
+- Suporte a testes públicos e ocultos com valores não mostrados ao aluno.
+- Primeiros testes ocultos de funções aplicados à Fase 13.
+- Erros de configuração exibem instruções em vez de tela branca.
+- Error Boundary para falhas inesperadas da interface.
+- Cache do runtime Pyodide após a primeira carga.
+- Vitest com 21 testes automatizados.
+- `npm run check` valida typecheck, testes e build.
+- Lockfile fixado no registro público do npm.
 
 ## Requisitos
 
@@ -31,21 +33,24 @@ Aplicação bilíngue para ensinar Python desde conhecimentos digitais básicos 
 ## Instalação
 
 ```powershell
-npm install
-Copy-Item .env.example .env
+npm ci
+Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Preencha `.env` com as chaves do Supabase antes de testar autenticação.
+Preencha `.env.local` com a URL e a chave pública do Supabase antes de testar autenticação. Nunca use uma chave `service_role` no navegador.
 
 ## Verificações
 
 ```powershell
-npm run typecheck
-npm run build
+npm run check
+npm audit
 ```
 
 ## Documentação
 
 - `docs/CURRICULUM_STRATEGY.md`: estratégia pedagógica e ordem das futuras entregas.
 - `docs/GIT_MIGRATION_WINDOWS.md`: como colocar esta versão limpa em uma nova pasta preservando o Git atual.
+- `docs/GRADING_AUTHORING.md`: como criar testes estruturais e testes ocultos de comportamento.
+- `docs/RELEASE_NOTES_1.2.md`: alterações e limites conhecidos desta entrega.
+- `docs/UPDATE_1.2_WINDOWS.md`: atualização direta do diretório atual no Windows.

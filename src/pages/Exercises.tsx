@@ -9,8 +9,8 @@ import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
-import { getPyodide, runCode } from '../lib/pyodide'
-import { validateExerciseRun } from '../lib/learningValidation'
+import { preparePythonEngine } from '../lib/pyodide'
+import { gradeExercise, type ValidationItem } from '../lib/learningValidation'
 
 export default function Exercises() {
   const { id } = useParams()
@@ -33,6 +33,7 @@ export default function Exercises() {
   const [customInputs, setCustomInputs] = useState<Record<string, string>>({})
   const [validated, setValidated] = useState<Record<string, boolean>>({})
   const [validationMessage, setValidationMessage] = useState('')
+  const [validationChecks, setValidationChecks] = useState<Record<string, ValidationItem[]>>({})
 
   if (!phase || phase.exercises.length === 0) {
     return (
@@ -67,24 +68,26 @@ export default function Exercises() {
     setShowRawError(false)
     try {
       setPyodideLoading(true)
-      const pyodide = await getPyodide()
+      await preparePythonEngine()
       setPyodideLoading(false)
+
       const inputText = customInputs[exercise.id] || ''
       const inputs = inputText.split('\n').map(line => line.trim()).filter(Boolean)
-      const result = await runCode(pyodide, codes[exercise.id], inputs)
-      setOutput(result.output || (result.error ? '' : '(no output)'))
+      const grade = await gradeExercise(exercise, phase.id, lang, codes[exercise.id], inputs)
 
-      if (result.error) {
-        setOutput(`❌ Error: ${result.error}\n\n${result.output}`)
-        setErrorExplanation(explainError(result.error, codes[exercise.id]))
+      setOutput(grade.output || (grade.error ? '' : '(no output)'))
+      setValidationChecks(previous => ({ ...previous, [exercise.id]: grade.checks }))
+      setValidated(previous => ({ ...previous, [exercise.id]: grade.passed }))
+      setValidationMessage(grade.message)
+
+      if (grade.error) {
+        setOutput(`❌ Error: ${grade.error}\n\n${grade.output}`)
+        setErrorExplanation(explainError(grade.error, codes[exercise.id]))
       }
-
-      const validation = validateExerciseRun(exercise, lang, codes[exercise.id], result.output, result.error)
-      setValidated(previous => ({ ...previous, [exercise.id]: validation.passed }))
-      setValidationMessage(validation.message)
     } catch (error) {
       setOutput(`❌ Failed to run: ${error}`)
       setValidated(previous => ({ ...previous, [exercise.id]: false }))
+      setValidationChecks(previous => ({ ...previous, [exercise.id]: [] }))
     } finally {
       setRunning(false)
       setPyodideLoading(false)
@@ -151,6 +154,7 @@ export default function Exercises() {
             setCodes(previous => ({ ...previous, [exercise.id]: value }))
             setValidated(previous => ({ ...previous, [exercise.id]: false }))
             setValidationMessage('')
+            setValidationChecks(previous => ({ ...previous, [exercise.id]: [] }))
           }}
           filename={`exercise_${activeEx + 1}.py`}
           height="260px"
@@ -181,6 +185,22 @@ export default function Exercises() {
         {validationMessage && (
           <div style={{ marginTop: 10, padding: '10px 12px', borderRadius: 9, fontSize: 13, background: currentValidated ? 'rgba(34,197,94,.12)' : 'rgba(245,158,11,.12)', border: `1px solid ${currentValidated ? '#1f6f45' : '#7c5a13'}`, color: currentValidated ? '#4ade80' : '#f8d477' }}>
             {currentValidated ? '✅ ' : '🧭 '}{validationMessage}
+          </div>
+        )}
+
+        {(validationChecks[exercise.id]?.length || 0) > 0 && (
+          <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {validationChecks[exercise.id].map(check => (
+              <div key={check.id} style={{
+                display: 'flex', alignItems: 'flex-start', gap: 8, padding: '9px 11px', borderRadius: 8,
+                background: check.passed ? 'rgba(34,197,94,.08)' : 'rgba(239,68,68,.08)',
+                border: `1px solid ${check.passed ? '#1f6f45' : '#7f1d1d'}`,
+                color: check.passed ? '#86efac' : '#fca5a5', fontSize: 12, lineHeight: 1.5,
+              }}>
+                <span>{check.passed ? '✓' : '×'}</span>
+                <span style={{ flex: 1 }}>{check.hidden ? '🔒 ' : ''}{check.label}{check.detail ? ` · ${check.detail}` : ''}</span>
+              </div>
+            ))}
           </div>
         )}
 

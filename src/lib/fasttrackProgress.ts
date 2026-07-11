@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 
 const LS_KEY = 'hp_ft_done'
 
@@ -6,7 +6,7 @@ const LS_KEY = 'hp_ft_done'
 // Fetches from Supabase, merges with localStorage cache
 export async function loadFTProgress(userId: string): Promise<number[]> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from('user_fasttrack')
       .select('day_id')
       .eq('user_id', userId)
@@ -40,7 +40,7 @@ export async function markFTDayDone(userId: string, dayId: number): Promise<numb
 
   // Persist to Supabase
   try {
-    await supabase
+    await getSupabase()
       .from('user_fasttrack')
       .upsert({ user_id: userId, day_id: dayId }, { onConflict: 'user_id,day_id' })
   } catch (e) {
@@ -56,7 +56,7 @@ export async function resetFTProgress(userId: string): Promise<void> {
   localStorage.removeItem(LS_KEY)
 
   try {
-    await supabase
+    await getSupabase()
       .from('user_fasttrack')
       .delete()
       .eq('user_id', userId)

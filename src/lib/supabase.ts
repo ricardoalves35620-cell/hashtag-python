@@ -1,10 +1,25 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { appConfiguration } from './config'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+let client: SupabaseClient | null = null
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Check your .env file.')
+export class ConfigurationError extends Error {
+  constructor(message = 'Supabase is not configured.') {
+    super(message)
+    this.name = 'ConfigurationError'
+  }
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export function getSupabase(): SupabaseClient {
+  if (!appConfiguration.isConfigured) {
+    throw new ConfigurationError(
+      `Missing or invalid environment variables: ${appConfiguration.missing.join(', ')}`
+    )
+  }
+
+  if (!client) {
+    client = createClient(appConfiguration.supabaseUrl, appConfiguration.supabaseAnonKey)
+  }
+
+  return client
+}

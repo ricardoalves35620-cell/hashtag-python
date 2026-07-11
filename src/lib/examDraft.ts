@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 
 const LS_PREFIX = 'hp_exam_draft_'
 
@@ -11,7 +11,7 @@ export async function loadExamDraft(userId: string, phaseId: number, fallback: s
   const local = localStorage.getItem(lsKey(userId, phaseId))
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from('exam_drafts')
       .select('code, updated_at')
       .eq('user_id', userId)
@@ -41,7 +41,7 @@ export function saveExamDraft(userId: string, phaseId: number, code: string) {
   if (saveTimeout) clearTimeout(saveTimeout)
   saveTimeout = setTimeout(async () => {
     try {
-      await supabase
+      await getSupabase()
         .from('exam_drafts')
         .upsert(
           { user_id: userId, phase_id: phaseId, code, updated_at: new Date().toISOString() },
@@ -57,6 +57,6 @@ export function saveExamDraft(userId: string, phaseId: number, code: string) {
 export async function clearExamDraft(userId: string, phaseId: number) {
   localStorage.removeItem(lsKey(userId, phaseId))
   try {
-    await supabase.from('exam_drafts').delete().eq('user_id', userId).eq('phase_id', phaseId)
+    await getSupabase().from('exam_drafts').delete().eq('user_id', userId).eq('phase_id', phaseId)
   } catch { /* non-critical */ }
 }

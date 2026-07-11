@@ -12,7 +12,7 @@ import { ALL_PHASES } from '../data/phases'
 import { saveExamScore } from '../lib/progress'
 import { loadExamDraft, saveExamDraft, clearExamDraft } from '../lib/examDraft'
 import LessonBlock from '../components/LessonBlock'
-import { getPyodide, runCode, runExam, type TestResult } from '../lib/pyodide'
+import { analyzeCode, preparePythonEngine, runCode, runExam, type TestResult } from '../lib/pyodide'
 import { validateExamStructure } from '../lib/learningValidation'
 
 type Tab = 'scenario' | 'code' | 'results'
@@ -93,10 +93,10 @@ export default function Exam() {
     setErrorExplanation(null)
     try {
       setPyodideLoading(true)
-      const py = await getPyodide()
+      await preparePythonEngine()
       setPyodideLoading(false)
-      const inputs = testInput.split('\n').map(l => l.trim()).filter(l => l !== '')
-      const { output, error } = await runCode(py, code, inputs)
+      const inputs = testInput.split('\n').map(line => line.trim()).filter(line => line !== '')
+      const { output, error } = await runCode(code, inputs)
       if (error) {
         setTestOutput(`❌ Error: ${error}\n\n${output}`)
         setErrorExplanation(explainError(error, code))
@@ -104,10 +104,11 @@ export default function Exam() {
         setTestOutput(output || '(no output)')
         setErrorExplanation(null)
       }
-    } catch (e) {
-      setTestOutput(`❌ Failed: ${e}`)
+    } catch (error) {
+      setTestOutput(`❌ Failed: ${error}`)
     } finally {
       setRunning(false)
+      setPyodideLoading(false)
     }
   }
 
@@ -116,63 +117,47 @@ export default function Exam() {
     setSubmitting(true)
     setSubmitError(null)
 
-    const structure = validateExamStructure(phase.id, code, lang)
-    if (!structure.passed) {
-      setSubmitError((lang === 'en' ? 'Structure check: ' : 'Verificação de estrutura: ') + structure.message)
-      setSubmitting(false)
-      setTab('code')
-      scrollToTop()
-      return
-    }
-
-    // Step 1: Load Pyodide
-    let py: Awaited<ReturnType<typeof getPyodide>>
     try {
       setPyodideLoading(true)
-      py = await getPyodide()
+      await preparePythonEngine()
+      const analysis = await analyzeCode(code)
       setPyodideLoading(false)
-    } catch (e) {
-      setSubmitError(lang === 'en'
-        ? 'Failed to load Python engine. Check connection and try again.'
-        : 'Falha ao carregar Python. Verifique sua conexão e tente novamente.')
+
+      const structure = validateExamStructure(phase.id, analysis, lang)
+      if (!structure.passed) {
+        setSubmitError((lang === 'en' ? 'Structure check: ' : 'Verificação de estrutura: ') + structure.message)
+        setTab('code')
+        scrollToTop()
+        return
+      }
+
+      const examResult = await runExam(code, phase.exam.testCases)
+      const testResults = examResult.results
+      const finalScore = examResult.score
+
+      setResults(testResults)
+      setScore(finalScore)
+      const didPass = finalScore >= 90
+      setPassed(didPass)
+      setTab('results')
+      scrollToTop()
+      if (didPass) clearExamDraft(user.id, phase.id)
+
+      try {
+        await saveExamScore(user.id, phase.id, finalScore)
+        await refreshProgress()
+      } catch (error) {
+        console.error('Save failed:', error)
+        setSubmitError(lang === 'en'
+          ? '⚠️ Results shown but failed to save. Check connection.'
+          : '⚠️ Resultados exibidos, mas falha ao salvar. Verifique conexão.')
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      setSubmitError((lang === 'en' ? 'Error while grading: ' : 'Erro na correção: ') + message)
+    } finally {
       setSubmitting(false)
-      return
-    }
-
-    // Step 2: Run all test cases
-    let testResults: TestResult[]
-    let finalScore: number
-    try {
-      const examResult = await runExam(py!, code, phase.exam.testCases)
-      testResults = examResult.results
-      finalScore = examResult.score
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e)
-      setSubmitError((lang === 'en' ? 'Error while grading: ' : 'Erro na correção: ') + (msg || 'unknown'))
-      setSubmitting(false)
-      return
-    }
-
-    // Step 3: Show results IMMEDIATELY — never block the user on save
-    setResults(testResults!)
-    setScore(finalScore!)
-    const didPass = finalScore! >= 90
-    setPassed(didPass)
-    setTab('results')
-    setSubmitting(false)
-    scrollToTop()
-    if (didPass && user) clearExamDraft(user.id, phase.id)
-
-    // Step 4: Save to Supabase in background (non-blocking)
-    try {
-      await saveExamScore(user.id, phase.id, finalScore!)
-      await refreshProgress()
-    } catch (e) {
-      console.error('Save failed:', e)
-      // Show a non-blocking warning — user already sees results
-      setSubmitError(lang === 'en'
-        ? '⚠️ Results shown but failed to save. Check connection.'
-        : '⚠️ Resultados exibidos, mas falha ao salvar. Verifique conexão.')
+      setPyodideLoading(false)
     }
   }
 
@@ -567,7 +552,7 @@ export default function Exam() {
                         </span>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13, color: 'var(--c-text)', marginBottom: 4 }}>
-                            {result.description[lang]}
+                            {result.hidden ? (lang === 'en' ? '🔒 Hidden behavior test' : '🔒 Teste oculto de comportamento') : result.description[lang]}
                           </div>
                           {!result.passed && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -583,13 +568,13 @@ export default function Exam() {
                               ) : (
                                 <>
                                   <div style={{ fontSize: 10, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                    {lang === 'en' ? '📤 Your output:' : '📤 Sua saída:'}
+                                    {result.hidden ? (lang === 'en' ? '🔒 Hidden test failed' : '🔒 Teste oculto falhou') : (lang === 'en' ? '📤 Your output:' : '📤 Sua saída:')}
                                   </div>
                                   <div style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: '#fca5a5', background: '#1a0505', borderRadius: 4, padding: '6px 8px', maxHeight: 80, overflowY: 'auto' }}>
-                                    {result.output ? result.output.slice(0, 300) : (lang === 'en' ? '(no output produced)' : '(nenhuma saída produzida)')}
+                                    {result.hidden ? (lang === 'en' ? 'The hidden values are not shown. Review the requirement and make the logic general.' : 'Os valores ocultos não são exibidos. Revise o requisito e torne a lógica geral.') : (result.output ? result.output.slice(0, 300) : (lang === 'en' ? '(no output produced)' : '(nenhuma saída produzida)'))}
                                   </div>
                                   <div style={{ fontSize: 11, color: '#fbbf24', lineHeight: 1.5 }}>
-                                    💡 {lang === 'en' ? 'This test checked: ' : 'Este teste verificou: '}<em>{result.description[lang]}</em>
+                                    💡 {result.hidden ? (lang === 'en' ? 'Avoid fixed answers; make the solution work for other values.' : 'Evite respostas fixas; faça a solução funcionar com outros valores.') : <>{lang === 'en' ? 'This test checked: ' : 'Este teste verificou: '}<em>{result.description[lang]}</em></>}
                                   </div>
                                 </>
                               )}

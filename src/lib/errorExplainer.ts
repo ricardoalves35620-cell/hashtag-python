@@ -9,44 +9,31 @@ export interface ErrorExplanation {
   tip: { en: string; pt: string }
 }
 
-// ── Parse raw Pyodide error traceback ──
-// User code starts at wrapper line 27 → offset = 26
-const PYODIDE_LINE_OFFSET = 26
-
+// ── Parse errors returned by the isolated Python worker ──
 function parseError(raw: string, userCode: string): {
   type: string; line: number | null; message: string; badCode: string | null
 } {
-  const lines = raw.split('\n')
-  const lastLine = lines[lines.length - 1].trim()
+  const lines = raw.split('\n').filter(Boolean)
+  const lastLine = (lines[lines.length - 1] || raw).trim()
   const errorMatch = lastLine.match(/^(\w+(?:Error|Warning|Exception)):\s*(.+)$/)
   const type = errorMatch?.[1] || 'Error'
-  const message = errorMatch?.[2] || lastLine
+  let message = errorMatch?.[2] || lastLine
 
-  let rawLine: number | null = null
-  let badCode: string | null = null
+  const inlineLine = message.match(/\s*\(line (\d+)\)\s*$/i)
+  let line = inlineLine ? Number(inlineLine[1]) : null
+  if (inlineLine) message = message.replace(inlineLine[0], '').trim()
 
-  for (let i = 0; i < lines.length; i++) {
-    const m = lines[i].match(/File "<exec>", line (\d+)/)
-    if (m) {
-      rawLine = parseInt(m[1])
-      if (lines[i + 1] && !lines[i + 1].trim().startsWith('^')) {
-        badCode = lines[i + 1].trim()
-      }
+  // Compatibility with older traceback-shaped errors.
+  if (line === null) {
+    for (const tracebackLine of lines) {
+      const match = tracebackLine.match(/(?:student_code\.py|<exec>)["']?, line (\d+)/)
+      if (match) line = Number(match[1])
     }
   }
 
-  // Adjust for wrapper offset — cap to actual code length
   const codeLines = userCode.split('\n')
-  let line: number | null = null
-  if (rawLine !== null) {
-    const adjusted = rawLine - PYODIDE_LINE_OFFSET
-    line = (adjusted >= 1 && adjusted <= codeLines.length) ? adjusted : null
-  }
-
-  // If badCode isn't from traceback, get it from the adjusted line
-  if (!badCode && line !== null) {
-    badCode = codeLines[line - 1]?.trim() || null
-  }
+  if (line !== null && (line < 1 || line > codeLines.length)) line = null
+  const badCode = line !== null ? codeLines[line - 1]?.trim() || null : null
 
   return { type, line, message, badCode }
 }
@@ -76,6 +63,35 @@ export function explainError(rawError: string, userCode: string = ''): ErrorExpl
     : { en: 'in your code', pt: 'no seu código' }
 
   const codeCtx = badCode ? `\`${badCode}\`` : 'this line'
+
+  // ═══════════════════════════════════════════════
+  // TimeoutError
+  // ═══════════════════════════════════════════════
+  if (type === 'TimeoutError') {
+    return {
+      type, line, badCode,
+      title: { en: 'The program did not finish in time', pt: 'O programa não terminou a tempo' },
+      where: { en: 'during execution', pt: 'durante a execução' },
+      why: {
+        en: 'The app stopped the Python worker to keep the lesson responsive. The most common cause is a loop whose condition never becomes false.',
+        pt: 'O app encerrou o processo do Python para manter a aula responsiva. A causa mais comum é um loop cuja condição nunca se torna falsa.'
+      },
+      fix: {
+        en: `Check every while loop:
+• Does its condition eventually become false?
+• Is the counter updated inside the loop?
+• Is a break condition reachable?`,
+        pt: `Verifique cada loop while:
+• A condição eventualmente fica falsa?
+• O contador é atualizado dentro do loop?
+• A condição de break pode ser alcançada?`
+      },
+      tip: {
+        en: 'Run a smaller version first and print the loop variable on each iteration to see whether it changes.',
+        pt: 'Execute primeiro uma versão menor e imprima a variável do loop a cada repetição para confirmar que ela muda.'
+      }
+    }
+  }
 
   // ═══════════════════════════════════════════════
   // SyntaxError

@@ -1,130 +1,213 @@
-import type { TestCase, Check } from '../data/types'
+import type { Check, CodeRequirement, TestCase } from '../data/types'
 
-declare global {
-  interface Window {
-    loadPyodide: (config: { indexURL: string }) => Promise<PyodideInstance>
-    _pyodideInstance?: PyodideInstance
+export interface PythonAnalysis {
+  nodeCounts: Record<string, number>
+  calls: string[]
+  functionNames: string[]
+  imports: string[]
+  assignedNames: string[]
+  literalPrintCalls: number
+  docstringFunctions: string[]
+  hasMainGuard: boolean
+}
+
+export interface RunResult {
+  output: string
+  testOutput: string
+  error: string | null
+  testError: string | null
+  analysis: PythonAnalysis | null
+  timedOut: boolean
+  durationMs: number
+}
+
+interface RunPayload {
+  code: string
+  inputs?: string[]
+  inputMap?: Record<string, string>
+  setupCode?: string
+  afterCode?: string
+}
+
+interface PendingRequest {
+  resolve: (value: unknown) => void
+  reject: (reason?: unknown) => void
+  timer: number
+}
+
+const ENGINE_LOAD_TIMEOUT_MS = 90_000
+export const DEFAULT_EXECUTION_TIMEOUT_MS = 6_000
+
+class PythonWorkerClient {
+  private worker: Worker | null = null
+  private readyPromise: Promise<void> | null = null
+  private requestSequence = 0
+  private pending = new Map<number, PendingRequest>()
+
+  private createWorker(): Worker {
+    if (this.worker) return this.worker
+
+    const worker = new Worker(`${import.meta.env.BASE_URL}python.worker.js`)
+    worker.onmessage = event => this.handleMessage(event.data)
+    worker.onerror = event => {
+      this.rejectAll(new Error(event.message || 'Python worker crashed.'))
+      this.terminate()
+    }
+    this.worker = worker
+    return worker
+  }
+
+  private handleMessage(message: { type: string; requestId: number; result?: unknown; error?: string }) {
+    if (message.type === 'status') return
+    const pending = this.pending.get(message.requestId)
+    if (!pending) return
+
+    window.clearTimeout(pending.timer)
+    this.pending.delete(message.requestId)
+
+    if (message.type === 'failure') {
+      pending.reject(new Error(message.error || 'Python worker failed.'))
+      return
+    }
+
+    pending.resolve(message.type === 'ready' ? undefined : message.result)
+  }
+
+  private request<T>(type: 'init' | 'run' | 'analyze', payload: RunPayload | undefined, timeoutMs: number): Promise<T> {
+    const worker = this.createWorker()
+    const requestId = ++this.requestSequence
+
+    return new Promise<T>((resolve, reject) => {
+      const timer = window.setTimeout(() => {
+        this.pending.delete(requestId)
+        this.terminate()
+        reject(new PythonTimeoutError(type === 'init' ? 'Python took too long to load.' : 'Your program exceeded the execution time limit.'))
+      }, timeoutMs)
+
+      this.pending.set(requestId, { resolve: resolve as (value: unknown) => void, reject, timer })
+      worker.postMessage({ type, requestId, payload })
+    })
+  }
+
+  prepare(): Promise<void> {
+    if (!this.readyPromise) {
+      this.readyPromise = this.request<void>('init', undefined, ENGINE_LOAD_TIMEOUT_MS)
+        .catch(error => {
+          this.readyPromise = null
+          throw error
+        })
+    }
+    return this.readyPromise
+  }
+
+  async analyze(code: string): Promise<PythonAnalysis | null> {
+    await this.prepare()
+    const result = await this.request<RunResult>('analyze', { code }, DEFAULT_EXECUTION_TIMEOUT_MS)
+    return result.analysis
+  }
+
+  async run(payload: RunPayload, timeoutMs = DEFAULT_EXECUTION_TIMEOUT_MS): Promise<RunResult> {
+    const startedAt = performance.now()
+    try {
+      await this.prepare()
+      const result = await this.request<Omit<RunResult, 'timedOut' | 'durationMs'>>('run', payload, timeoutMs)
+      return { ...result, timedOut: false, durationMs: Math.round(performance.now() - startedAt) }
+    } catch (error) {
+      const timedOut = error instanceof PythonTimeoutError
+      return {
+        output: '', testOutput: '', analysis: null,
+        error: error instanceof Error ? `${error.name}: ${error.message}` : String(error),
+        testError: null, timedOut,
+        durationMs: Math.round(performance.now() - startedAt),
+      }
+    }
+  }
+
+  terminate() {
+    this.worker?.terminate()
+    this.worker = null
+    this.readyPromise = null
+    this.rejectAll(new Error('Python runtime restarted.'))
+  }
+
+  private rejectAll(error: Error) {
+    for (const pending of this.pending.values()) {
+      window.clearTimeout(pending.timer)
+      pending.reject(error)
+    }
+    this.pending.clear()
   }
 }
 
-interface PyodideInstance {
-  runPythonAsync: (code: string) => Promise<unknown>
-  globals: { get: (key: string) => unknown }
+export class PythonTimeoutError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'TimeoutError'
+  }
 }
 
-let pyodideReady: Promise<PyodideInstance> | null = null
+const client = new PythonWorkerClient()
 
-export function getPyodide(): Promise<PyodideInstance> {
-  if (pyodideReady) return pyodideReady
-  pyodideReady = new Promise((resolve, reject) => {
-    if (window._pyodideInstance) { resolve(window._pyodideInstance); return }
-    const script = document.createElement('script')
-    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js'
-    script.onload = async () => {
-      try {
-        const pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' })
-        window._pyodideInstance = pyodide
-        resolve(pyodide)
-      } catch (e) { reject(e) }
-    }
-    script.onerror = () => reject(new Error('Failed to load Pyodide'))
-    document.head.appendChild(script)
-  })
-  return pyodideReady
+export function preparePythonEngine(): Promise<void> {
+  return client.prepare()
+}
+
+export function restartPythonEngine() {
+  client.terminate()
+}
+
+export async function analyzeCode(code: string): Promise<PythonAnalysis | null> {
+  return client.analyze(code)
 }
 
 export async function runCode(
-  pyodide: PyodideInstance,
   code: string,
   inputs: string[] = [],
-  inputMap?: Record<string, string>
-): Promise<{ output: string; error: string | null }> {
+  inputMap?: Record<string, string>,
+  options?: { timeoutMs?: number; setupCode?: string; afterCode?: string }
+): Promise<RunResult> {
+  return client.run({ code, inputs, inputMap, setupCode: options?.setupCode, afterCode: options?.afterCode }, options?.timeoutMs)
+}
 
-  const inputsJson = JSON.stringify(inputs.map(String))
-  const inputMapJson = JSON.stringify(inputMap || {})
+function normalize(value: string) {
+  return value.replace(/\r/g, '').trim()
+}
 
-  // IMPORTANT: User code starts at line 27 (offset = 26)
-  const wrapper = `
-import sys
-import builtins
-from io import StringIO
+function checkText(value: string, check: Check): boolean {
+  const raw = normalize(value)
+  const candidate = check.caseSensitive ? raw : raw.toLowerCase()
+  const expected = Array.isArray(check.value) ? check.value.map(String) : [String(check.value ?? '')]
+  const values = check.caseSensitive ? expected : expected.map(item => item.toLowerCase())
 
-_hp_inputs = ${inputsJson}
-_hp_map = ${inputMapJson}
-_hp_idx = [0]
-_hp_buf = StringIO()
-_hp_err = None
-
-_orig_input = builtins.input
-_orig_stdout = sys.stdout
-
-def _hp_input(prompt=''):
-    _hp_buf.write(str(prompt))
-    p = str(prompt).lower()
-
-    # Smart keyword matching — order-independent
-    if _hp_map:
-        # Sort by key length descending (longer = more specific)
-        for key in sorted(_hp_map.keys(), key=len, reverse=True):
-            if key.lower() in p:
-                val = _hp_map[key]
-                _hp_buf.write(val + '\\n')
-                return val
-
-    # Fall back to positional
-    if _hp_idx[0] < len(_hp_inputs):
-        val = str(_hp_inputs[_hp_idx[0]])
-        _hp_idx[0] += 1
-        _hp_buf.write(val + '\\n')
-        return val
-    else:
-        raise EOFError("No more test inputs. Add more lines to the test inputs box.")
-
-builtins.input = _hp_input
-sys.stdout = _hp_buf
-
-try:
-${code.split('\n').map(l => '    ' + l).join('\n')}
-except SystemExit:
-    pass
-except EOFError as _e:
-    _hp_err = f"EOFError: {_e}"
-except MemoryError:
-    _hp_err = "MemoryError: Your code ran into an infinite loop. Check your while loop's exit condition."
-except Exception as _e:
-    _hp_err = f"{type(_e).__name__}: {_e}"
-
-sys.stdout = _orig_stdout
-builtins.input = _orig_input
-_hp_output = _hp_buf.getvalue()
-`
-
-  try {
-    await pyodide.runPythonAsync(wrapper)
-    const output = String(pyodide.globals.get('_hp_output') || '')
-    const error = pyodide.globals.get('_hp_err')
-    return { output, error: error ? String(error) : null }
-  } catch (e) {
-    return { output: '', error: String(e) }
+  switch (check.type) {
+    case 'contains': return candidate.includes(values[0])
+    case 'contains_any': return values.some(item => candidate.includes(item))
+    case 'not_contains': return !candidate.includes(values[0])
+    case 'equals': return candidate === values[0].trim()
+    case 'matches': return new RegExp(String(check.value), check.caseSensitive ? '' : 'i').test(raw)
+    case 'line_count': return raw ? raw.split('\n').length === Number(check.value) : Number(check.value) === 0
+    case 'numeric_equals': {
+      const number = Number(raw.match(/-?\d+(?:\.\d+)?/)?.[0])
+      return Number.isFinite(number) && Math.abs(number - Number(check.value)) <= (check.tolerance ?? 0.000001)
+    }
+    case 'no_error': return true
+    default: return false
   }
 }
 
-function checkOutput(output: string, check: Check): boolean {
-  const o = check.caseSensitive ? output : output.toLowerCase()
-  if (check.type === 'no_error') return true
-  if (check.type === 'contains') {
-    const v = check.caseSensitive ? String(check.value) : String(check.value).toLowerCase()
-    return o.includes(v)
+export function meetsCodeRequirement(analysis: PythonAnalysis | null, requirement: CodeRequirement): boolean {
+  if (!analysis) return false
+  const minimum = requirement.minCount ?? 1
+
+  switch (requirement.kind) {
+    case 'node': return (analysis.nodeCounts[requirement.value] ?? 0) >= minimum
+    case 'call': return analysis.calls.some(call => call === requirement.value || call.endsWith(`.${requirement.value}`))
+    case 'function': return analysis.functionNames.includes(requirement.value)
+    case 'import': return analysis.imports.some(name => name === requirement.value || name.startsWith(`${requirement.value}.`))
+    case 'assignment': return analysis.assignedNames.includes(requirement.value)
+    case 'main_guard': return analysis.hasMainGuard
+    default: return false
   }
-  if (check.type === 'contains_any') {
-    const values = Array.isArray(check.value) ? check.value : [check.value as string]
-    return values.some(v => o.includes(check.caseSensitive ? v : v.toLowerCase()))
-  }
-  if (check.type === 'not_contains') {
-    const v = check.caseSensitive ? String(check.value) : String(check.value).toLowerCase()
-    return !o.includes(v)
-  }
-  return false
 }
 
 export interface TestResult {
@@ -134,37 +217,58 @@ export interface TestResult {
   points: number
   output: string
   error: string | null
+  hidden: boolean
+  timedOut: boolean
 }
 
 export async function runExam(
-  pyodide: PyodideInstance,
   code: string,
   testCases: TestCase[]
-): Promise<{ results: TestResult[]; score: number }> {
+): Promise<{ results: TestResult[]; score: number; analysis: PythonAnalysis | null }> {
   const results: TestResult[] = []
+  let sharedAnalysis: PythonAnalysis | null = null
 
-  for (const tc of testCases) {
-    const { output, error } = await runCode(pyodide, code, tc.inputs, tc.inputMap)
+  for (const [testIndex, testCase] of testCases.entries()) {
+    const run = await runCode(code, testCase.inputs, testCase.inputMap, {
+      timeoutMs: testCase.timeoutMs,
+      setupCode: testCase.setupCode,
+      afterCode: testCase.afterCode,
+    })
+    sharedAnalysis ||= run.analysis
 
-    let passed = true
-    if (error && tc.checks.some(c => c.type !== 'no_error')) {
-      passed = false
-    } else {
-      for (const check of tc.checks) {
-        if (check.type === 'no_error') {
-          if (error) { passed = false; break }
-        } else {
-          if (!checkOutput(output, check)) { passed = false; break }
+    let passed = !run.error && !run.testError
+    if (passed && testCase.codeRequirements) {
+      passed = testCase.codeRequirements.every(requirement => meetsCodeRequirement(run.analysis, requirement))
+    }
+
+    if (passed) {
+      for (const check of testCase.checks) {
+        if (check.type === 'no_error') continue
+        const target = check.target === 'test_output' ? run.testOutput : run.output
+        if (!checkText(target, check)) {
+          passed = false
+          break
         }
       }
     }
 
-    results.push({ id: tc.id, description: tc.description, passed, points: passed ? tc.points : 0, output, error })
+    const isHidden = testCase.hidden ?? testIndex > 0
+
+    results.push({
+      id: testCase.id,
+      description: testCase.description,
+      passed,
+      points: passed ? testCase.points : 0,
+      output: isHidden ? '' : run.output,
+      error: run.error || run.testError,
+      hidden: isHidden,
+      timedOut: run.timedOut,
+    })
   }
 
-  const totalPoints = testCases.reduce((s, tc) => s + tc.points, 0)
-  const earnedPoints = results.reduce((s, r) => s + r.points, 0)
+  const totalPoints = testCases.reduce((sum, testCase) => sum + testCase.points, 0)
+  const earnedPoints = results.reduce((sum, result) => sum + result.points, 0)
   const score = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0
 
-  return { results, score }
+  return { results, score, analysis: sharedAnalysis }
 }

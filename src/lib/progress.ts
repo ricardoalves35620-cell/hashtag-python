@@ -1,9 +1,9 @@
-import { supabase } from './supabase'
+import { getSupabase } from './supabase'
 import type { UserProgress } from '../data/types'
 import { ALL_PHASES } from '../data/phases'
 
 export async function fetchProgress(userId: string): Promise<UserProgress[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('user_progress')
     .select('*')
     .eq('user_id', userId)
@@ -42,7 +42,7 @@ export async function fetchProgress(userId: string): Promise<UserProgress[]> {
 
 export async function markStepDone(userId: string, phaseId: number, step: 'lesson' | 'exercises' | 'quiz') {
   const field = `${step}_done`
-  const { error } = await supabase
+  const { error } = await getSupabase()
     .from('user_progress')
     .upsert(
       { user_id: userId, phase_id: phaseId, [field]: true },
@@ -59,7 +59,7 @@ export async function saveExamScore(userId: string, phaseId: number, score: numb
   localStorage.setItem(lsKey, JSON.stringify({ score, passed, exam_done: true, saved_at: Date.now() }))
 
   // Try UPDATE first (row might already exist from lesson/quiz)
-  const { error: updateErr, data: updated } = await supabase
+  const { error: updateErr, data: updated } = await getSupabase()
     .from('user_progress')
     .update({ exam_score: score, exam_passed: passed, exam_done: true })
     .eq('user_id', userId)
@@ -68,7 +68,7 @@ export async function saveExamScore(userId: string, phaseId: number, score: numb
 
   // If no row existed (0 rows updated), INSERT
   if (!updateErr && (!updated || updated.length === 0)) {
-    const { error: insertErr } = await supabase
+    const { error: insertErr } = await getSupabase()
       .from('user_progress')
       .insert({ user_id: userId, phase_id: phaseId, exam_score: score, exam_passed: passed, exam_done: true })
     if (insertErr) throw insertErr
@@ -80,7 +80,7 @@ export async function saveExamScore(userId: string, phaseId: number, score: numb
 }
 
 export async function fetchFamilyProgress(groupId: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('family_members')
     .select(`
       display_name,

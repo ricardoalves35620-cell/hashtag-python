@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import { useApp } from '../contexts/AppContext'
 
 export default function Onboarding() {
@@ -9,7 +9,7 @@ export default function Onboarding() {
   const choose = async (track: 'fasttrack' | 'course') => {
     localStorage.setItem('hp_onboarding_done', track)
     if (user) {
-      supabase.auth.updateUser({ data: { onboarding_done: true, track } })
+      getSupabase().auth.updateUser({ data: { onboarding_done: true, track } })
     }
     navigate('/')
   }

@@ -83,4 +83,4 @@ O aluno deve dominar Python profissional, testes, estruturas de dados, SQL e fun
 
 ## Próxima entrega recomendada
 
-Construir o módulo **Python profissional** antes de adicionar conteúdo de IA. Ele deve incluir um laboratório desktop guiado para terminal, arquivos reais, ambientes virtuais, Git, pacotes e testes.
+Concluir a migração das avaliações existentes para testes de comportamento específicos e iniciar o sistema de habilidades/revisão espaçada. Depois disso, construir o módulo **Python profissional** antes de adicionar conteúdo de IA. Ele deve incluir um laboratório desktop guiado para terminal, arquivos reais, ambientes virtuais, Git, pacotes e testes.

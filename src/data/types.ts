@@ -22,6 +22,13 @@ export interface Exercise {
   starterCode: string
   hints: Bilingual[]
   sampleOutput?: Bilingual
+  grading?: ExerciseGrading
+}
+
+export interface ExerciseGrading {
+  tests?: TestCase[]
+  codeRequirements?: CodeRequirement[]
+  timeoutMs?: number
 }
 
 export interface QuizQuestion {
@@ -32,12 +39,30 @@ export interface QuizQuestion {
   explanation: Bilingual
 }
 
-export type CheckType = 'contains' | 'contains_any' | 'not_contains' | 'no_error'
+export type CheckType =
+  | 'contains'
+  | 'contains_any'
+  | 'not_contains'
+  | 'no_error'
+  | 'equals'
+  | 'matches'
+  | 'line_count'
+  | 'numeric_equals'
+
+export type CheckTarget = 'output' | 'test_output'
+
+export interface CodeRequirement {
+  kind: 'node' | 'call' | 'function' | 'import' | 'assignment' | 'main_guard'
+  value: string
+  minCount?: number
+}
 
 export interface Check {
   type: CheckType
-  value: string | string[]
+  value?: string | string[] | number
   caseSensitive?: boolean
+  target?: CheckTarget
+  tolerance?: number
 }
 
 export interface TestCase {
@@ -47,6 +72,11 @@ export interface TestCase {
   inputMap?: Record<string, string>  // keyword→value for order-independent matching
   checks: Check[]
   points: number
+  hidden?: boolean
+  timeoutMs?: number
+  setupCode?: string
+  afterCode?: string
+  codeRequirements?: CodeRequirement[]
 }
 
 export interface Exam {

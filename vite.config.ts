@@ -35,6 +35,14 @@ export default defineConfig({
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
             handler: 'NetworkFirst',
             options: { cacheName: 'supabase-cache' }
+          },
+          {
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/pyodide\/v0\.25\.1\/full\/.*$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'pyodide-runtime-v0.25.1',
+              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 30 }
+            }
           }
         ]
       }

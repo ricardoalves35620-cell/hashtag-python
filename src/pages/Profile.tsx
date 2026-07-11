@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import type { Theme } from '../contexts/AppContext'
 
 const COUNTRY_CODES = [
@@ -106,7 +106,7 @@ export default function Profile() {
       const path = `${user.id}/avatar.${ext}`
 
       // Remove old avatar first (any extension)
-      await supabase.storage.from('avatars').remove([
+      await getSupabase().storage.from('avatars').remove([
         `${user.id}/avatar.jpg`,
         `${user.id}/avatar.jpeg`,
         `${user.id}/avatar.png`,
@@ -115,17 +115,17 @@ export default function Profile() {
       ])
 
       // Upload new
-      const { error: upErr } = await supabase.storage
+      const { error: upErr } = await getSupabase().storage
         .from('avatars')
         .upload(path, file, { upsert: true, cacheControl: '1' })
       if (upErr) throw upErr
 
       // Get public URL with cache buster
-      const { data } = supabase.storage.from('avatars').getPublicUrl(path)
+      const { data } = getSupabase().storage.from('avatars').getPublicUrl(path)
       const url = `${data.publicUrl}?v=${Date.now()}`
 
       // Save to user metadata
-      const { error: metaErr } = await supabase.auth.updateUser({
+      const { error: metaErr } = await getSupabase().auth.updateUser({
         data: { avatar_url: url }
       })
       if (metaErr) throw metaErr
@@ -146,7 +146,7 @@ export default function Profile() {
     setSaving(true)
     setError('')
     try {
-      const { error: updateErr } = await supabase.auth.updateUser({
+      const { error: updateErr } = await getSupabase().auth.updateUser({
         data: {
           display_name: name.trim(),
           phone_number: phone.trim(),
@@ -171,7 +171,7 @@ export default function Profile() {
   const handleLogout = async () => {
     // 'global' scope signs out from ALL devices/sessions
     // 'local' scope only clears this device's session
-    await supabase.auth.signOut({ scope: 'local' })
+    await getSupabase().auth.signOut({ scope: 'local' })
     
     // Clear all local app state
     localStorage.removeItem('hp_onboarding_done')

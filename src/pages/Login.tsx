@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import { useApp } from '../contexts/AppContext'
 
 type Mode = 'login' | 'register' | 'forgot'
@@ -60,18 +60,18 @@ export default function Login() {
     setLoading(true)
     try {
       if (mode === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        const { error } = await getSupabase().auth.signInWithPassword({ email, password })
         if (error) throw error
         navigate('/')
       } else if (mode === 'register') {
-        const { error } = await supabase.auth.signUp({
+        const { error } = await getSupabase().auth.signUp({
           email, password,
           options: { data: { display_name: displayName } }
         })
         if (error) throw error
         navigate('/')
       } else if (mode === 'forgot') {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        const { error } = await getSupabase().auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`
         })
         if (error) throw error
@@ -86,7 +86,7 @@ export default function Login() {
 
   const handleGoogle = async () => {
     setGoogleLoading(true)
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await getSupabase().auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/`,

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import { ALL_PHASES } from '../data/phases'
 
 interface GroupMember {
@@ -57,7 +57,7 @@ export default function Group() {
     setLoading(true)
     setError('')
     try {
-      const { data: memberData } = await supabase
+      const { data: memberData } = await getSupabase()
         .from('family_members')
         .select('group_id')
         .eq('user_id', user.id)
@@ -71,7 +71,7 @@ export default function Group() {
 
       setGroupId(memberData.group_id)
 
-      const { data: group } = await supabase
+      const { data: group } = await getSupabase()
         .from('family_groups')
         .select('*')
         .eq('id', memberData.group_id)
@@ -82,7 +82,7 @@ export default function Group() {
         setInviteCode(group.invite_code)
       }
 
-      const { data: allMembers } = await supabase
+      const { data: allMembers } = await getSupabase()
         .from('family_members')
         .select('user_id, display_name')
         .eq('group_id', memberData.group_id)
@@ -90,7 +90,7 @@ export default function Group() {
       if (allMembers) {
         const withProgress = await Promise.all(
           allMembers.map(async m => {
-            const { data: prog } = await supabase
+            const { data: prog } = await getSupabase()
               .from('user_progress')
               .select('phase_id, exam_passed')
               .eq('user_id', m.user_id)
@@ -115,7 +115,7 @@ export default function Group() {
       const name = displayName || user.email?.split('@')[0] || 'User'
       const code = Math.random().toString(36).substring(2, 8).toUpperCase()
 
-      const { data: group, error: groupErr } = await supabase
+      const { data: group, error: groupErr } = await getSupabase()
         .from('family_groups')
         .insert({ name: `${name}'s Group`, created_by: user.id, invite_code: code })
         .select()
@@ -124,7 +124,7 @@ export default function Group() {
       if (groupErr) throw groupErr
       if (!group) throw new Error('Group creation returned no data')
 
-      const { error: memberErr } = await supabase
+      const { error: memberErr } = await getSupabase()
         .from('family_members')
         .insert({ group_id: group.id, user_id: user.id, display_name: name })
 
@@ -142,7 +142,7 @@ export default function Group() {
     setJoining(true)
     setError('')
     try {
-      const { data: group } = await supabase
+      const { data: group } = await getSupabase()
         .from('family_groups')
         .select('id')
         .eq('invite_code', joinCode.trim().toUpperCase())
@@ -151,7 +151,7 @@ export default function Group() {
       if (!group) throw new Error(lang === 'en' ? 'Code not found.' : 'Código não encontrado.')
 
       const name = displayName || user.email?.split('@')[0] || 'User'
-      const { error: memberErr } = await supabase
+      const { error: memberErr } = await getSupabase()
         .from('family_members')
         .insert({ group_id: group.id, user_id: user.id, display_name: name })
 
@@ -178,7 +178,7 @@ export default function Group() {
   const createChallenge = async () => {
     if (!user || !groupId) return
     try {
-      const { error } = await supabase
+      const { error } = await getSupabase()
         .from('challenges')
         .insert({
           group_id: groupId,

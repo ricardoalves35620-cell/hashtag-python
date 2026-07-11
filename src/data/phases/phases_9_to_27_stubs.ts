@@ -960,7 +960,33 @@ print(calculate_payout(1200, 150))`,
         { en: 'payout = damage - deductible', pt: 'payout = damage - deductible' },
         { en: 'return payout', pt: 'return payout' }
       ],
-      sampleOutput: { en: '4980\n7700\n1050', pt: '4980\n7700\n1050' }
+      sampleOutput: { en: '4980\n7700\n1050', pt: '4980\n7700\n1050' },
+      grading: {
+        codeRequirements: [
+          { kind: 'node', value: 'FunctionDef' },
+          { kind: 'node', value: 'Return' }
+        ],
+        tests: [
+          {
+            id: 'hidden_payout_1',
+            description: { en: 'Calculates a new payout value', pt: 'Calcula um novo valor de pagamento' },
+            inputs: [],
+            afterCode: 'print(calculate_payout(1000, 125))',
+            checks: [{ type: 'equals', value: '875', target: 'test_output' }],
+            points: 1,
+            hidden: true
+          },
+          {
+            id: 'hidden_payout_2',
+            description: { en: 'Works when the deductible is larger', pt: 'Funciona quando a franquia é maior' },
+            inputs: [],
+            afterCode: 'print(calculate_payout(250, 300))',
+            checks: [{ type: 'equals', value: '-50', target: 'test_output' }],
+            points: 1,
+            hidden: true
+          }
+        ]
+      }
     },
     {
       id: 'ex13_zero',
@@ -986,7 +1012,39 @@ process_claim("Bob", 3500, 250)`,
         { en: 'Use if/elif/else inside get_priority to return the right string', pt: 'Use if/elif/else dentro de get_priority para retornar a string certa' },
         { en: 'Inside process_claim: payout = damage - deductible, priority = get_priority(damage)', pt: 'Dentro de process_claim: payout = damage - deductible, priority = get_priority(damage)' }
       ],
-      sampleOutput: { en: 'Alice | Priority: Critical | Payout: $11700\nBob | Priority: Normal | Payout: $3250', pt: 'Alice | Priority: Critical | Payout: $11700\nBob | Priority: Normal | Payout: $3250' }
+      sampleOutput: { en: 'Alice | Priority: Critical | Payout: $11700\nBob | Priority: Normal | Payout: $3250', pt: 'Alice | Priority: Critical | Payout: $11700\nBob | Priority: Normal | Payout: $3250' },
+      grading: {
+        codeRequirements: [
+          { kind: 'function', value: 'get_priority' },
+          { kind: 'function', value: 'process_claim' },
+          { kind: 'node', value: 'Return' },
+          { kind: 'node', value: 'If' }
+        ],
+        tests: [
+          {
+            id: 'hidden_priorities',
+            description: { en: 'Classifies unseen damage values', pt: 'Classifica valores de dano não vistos' },
+            inputs: [],
+            afterCode: 'print(get_priority(15000))\nprint(get_priority(7000))\nprint(get_priority(100))',
+            checks: [{ type: 'equals', value: 'Critical\nUrgent\nNormal', target: 'test_output' }],
+            points: 2,
+            hidden: true
+          },
+          {
+            id: 'hidden_claim',
+            description: { en: 'Processes a new claim', pt: 'Processa um novo sinistro' },
+            inputs: [],
+            afterCode: 'process_claim("Eve", 9000, 400)',
+            checks: [
+              { type: 'contains', value: 'Eve', target: 'test_output' },
+              { type: 'contains', value: 'Urgent', target: 'test_output' },
+              { type: 'contains', value: '8600', target: 'test_output' }
+            ],
+            points: 2,
+            hidden: true
+          }
+        ]
+      }
     }
   ],
 

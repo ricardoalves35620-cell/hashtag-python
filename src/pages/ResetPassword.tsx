@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import { useApp } from '../contexts/AppContext'
 
 export default function ResetPassword() {
@@ -27,7 +27,7 @@ export default function ResetPassword() {
     if (password.length < 6) return setError(t.short)
     if (password !== confirm) return setError(t.mismatch)
     setLoading(true)
-    const { error } = await supabase.auth.updateUser({ password })
+    const { error } = await getSupabase().auth.updateUser({ password })
     if (error) { setError(error.message); setLoading(false); return }
     setSuccess(true)
     setTimeout(() => navigate('/'), 2000)

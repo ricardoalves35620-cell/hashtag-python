@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import type { ReactNode } from 'react'
-import { supabase } from '../lib/supabase'
+import { getSupabase } from '../lib/supabase'
 import { fetchProgress } from '../lib/progress'
 import type { Lang, UserProgress } from '../data/types'
 import type { User } from '@supabase/supabase-js'
@@ -67,7 +67,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Refresh user data from Supabase (call after profile save)
   const refreshUser = useCallback(async () => {
-    const { data } = await supabase.auth.getUser()
+    const { data } = await getSupabase().auth.getUser()
     if (data.user) updateUserState(data.user)
   }, [])
 
@@ -90,11 +90,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [user])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    getSupabase().auth.getSession().then(({ data }) => {
       updateUserState(data.session?.user ?? null)
       setLoading(false)
     })
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = getSupabase().auth.onAuthStateChange((_event, session) => {
       updateUserState(session?.user ?? null)
     })
     return () => subscription.unsubscribe()

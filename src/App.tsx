@@ -14,6 +14,8 @@ import FastTrackDay from './pages/FastTrackDay'
 import Roadmap from './pages/Roadmap'
 import Onboarding from './pages/Onboarding'
 import ResetPassword from './pages/ResetPassword'
+import ConfigurationScreen from './components/ConfigurationScreen'
+import { appConfiguration } from './lib/config'
 
 // Redirect to /login if not authenticated
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -69,6 +71,10 @@ function AppRoutes() {
 }
 
 export default function App() {
+  if (!appConfiguration.isConfigured) {
+    return <ConfigurationScreen missing={appConfiguration.missing} />
+  }
+
   return (
     <BrowserRouter>
       <AppProvider>
