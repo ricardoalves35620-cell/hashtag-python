@@ -1,90 +1,64 @@
-import { Link, useLocation } from 'react-router-dom'
-import { scrollToTop } from '../lib/scroll'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 
 export default function BottomNav() {
+  const location = useLocation()
+  const navigate = useNavigate()
   const { lang } = useApp()
-  const { pathname } = useLocation()
 
-  const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/')
-
-  const items = [
-    {
-      to: '/home',
-      active: isActive('/home') || isActive('/phase'),
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
-          <path d="M9 21V12h6v9"/>
-        </svg>
-      ),
-      label: { en: 'Course', pt: 'Curso' }
-    },
-    {
-      to: '/fasttrack',
-      active: isActive('/fasttrack'),
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-        </svg>
-      ),
-      label: { en: 'FastTrack', pt: 'FastTrack' }
-    },
-    {
-      to: '/family',
-      active: isActive('/family'),
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-          <circle cx="9" cy="7" r="3"/>
-          <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-          <circle cx="19" cy="9" r="2"/>
-          <path d="M23 21v-1.5a3 3 0 0 0-3-3h-1"/>
-        </svg>
-      ),
-      label: { en: 'Family', pt: 'Família' }
-    },
-    {
-      to: '/profile',
-      active: isActive('/profile'),
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 21a8 8 0 0 1 16 0"/>
-        </svg>
-      ),
-      label: { en: 'Profile', pt: 'Perfil' }
-    }
+  const tabs = [
+    { path: '/', label: lang === 'en' ? 'Course' : 'Curso', icon: '📚' },
+    { path: '/exam/1', label: lang === 'en' ? 'FastTrack' : 'FastTrack', icon: '⚡' },
+    { path: '/group', label: lang === 'en' ? 'Group' : 'Grupo', icon: '👥' },
+    { path: '/profile', label: lang === 'en' ? 'Profile' : 'Perfil', icon: '👤' },
   ]
 
   return (
-    <nav
-      className="fixed left-0 right-0 bottom-0 z-30 flex max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto"
+    <div
       style={{
-        background: 'var(--c-header)',
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'stretch',
+        background: 'var(--c-card)',
         borderTop: '0.5px solid var(--c-border)',
-        paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
+        zIndex: 1000,
+        height: 'env(safe-area-inset-bottom, 0) + 60px',
+        paddingBottom: 'env(safe-area-inset-bottom, 0)',
       }}
     >
-      {items.map(item => (
-        <Link
-          key={item.to}
-          to={item.to}
-          onClick={() => scrollToTop()}
-          className="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors"
-          style={{
-            color: item.active ? 'var(--c-purple-l)' : 'var(--c-dimmer)',
-            minHeight: 52,
-            paddingTop: 8,
-          }}
-        >
-          <div style={{ color: item.active ? 'var(--c-purple-l)' : 'var(--c-dimmer)' }}>
-            {item.icon}
-          </div>
-          <span style={{ fontSize: 10, fontWeight: item.active ? 500 : 400 }}>
-            {item.label[lang]}
-          </span>
-        </Link>
-      ))}
-    </nav>
+      {tabs.map(tab => {
+        const isActive = location.pathname === tab.path || 
+                        (tab.path === '/' && location.pathname.split('/').length === 2 && !location.pathname.match(/^\/[a-z]/))
+        return (
+          <button
+            key={tab.path}
+            onClick={() => navigate(tab.path)}
+            style={{
+              flex: 1,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
+              padding: '8px 0',
+              color: isActive ? 'var(--c-purple)' : 'var(--c-muted)',
+              fontSize: 12,
+              fontWeight: 500,
+              transition: 'color 0.2s',
+            }}
+          >
+            <span style={{ fontSize: 20 }}>{tab.icon}</span>
+            <span>{tab.label}</span>
+          </button>
+        )
+      })}
+    </div>
   )
 }
