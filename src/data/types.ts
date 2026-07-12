@@ -58,12 +58,16 @@ export interface CodeRequirement {
   minCount?: number
 }
 
+export type TextComparisonMode = 'exact' | 'normalized'
+
 export interface Check {
   type: CheckType
   value?: string | string[] | number
   caseSensitive?: boolean
   target?: CheckTarget
   tolerance?: number
+  /** Defaults to normalized for human-facing text checks; exact preserves accents and spacing. */
+  textMode?: TextComparisonMode
 }
 
 export interface TestCase {

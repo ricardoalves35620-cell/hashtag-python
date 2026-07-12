@@ -169,21 +169,43 @@ export async function runCode(
   return client.run({ code, inputs, inputMap, setupCode: options?.setupCode, afterCode: options?.afterCode }, options?.timeoutMs)
 }
 
-function normalize(value: string) {
-  return value.replace(/\r/g, '').trim()
+export function normalizeAssessmentText(value: string, options?: {
+  caseSensitive?: boolean
+  preserveAccents?: boolean
+}): string {
+  let normalized = value
+    .replace(/\r/g, '')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/ *\n */g, '\n')
+    .trim()
+
+  if (!options?.preserveAccents) {
+    normalized = normalized
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+  }
+
+  return options?.caseSensitive ? normalized : normalized.toLocaleLowerCase('pt-BR')
 }
 
-function checkText(value: string, check: Check): boolean {
-  const raw = normalize(value)
-  const candidate = check.caseSensitive ? raw : raw.toLowerCase()
+export function checkText(value: string, check: Check): boolean {
+  const exact = check.textMode === 'exact'
+  const raw = value.replace(/\r/g, '').trim()
+  const candidate = normalizeAssessmentText(raw, {
+    caseSensitive: check.caseSensitive,
+    preserveAccents: exact,
+  })
   const expected = Array.isArray(check.value) ? check.value.map(String) : [String(check.value ?? '')]
-  const values = check.caseSensitive ? expected : expected.map(item => item.toLowerCase())
+  const values = expected.map(item => normalizeAssessmentText(item, {
+    caseSensitive: check.caseSensitive,
+    preserveAccents: exact,
+  }))
 
   switch (check.type) {
     case 'contains': return candidate.includes(values[0])
     case 'contains_any': return values.some(item => candidate.includes(item))
     case 'not_contains': return !candidate.includes(values[0])
-    case 'equals': return candidate === values[0].trim()
+    case 'equals': return candidate === values[0]
     case 'matches': return new RegExp(String(check.value), check.caseSensitive ? '' : 'i').test(raw)
     case 'line_count': return raw ? raw.split('\n').length === Number(check.value) : Number(check.value) === 0
     case 'numeric_equals': {
@@ -253,7 +275,7 @@ function buildFeedback(args: {
   failedRequirement: CodeRequirement | null
 }): TestFeedback {
   const { passed, hidden, run, failedCheck, failedRequirement } = args
-  const actual = normalize(failedCheck?.target === 'test_output' ? run.testOutput : run.output)
+  const actual = (failedCheck?.target === 'test_output' ? run.testOutput : run.output).replace(/\r/g, '').trim()
   const expected = expectedFromCheck(failedCheck)
 
   if (passed) {

@@ -1,5 +1,5 @@
 import type { CodeRequirement, Exercise, Lang } from '../data/types'
-import { meetsCodeRequirement, runCode, runExam, type PythonAnalysis, type TestResult } from './pyodide'
+import { meetsCodeRequirement, normalizeAssessmentText, runCode, runExam, type PythonAnalysis, type TestResult } from './pyodide'
 import { findPythonPlaceholders } from './placeholders'
 
 export interface ValidationItem {
@@ -23,12 +23,7 @@ export interface ExerciseGrade {
 }
 
 function normalize(value: string) {
-  return value
-    .replace(/\r/g, '')
-    .replace(/['"]/g, '')
-    .replace(/[ \t]+/g, ' ')
-    .trim()
-    .toLowerCase()
+  return normalizeAssessmentText(value.replace(/['"]/g, ''))
 }
 
 function meaningfulLines(value: string) {
