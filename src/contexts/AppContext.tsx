@@ -130,6 +130,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => { if (learnerId) refreshProgress(); else setProgress([]) }, [learnerId, refreshProgress])
 
+  // Keep progress current across tabs and devices. Local state remains the fallback
+  // when the network is unavailable, and the next refresh reconciles it with cloud.
+  useEffect(() => {
+    if (!user) return
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') refreshProgress()
+    }
+    window.addEventListener('focus', refreshProgress)
+    document.addEventListener('visibilitychange', refreshWhenVisible)
+
+    const channel = getSupabase()
+      .channel(`progress-${user.id}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'user_progress',
+        filter: `user_id=eq.${user.id}`,
+      }, () => { refreshProgress() })
+      .subscribe()
+
+    return () => {
+      window.removeEventListener('focus', refreshProgress)
+      document.removeEventListener('visibilitychange', refreshWhenVisible)
+      getSupabase().removeChannel(channel)
+    }
+  }, [user, refreshProgress])
+
   useEffect(() => {
     if (!user || localStorage.getItem('hp_guest_migrate_to') !== user.id) return
     const migrate = async () => {

@@ -121,4 +121,5 @@ export interface UserProgress {
   exam_done?: boolean
   exam_score: number | null
   exam_passed: boolean
+  updated_at?: string
 }

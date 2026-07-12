@@ -5,6 +5,7 @@ import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
 import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
+import ExamFeedback from '../components/ExamFeedback'
 import { explainError } from '../lib/errorExplainer'
 import type { ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
@@ -57,6 +58,13 @@ export default function Exam() {
   const [showReference, setShowReference] = useState(false)
   const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
   const [showRawError, setShowRawError] = useState(false)
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'synced' | 'local'>('idle')
+
+  useEffect(() => {
+    if (!phaseProgress) return
+    setScore(phaseProgress.exam_score ?? null)
+    setPassed(Boolean(phaseProgress.exam_passed))
+  }, [phaseProgress?.exam_score, phaseProgress?.exam_passed])
 
   if (!phase) return null
 
@@ -166,10 +174,13 @@ export default function Exam() {
       if (didPass) clearExamDraft(learnerId, phase.id)
 
       try {
+        setSaveState('saving')
         await saveExamScore(learnerId, phase.id, finalScore)
         await refreshProgress()
+        setSaveState(learnerId === 'guest' ? 'local' : 'synced')
       } catch (error) {
         console.error('Save failed:', error)
+        setSaveState('local')
         setSubmitError(lang === 'en'
           ? '⚠️ Results shown but failed to save. Check connection.'
           : '⚠️ Resultados exibidos, mas falha ao salvar. Verifique conexão.')
@@ -551,6 +562,16 @@ export default function Exam() {
                 </div>
               </section>
 
+              {saveState !== 'idle' && (
+                <div className={saveState === 'synced' ? 'hp-success-card' : saveState === 'saving' ? 'hp-card' : 'hp-warning-card'} style={{ borderRadius: 12, padding: '11px 14px', marginBottom: 16, fontSize: 12, lineHeight: 1.5 }} role="status">
+                  {saveState === 'saving'
+                    ? (lang === 'pt' ? 'Salvando seu exame...' : 'Saving your exam...')
+                    : saveState === 'synced'
+                      ? (lang === 'pt' ? '✓ Exame salvo na sua conta e sincronizado entre dispositivos.' : '✓ Exam saved to your account and synced across devices.')
+                      : (lang === 'pt' ? 'Seu resultado está salvo neste aparelho. A sincronização será tentada novamente quando a conexão voltar.' : 'Your result is saved on this device. Sync will retry when the connection returns.')}
+                </div>
+              )}
+
               {passed && (
                 <section className="hp-card" style={{ padding: 16, marginBottom: 16 }}>
                   <h2 style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-text)', marginBottom: 10 }}>{t.demonstrated}</h2>
@@ -576,24 +597,7 @@ export default function Exam() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {results.map(result => (
-                      <article key={result.id} className={result.passed ? 'hp-success-card' : 'hp-danger-card'} style={{ borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                        <span aria-hidden style={{ fontSize: 17, flexShrink: 0 }}>{result.passed ? '✓' : '!'}</span>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, color: 'inherit', fontWeight: 650, marginBottom: result.passed ? 0 : 6 }}>
-                            {result.hidden ? `🔒 ${t.internalCheck}` : result.description[lang]}
-                          </div>
-                          {!result.passed && (
-                            <div style={{ fontSize: 12, color: 'inherit', lineHeight: 1.55 }}>
-                              {result.error
-                                ? result.error.slice(0, 220)
-                                : result.hidden
-                                  ? (lang === 'en' ? 'Your solution worked for the visible example, but not for another valid value. Avoid fixed answers and make the logic general.' : 'Sua solução funcionou no exemplo visível, mas não em outro valor válido. Evite respostas fixas e torne a lógica geral.')
-                                  : (result.output || (lang === 'en' ? 'No output was produced.' : 'Nenhuma saída foi produzida.'))}
-                            </div>
-                          )}
-                        </div>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: 'inherit', flexShrink: 0 }}>{result.points}pt</span>
-                      </article>
+                      <ExamFeedback key={result.id} result={result} lang={lang} />
                     ))}
                   </div>
                 </section>

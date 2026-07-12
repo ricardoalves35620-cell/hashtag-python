@@ -210,15 +210,203 @@ export function meetsCodeRequirement(analysis: PythonAnalysis | null, requiremen
   }
 }
 
+export interface TestFeedbackText {
+  summary: string
+  whatWorked: string[]
+  issue: string
+  why: string
+  fix: string
+  expected?: string
+  actual?: string
+  concept: string
+}
+
+export interface TestFeedback {
+  en: TestFeedbackText
+  pt: TestFeedbackText
+}
+
 export interface TestResult {
   id: string
   description: { en: string; pt: string }
   passed: boolean
   points: number
+  maxPoints: number
   output: string
   error: string | null
   hidden: boolean
   timedOut: boolean
+  feedback: TestFeedback
+}
+
+function expectedFromCheck(check: Check | null): string | undefined {
+  if (!check || check.value === undefined) return undefined
+  if (Array.isArray(check.value)) return check.value.map(String).join(' / ')
+  return String(check.value)
+}
+
+function buildFeedback(args: {
+  passed: boolean
+  hidden: boolean
+  run: RunResult
+  failedCheck: Check | null
+  failedRequirement: CodeRequirement | null
+}): TestFeedback {
+  const { passed, hidden, run, failedCheck, failedRequirement } = args
+  const actual = normalize(failedCheck?.target === 'test_output' ? run.testOutput : run.output)
+  const expected = expectedFromCheck(failedCheck)
+
+  if (passed) {
+    return {
+      en: {
+        summary: 'This verification passed.',
+        whatWorked: ['Your code ran without errors', 'The result matched the expected behavior'],
+        issue: '', why: '', fix: '', concept: 'Correct behavior',
+      },
+      pt: {
+        summary: 'Esta verificação passou.',
+        whatWorked: ['Seu código executou sem erros', 'O resultado correspondeu ao comportamento esperado'],
+        issue: '', why: '', fix: '', concept: 'Comportamento correto',
+      },
+    }
+  }
+
+  if (run.timedOut) {
+    return {
+      en: {
+        summary: 'The program did not finish in time.',
+        whatWorked: ['The evaluator was able to start your code'],
+        issue: 'Execution exceeded the time limit.',
+        why: 'This usually happens with an infinite loop or a loop whose stopping condition is never reached.',
+        fix: 'Review every while/for loop and confirm that its condition eventually becomes false.',
+        concept: 'Loop control',
+      },
+      pt: {
+        summary: 'O programa não terminou dentro do tempo limite.',
+        whatWorked: ['O avaliador conseguiu iniciar seu código'],
+        issue: 'A execução ultrapassou o limite de tempo.',
+        why: 'Isso normalmente acontece em um loop infinito ou quando a condição de parada nunca é alcançada.',
+        fix: 'Revise cada while/for e confirme que a condição eventualmente se torna falsa.',
+        concept: 'Controle de repetição',
+      },
+    }
+  }
+
+  if (run.error || run.testError) {
+    const raw = run.error || run.testError || ''
+    return {
+      en: {
+        summary: 'The program stopped with an error.',
+        whatWorked: ['Your solution was submitted and evaluated'],
+        issue: raw.split('\n')[0].slice(0, 180),
+        why: 'Python could not complete the program, so the expected result was never produced.',
+        fix: 'Run the code first, read the indicated line, and correct the syntax, name, type, or operation mentioned in the error.',
+        actual: hidden ? undefined : raw.slice(0, 260),
+        concept: 'Debugging',
+      },
+      pt: {
+        summary: 'O programa foi interrompido por um erro.',
+        whatWorked: ['Sua solução foi enviada e avaliada'],
+        issue: raw.split('\n')[0].slice(0, 180),
+        why: 'O Python não conseguiu concluir o programa, então o resultado esperado não foi produzido.',
+        fix: 'Execute o código primeiro, leia a linha indicada e corrija a sintaxe, nome, tipo ou operação mencionada no erro.',
+        actual: hidden ? undefined : raw.slice(0, 260),
+        concept: 'Depuração',
+      },
+    }
+  }
+
+  if (failedRequirement) {
+    const label = `${failedRequirement.kind}: ${failedRequirement.value}`
+    return {
+      en: {
+        summary: 'The output may look right, but a required Python structure is missing.',
+        whatWorked: ['Your code ran without a runtime error'],
+        issue: `Missing required structure: ${label}.`,
+        why: 'The exercise evaluates both the final output and the way the solution is built.',
+        fix: `Use the required ${failedRequirement.kind} “${failedRequirement.value}” in the solution, then submit again.`,
+        concept: 'Program structure',
+      },
+      pt: {
+        summary: 'A saída pode parecer correta, mas falta uma estrutura obrigatória do Python.',
+        whatWorked: ['Seu código executou sem erro de execução'],
+        issue: `Estrutura obrigatória ausente: ${label}.`,
+        why: 'O exercício avalia tanto o resultado final quanto a forma como a solução foi construída.',
+        fix: `Use ${failedRequirement.kind} “${failedRequirement.value}” na solução e envie novamente.`,
+        concept: 'Estrutura do programa',
+      },
+    }
+  }
+
+  if (hidden) {
+    return {
+      en: {
+        summary: 'Your solution passed visible examples, but failed with another valid value.',
+        whatWorked: ['The code ran without errors', 'Part of the requested behavior is correct'],
+        issue: 'The logic is not general enough for different inputs.',
+        why: 'A fixed number, fixed text, or assumption from the example may have been placed directly in the code.',
+        fix: 'Replace fixed answers with variables and calculations. Ask: “Would this still work if the input changed?”',
+        concept: 'Generalization',
+      },
+      pt: {
+        summary: 'Sua solução passou nos exemplos visíveis, mas falhou com outro valor válido.',
+        whatWorked: ['O código executou sem erros', 'Parte do comportamento solicitado está correta'],
+        issue: 'A lógica ainda não funciona de forma geral para entradas diferentes.',
+        why: 'Um número, texto ou suposição do exemplo pode ter sido colocado diretamente no código.',
+        fix: 'Substitua respostas fixas por variáveis e cálculos. Pergunte: “Isso continuaria funcionando se a entrada mudasse?”',
+        concept: 'Generalização',
+      },
+    }
+  }
+
+  const actualText = actual || '(no output)'
+  const expectedText = expected
+  const type = failedCheck?.type
+  const details: Record<string, { en: [string, string, string]; pt: [string, string, string] }> = {
+    contains: {
+      en: ['The expected information was not found in the output.', 'The program printed something, but omitted a required value or text.', 'Print the calculated variable/result instead of unrelated or fixed content.'],
+      pt: ['A informação esperada não apareceu na saída.', 'O programa imprimiu algo, mas deixou de mostrar um valor ou texto obrigatório.', 'Imprima a variável ou resultado calculado, em vez de conteúdo não relacionado ou fixo.'],
+    },
+    equals: {
+      en: ['The final output is different from the expected output.', 'The calculation, formatting, or selected variable produced another result.', 'Compare each operation and print exactly the requested result.'],
+      pt: ['A saída final é diferente da saída esperada.', 'O cálculo, a formatação ou a variável escolhida produziu outro resultado.', 'Compare cada operação e imprima exatamente o resultado solicitado.'],
+    },
+    numeric_equals: {
+      en: ['The numeric result is incorrect.', 'At least one value or mathematical operation produced the wrong total.', 'Recalculate step by step and check parentheses and operator order.'],
+      pt: ['O resultado numérico está incorreto.', 'Pelo menos um valor ou operação matemática produziu o total errado.', 'Refaça o cálculo passo a passo e confira parênteses e a ordem dos operadores.'],
+    },
+    line_count: {
+      en: ['The number of output lines is different from requested.', 'The program printed too many or too few lines.', 'Review each print() and keep only the lines required by the scenario.'],
+      pt: ['A quantidade de linhas da saída está diferente do solicitado.', 'O programa imprimiu linhas demais ou de menos.', 'Revise cada print() e mantenha somente as linhas exigidas pelo cenário.'],
+    },
+    not_contains: {
+      en: ['The output contains information that should not be there.', 'An extra print or fixed value added unwanted content.', 'Remove the extra output and keep only what the requirement asks for.'],
+      pt: ['A saída contém uma informação que não deveria aparecer.', 'Um print extra ou valor fixo adicionou conteúdo indevido.', 'Remova a saída extra e mantenha apenas o que o requisito solicita.'],
+    },
+    matches: {
+      en: ['The output format does not match the required pattern.', 'The values may be present, but spacing, punctuation, or order is different.', 'Follow the requested format exactly and check punctuation and line order.'],
+      pt: ['O formato da saída não corresponde ao padrão solicitado.', 'Os valores podem estar presentes, mas o espaço, pontuação ou ordem está diferente.', 'Siga exatamente o formato pedido e confira pontuação e ordem das linhas.'],
+    },
+  }
+  const fallback = {
+    en: ['The produced result did not satisfy this verification.', 'One part of the requested behavior is still missing or different.', 'Review the requirement, test smaller parts, and submit again.'] as [string, string, string],
+    pt: ['O resultado produzido não atendeu a esta verificação.', 'Uma parte do comportamento solicitado ainda está ausente ou diferente.', 'Revise o requisito, teste partes menores e envie novamente.'] as [string, string, string],
+  }
+  const d = (type && details[type]) || fallback
+  return {
+    en: {
+      summary: 'This verification found a specific difference.',
+      whatWorked: ['Your code ran without a runtime error'],
+      issue: d.en[0], why: d.en[1], fix: d.en[2],
+      expected: expectedText, actual: actualText, concept: 'Output and logic',
+    },
+    pt: {
+      summary: 'Esta verificação encontrou uma diferença específica.',
+      whatWorked: ['Seu código executou sem erro de execução'],
+      issue: d.pt[0], why: d.pt[1], fix: d.pt[2],
+      expected: expectedText, actual: actualText, concept: 'Saída e lógica',
+    },
+  }
 }
 
 export async function runExam(
@@ -237,8 +425,12 @@ export async function runExam(
     sharedAnalysis ||= run.analysis
 
     let passed = !run.error && !run.testError
+    let failedRequirement: CodeRequirement | null = null
+    let failedCheck: Check | null = null
+
     if (passed && testCase.codeRequirements) {
-      passed = testCase.codeRequirements.every(requirement => meetsCodeRequirement(run.analysis, requirement))
+      failedRequirement = testCase.codeRequirements.find(requirement => !meetsCodeRequirement(run.analysis, requirement)) || null
+      passed = !failedRequirement
     }
 
     if (passed) {
@@ -246,6 +438,7 @@ export async function runExam(
         if (check.type === 'no_error') continue
         const target = check.target === 'test_output' ? run.testOutput : run.output
         if (!checkText(target, check)) {
+          failedCheck = check
           passed = false
           break
         }
@@ -253,16 +446,19 @@ export async function runExam(
     }
 
     const isHidden = testCase.hidden ?? testIndex > 0
+    const feedback = buildFeedback({ passed, hidden: isHidden, run, failedCheck, failedRequirement })
 
     results.push({
       id: testCase.id,
       description: testCase.description,
       passed,
       points: passed ? testCase.points : 0,
+      maxPoints: testCase.points,
       output: isHidden ? '' : run.output,
       error: run.error || run.testError,
       hidden: isHidden,
       timedOut: run.timedOut,
+      feedback,
     })
   }
 

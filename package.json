@@ -1,7 +1,11 @@
 {
   "name": "hashtag-python",
   "private": true,
+<<<<<<< HEAD
   "version": "5.4.0",
+=======
+  "version": "5.5.0",
+>>>>>>> d8af1d8 (feat: add pedagogical exam feedback and reliable progress sync)
   "type": "module",
   "engines": {
     "node": ">=22.12.0",
