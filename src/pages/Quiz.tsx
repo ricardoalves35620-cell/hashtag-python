@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
@@ -6,6 +6,7 @@ import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
 import { getSkillsForPhase } from '../data/skills'
 import SuccessCelebration from '../components/SuccessCelebration'
+import { conciseAssessmentOption, createAssessmentSeed, shuffledCopy, shuffledIndices } from '../lib/assessmentIntegrity'
 
 const QUIZ_PASS_SCORE = 80
 
@@ -15,6 +16,7 @@ export default function Quiz() {
   const { lang, learnerId, refreshProgress, recordLearningAttempt } = useApp()
   const phase = ALL_PHASES.find(item => item.id === Number(id))
 
+  const [attemptSeed, setAttemptSeed] = useState(() => createAssessmentSeed())
   const [current, setCurrent] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [answers, setAnswers] = useState<Record<number, number>>({})
@@ -22,7 +24,10 @@ export default function Quiz() {
   const [saving, setSaving] = useState(false)
   const attemptRecorded = useRef(false)
 
-  if (!phase || phase.quiz.length === 0) {
+  const questions = useMemo(() => phase ? shuffledCopy(phase.quiz, attemptSeed, `phase-${phase.id}-questions`) : [], [phase, attemptSeed])
+  const optionOrders = useMemo(() => Object.fromEntries(questions.map(item => [item.id, shuffledIndices(item.options.length, attemptSeed, item.id)])), [questions, attemptSeed])
+
+  if (!phase || questions.length === 0) {
     return (
       <Layout showBack backTo={`/phase/${phase?.id}`}>
         <div className="p-4 text-muted text-sm">{lang === 'en' ? 'No knowledge check yet.' : 'Sem verificação de conhecimento ainda.'}</div>
@@ -30,10 +35,11 @@ export default function Quiz() {
     )
   }
 
-  const question = phase.quiz[current]
+  const question = questions[current]
+  const optionOrder = optionOrders[question.id]
   const isAnswered = answers[current] !== undefined
-  const correctAnswers = Object.entries(answers).filter(([questionIndex, answer]) => phase.quiz[Number(questionIndex)]?.correctIndex === answer).length
-  const percentage = Math.round((correctAnswers / phase.quiz.length) * 100)
+  const correctAnswers = Object.entries(answers).filter(([questionIndex, answer]) => questions[Number(questionIndex)]?.correctIndex === answer).length
+  const percentage = Math.round((correctAnswers / questions.length) * 100)
   const passed = percentage >= QUIZ_PASS_SCORE
 
   const handleSelect = (index: number) => {
@@ -43,10 +49,10 @@ export default function Quiz() {
   }
 
   const handleNext = () => {
-    if (current + 1 >= phase.quiz.length) {
+    if (current + 1 >= questions.length) {
       if (!attemptRecorded.current) {
-        const correct = Object.entries(answers).filter(([questionIndex, answer]) => phase.quiz[Number(questionIndex)]?.correctIndex === answer).length
-        const score = Math.round((correct / phase.quiz.length) * 100)
+        const correct = Object.entries(answers).filter(([questionIndex, answer]) => questions[Number(questionIndex)]?.correctIndex === answer).length
+        const score = Math.round((correct / questions.length) * 100)
         recordLearningAttempt({
           phaseId: phase.id,
           activity: 'quiz',
@@ -77,6 +83,7 @@ export default function Quiz() {
   }
 
   const retry = () => {
+    setAttemptSeed(createAssessmentSeed())
     setCurrent(0)
     setSelected(null)
     setAnswers({})
@@ -110,7 +117,7 @@ export default function Quiz() {
           <div className="rounded-xl p-6 text-center" style={{ background: 'var(--c-card)', border: `1px solid ${passed ? '#1f6f45' : '#7c5a13'}` }}>
             <div className="text-5xl mb-4">{passed ? '🎉' : '📚'}</div>
             <div className="text-xs text-muted mb-2 uppercase tracking-wide">{t.result}</div>
-            <div className="text-4xl font-mono font-medium mb-1" style={{ color: 'var(--c-text)' }}>{correctAnswers}/{phase.quiz.length}</div>
+            <div className="text-4xl font-mono font-medium mb-1" style={{ color: 'var(--c-text)' }}>{correctAnswers}/{questions.length}</div>
             <div className="text-lg" style={{ color: passed ? '#4ade80' : '#f8d477' }}>{percentage}%</div>
             <div className="text-sm mt-3 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{passed ? t.passed : t.failed}</div>
           </div>
@@ -134,11 +141,11 @@ export default function Quiz() {
     <Layout showBack backTo={`/phase/${phase.id}`} backLabel={`${t.phase} ${phase.id}`} title={lang === 'en' ? 'Knowledge check' : 'Verificação'}>
       <div className="p-4 space-y-4">
         <div className="flex justify-between items-center gap-3">
-          <span className="text-xs text-muted">{t.question} {current + 1} {t.of} {phase.quiz.length}</span>
+          <span className="text-xs text-muted">{t.question} {current + 1} {t.of} {questions.length}</span>
           <span className="text-xs text-purple-light text-right">{t.mastery}</span>
         </div>
         <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
-          <div className="h-full bg-purple-DEFAULT rounded-full transition-all" style={{ width: `${((current + (isAnswered ? 1 : 0)) / phase.quiz.length) * 100}%` }} />
+          <div className="h-full bg-purple-DEFAULT rounded-full transition-all" style={{ width: `${((current + (isAnswered ? 1 : 0)) / questions.length) * 100}%` }} />
         </div>
 
         <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
@@ -146,9 +153,10 @@ export default function Quiz() {
         </div>
 
         <div className="space-y-2">
-          {question.options.map((option, index) => {
-            const correct = index === question.correctIndex
-            const chosen = selected === index
+          {optionOrder.map((originalIndex, displayIndex) => {
+            const option = question.options[originalIndex]
+            const correct = originalIndex === question.correctIndex
+            const chosen = selected === originalIndex
             let background = 'var(--c-card)'
             let border = 'var(--c-border)'
             let color = 'var(--c-text2)'
@@ -159,9 +167,9 @@ export default function Quiz() {
               else opacity = 0.5
             }
             return (
-              <button key={index} onClick={() => handleSelect(index)} disabled={isAnswered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color, opacity }}>
-                <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + index)}.</span>
-                <span className="whitespace-pre-line">{option[lang]}</span>
+              <button key={originalIndex} onClick={() => handleSelect(originalIndex)} disabled={isAnswered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color, opacity }}>
+                <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + displayIndex)}.</span>
+                <span className="whitespace-pre-line">{conciseAssessmentOption(option[lang])}</span>
               </button>
             )
           })}
@@ -179,7 +187,7 @@ export default function Quiz() {
 
         {isAnswered && (
           <button onClick={handleNext} className="w-full text-white font-semibold rounded-xl" style={{ padding: 14, background: 'var(--c-purple)', border: 'none' }}>
-            {current + 1 >= phase.quiz.length ? t.score : t.next}
+            {current + 1 >= questions.length ? t.score : t.next}
           </button>
         )}
       </div>

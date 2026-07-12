@@ -8,7 +8,7 @@ export interface Bilingual {
 export interface LessonBlock {
   type: 'heading' | 'text' | 'code' | 'video' | 'tip' | 'warning'
   content?: Bilingual
-  code?: string
+  code?: string | Bilingual
   language?: string
   videoUrl?: string
   videoTitle?: Bilingual

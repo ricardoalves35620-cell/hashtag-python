@@ -124,3 +124,7 @@ npm audit
 ## Current foundation release
 
 Foundation 1.6 adds final motion polish, accessible loading and success feedback, and reliable mouse, trackpad and touch scrolling.
+
+## Sprint 3 — Localization quality
+
+Portuguese and English now share the same localization architecture. Python comments are localized for Portuguese learners, Phase 5 was manually revised in both languages, glossary terms only match complete words, and automated tests verify bilingual content completeness. See `docs/LOCALIZATION_GUIDE.md`.

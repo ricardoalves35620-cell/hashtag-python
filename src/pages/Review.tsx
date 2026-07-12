@@ -1,15 +1,18 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { getSkill } from '../data/skills'
 import { buildReviewQueue } from '../lib/learningEngine'
+import { conciseAssessmentOption, createAssessmentSeed, shuffledCopy, shuffledIndices } from '../lib/assessmentIntegrity'
 
 export default function Review() {
   const navigate = useNavigate()
   const { lang, learningState, recordLearningAttempt } = useApp()
-  const [queue] = useState(() => buildReviewQueue(learningState, ALL_PHASES, 8))
+  const [attemptSeed] = useState(() => createAssessmentSeed())
+  const [baseQueue] = useState(() => buildReviewQueue(learningState, ALL_PHASES, 8))
+  const queue = useMemo(() => shuffledCopy(baseQueue, attemptSeed, 'spaced-review-questions'), [baseQueue, attemptSeed])
   const [current, setCurrent] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [correctCount, setCorrectCount] = useState(0)
@@ -60,6 +63,7 @@ export default function Review() {
 
   const item = queue[current]
   const question = item.question
+  const optionOrder = shuffledIndices(question.options.length, attemptSeed, item.id)
   const answered = selected !== null
   const correct = selected === question.correctIndex
   const skill = getSkill(item.skillId)
@@ -103,15 +107,16 @@ export default function Review() {
           <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{question.question[lang]}</p>
         </div>
         <div className="space-y-2">
-          {question.options.map((option, index) => {
+          {optionOrder.map((originalIndex, displayIndex) => {
+            const option = question.options[originalIndex]
             let background = 'var(--c-card)'
             let border = 'var(--c-border)'
             let color = 'var(--c-text2)'
-            if (answered && index === question.correctIndex) { background = '#052e16'; border = '#15803d'; color = '#86efac' }
-            else if (answered && index === selected) { background = '#450a0a'; border = '#b91c1c'; color = '#fca5a5' }
+            if (answered && originalIndex === question.correctIndex) { background = '#052e16'; border = '#15803d'; color = '#86efac' }
+            else if (answered && originalIndex === selected) { background = '#450a0a'; border = '#b91c1c'; color = '#fca5a5' }
             return (
-              <button key={index} onClick={() => choose(index)} disabled={answered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color }}>
-                <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + index)}.</span>{option[lang]}
+              <button key={originalIndex} onClick={() => choose(originalIndex)} disabled={answered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color }}>
+                <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + displayIndex)}.</span>{conciseAssessmentOption(option[lang])}
               </button>
             )
           })}

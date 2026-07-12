@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { scrollToTop } from '../lib/scroll'
+import { resolveLocalizedCode } from '../lib/localization'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
@@ -29,13 +30,13 @@ export default function Exam() {
   const phaseProgress = progress.find(p => p.phase_id === Number(id))
 
   const [tab, setTab] = useState<Tab>('scenario')
-  const [code, setCode] = useState(phase?.exam.starterCode || '')
+  const [code, setCode] = useState(resolveLocalizedCode(phase?.exam.starterCode, lang))
   const [draftLoaded, setDraftLoaded] = useState(false)
 
   // Load saved draft on mount — restores code across devices/sessions
   useEffect(() => {
     if (!learnerId || !phase) return
-    loadExamDraft(learnerId, phase.id, phase.exam.starterCode).then(draft => {
+    loadExamDraft(learnerId, phase.id, resolveLocalizedCode(phase.exam.starterCode, lang)).then(draft => {
       setCode(draft)
       setDraftLoaded(true)
     })

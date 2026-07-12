@@ -12,6 +12,7 @@ import {
 } from '../lib/baseZero'
 import { markStepDone } from '../lib/progress'
 import { getSkillsForPhase } from '../data/skills'
+import { createAssessmentSeed, shuffledIndices } from '../lib/assessmentIntegrity'
 
 const INSTALL_LABELS: Record<InstallStep, { en: string; pt: string }> = {
   download: { en: 'Download from the official website', pt: 'Baixar do site oficial' },
@@ -26,6 +27,7 @@ export default function BaseZero() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const checkOnly = searchParams.get('mode') === 'check'
+  const [attemptSeed] = useState(() => createAssessmentSeed())
   const [state, setState] = useState(() => loadBaseZeroState(learnerId || 'guest'))
   const [active, setActive] = useState(0)
   const [feedback, setFeedback] = useState('')
@@ -33,6 +35,8 @@ export default function BaseZero() {
   const [finishing, setFinishing] = useState(false)
   const [readinessAnswers, setReadinessAnswers] = useState<Record<number, number>>({})
   const [readinessResult, setReadinessResult] = useState<number | null>(null)
+
+  const readinessOptionOrders = useMemo(() => BASE_ZERO_READINESS.map((question, index) => shuffledIndices(question.options.length, attemptSeed, `base-zero-readiness-${index}`)), [attemptSeed])
 
   const module = BASE_ZERO_MODULES[active]
   const completed = state.completed.includes(module.id)
@@ -105,9 +109,15 @@ export default function BaseZero() {
             <div key={index} className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
               <div className="text-sm font-medium mb-3" style={{ color: 'var(--c-text)' }}>{index + 1}. {question.question[lang]}</div>
               <div className="space-y-2">
-                {question.options.map((option, optionIndex) => (
-                  <button key={option} onClick={() => setReadinessAnswers(previous => ({ ...previous, [index]: optionIndex }))} className="w-full text-left rounded-lg px-3 py-2.5 text-sm" style={{ background: readinessAnswers[index] === optionIndex ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: readinessAnswers[index] === optionIndex ? 'var(--c-purple-l)' : 'var(--c-text2)', border: '1px solid var(--c-border)' }}>{option}</button>
-                ))}
+                {readinessOptionOrders[index].map((originalIndex, displayIndex) => {
+                  const option = question.options[originalIndex]
+                  const selected = readinessAnswers[index] === originalIndex
+                  return (
+                    <button key={originalIndex} onClick={() => setReadinessAnswers(previous => ({ ...previous, [index]: originalIndex }))} className="w-full text-left rounded-lg px-3 py-2.5 text-sm" style={{ background: selected ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: selected ? 'var(--c-purple-l)' : 'var(--c-text2)', border: '1px solid var(--c-border)' }}>
+                      <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + displayIndex)}.</span>{option}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           ))}

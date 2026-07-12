@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import Layout from '../components/Layout'
 import { ENGINEERING_LAB_CHALLENGES } from '../data/labs'
 import { useApp } from '../contexts/AppContext'
+import { conciseAssessmentOption, createAssessmentSeed, shuffledIndices } from '../lib/assessmentIntegrity'
 
 const STORAGE_KEY = 'hp_engineering_lab_v3'
 
@@ -16,10 +17,12 @@ function loadAnswers(): Record<string, number> {
 
 export default function EngineeringLab() {
   const { lang } = useApp()
+  const [attemptSeed] = useState(() => createAssessmentSeed())
   const [answers, setAnswers] = useState<Record<string, number>>(loadAnswers)
   const [active, setActive] = useState(0)
   const challenge = ENGINEERING_LAB_CHALLENGES[active]
   const answered = answers[challenge.id]
+  const optionOrder = shuffledIndices(challenge.options.length, attemptSeed, challenge.id)
   const correctCount = useMemo(() => ENGINEERING_LAB_CHALLENGES.filter(item => answers[item.id] === item.correctIndex).length, [answers])
   const score = Math.round((correctCount / ENGINEERING_LAB_CHALLENGES.length) * 100)
 
@@ -52,11 +55,12 @@ export default function EngineeringLab() {
           <h2 className="text-lg font-semibold mt-1" style={{ color: 'var(--c-text)' }}>{challenge.title[lang]}</h2>
           <p className="text-sm mt-3 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{challenge.scenario[lang]}</p>
           <div className="space-y-2 mt-4">
-            {challenge.options.map((option, index) => {
-              const selected = answered === index
+            {optionOrder.map((originalIndex, displayIndex) => {
+              const option = challenge.options[originalIndex]
+              const selected = answered === originalIndex
               const reveal = answered !== undefined
-              const correct = index === challenge.correctIndex
-              return <button key={option[lang]} onClick={() => choose(index)} className="w-full rounded-xl p-3 text-left text-sm" style={{ background: selected ? (correct ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)') : 'var(--c-bg)', border: `1px solid ${selected ? (correct ? '#22c55e' : '#ef4444') : reveal && correct ? '#22c55e' : 'var(--c-border)'}`, color: 'var(--c-text2)' }}><span className="mr-2" style={{ color: selected ? (correct ? '#4ade80' : '#f87171') : 'var(--c-muted)' }}>{String.fromCharCode(65 + index)}.</span>{option[lang]}</button>
+              const correct = originalIndex === challenge.correctIndex
+              return <button key={originalIndex} onClick={() => choose(originalIndex)} className="w-full rounded-xl p-3 text-left text-sm" style={{ background: selected ? (correct ? 'rgba(34,197,94,.12)' : 'rgba(239,68,68,.12)') : 'var(--c-bg)', border: `1px solid ${selected ? (correct ? '#22c55e' : '#ef4444') : reveal && correct ? '#22c55e' : 'var(--c-border)'}`, color: 'var(--c-text2)' }}><span className="mr-2" style={{ color: selected ? (correct ? '#4ade80' : '#f87171') : 'var(--c-muted)' }}>{String.fromCharCode(65 + displayIndex)}.</span>{conciseAssessmentOption(option[lang])}</button>
             })}
           </div>
           {answered !== undefined && <div className="rounded-xl p-4 mt-4 text-sm leading-relaxed" style={{ background: answered === challenge.correctIndex ? 'rgba(34,197,94,.10)' : 'rgba(248,212,119,.08)', border: `1px solid ${answered === challenge.correctIndex ? '#1f6f45' : '#6b4d12'}`, color: answered === challenge.correctIndex ? '#86efac' : '#f8d477' }}><strong>{answered === challenge.correctIndex ? (lang === 'en' ? 'Correct reasoning:' : 'Raciocínio correto:') : (lang === 'en' ? 'Review the trade-off:' : 'Revise a decisão:')}</strong> {challenge.explanation[lang]}</div>}

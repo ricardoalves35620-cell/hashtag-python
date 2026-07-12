@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
 import VSCodeBlock from '../components/VSCodeBlock'
+import { resolveLocalizedCode } from '../lib/localization'
 import VSCodeEditor from '../components/VSCodeEditor'
 import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
@@ -22,7 +23,7 @@ export default function FastTrackDay() {
   const day = FASTTRACK_DAYS.find(d => d.id === Number(id))
 
   const [tab, setTab] = useState<Tab>('lesson')
-  const [code, setCode] = useState(day?.exercise.starterCode || '')
+  const [code, setCode] = useState(resolveLocalizedCode(day?.exercise.starterCode, lang))
   const [output, setOutput] = useState('')
   const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
   const [showRawError, setShowRawError] = useState(false)
@@ -37,7 +38,7 @@ export default function FastTrackDay() {
     scrollToTop()
     // Reset state for new day
     setTab('lesson')
-    setCode(day?.exercise.starterCode || '')
+    setCode(resolveLocalizedCode(day?.exercise.starterCode, lang))
     setOutput('')
     setHasRun(false)
     setShowSolution(false)
@@ -305,7 +306,7 @@ export default function FastTrackDay() {
             </button>
 
             {showSolution && (
-              <VSCodeBlock code={day.exercise.solution} filename="solution.py" />
+              <VSCodeBlock code={resolveLocalizedCode(day.exercise.solution, lang)} filename="solution.py" />
             )}
 
             {/* Single complete button — no more "Skip" */}

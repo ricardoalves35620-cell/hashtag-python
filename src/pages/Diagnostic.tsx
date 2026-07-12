@@ -1,14 +1,17 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { buildDiagnosticQueue, type LearningAttemptInput } from '../lib/learningEngine'
+import { conciseAssessmentOption, createAssessmentSeed, shuffledCopy, shuffledIndices } from '../lib/assessmentIntegrity'
 
 export default function Diagnostic() {
   const navigate = useNavigate()
   const { lang, recordLearningAttempts, completeDiagnostic } = useApp()
-  const [queue] = useState(() => buildDiagnosticQueue(ALL_PHASES))
+  const [attemptSeed] = useState(() => createAssessmentSeed())
+  const [baseQueue] = useState(() => buildDiagnosticQueue(ALL_PHASES))
+  const queue = useMemo(() => shuffledCopy(baseQueue, attemptSeed, 'diagnostic-questions'), [baseQueue, attemptSeed])
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [finished, setFinished] = useState(false)
@@ -63,6 +66,7 @@ export default function Diagnostic() {
 
   const item = queue[current]
   const selected = answers[current]
+  const optionOrder = shuffledIndices(item.question.options.length, attemptSeed, item.id)
   const answered = selected !== undefined
 
   const next = () => {
@@ -93,11 +97,14 @@ export default function Diagnostic() {
           <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{item.question.question[lang]}</p>
         </div>
         <div className="space-y-2">
-          {item.question.options.map((option, index) => (
-            <button key={index} onClick={() => setAnswers(previous => ({ ...previous, [current]: index }))} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background: selected === index ? 'var(--c-purple-dm)' : 'var(--c-card)', border: `1px solid ${selected === index ? 'var(--c-purple)' : 'var(--c-border)'}`, color: selected === index ? 'var(--c-purple-l)' : 'var(--c-text2)' }}>
-              <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + index)}.</span>{option[lang]}
-            </button>
-          ))}
+          {optionOrder.map((originalIndex, displayIndex) => {
+            const option = item.question.options[originalIndex]
+            return (
+              <button key={originalIndex} onClick={() => setAnswers(previous => ({ ...previous, [current]: originalIndex }))} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background: selected === originalIndex ? 'var(--c-purple-dm)' : 'var(--c-card)', border: `1px solid ${selected === originalIndex ? 'var(--c-purple)' : 'var(--c-border)'}`, color: selected === originalIndex ? 'var(--c-purple-l)' : 'var(--c-text2)' }}>
+                <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + displayIndex)}.</span>{conciseAssessmentOption(option[lang])}
+              </button>
+            )
+          })}
         </div>
         <button onClick={next} disabled={!answered} className="w-full rounded-xl py-3.5 text-white font-semibold disabled:opacity-40" style={{ background: 'var(--c-purple)' }}>{current + 1 >= queue.length ? t.finish : t.next}</button>
       </div>

@@ -125,7 +125,7 @@ print(5 * 3)           # 15` },
         pt: '💡 DICA PRO: cola de percentuais\n• 80% de X → X * 0.80\n• X mais 10% → X * 1.10\n• X menos 25% → X * 0.75\nMemorize esses três padrões — aparecem em TODO cálculo financeiro.'
       }},
 
-      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ 7 operators: + - * / // % **\n✅ / always returns decimal; // drops the decimal; % gives remainder\n✅ * and / run BEFORE + and - — use ( ) to control order\n✅ Percentages: multiply by decimal (80% = 0.80)\n✅ Chained calculations: save each step, verify each step\n\nNext: saving values in variables so calculations get reusable. 📦',
         pt: '✅ 7 operadores: + - * / // % **\n✅ / sempre retorna decimal; // descarta o decimal; % dá o resto\n✅ * e / rodam ANTES de + e - — use ( ) para controlar\n✅ Percentuais: multiplique pelo decimal (80% = 0.80)\n✅ Cálculos encadeados: salve cada passo, verifique cada passo\n\nPróxima: salvando valores em variáveis para reusar cálculos. 📦'
@@ -368,7 +368,7 @@ print(x == 5)   # compare: is x equal to 5? → True` },
         pt: '💡 DICA PRO: nomeie variáveis como explicaria a um colega.\n❌ x, a, temp, data2\n✅ nome_cliente, total_pagamento, premio_mensal\nBons nomes tornam o código auto-documentado. Daqui 6 meses, "x" não te diz nada.'
       }},
 
-      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ variable = value creates a labelled box\n✅ 4 basic types: str (text), int (whole), float (decimal), bool (True/False)\n✅ += adds to existing value (accumulator pattern)\n✅ f-strings build text: f"Name: {name}, Age: {age + 1}"\n✅ = stores, == compares\n✅ Names: letters/numbers/underscore, no spaces, don\'t start with a number\n\nNext: making programs interactive with input(). ⌨️',
         pt: '✅ variavel = valor cria uma caixa etiquetada\n✅ 4 tipos básicos: str (texto), int (inteiro), float (decimal), bool (True/False)\n✅ += soma ao valor existente (padrão acumulador)\n✅ f-strings montam texto: f"Nome: {nome}, Idade: {idade + 1}"\n✅ = armazena, == compara\n✅ Nomes: letras/números/underscore, sem espaços, não começar com número\n\nPróxima: tornando programas interativos com input(). ⌨️'
@@ -600,7 +600,7 @@ n = float(input("Height: "))
         pt: '💡 DICA PRO: o teste "vou fazer matemática com isso?".\n• Valor do dano → matemática → int/float\n• Idade → matemática → int\n• Telefone → SEM matemática → mantém str\n• CEP → SEM matemática → mantém str\nConverter tudo cegamente é erro de iniciante.'
       }},
 
-      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ input("prompt") pauses and waits for typing\n✅ input() ALWAYS returns str — even for numbers\n✅ int() converts to whole number, float() to decimal\n✅ Combine: age = int(input("Age: "))\n✅ Only convert values you\'ll do math with\n✅ Phone/ZIP/ID = text, keep as str\n\nNext: teaching programs to make decisions with if/else. 🚦',
         pt: '✅ input("pergunta") pausa e espera digitação\n✅ input() SEMPRE retorna str — até para números\n✅ int() converte para inteiro, float() para decimal\n✅ Combine: idade = int(input("Idade: "))\n✅ Só converta valores com os quais fará matemática\n✅ Telefone/CEP/ID = texto, mantenha str\n\nPróxima: ensinando programas a decidir com if/else. 🚦'
@@ -713,7 +713,7 @@ print(f"Phone: {phone}")`,
 
 export const phase5: Phase = {
   id: 5,
-  title: { en: 'If / Else', pt: 'If / Else' },
+  title: { en: 'If/Else Conditions', pt: 'Condições com if/else' },
   description: {
     en: 'Teach programs to make decisions — conditions, comparisons and logical operators.',
     pt: 'Ensine programas a decidir — condições, comparações e operadores lógicos.'
@@ -738,82 +738,152 @@ export const phase5: Phase = {
       }},
 
       { type: 'heading', content: { en: '🐍 The fundamentals', pt: '🐍 Os fundamentos' } },
-      { type: 'code', code: `damage = 8000
+      { type: 'code', code: {
+        en: `damage = 8000
 
 if damage > 5000:                  # condition + colon
     print("🔴 HIGH PRIORITY")      # indented = inside the if
-    print("Send expert adjuster")  # still inside
+    print("Send an experienced adjuster")  # still inside
 else:
-    print("🟢 Standard claim")     # runs only if condition is False
+    print("🟢 Standard claim")     # runs only if the condition is False
 
-print("Done.")                      # NOT indented = always runs
+print("Done.")                     # not indented = always runs
 
 # THE 6 COMPARISON OPERATORS:
 x = 10
 print(x > 5)     # True   greater than
 print(x < 5)     # False  less than
-print(x >= 10)   # True   greater OR equal
-print(x <= 9)    # False  less OR equal
+print(x >= 10)   # True   greater than or equal to
+print(x <= 9)    # False  less than or equal to
 print(x == 10)   # True   equal (TWO equals signs!)
-print(x != 7)    # True   NOT equal` },
+print(x != 7)    # True   not equal`,
+        pt: `dano = 8000
+
+if dano > 5000:                    # condição + dois-pontos
+    print("🔴 ALTA PRIORIDADE")    # indentado = dentro do if
+    print("Enviar ajustador experiente")  # ainda dentro do bloco
+else:
+    print("🟢 Sinistro padrão")    # executa somente se a condição for False
+
+print("Concluído.")                # sem indentação = sempre executa
+
+# OS 6 OPERADORES DE COMPARAÇÃO:
+x = 10
+print(x > 5)     # True   maior que
+print(x < 5)     # False  menor que
+print(x >= 10)   # True   maior que ou igual a
+print(x <= 9)    # False  menor que ou igual a
+print(x == 10)   # True   igual (DOIS sinais de igual!)
+print(x != 7)    # True   diferente`,
+      } },
 
       { type: 'heading', content: { en: '🐍 Deeper: combining conditions with and / or / not', pt: '🐍 Aprofundando: combinando condições com and / or / not' } },
-      { type: 'code', code: `damage = 7000
+      { type: 'code', code: {
+        en: `damage = 7000
 days_since_policy = 15
 
-# AND — both must be True
+# AND — both conditions must be True
 if damage > 5000 and days_since_policy < 30:
-    print("⚠️ Large claim soon after policy — investigate")
+    print("⚠️ Large claim submitted soon after policy start — investigate")
 
-# OR — at least one must be True
+# OR — at least one condition must be True
 region = "flood_zone"
 if region == "flood_zone" or damage > 10000:
     print("Requires senior review")
 
-# NOT — inverts the condition
+# NOT — reverses the condition
 is_approved = False
 if not is_approved:
     print("Still pending")
 
-# Comparing TEXT works too (case-sensitive!)
+# Text comparisons are case-sensitive
 status = "approved"
 if status == "approved":
     print("✅ Release payment")
-# "Approved" != "approved" — capital letters matter!` },
+# "Approved" != "approved" — capitalization matters`,
+        pt: `dano = 7000
+dias_desde_apolice = 15
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Fraud detection gate', pt: '🏗️ Cenário Real 1: Portão de detecção de fraude' } },
+# AND — as duas condições devem ser True
+if dano > 5000 and dias_desde_apolice < 30:
+    print("⚠️ Sinistro grande logo após o início da apólice — investigar")
+
+# OR — pelo menos uma condição deve ser True
+regiao = "zona_de_inundacao"
+if regiao == "zona_de_inundacao" or dano > 10000:
+    print("Exige revisão de um profissional sênior")
+
+# NOT — inverte a condição
+foi_aprovado = False
+if not foi_aprovado:
+    print("Ainda pendente")
+
+# Comparações de texto diferenciam maiúsculas e minúsculas
+status = "aprovado"
+if status == "aprovado":
+    print("✅ Liberar pagamento")
+# "Aprovado" != "aprovado" — maiúsculas fazem diferença`,
+      } },
+
+      { type: 'heading', content: { en: '🏗️ Real-world scenario 1: Fraud-screening rule', pt: '🏗️ Cenário real 1: Regra de triagem de fraude' } },
       { type: 'text', content: {
-        en: 'Insurance companies flag claims filed suspiciously soon after a policy starts. A real rule used in the industry: claim within 30 days of policy start AND above $5,000 → automatic investigation.',
-        pt: 'Seguradoras sinalizam sinistros abertos suspeitosamente cedo após o início da apólice. Uma regra real usada no setor: sinistro em até 30 dias do início E acima de R$5.000 → investigação automática.'
+        en: 'Insurance companies flag claims submitted unusually soon after a policy begins. One common screening rule is: a claim submitted within the first 30 days AND exceeding $5,000 → automatic investigation.',
+        pt: 'Seguradoras sinalizam sinistros enviados logo após o início da apólice. Uma regra comum de triagem é: sinistro enviado nos primeiros 30 dias E acima de R$5.000 → investigação automática.'
       }},
-      { type: 'code', code: `print("=== FRAUD CHECK ===")
-damage = int(input("Damage amount: $"))
+      { type: 'code', code: {
+        en: `print("=== FRAUD SCREENING ===")
+damage = int(input("Claim amount: $"))
 days = int(input("Days since policy start: "))
 
 if damage > 5000 and days < 30:
-    print("🚨 FLAGGED: large claim soon after policy start")
-    print("Routing to Special Investigations Unit")
+    print("🚨 FLAGGED: large claim submitted soon after policy start")
+    print("Route to the Special Investigations Unit")
 else:
-    print("✅ Passed fraud check")
-    print("Routing to standard processing")` },
+    print("✅ Passed fraud screening")
+    print("Route to standard processing")`,
+        pt: `print("=== TRIAGEM DE FRAUDE ===")
+dano = int(input("Valor do sinistro: R$"))
+dias = int(input("Dias desde o início da apólice: "))
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Construction safety check', pt: '🏗️ Cenário Real 2: Verificação de segurança de obra' } },
-      { type: 'code', code: `# Site safety gate: wind speed and crane operations
+if dano > 5000 and dias < 30:
+    print("🚨 SINALIZADO: sinistro grande logo após o início da apólice")
+    print("Encaminhar para a Unidade de Investigações Especiais")
+else:
+    print("✅ Aprovado na triagem de fraude")
+    print("Encaminhar para o processamento padrão")`,
+      } },
+
+      { type: 'heading', content: { en: '🏗️ Real-world scenario 2: Construction safety check', pt: '🏗️ Cenário real 2: Verificação de segurança da obra' } },
+      { type: 'code', code: {
+        en: `# Construction safety check: wind speed and crane operations
 wind_speed = float(input("Wind speed (km/h): "))
-crane_active = input("Crane operating? (yes/no): ")
+crane_active = input("Is the crane operating? (yes/no): ")
 
 if wind_speed > 40 and crane_active == "yes":
     print("🚨 STOP CRANE OPERATIONS IMMEDIATELY")
-    print("Wind exceeds 40 km/h safety limit")
+    print("Wind exceeds the 40 km/h safety limit")
 elif wind_speed > 40:
-    print("⚠️ High wind — cranes must stay offline")
+    print("⚠️ High winds — cranes must remain offline")
 else:
-    print("✅ Conditions safe for all operations")` },
+    print("✅ Conditions are safe for all operations")`,
+        pt: `# Verificação de segurança da obra: vento e operação do guindaste
+velocidade_vento = float(input("Velocidade do vento (km/h): "))
+guindaste_ativo = input("O guindaste está operando? (sim/não): ")
+
+if velocidade_vento > 40 and guindaste_ativo == "sim":
+    print("🚨 INTERROMPA A OPERAÇÃO DO GUINDASTE IMEDIATAMENTE")
+    print("O vento ultrapassou o limite de segurança de 40 km/h")
+elif velocidade_vento > 40:
+    print("⚠️ Vento forte — os guindastes devem permanecer parados")
+else:
+    print("✅ Condições seguras para todas as operações")`,
+      } },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
-      { type: 'code', code: `x = 10
+      { type: 'code', code: {
+        en: `x = 10
 
-# ❌ MISTAKE 1: single = in condition
+# ❌ MISTAKE 1: using a single = in a condition
 # if x = 10:          → SyntaxError! = assigns, == compares
 # ✅ FIX:
 if x == 10:
@@ -823,28 +893,56 @@ if x == 10:
 # if x > 5            → SyntaxError: expected ':'
 # ✅ FIX:
 if x > 5:
-    print("big")
+    print("large")
 
-# ❌ MISTAKE 3: wrong indentation
+# ❌ MISTAKE 3: incorrect indentation
 # if x > 5:
-# print("big")        → IndentationError!
-# ✅ FIX: indent 4 spaces inside the if
+# print("large")      → IndentationError!
+# ✅ FIX: indent the code inside the if by 4 spaces
 if x > 5:
-    print("big")
+    print("large")
 
-# ❌ MISTAKE 4: comparing number with text
-guess = input("Guess: ")    # returns "10" (text!)
+# ❌ MISTAKE 4: comparing a number with text
+guess = input("Guess: ")    # returns "10" as text
 # if guess == 10:            → always False! "10" != 10
-# ✅ FIX: convert first
+# ✅ FIX: convert the input first
 if int(guess) == 10:
-    print("Correct!")` },
+    print("Correct!")`,
+        pt: `x = 10
+
+# ❌ ERRO 1: usar apenas um = na condição
+# if x = 10:          → SyntaxError! = atribui, == compara
+# ✅ CORREÇÃO:
+if x == 10:
+    print("dez")
+
+# ❌ ERRO 2: esquecer os dois-pontos
+# if x > 5            → SyntaxError: era esperado ':'
+# ✅ CORREÇÃO:
+if x > 5:
+    print("grande")
+
+# ❌ ERRO 3: indentação incorreta
+# if x > 5:
+# print("grande")     → IndentationError!
+# ✅ CORREÇÃO: indente o código dentro do if com 4 espaços
+if x > 5:
+    print("grande")
+
+# ❌ ERRO 4: comparar número com texto
+palpite = input("Palpite: ")    # retorna "10" como texto
+# if palpite == 10:              → sempre False! "10" != 10
+# ✅ CORREÇÃO: converta a entrada primeiro
+if int(palpite) == 10:
+    print("Correto!")`,
+      } },
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: read conditions out loud.\nif damage > 5000 and days < 30 →\n"IF damage is over five thousand AND days is under thirty"\nIf the sentence sounds wrong out loud, the logic is probably wrong too.',
         pt: '💡 DICA PRO: leia condições em voz alta.\nif dano > 5000 and dias < 30 →\n"SE o dano é maior que cinco mil E os dias são menos que trinta"\nSe a frase soa errada em voz alta, a lógica provavelmente está errada também.'
       }},
 
-      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ if condition: → runs indented block only when True\n✅ else: → catches everything False\n✅ 6 comparisons: > < >= <= == !=\n✅ == compares (two signs!), = assigns\n✅ and (both), or (at least one), not (invert)\n✅ Colon + 4-space indentation are mandatory\n✅ Text comparisons are case-sensitive\n\nNext: multiple branches with elif. ⚙️',
         pt: '✅ if condição: → roda bloco indentado só quando True\n✅ else: → captura tudo que é False\n✅ 6 comparações: > < >= <= == !=\n✅ == compara (dois sinais!), = atribui\n✅ and (ambos), or (pelo menos um), not (inverte)\n✅ Dois pontos + indentação de 4 espaços são obrigatórios\n✅ Comparações de texto diferenciam maiúsculas\n\nPróxima: múltiplos caminhos com elif. ⚙️'
@@ -1098,7 +1196,7 @@ if damage > 1000:
         pt: '💡 DICA PRO: cadeias elif como cachoeiras.\nEscreva condições do andar de CIMA (maior valor) para baixo.\nA água (seu valor) cai até pousar no primeiro andar que a captura.\nDesenhe a cachoeira no papel antes de codar — 30 segundos de esboço economizam 30 minutos de debug.'
       }},
 
-      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ elif = "else if" — adds middle branches between if and else\n✅ Checked top to bottom — FIRST True wins, rest are skipped\n✅ Order matters: most specific/highest condition first\n✅ Exactly ONE branch runs (else catches leftovers)\n✅ Multiple separate ifs = independent checks (usually a bug!)\n✅ Unlimited elifs allowed\n\nNext: repeating actions with while loops. 🔄',
         pt: '✅ elif = "else if" — adiciona ramos do meio entre if e else\n✅ Verificado de cima para baixo — PRIMEIRO True vence, resto é pulado\n✅ Ordem importa: condição mais específica/alta primeiro\n✅ Exatamente UM ramo roda (else captura sobras)\n✅ Múltiplos ifs separados = verificações independentes (geralmente um bug!)\n✅ Elifs ilimitados permitidos\n\nPróxima: repetindo ações com loops while. 🔄'
@@ -1335,7 +1433,7 @@ while count <= 5:           # 10 <= 5? False → loop NEVER runs
         pt: '💡 DICA PRO: preso num loop infinito testando?\nO botão de parar (⏹) mata o programa. No terminal do VS Code: Ctrl+C.\nAntes de rodar qualquer while, responda mentalmente: "qual linha aproxima a condição de False?" Se não conseguir apontar — não rode.'
       }},
 
-      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ 3 pieces: start state → condition → progress\n✅ Forgetting progress = infinite loop\n✅ += accumulates totals across iterations\n✅ break exits immediately (great with while True)\n✅ Validation loop: repeat until input is acceptable\n✅ Use value first, update counter last\n\nNext: for loops + lists — looping over collections. 📋',
         pt: '✅ 3 peças: estado inicial → condição → progresso\n✅ Esquecer o progresso = loop infinito\n✅ += acumula totais entre iterações\n✅ break sai imediatamente (ótimo com while True)\n✅ Loop de validação: repete até entrada aceitável\n✅ Use o valor primeiro, atualize o contador por último\n\nPróxima: for loops + listas — percorrendo coleções. 📋'
@@ -1577,7 +1675,7 @@ print(total)             # 60 ✅
         pt: '💡 DICA PRO: nomeie a variável do loop como o SINGULAR da lista.\nfor cliente in clientes / for dano in danos / for obra in obras\nSeu código lê como português e bugs ficam óbvios: "for dano in clientes" parece errado na hora.'
       }},
 
-      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recap' } },
+      { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ Lists: [a, b, c] — ordered, indexed from 0, negative counts from end\n✅ Tools: len(), append(), sum(), max(), min()\n✅ for item in list: — one item per turn, no counter needed\n✅ range(n) generates 0..n-1 for numeric loops\n✅ Accumulator goes BEFORE the loop\n✅ Pair two lists with for i in range(len(list))\n\nNext: nested lists — spreadsheets in code. 🗂️',
         pt: '✅ Listas: [a, b, c] — ordenadas, índice do 0, negativo conta do fim\n✅ Ferramentas: len(), append(), sum(), max(), min()\n✅ for item in lista: — um item por vez, sem contador\n✅ range(n) gera 0..n-1 para loops numéricos\n✅ Acumulador vai ANTES do loop\n✅ Emparelhe duas listas com for i in range(len(lista))\n\nPróxima: listas aninhadas — planilhas em código. 🗂️'

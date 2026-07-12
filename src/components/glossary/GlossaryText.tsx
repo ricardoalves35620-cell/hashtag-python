@@ -10,7 +10,10 @@ export default function GlossaryText({ text, lang, className, style }: { text: s
   const [selected, setSelected] = useState<GlossaryEntry | null>(null)
   const aliases = useMemo(() => glossaryAliases(lang), [lang])
   const aliasMap = useMemo(() => new Map(aliases.map(item => [item.alias.toLocaleLowerCase(), item.entry])), [aliases])
-  const regex = useMemo(() => new RegExp(`(${aliases.map(item => escapeRegExp(item.alias)).join('|')})`, 'giu'), [aliases])
+  const regex = useMemo(() => {
+    const source = aliases.map(item => escapeRegExp(item.alias)).join('|')
+    return new RegExp(`(?<![\\p{L}\\p{N}_])(${source})(?![\\p{L}\\p{N}_])`, 'giu')
+  }, [aliases])
   const parts = useMemo(() => text.split(regex), [text, regex])
 
   return (

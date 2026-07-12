@@ -18,6 +18,7 @@ import { extractErrorCategory } from '../lib/learningEngine'
 import { chooseNewestDraft, fetchRemoteDraft, loadLocalDraft, saveLocalDraft, saveRemoteDraft } from '../lib/codeDrafts'
 import { scrollToTop } from '../lib/scroll'
 import { getExercisePedagogy } from '../lib/pedagogy'
+import { resolveLocalizedCode } from '../lib/localization'
 
 interface AttemptView {
   id: string
@@ -35,7 +36,7 @@ export default function Exercises() {
   const phase = ALL_PHASES.find(item => item.id === Number(id))
 
   const [activeEx, setActiveEx] = useState(0)
-  const [codes, setCodes] = useState<Record<string, string>>(() => Object.fromEntries(phase?.exercises.map(ex => [ex.id, ex.starterCode]) || []))
+  const [codes, setCodes] = useState<Record<string, string>>(() => Object.fromEntries(phase?.exercises.map(ex => [ex.id, resolveLocalizedCode(ex.starterCode, lang)]) || []))
   const [output, setOutput] = useState('')
   const [errorExplanation, setErrorExplanation] = useState<ErrorExplanation | null>(null)
   const [showRawError, setShowRawError] = useState(false)
@@ -86,7 +87,7 @@ export default function Exercises() {
     if (saveTimer.current) window.clearTimeout(saveTimer.current)
     setDraftStatus('idle')
     saveTimer.current = window.setTimeout(() => {
-      const draft = { code: codes[exercise.id], inputs: customInputs[exercise.id] || '', updatedAt: new Date().toISOString() }
+      const draft = { code: codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang), inputs: customInputs[exercise.id] || '', updatedAt: new Date().toISOString() }
       saveLocalDraft(learnerId, phase.id, exercise.id, draft)
       setDraftStatus(user ? 'saved' : 'local')
       if (user) void saveRemoteDraft(user.id, phase.id, exercise.id, draft)
@@ -138,7 +139,7 @@ export default function Exercises() {
       await preparePythonEngine()
       setPyodideLoading(false)
       const inputs = (customInputs[exercise.id] || '').split('\n').map(line => line.trim()).filter(Boolean)
-      const grade = await gradeExercise(exercise, phase.id, lang, codes[exercise.id], inputs)
+      const grade = await gradeExercise(exercise, phase.id, lang, codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang), inputs)
       setOutput(grade.output || (grade.error ? '' : t.noOutput))
       setValidationChecks(previous => ({ ...previous, [exercise.id]: grade.checks }))
       setValidated(previous => ({ ...previous, [exercise.id]: grade.passed }))
@@ -159,7 +160,7 @@ export default function Exercises() {
 
       if (grade.error) {
         setOutput(`❌ ${grade.error}\n\n${grade.output}`)
-        setErrorExplanation(explainError(grade.error, codes[exercise.id]))
+        setErrorExplanation(explainError(grade.error, codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)))
       }
     } catch (error) {
       setOutput(`❌ ${String(error)}`)
@@ -201,12 +202,12 @@ export default function Exercises() {
         </Card>
 
         <VSCodeEditor
-          value={codes[exercise.id]}
+          value={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)}
           onChange={value => { setCodes(previous => ({ ...previous, [exercise.id]: value })); clearResult() }}
           filename={`exercise_${activeEx + 1}.py`} height="clamp(280px, 48vh, 520px)" label={lang === 'en' ? 'editable' : 'editável'}
         />
 
-        <div><TestInputEditor code={codes[exercise.id]} value={customInputs[exercise.id] || ''} onChange={value => { setCustomInputs(previous => ({ ...previous, [exercise.id]: value })); clearResult() }} lang={lang} /></div>
+        <div><TestInputEditor code={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)} value={customInputs[exercise.id] || ''} onChange={value => { setCustomInputs(previous => ({ ...previous, [exercise.id]: value })); clearResult() }} lang={lang} /></div>
 
         <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
           <Button fullWidth size="lg" loading={running || pyodideLoading} onClick={handleRun} leftIcon="▶">

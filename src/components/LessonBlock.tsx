@@ -2,6 +2,7 @@ import { useState } from 'react'
 import VSCodeBlock from './VSCodeBlock'
 import GlossaryText from './glossary/GlossaryText'
 import type { LessonBlock as LessonBlockType, Lang } from '../data/types'
+import { resolveLocalizedCode } from '../lib/localization'
 
 interface Props {
   block: LessonBlockType
@@ -56,7 +57,7 @@ export default function LessonBlock({ block, lang }: Props) {
   }
 
   if (block.type === 'code') {
-    return <VSCodeBlock code={block.code || ''} />
+    return <VSCodeBlock code={resolveLocalizedCode(block.code, lang)} />
   }
 
   if (block.type === 'video') {
@@ -65,7 +66,7 @@ export default function LessonBlock({ block, lang }: Props) {
       <div style={{ margin: '12px 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
           <span style={{ fontSize: 10, background: 'var(--c-purple-dm)', color: 'var(--c-purple-l)', padding: '3px 8px', borderRadius: 20, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Video · {block.videoDuration}
+            {lang === 'en' ? 'Video' : 'Vídeo'} · {block.videoDuration}
           </span>
           <span style={{ fontSize: 13, color: 'var(--c-muted)' }}>{t(block.videoTitle)}</span>
         </div>
