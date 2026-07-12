@@ -5,6 +5,7 @@ import { oneDark } from '@codemirror/theme-one-dark'
 import { EditorState } from '@codemirror/state'
 import { keymap } from '@codemirror/view'
 import { indentWithTab, insertTab, indentLess } from '@codemirror/commands'
+import { useApp } from '../contexts/AppContext'
 
 interface Props {
   value: string
@@ -15,43 +16,14 @@ interface Props {
   label?: string
 }
 
-const vscodeDarkTheme = EditorView.theme({
-  '&': {
-    backgroundColor: '#1e1e1e',
-    color: '#d4d4d4',
-    height: '100%',
-    fontFamily: "'JetBrains Mono', 'Consolas', 'Courier New', monospace",
-    fontSize: '16px', /* 16px prevents iOS auto-zoom */
-  },
-  '.cm-content': { caretColor: '#d4d4d4', padding: '8px 0' },
-  '.cm-focused': { outline: 'none' },
-  '.cm-gutters': {
-    backgroundColor: '#1e1e1e', borderRight: '1px solid #3e3e3e',
-    color: '#858585', minWidth: '40px',
-  },
-  '.cm-lineNumbers .cm-gutterElement': { padding: '0 10px 0 8px', minWidth: '32px' },
-  '.cm-activeLine': { backgroundColor: '#ffffff08' },
-  '.cm-activeLineGutter': { backgroundColor: '#ffffff08' },
-  '.cm-selectionBackground, ::selection': { backgroundColor: '#264f78 !important' },
-  '.cm-cursor': { borderLeftColor: '#d4d4d4', borderLeftWidth: '2px' },
-  '.cm-scroller': {
-    fontFamily: "'JetBrains Mono', 'Consolas', 'Courier New', monospace !important",
-    fontSize: '16px !important',
-    lineHeight: '1.6',
-  },
-}, { dark: true })
-
-// Python mobile toolbar — grouped by category
 const TOOLBAR_GROUPS = [
   {
-    label: 'Indent',
     items: [
       { label: '⇥ Tab', action: 'tab' },
       { label: '⌫ Untab', action: 'untab' },
-    ]
+    ],
   },
   {
-    label: 'Common',
     items: [
       { label: ':', action: ':' },
       { label: '=', action: '=' },
@@ -59,62 +31,118 @@ const TOOLBAR_GROUPS = [
       { label: '!=', action: '!=' },
       { label: '+=', action: '+=' },
       { label: '-=', action: '-=' },
-    ]
+    ],
   },
   {
-    label: 'Brackets',
     items: [
       { label: '()', action: '()' },
       { label: '[]', action: '[]' },
       { label: '{}', action: '{}' },
       { label: '""', action: '""' },
       { label: "''", action: "''" },
-    ]
+    ],
   },
   {
-    label: 'Python',
     items: [
       { label: '#', action: '# ' },
       { label: '_', action: '_' },
       { label: 'f"', action: 'f"' },
-      { label: '->', action: ' -> ' },
+      { label: '→', action: ' -> ' },
       { label: '**', action: '**' },
       { label: '//', action: '//' },
-    ]
+    ],
   },
 ]
 
 export default function VSCodeEditor({
-  value, onChange, filename = 'exercise.py', height = '240px', readOnly = false, label
+  value,
+  onChange,
+  filename = 'exercise.py',
+  height = '240px',
+  readOnly = false,
+  label,
 }: Props) {
+  const {
+    lang,
+    editorHeightMode,
+    editorWrapMode,
+    editorFontSize,
+    setEditorFontSize,
+  } = useApp()
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
   const onChangeRef = useRef(onChange)
   onChangeRef.current = onChange
 
+  const autoHeight = !readOnly && editorHeightMode === 'auto'
+  const effectiveHeight = autoHeight ? 'auto' : height
+
   useEffect(() => {
     if (!containerRef.current) return
 
-    const state = EditorState.create({
-      doc: value,
-      extensions: [
-        basicSetup,
-        python(),
-        oneDark,
-        vscodeDarkTheme,
-        keymap.of([indentWithTab]),
-        EditorView.updateListener.of(update => {
-          if (update.docChanged) onChangeRef.current(update.state.doc.toString())
-        }),
-        EditorView.editable.of(!readOnly),
-        EditorView.theme({ '&': { height }, '.cm-scroller': { overflow: 'auto' } }),
-      ]
-    })
+    const extensions = [
+      basicSetup,
+      python(),
+      oneDark,
+      keymap.of([indentWithTab]),
+      EditorView.updateListener.of(update => {
+        if (update.docChanged) onChangeRef.current(update.state.doc.toString())
+      }),
+      EditorView.editable.of(!readOnly),
+      EditorView.theme({
+        '&': {
+          width: '100%',
+          maxWidth: '100%',
+          minWidth: '0',
+          height: effectiveHeight,
+          backgroundColor: '#1e1e1e',
+          color: '#d4d4d4',
+          fontFamily: "'JetBrains Mono', 'Consolas', 'Courier New', monospace",
+          fontSize: `${editorFontSize}px`,
+        },
+        '.cm-editor': { width: '100%', maxWidth: '100%', minWidth: '0' },
+        '.cm-content': {
+          caretColor: '#d4d4d4',
+          padding: '8px 0',
+          minHeight: autoHeight ? '9rem' : '100%',
+          whiteSpace: editorWrapMode === 'wrap' ? 'pre-wrap' : 'pre',
+          overflowWrap: editorWrapMode === 'wrap' ? 'anywhere' : 'normal',
+        },
+        '.cm-focused': { outline: 'none' },
+        '.cm-gutters': {
+          backgroundColor: '#1e1e1e',
+          borderRight: '1px solid #3e3e3e',
+          color: '#858585',
+          minWidth: '40px',
+          flexShrink: '0',
+        },
+        '.cm-lineNumbers .cm-gutterElement': { padding: '0 10px 0 8px', minWidth: '32px' },
+        '.cm-activeLine': { backgroundColor: '#ffffff08' },
+        '.cm-activeLineGutter': { backgroundColor: '#ffffff08' },
+        '.cm-selectionBackground, ::selection': { backgroundColor: '#264f78 !important' },
+        '.cm-cursor': { borderLeftColor: '#d4d4d4', borderLeftWidth: '2px' },
+        '.cm-scroller': {
+          fontFamily: "'JetBrains Mono', 'Consolas', 'Courier New', monospace !important",
+          fontSize: `${editorFontSize}px !important`,
+          lineHeight: '1.6',
+          overflowY: autoHeight ? 'visible' : 'auto',
+          overflowX: editorWrapMode === 'wrap' ? 'hidden' : 'auto',
+          maxWidth: '100%',
+        },
+      }, { dark: true }),
+    ]
 
+    if (editorWrapMode === 'wrap') extensions.push(EditorView.lineWrapping)
+
+    const state = EditorState.create({ doc: value, extensions })
     const view = new EditorView({ state, parent: containerRef.current })
     viewRef.current = view
-    return () => view.destroy()
-  }, [])
+
+    return () => {
+      view.destroy()
+      viewRef.current = null
+    }
+  }, [autoHeight, editorFontSize, editorWrapMode, effectiveHeight, readOnly])
 
   useEffect(() => {
     const view = viewRef.current
@@ -125,7 +153,6 @@ export default function VSCodeEditor({
     }
   }, [value])
 
-  // ── Toolbar action handler ──
   const handleToolbarAction = useCallback((action: string) => {
     const view = viewRef.current
     if (!view) return
@@ -142,7 +169,6 @@ export default function VSCodeEditor({
       return
     }
 
-    // Paired brackets — insert both and place cursor between them
     const pairs: Record<string, [string, string]> = {
       '()': ['(', ')'],
       '[]': ['[', ']'],
@@ -158,83 +184,78 @@ export default function VSCodeEditor({
 
       view.dispatch({
         changes: { from, to, insert: open + selected + close },
-        selection: { anchor: from + open.length, head: from + open.length + selected.length }
+        selection: { anchor: from + open.length, head: from + open.length + selected.length },
       })
       return
     }
 
-    // Default: insert text at cursor
     view.dispatch(view.state.replaceSelection(action))
   }, [])
 
-  return (
-    <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid #3e3e3e' }}>
+  const decreaseFont = () => {
+    const sizes = [14, 16, 18, 20, 22] as const
+    const index = sizes.indexOf(editorFontSize)
+    if (index > 0) setEditorFontSize(sizes[index - 1])
+  }
 
-      {/* ── VS Code title bar ── */}
-      <div style={{
-        background: '#252526', display: 'flex', alignItems: 'center', gap: 8,
-        padding: '7px 12px', borderBottom: '1px solid #3e3e3e',
-      }}>
-        <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-          {['#ff5f57', '#febc2e', '#28c840'].map(color => (
-            <div key={color} style={{ width: 11, height: 11, borderRadius: '50%', background: color }} />
-          ))}
+  const increaseFont = () => {
+    const sizes = [14, 16, 18, 20, 22] as const
+    const index = sizes.indexOf(editorFontSize)
+    if (index < sizes.length - 1) setEditorFontSize(sizes[index + 1])
+  }
+
+  return (
+    <section className="hp-code-editor" aria-label={label || filename}>
+      <header className="hp-code-editor__titlebar">
+        <div className="hp-code-editor__window-dots" aria-hidden="true">
+          <span />
+          <span />
+          <span />
         </div>
-        <div style={{
-          background: '#1e1e1e', borderRadius: '4px 4px 0 0',
-          padding: '3px 10px', display: 'flex', alignItems: 'center', gap: 5,
-          border: '1px solid #3e3e3e', borderBottom: '1px solid #1e1e1e', marginBottom: -8,
-        }}>
-          <span style={{ fontSize: 13 }}>🐍</span>
-          <span style={{ fontSize: 12, color: '#d4d4d4', fontFamily: 'monospace' }}>{filename}</span>
+
+        <div className="hp-code-editor__file">
+          <span aria-hidden="true">🐍</span>
+          <span>{filename}</span>
+          {!readOnly && <span className="hp-code-editor__dirty" aria-hidden="true" />}
+        </div>
+
+        <div className="hp-code-editor__actions">
+          {label && <span className="hp-code-editor__label">{label}</span>}
           {!readOnly && (
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#d4d4d4', opacity: 0.4, marginLeft: 4 }} />
+            <div className="hp-code-editor__zoom" aria-label={lang === 'pt' ? 'Zoom do editor' : 'Editor zoom'}>
+              <button
+                type="button"
+                onClick={decreaseFont}
+                disabled={editorFontSize === 14}
+                aria-label={lang === 'pt' ? 'Diminuir texto do editor' : 'Decrease editor text'}
+              >
+                −
+              </button>
+              <span>{editorFontSize}px</span>
+              <button
+                type="button"
+                onClick={increaseFont}
+                disabled={editorFontSize === 22}
+                aria-label={lang === 'pt' ? 'Aumentar texto do editor' : 'Increase editor text'}
+              >
+                +
+              </button>
+            </div>
           )}
         </div>
-        {label && <span style={{ marginLeft: 'auto', fontSize: 11, color: '#858585' }}>{label}</span>}
-      </div>
+      </header>
 
-      {/* ── Mobile toolbar ── */}
       {!readOnly && (
-        <div style={{
-          background: '#2d2d2d',
-          borderBottom: '1px solid #3e3e3e',
-          overflowX: 'auto',
-          WebkitOverflowScrolling: 'touch' as any,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 0,
-          padding: '4px 8px',
-          scrollbarWidth: 'none',
-        }}>
-          {TOOLBAR_GROUPS.map((group, gi) => (
-            <div key={gi} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-              {/* Group separator */}
-              {gi > 0 && (
-                <div style={{ width: 1, height: 20, background: '#3e3e3e', margin: '0 6px', flexShrink: 0 }} />
-              )}
+        <div className="hp-code-editor__toolbar" aria-label={lang === 'pt' ? 'Atalhos do editor' : 'Editor shortcuts'}>
+          {TOOLBAR_GROUPS.map((group, groupIndex) => (
+            <div key={groupIndex} className="hp-code-editor__toolbar-group">
               {group.items.map(item => (
                 <button
+                  type="button"
                   key={item.action}
-                  onPointerDown={e => {
-                    e.preventDefault() // prevent blur on editor
+                  onPointerDown={event => {
+                    event.preventDefault()
                     handleToolbarAction(item.action)
-                  }}
-                  style={{
-                    background: item.action === 'tab' || item.action === 'untab'
-                      ? '#3e3e3e' : 'transparent',
-                    border: 'none',
-                    borderRadius: 5,
-                    color: item.action === 'tab' || item.action === 'untab'
-                      ? '#dcdcaa' : '#9cdcfe',
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 12,
-                    padding: '5px 8px',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    minHeight: 30,
-                    flexShrink: 0,
-                    fontWeight: item.action === 'tab' || item.action === 'untab' ? 500 : 400,
                   }}
                 >
                   {item.label}
@@ -245,8 +266,11 @@ export default function VSCodeEditor({
         </div>
       )}
 
-      {/* ── CodeMirror editor ── */}
-      <div ref={containerRef} style={{ height }} />
-    </div>
+      <div
+        ref={containerRef}
+        className={`hp-code-editor__surface ${autoHeight ? 'hp-code-editor__surface--auto' : 'hp-code-editor__surface--compact'} ${editorWrapMode === 'wrap' ? 'hp-code-editor__surface--wrap' : 'hp-code-editor__surface--scroll'}`}
+        style={autoHeight ? undefined : { height }}
+      />
+    </section>
   )
 }

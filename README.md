@@ -1,5 +1,7 @@
 # Hashtag Python
 
+**Versão atual: 7.1.0 — Sprint 5 (viewport móvel e editor responsivo).**
+
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
 ## Estado da versão 4.0

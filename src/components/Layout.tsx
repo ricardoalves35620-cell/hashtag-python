@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 import BottomNav from './BottomNav'
 import { Button } from './ui'
 import { shouldRouteWheelToMain } from '../lib/scrollRouting'
+import { isVirtualKeyboardOpen } from '../lib/mobileViewport'
 
 interface Props {
   children: React.ReactNode
@@ -20,7 +21,44 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
   const navigate = useNavigate()
   const showNav = !hideNav
   const shellRef = useRef<HTMLDivElement>(null)
+  const [keyboardOpen, setKeyboardOpen] = useState(false)
 
+
+  useEffect(() => {
+    const viewport = window.visualViewport
+    if (!viewport) return
+
+    const updateKeyboardState = () => {
+      setKeyboardOpen(isVirtualKeyboardOpen(
+        window.innerHeight,
+        viewport.height,
+        document.activeElement,
+        viewport.width,
+      ))
+    }
+
+    viewport.addEventListener('resize', updateKeyboardState)
+    viewport.addEventListener('scroll', updateKeyboardState)
+    document.addEventListener('focusin', updateKeyboardState)
+    document.addEventListener('focusout', updateKeyboardState)
+    window.addEventListener('orientationchange', updateKeyboardState)
+    updateKeyboardState()
+
+    return () => {
+      viewport.removeEventListener('resize', updateKeyboardState)
+      viewport.removeEventListener('scroll', updateKeyboardState)
+      document.removeEventListener('focusin', updateKeyboardState)
+      document.removeEventListener('focusout', updateKeyboardState)
+      window.removeEventListener('orientationchange', updateKeyboardState)
+    }
+  }, [])
+
+  const focusMainContent = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    const mainContent = document.getElementById('main-content')
+    mainContent?.focus({ preventScroll: true })
+    mainContent?.scrollIntoView({ block: 'start' })
+  }
 
   useEffect(() => {
     const shell = shellRef.current
@@ -43,8 +81,8 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
   }, [location.pathname])
 
   return (
-    <div ref={shellRef} className={`hp-app-shell ${showNav ? 'hp-app-shell--with-nav' : ''}`}>
-      <a className="hp-skip-link" href="#main-content">
+    <div ref={shellRef} className={`hp-app-shell ${showNav ? 'hp-app-shell--with-nav' : ''} ${keyboardOpen ? 'hp-app-shell--keyboard-open' : ''}`}>
+      <a className="hp-skip-link" href="#main-content" onClick={focusMainContent}>
         {lang === 'en' ? 'Skip to content' : 'Pular para o conteúdo'}
       </a>
 
@@ -103,7 +141,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
         </div>
       </main>
 
-      {showNav && <BottomNav />}
+      {showNav && <BottomNav hidden={keyboardOpen} />}
     </div>
   )
 }

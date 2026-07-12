@@ -20,7 +20,7 @@ function routeIsActive(pathname: string, tabPath: string) {
   return pathname === tabPath || pathname.startsWith(`${tabPath}/`)
 }
 
-export default function BottomNav() {
+export default function BottomNav({ hidden = false }: { hidden?: boolean }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { lang } = useApp()
@@ -33,7 +33,7 @@ export default function BottomNav() {
   ]
 
   return (
-    <nav className="hp-bottom-nav" aria-label={lang === 'en' ? 'Main navigation' : 'Navegação principal'}>
+    <nav className={`hp-bottom-nav ${hidden ? 'hp-bottom-nav--hidden' : ''}`} aria-hidden={hidden || undefined} aria-label={lang === 'en' ? 'Main navigation' : 'Navegação principal'}>
       <div className="hp-bottom-nav__inner">
         {tabs.map(tab => {
           const isActive = routeIsActive(location.pathname, tab.path)

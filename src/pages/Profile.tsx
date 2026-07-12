@@ -4,6 +4,7 @@ import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { getSupabase } from '../lib/supabase'
 import type { Theme } from '../contexts/AppContext'
+import EditorPreferences from '../components/EditorPreferences'
 
 const COUNTRY_CODES = [
   { code: '+1',   label: '+1 (US/CA)' },
@@ -111,6 +112,7 @@ export default function Profile() {
             <div className="grid grid-cols-3 gap-2 mb-4">{([{ value: 'dark', label: t.dark, icon: '🌙' }, { value: 'light', label: t.light, icon: '☀️' }, { value: 'system', label: t.system, icon: '📱' }] as const).map(option => <button key={option.value} onClick={() => setTheme(option.value)} className="rounded-xl p-3 text-xs" style={{ background: theme === option.value ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: theme === option.value ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}><div className="text-xl mb-1">{option.icon}</div>{option.label}</button>)}</div>
             <div className="grid grid-cols-2 gap-2">{([{ code: 'en' as const, label: '🇨🇦 English' }, { code: 'pt' as const, label: '🇧🇷 Português' }]).map(option => <button key={option.code} onClick={() => setLang(option.code)} className="rounded-xl py-3 text-sm" style={{ background: lang === option.code ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: lang === option.code ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}>{option.label}</button>)}</div>
           </div>
+          <EditorPreferences />
         </div>
       </Layout>
     )
@@ -392,6 +394,8 @@ export default function Profile() {
             </div>
           </div>
         </div>
+
+        <EditorPreferences />
 
         {/* Error */}
         {error && (

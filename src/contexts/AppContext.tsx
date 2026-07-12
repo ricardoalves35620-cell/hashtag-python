@@ -13,12 +13,21 @@ import { migrateGuestBaseZeroState } from '../lib/baseZero'
 import { chooseNewestLearningState, fetchRemoteLearningState, scheduleLearningStateSync } from '../lib/learningSync'
 
 export type Theme = 'dark' | 'light' | 'system'
+export type EditorHeightMode = 'auto' | 'compact'
+export type EditorWrapMode = 'wrap' | 'scroll'
+export type EditorFontSize = 14 | 16 | 18 | 20 | 22
 
 interface AppContextType {
   lang: Lang
   setLang: (l: Lang) => void
   theme: Theme
   setTheme: (t: Theme) => void
+  editorHeightMode: EditorHeightMode
+  setEditorHeightMode: (mode: EditorHeightMode) => void
+  editorWrapMode: EditorWrapMode
+  setEditorWrapMode: (mode: EditorWrapMode) => void
+  editorFontSize: EditorFontSize
+  setEditorFontSize: (size: EditorFontSize) => void
   user: User | null
   isGuest: boolean
   learnerId: string | null
@@ -61,6 +70,17 @@ function getDisplayName(u: User | null): string {
 export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => (localStorage.getItem('hp_lang') as Lang) || 'en')
   const [theme, setThemeState] = useState<Theme>(() => (localStorage.getItem('hp_theme') as Theme) || 'dark')
+  const [editorHeightMode, setEditorHeightModeState] = useState<EditorHeightMode>(() =>
+    (localStorage.getItem('hp_editor_height') as EditorHeightMode) || 'auto'
+  )
+  const [editorWrapMode, setEditorWrapModeState] = useState<EditorWrapMode>(() =>
+    (localStorage.getItem('hp_editor_wrap') as EditorWrapMode) ||
+    (window.matchMedia('(max-width: 767px)').matches ? 'wrap' : 'scroll')
+  )
+  const [editorFontSize, setEditorFontSizeState] = useState<EditorFontSize>(() => {
+    const saved = Number(localStorage.getItem('hp_editor_font_size'))
+    return ([14, 16, 18, 20, 22] as const).includes(saved as EditorFontSize) ? saved as EditorFontSize : 16
+  })
   const [user, setUser] = useState<User | null>(null)
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('hp_guest_mode') === 'true')
   const [loading, setLoading] = useState(true)
@@ -74,10 +94,53 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setLang = (value: Lang) => { setLangState(value); localStorage.setItem('hp_lang', value) }
   const setTheme = (value: Theme) => { setThemeState(value); localStorage.setItem('hp_theme', value); applyTheme(value) }
 
+  const persistEditorPreference = useCallback((key: 'editor_height' | 'editor_wrap' | 'editor_font_size', value: string | number) => {
+    if (!user) return
+    void getSupabase().auth.updateUser({
+      data: { [key]: value },
+    }).catch(error => console.warn('Could not sync editor preference', error))
+  }, [user])
+
+  const setEditorHeightMode = useCallback((value: EditorHeightMode) => {
+    setEditorHeightModeState(value)
+    localStorage.setItem('hp_editor_height', value)
+    persistEditorPreference('editor_height', value)
+  }, [persistEditorPreference])
+
+  const setEditorWrapMode = useCallback((value: EditorWrapMode) => {
+    setEditorWrapModeState(value)
+    localStorage.setItem('hp_editor_wrap', value)
+    persistEditorPreference('editor_wrap', value)
+  }, [persistEditorPreference])
+
+  const setEditorFontSize = useCallback((value: EditorFontSize) => {
+    setEditorFontSizeState(value)
+    localStorage.setItem('hp_editor_font_size', String(value))
+    persistEditorPreference('editor_font_size', value)
+  }, [persistEditorPreference])
+
   const updateUserState = (nextUser: User | null) => {
     setUser(nextUser)
     setAvatarUrl(nextUser?.user_metadata?.avatar_url || null)
     setAccountDisplayName(getDisplayName(nextUser))
+
+    const remoteHeight = nextUser?.user_metadata?.editor_height
+    if (remoteHeight === 'auto' || remoteHeight === 'compact') {
+      setEditorHeightModeState(remoteHeight)
+      localStorage.setItem('hp_editor_height', remoteHeight)
+    }
+
+    const remoteWrap = nextUser?.user_metadata?.editor_wrap
+    if (remoteWrap === 'wrap' || remoteWrap === 'scroll') {
+      setEditorWrapModeState(remoteWrap)
+      localStorage.setItem('hp_editor_wrap', remoteWrap)
+    }
+
+    const remoteFontSize = Number(nextUser?.user_metadata?.editor_font_size)
+    if (([14, 16, 18, 20, 22] as const).includes(remoteFontSize as EditorFontSize)) {
+      setEditorFontSizeState(remoteFontSize as EditorFontSize)
+      localStorage.setItem('hp_editor_font_size', String(remoteFontSize))
+    }
     if (nextUser) {
       if (localStorage.getItem('hp_guest_mode') === 'true' || localStorage.getItem('hp_guest_transfer_pending') === 'true') {
         localStorage.setItem('hp_guest_migrate_to', nextUser.id)
@@ -206,7 +269,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   return (
     <AppContext.Provider value={{
-      lang, setLang, theme, setTheme, user, isGuest, learnerId, continueAsGuest, exitGuest,
+      lang, setLang, theme, setTheme, editorHeightMode, setEditorHeightMode, editorWrapMode, setEditorWrapMode, editorFontSize, setEditorFontSize,
+      user, isGuest, learnerId, continueAsGuest, exitGuest,
       loading, progress, refreshProgress, refreshUser, displayName, avatarUrl, learningState,
       recordLearningAttempt, recordLearningAttempts, completeDiagnostic, refreshLearningState,
     }}>
