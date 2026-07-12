@@ -25,6 +25,7 @@ import Visualizer from './pages/Visualizer'
 import ProjectLab from './pages/ProjectLab'
 import EngineeringLab from './pages/EngineeringLab'
 import AILab from './pages/AILab'
+import CareerReadiness from './pages/CareerReadiness'
 import { appConfiguration } from './lib/config'
 
 // Redirect to /login if not authenticated
@@ -72,6 +73,7 @@ function AppRoutes() {
       <Route path="/project-lab" element={<PrivateRoute><ProjectLab /></PrivateRoute>} />
       <Route path="/engineering-lab" element={<PrivateRoute><EngineeringLab /></PrivateRoute>} />
       <Route path="/ai-lab" element={<PrivateRoute><AILab /></PrivateRoute>} />
+      <Route path="/career" element={<PrivateRoute><CareerReadiness /></PrivateRoute>} />
       <Route path="/roadmap" element={<PrivateRoute><Roadmap /></PrivateRoute>} />
       <Route path="/onboarding" element={<PrivateRoute><Onboarding /></PrivateRoute>} />
       <Route path="/group" element={<PrivateRoute><Group /></PrivateRoute>} />

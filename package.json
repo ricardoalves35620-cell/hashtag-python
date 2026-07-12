@@ -1,7 +1,7 @@
 {
   "name": "hashtag-python",
   "private": true,
-  "version": "5.6.0",
+  "version": "6.0.0",
   "type": "module",
   "engines": {
     "node": ">=22.12.0",

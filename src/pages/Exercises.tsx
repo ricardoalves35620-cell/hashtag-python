@@ -5,6 +5,7 @@ import VSCodeEditor from '../components/VSCodeEditor'
 import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
 import ExerciseFeedback from '../components/ExerciseFeedback'
+import LearningBrief from '../components/LearningBrief'
 import { Alert, Badge, Button, Card, Progress } from '../components/ui'
 import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
@@ -16,6 +17,7 @@ import { getSkillsForPhase } from '../data/skills'
 import { extractErrorCategory } from '../lib/learningEngine'
 import { chooseNewestDraft, fetchRemoteDraft, loadLocalDraft, saveLocalDraft, saveRemoteDraft } from '../lib/codeDrafts'
 import { scrollToTop } from '../lib/scroll'
+import { getExercisePedagogy } from '../lib/pedagogy'
 
 interface AttemptView {
   id: string
@@ -58,6 +60,7 @@ export default function Exercises() {
   const checks = validationChecks[exercise.id] || []
   const passedChecks = checks.filter(check => check.passed).length
   const draftKey = `${learnerId || 'anonymous'}:${phase.id}:${exercise.id}`
+  const learningBrief = useMemo(() => getExercisePedagogy(phase, exercise, activeEx, lang), [phase, exercise, activeEx, lang])
 
   useEffect(() => {
     let cancelled = false
@@ -186,6 +189,8 @@ export default function Exercises() {
             </Button>
           ))}
         </div>
+
+        <LearningBrief brief={learningBrief} lang={lang} />
 
         <Card padding="md">
           <div className="flex flex-wrap items-start justify-between gap-3">

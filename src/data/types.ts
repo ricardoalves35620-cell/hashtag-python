@@ -16,6 +16,8 @@ export interface LessonBlock {
   alternate?: Bilingual
 }
 
+export type ExerciseDifficulty = 'guided' | 'independent' | 'challenge'
+
 export interface Exercise {
   id: string
   title: Bilingual
@@ -24,6 +26,13 @@ export interface Exercise {
   hints: Bilingual[]
   sampleOutput?: Bilingual
   grading?: ExerciseGrading
+  objective?: Bilingual
+  difficulty?: ExerciseDifficulty
+  estimatedMinutes?: number
+  skillIds?: string[]
+  successCriteria?: { en: string[]; pt: string[] }
+  commonMistakes?: { en: string[]; pt: string[] }
+  workplaceContext?: Bilingual
 }
 
 export interface ExerciseGrading {

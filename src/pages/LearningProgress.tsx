@@ -46,6 +46,11 @@ export default function LearningProgress() {
   return (
     <Layout title={t.title}>
       <div className="p-4 space-y-4">
+        <button onClick={() => navigate('/career')} className="w-full rounded-xl border border-primary/30 bg-primary-soft p-4 text-left transition hover:border-primary">
+          <div className="text-xs font-semibold uppercase tracking-wide text-primary">{lang === 'en' ? 'Career readiness' : 'Preparação para o mercado'}</div>
+          <div className="mt-1 font-semibold text-ink">{lang === 'en' ? 'See the evidence and portfolio projects employers expect' : 'Veja as evidências e projetos de portfólio esperados pelo mercado'}</div>
+          <div className="mt-1 text-sm text-ink-secondary">{lang === 'en' ? 'Turn phase completion into demonstrable professional skills.' : 'Transforme fases concluídas em habilidades profissionais demonstráveis.'}</div>
+        </button>
         <div>
           <h1 className="text-xl font-semibold" style={{ color: 'var(--c-text)' }}>{t.title}</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--c-text2)' }}>{t.subtitle}</p>
