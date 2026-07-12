@@ -568,3 +568,274 @@ input, textarea, select { font-size: 16px !important; }
 .hp-divider::before, .hp-divider::after { content: ''; height: 1px; flex: 1; background: var(--color-border-subtle); }
 .hp-text-link { min-height: 32px; min-width: 0; border: 0; background: none; color: var(--color-primary-text); font-size: var(--text-caption); font-weight: 700; padding: 0; box-shadow: none; }
 .hp-text-link:hover { text-decoration: underline; }
+
+/* Foundation Sprint 1.3 — responsive shell, navigation and page geometry */
+:root {
+  --app-header-height: 72px;
+  --app-nav-height: 76px;
+  --page-gutter: clamp(1rem, 3vw, 2rem);
+  --page-max: 72rem;
+  --reading-max: 54rem;
+}
+
+.hp-app-shell {
+  min-height: 100dvh;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--color-bg-canvas);
+  isolation: isolate;
+}
+
+.hp-skip-link {
+  position: fixed;
+  z-index: 2000;
+  top: calc(var(--safe-top) + var(--space-2));
+  left: max(var(--safe-left), var(--space-3));
+  transform: translateY(-160%);
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 750;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.hp-skip-link:focus { transform: translateY(0); }
+
+.hp-app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: var(--app-header-height);
+  padding: 0;
+  background: color-mix(in srgb, var(--color-bg-subtle) 91%, transparent);
+  border-bottom: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(20px) saturate(1.28);
+  -webkit-backdrop-filter: blur(20px) saturate(1.28);
+}
+
+.hp-app-header__inner {
+  width: min(100%, var(--page-max));
+  min-height: var(--app-header-height);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(88px, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: max(var(--safe-top), var(--space-2));
+  padding-bottom: var(--space-2);
+  padding-left: max(var(--safe-left), var(--page-gutter));
+  padding-right: max(var(--safe-right), var(--page-gutter));
+}
+
+.hp-app-header__leading,
+.hp-app-header__actions {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+.hp-app-header__actions { justify-content: flex-end; }
+.hp-app-header__title-spacer { min-width: 0; }
+.hp-app-header__title {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+  font-weight: 780;
+  text-align: center;
+  letter-spacing: -0.018em;
+}
+.hp-back-button { max-width: 10rem; padding-inline: var(--space-2); }
+.hp-back-button .hp-button__label { display: block; }
+.hp-brand-link { gap: var(--space-1); }
+.hp-brand-mark {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  line-height: 1;
+  box-shadow: var(--shadow-xs);
+}
+
+.hp-main {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--space-4);
+  -webkit-overflow-scrolling: touch;
+}
+.hp-main__content {
+  width: 100%;
+  min-height: 100%;
+  outline: none;
+  padding-bottom: calc(var(--app-nav-height) + max(var(--safe-bottom), var(--space-5)));
+}
+
+/* Existing pages use a root p-4 wrapper. Normalize it without touching every route. */
+.hp-main__content > .p-4,
+.hp-main__content > .px-4,
+.hp-main__content > .space-y-4,
+.hp-main__content > div > .p-4 {
+  width: min(100%, var(--page-max));
+  margin-inline: auto;
+}
+.hp-main__content > .p-4,
+.hp-main__content > div > .p-4 {
+  padding: clamp(1rem, 2.4vw, 1.75rem);
+}
+
+.hp-bottom-nav {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 max(var(--safe-right), var(--space-2)) max(var(--safe-bottom), var(--space-2)) max(var(--safe-left), var(--space-2));
+  pointer-events: none;
+}
+.hp-bottom-nav__inner {
+  width: min(calc(100vw - 16px), 38rem);
+  min-height: 66px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
+  padding: 5px;
+  background: color-mix(in srgb, var(--color-bg-surface) 94%, transparent);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(22px) saturate(1.25);
+  -webkit-backdrop-filter: blur(22px) saturate(1.25);
+  pointer-events: auto;
+}
+.hp-bottom-nav__item {
+  position: relative;
+  min-width: 0;
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 5px 2px 7px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  box-shadow: none;
+  transition: background var(--duration-fast), color var(--duration-fast), transform var(--duration-fast);
+}
+.hp-bottom-nav__item:hover { color: var(--color-text-primary); background: var(--color-bg-surface-raised); }
+.hp-bottom-nav__item:active { transform: scale(0.97); }
+.hp-bottom-nav__item--active { background: var(--color-primary-soft); color: var(--color-primary-text); }
+.hp-bottom-nav__icon { height: 24px; display: flex; align-items: center; justify-content: center; }
+.hp-bottom-nav__label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.68rem; font-weight: 720; line-height: 1.1; }
+.hp-bottom-nav__active-dot {
+  position: absolute;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+}
+.hp-bottom-nav__item--active .hp-bottom-nav__active-dot { background: currentColor; }
+
+/* Tablet: more breathing room and stable reading width. */
+@media (min-width: 768px) {
+  :root { --app-header-height: 76px; --app-nav-height: 82px; }
+  .hp-app-shell {
+    max-width: 84rem;
+    border-inline: 1px solid var(--color-border-subtle);
+    box-shadow: 0 0 80px rgb(0 0 0 / 0.08);
+  }
+  .hp-main__content > .p-4,
+  .hp-main__content > div > .p-4 { padding-block: var(--space-6); }
+  .hp-bottom-nav__inner { min-height: 70px; }
+}
+
+/* Desktop: navigation becomes a compact left rail and content gains usable width. */
+@media (min-width: 1100px) {
+  :root { --desktop-rail-width: 88px; --app-nav-height: 0px; }
+  .hp-app-shell--with-nav {
+    grid-template-columns: var(--desktop-rail-width) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .hp-app-shell--with-nav .hp-app-header { grid-column: 2; }
+  .hp-app-shell--with-nav .hp-main { grid-column: 2; }
+  .hp-app-shell--with-nav .hp-main__content { padding-bottom: var(--space-8); }
+  .hp-bottom-nav {
+    top: 0;
+    right: auto;
+    width: var(--desktop-rail-width);
+    padding: max(var(--safe-top), var(--space-4)) var(--space-2) max(var(--safe-bottom), var(--space-4));
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--color-border-subtle);
+    background: var(--color-bg-subtle);
+  }
+  .hp-bottom-nav__inner {
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-radius: var(--radius-xl);
+    box-shadow: none;
+    background: transparent;
+    border: 0;
+    backdrop-filter: none;
+  }
+  .hp-bottom-nav__item { width: 100%; min-height: 62px; padding: var(--space-2) 3px; }
+  .hp-bottom-nav__label { font-size: 0.67rem; }
+  .hp-bottom-nav__active-dot { bottom: 5px; }
+  .hp-app-header__inner { width: 100%; max-width: var(--page-max); }
+}
+
+/* Phones: preserve title space and remove decorative chrome that steals width. */
+@media (max-width: 520px) {
+  :root { --app-header-height: 68px; --page-gutter: 0.875rem; }
+  .hp-app-header__inner {
+    grid-template-columns: minmax(56px, auto) minmax(0, 1fr) auto;
+    gap: var(--space-2);
+  }
+  .hp-app-header__title { font-size: 0.94rem; text-align: left; }
+  .hp-back-button { max-width: 7.25rem; }
+  .hp-brand-link > span:last-child { display: none; }
+  .hp-segmented__item { min-width: 35px; min-height: 34px; padding-inline: 7px; }
+  .hp-bottom-nav { padding-left: 0; padding-right: 0; padding-bottom: var(--safe-bottom); }
+  .hp-bottom-nav__inner {
+    width: 100%;
+    max-width: none;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+  .hp-main__content > .p-4,
+  .hp-main__content > div > .p-4 { padding-inline: var(--page-gutter); }
+}
+
+/* Compact landscape phones: keep the nav from consuming a third of the viewport. */
+@media (max-height: 520px) and (orientation: landscape) and (max-width: 950px) {
+  :root { --app-nav-height: 54px; }
+  .hp-bottom-nav__inner { min-height: 50px; }
+  .hp-bottom-nav__item { min-height: 44px; flex-direction: row; gap: var(--space-1); padding: 4px; }
+  .hp-bottom-nav__label { font-size: 0.64rem; }
+  .hp-bottom-nav__active-dot { display: none; }
+}

@@ -81,3 +81,16 @@ All motion respects `prefers-reduced-motion`.
 ## Canonical components — Foundation 1.2
 
 Product code should import from `src/components/ui`. Page-specific controls must not duplicate button, form, alert, progress, tab or card state styles. See `COMPONENT_GUIDE.md`.
+
+## Responsive application shell (Foundation 1.3)
+
+The shared `Layout` component owns header, scroll container and primary navigation.
+Pages must not create their own fixed headers or bottom navigation.
+
+Breakpoints:
+- Phone: below 768 px
+- Tablet: 768–1099 px
+- Desktop rail: 1100 px and above
+
+Page roots should use the shared spacing geometry and avoid fixed viewport widths.
+Interactive content must remain above the navigation safe area.

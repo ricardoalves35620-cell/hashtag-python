@@ -10,7 +10,14 @@ const icons = {
 }
 
 function NavIcon({ children }: { children: React.ReactNode }) {
-  return <svg width="21" height="21" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
+  return <svg width="22" height="22" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
+}
+
+function routeIsActive(pathname: string, tabPath: string) {
+  if (tabPath === '/') {
+    return pathname === '/' || /^\/phase\/\d+$/.test(pathname) || /^\/(lesson|exercises|quiz|exam)\//.test(pathname)
+  }
+  return pathname === tabPath || pathname.startsWith(`${tabPath}/`)
 }
 
 export default function BottomNav() {
@@ -29,7 +36,7 @@ export default function BottomNav() {
     <nav className="hp-bottom-nav" aria-label={lang === 'en' ? 'Main navigation' : 'Navegação principal'}>
       <div className="hp-bottom-nav__inner">
         {tabs.map(tab => {
-          const isActive = location.pathname === tab.path || (tab.path === '/' && location.pathname.split('/').length === 2 && !location.pathname.match(/^\/[a-z]/))
+          const isActive = routeIsActive(location.pathname, tab.path)
           return (
             <button
               key={tab.path}
@@ -37,9 +44,11 @@ export default function BottomNav() {
               onClick={() => navigate(tab.path)}
               className={`hp-bottom-nav__item ${isActive ? 'hp-bottom-nav__item--active' : ''}`}
               aria-current={isActive ? 'page' : undefined}
+              title={tab.label}
             >
               <span className="hp-bottom-nav__icon"><NavIcon>{tab.icon}</NavIcon></span>
               <span className="hp-bottom-nav__label">{tab.label}</span>
+              <span className="hp-bottom-nav__active-dot" aria-hidden="true" />
             </button>
           )
         })}
