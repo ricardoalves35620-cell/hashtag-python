@@ -30,4 +30,14 @@ describe('published curriculum integrity', () => {
       }
     }
   })
+  it('publishes the complete core and optional local-AI paths through phase 68', () => {
+    expect(ALL_PHASES.map(phase => phase.id)).toEqual(Array.from({ length: 69 }, (_, index) => index))
+    expect(ALL_PHASES.filter(phase => phase.stage === 'professional').length).toBe(12)
+    expect(ALL_PHASES.filter(phase => phase.stage === 'advanced').length).toBe(8)
+    expect(ALL_PHASES.filter(phase => phase.stage === 'engineering').length).toBe(6)
+    expect(ALL_PHASES.filter(phase => phase.stage === 'ai-data').length).toBe(7)
+    expect(ALL_PHASES.filter(phase => phase.stage === 'ai-deep').length).toBe(4)
+    expect(ALL_PHASES.filter(phase => phase.stage === 'ai-local').length).toBe(4)
+  })
+
 })

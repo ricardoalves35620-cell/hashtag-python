@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { CURRICULUM_PATHS, type CurriculumPathId, type CurriculumStatus } from '../data/curriculum'
@@ -17,17 +18,17 @@ export default function Roadmap() {
   const t = {
     en: {
       title: 'Learning paths', heading: 'A complete path, without false promises',
-      intro: 'The current 28 phases are the beginning of the Python foundation. The roadmap below separates what is already available from what still needs to be built.',
+      intro: 'The complete Python spine and the optional local-AI specialization are now published. The map makes prerequisites and realistic desktop practice explicit.',
       required: 'Mandatory', optional: 'Optional specialization', hours: 'estimated hours',
       phases: 'phases', outcomes: 'You will be able to',
-      honesty: 'Completing the available phases means mastering the current foundation. Advanced Python and local AI require the later stages shown here.'
+      honesty: 'The web app teaches, evaluates and simulates the complete path. PyTorch training and local model execution still require a desktop Python environment and suitable hardware; no paid AI API is required.'
     },
     pt: {
       title: 'Trilhas', heading: 'Um caminho completo, sem promessas falsas',
-      intro: 'As 28 fases atuais são o começo da base de Python. O mapa abaixo separa o que já está disponível do que ainda precisa ser construído.',
+      intro: 'A espinha dorsal completa de Python e a especialização opcional em IA local estão publicadas. O mapa deixa claros os pré-requisitos e a prática real necessária no computador.',
       required: 'Obrigatória', optional: 'Especialização opcional', hours: 'horas estimadas',
       phases: 'fases', outcomes: 'Ao terminar, você poderá',
-      honesty: 'Concluir as fases disponíveis significa dominar a base atual. Python avançado e IA local exigem as etapas posteriores mostradas aqui.'
+      honesty: 'O app web ensina, avalia e simula o caminho completo. Treino com PyTorch e execução de modelos locais ainda exigem um ambiente Python desktop e hardware adequado; nenhuma API paga de IA é necessária.'
     }
   }[lang]
 
@@ -65,6 +66,15 @@ export default function Roadmap() {
           <div className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--c-muted)' }}>{path.subtitle[lang]}</div>
           <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--c-text)' }}>{path.title[lang]}</h2>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--c-text2)' }}>{path.description[lang]}</p>
+          <Link
+            to={path.id === 'ai-local' ? '/ai-lab' : '/engineering-lab'}
+            className="inline-flex mt-4 rounded-lg px-3 py-2 text-xs font-medium"
+            style={{ background: 'var(--c-purple-dm)', color: 'var(--c-purple-l)', border: '1px solid var(--c-purple)' }}
+          >
+            {path.id === 'ai-local'
+              ? (lang === 'en' ? 'Open Local AI Lab →' : 'Abrir Laboratório de IA Local →')
+              : (lang === 'en' ? 'Open Engineering Lab →' : 'Abrir Laboratório de Engenharia →')}
+          </Link>
         </section>
 
         <div className="space-y-3">

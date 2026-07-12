@@ -202,7 +202,19 @@ self.onmessage = async event => {
 
     if (message.type === 'analyze' || message.type === 'run') {
       const pyodide = await loadEngine()
-      const program = buildProgram(message.payload || {}, message.type === 'run')
+      const payload = message.payload || {}
+
+      // Pyodide ships scientific packages separately. Detect imports in every
+      // executable fragment so lessons using NumPy/Pandas work without asking a
+      // complete beginner to manage browser packages manually.
+      if (message.type === 'run') {
+        const importSource = [payload.setupCode, payload.code, payload.afterCode]
+          .filter(Boolean)
+          .join('\n')
+        if (importSource.trim()) await pyodide.loadPackagesFromImports(importSource)
+      }
+
+      const program = buildProgram(payload, message.type === 'run')
       await pyodide.runPythonAsync(program)
       const raw = pyodide.globals.get('_hp_result_json')
       const result = JSON.parse(String(raw || '{}'))

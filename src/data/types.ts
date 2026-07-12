@@ -88,12 +88,20 @@ export interface Exam {
   testCases: TestCase[]
 }
 
+export type CurriculumTrack = 'core' | 'ai-local'
+export type PhaseStage = 'base' | 'professional' | 'advanced' | 'engineering' | 'ai-data' | 'ai-deep' | 'ai-local'
+
 export interface Phase {
   id: number
   title: Bilingual
   description: Bilingual
   icon: string
   libraries: string[]
+  track?: CurriculumTrack
+  stage?: PhaseStage
+  estimatedHours?: number
+  desktopRequired?: boolean
+  labPath?: string
   installCommand?: string
   lesson: {
     title: Bilingual

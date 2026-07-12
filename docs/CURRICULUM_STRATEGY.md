@@ -23,7 +23,7 @@ Sintaxe, tipos, operadores, input, decisões, loops, coleções, funções, arqu
 
 Projetos de terminal que combinam os fundamentos. A conclusão desta etapa significa domínio da base publicada, não domínio avançado.
 
-### 3. Python profissional — próxima prioridade
+### 3. Python profissional — publicado nas fases 28–39
 
 - Terminal e ambientes virtuais.
 - `pip`, dependências e empacotamento.
@@ -35,19 +35,19 @@ Projetos de terminal que combinam os fundamentos. A conclusão desta etapa signi
 - Classes, composição, herança e protocolos.
 - Refatoração e princípios de design.
 
-### 4. Python avançado
+### 4. Python avançado — publicado nas fases 40–47
 
 Modelo de dados, iteradores, generators, decorators, context managers, descriptors, metaclasses com propósito, concorrência, multiprocessing, async, profiling, memória e internals.
 
-### 5. Engenharia de software com Python
+### 5. Engenharia de software com Python — publicado nas fases 48–52
 
 SQL, bancos, APIs, arquitetura, segurança, automação, data pipelines, deploy, observabilidade e manutenção.
 
-### 6. Capstones de domínio
+### 6. Capstones de domínio — publicado na fase 53
 
 Projetos grandes, revisão de código desconhecido, decisões de arquitetura e portfólio independente.
 
-## Trilha opcional de IA local
+## Trilha opcional de IA local — publicada nas fases 54–68
 
 ### Pré-requisitos
 
@@ -83,4 +83,18 @@ O aluno deve dominar Python profissional, testes, estruturas de dados, SQL e fun
 
 ## Próxima entrega recomendada
 
-Concluir a migração das avaliações existentes para testes de comportamento específicos e iniciar o sistema de habilidades/revisão espaçada. Depois disso, construir o módulo **Python profissional** antes de adicionar conteúdo de IA. Ele deve incluir um laboratório desktop guiado para terminal, arquivos reais, ambientes virtuais, Git, pacotes e testes.
+Construir o **Desktop Runner** como complemento do app web. A formação e os laboratórios já estão publicados, mas práticas que exigem sistema de arquivos real, `venv`, Git, SQLite, servidores HTTP, PyTorch, GPU e modelos GGUF precisam de um ambiente nativo controlado.
+
+O runner deve:
+
+- reaproveitar a interface React, preferencialmente com Tauri;
+- detectar e instalar uma distribuição Python suportada;
+- criar ambientes por projeto;
+- executar comandos com confirmação e logs;
+- validar missões com testes locais;
+- detectar CPU, RAM e GPU;
+- baixar modelos apenas de fontes escolhidas pelo aluno;
+- manter documentos e índices localmente;
+- exportar um relatório de evidências para o app web.
+
+Ele não deve esconder para sempre como o ambiente funciona. Primeiro automatiza com segurança; depois revela e ensina cada comando.

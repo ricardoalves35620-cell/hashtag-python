@@ -55,7 +55,10 @@ export default defineConfig({
           if (id.includes('node_modules/@supabase')) return 'supabase'
           if (id.includes('node_modules/@codemirror') || id.includes('node_modules/codemirror')) return 'editor'
           if (id.includes('node_modules/react')) return 'react'
-          if (id.includes('/src/data/phases/')) return 'foundation-content'
+          // Phase modules share a common factory and cross-reference metadata.
+          // Keep them together to avoid circular Rollup chunks while still
+          // separating the curriculum from the application shell.
+          if (id.includes('/src/data/phases/')) return 'curriculum-content'
           if (id.includes('/src/data/fasttrack')) return 'fasttrack-content'
         }
       }

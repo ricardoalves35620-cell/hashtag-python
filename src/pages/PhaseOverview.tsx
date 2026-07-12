@@ -5,6 +5,7 @@ import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { getPhaseStatus } from '../lib/progress'
+import { inferPhaseStage, getPhaseGroup } from '../data/phaseCatalog'
 
 export default function PhaseOverview() {
   const { id } = useParams()
@@ -23,6 +24,7 @@ export default function PhaseOverview() {
 
   if (!phase) return <div className="p-4 text-muted">Phase not found</div>
 
+  const group = getPhaseGroup(inferPhaseStage(phase))
   const phaseProgress = progress.find(p => p.phase_id === phase.id)
   const status = getPhaseStatus(progress, phase.id)
 
@@ -81,11 +83,17 @@ export default function PhaseOverview() {
           <div className="flex items-center gap-3 mb-3">
             <div className="text-3xl">{phase.icon}</div>
             <div>
-              <div className="text-xs text-muted mb-0.5">{lang === 'en' ? 'Phase' : 'Fase'} {phase.id}</div>
+              <div className="text-xs text-muted mb-0.5">{lang === 'en' ? 'Phase' : 'Fase'} {phase.id}{group ? ` · ${group.title[lang]}` : ''}</div>
               <h1 className="text-lg font-medium text-white">{phase.title[lang]}</h1>
             </div>
           </div>
           <div className="text-sm text-[#8888aa] mb-3">{phase.description[lang]}</div>
+
+          <div className="flex flex-wrap gap-2 mb-3">
+            {phase.estimatedHours && <span className="text-[10px] px-2 py-1 rounded-full bg-[#0a0a18] text-muted">≈ {phase.estimatedHours}h</span>}
+            {phase.desktopRequired && <span className="text-[10px] px-2 py-1 rounded-full bg-amber-950/40 text-amber-300 border border-amber-800">{lang === 'en' ? 'Desktop practice recommended' : 'Prática desktop recomendada'}</span>}
+            {phase.labPath && <button onClick={() => navigate(phase.labPath!)} className="text-[10px] px-2 py-1 rounded-full bg-purple-faint text-purple-light border border-purple-dim">{lang === 'en' ? 'Open practical lab' : 'Abrir laboratório prático'} →</button>}
+          </div>
 
           {phase.libraries.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-3">

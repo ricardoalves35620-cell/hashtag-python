@@ -63,7 +63,7 @@ const coreStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'professional-python', order: 3, path: 'core', status: 'next', estimatedHours: 90,
+    id: 'professional-python', order: 3, path: 'core', status: 'available', phaseRange: [28, 39], estimatedHours: 90,
     title: { en: 'Professional Python', pt: 'Python profissional' },
     description: {
       en: 'Virtual environments, packages, project structure, Git, testing, typing, logging, debugging and object-oriented design.',
@@ -75,7 +75,7 @@ const coreStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'advanced-python', order: 4, path: 'core', status: 'planned', estimatedHours: 100,
+    id: 'advanced-python', order: 4, path: 'core', status: 'available', phaseRange: [40, 47], estimatedHours: 100,
     title: { en: 'Advanced Python', pt: 'Python avançado' },
     description: {
       en: 'Data model, iterators, generators, decorators, context managers, descriptors, concurrency, async, performance and internals.',
@@ -87,7 +87,7 @@ const coreStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'software-engineering', order: 5, path: 'core', status: 'planned', estimatedHours: 120,
+    id: 'software-engineering', order: 5, path: 'core', status: 'available', phaseRange: [48, 52], estimatedHours: 120,
     title: { en: 'Software engineering with Python', pt: 'Engenharia de software com Python' },
     description: {
       en: 'Architecture, APIs, databases, security, automation, data pipelines, deployment and observability.',
@@ -99,7 +99,7 @@ const coreStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'python-mastery', order: 6, path: 'core', status: 'planned', estimatedHours: 150,
+    id: 'python-mastery', order: 6, path: 'core', status: 'available', phaseRange: [53, 53], estimatedHours: 150,
     title: { en: 'Python mastery capstones', pt: 'Capstones de domínio em Python' },
     description: {
       en: 'Large projects, code review, architecture trade-offs, open-source reading and a portfolio that proves independent ability.',
@@ -114,7 +114,7 @@ const coreStages: CurriculumStage[] = [
 
 const aiStages: CurriculumStage[] = [
   {
-    id: 'ai-data-math', order: 0, path: 'ai-local', status: 'planned', estimatedHours: 90,
+    id: 'ai-data-math', order: 0, path: 'ai-local', status: 'available', phaseRange: [54, 57], estimatedHours: 90,
     prerequisites: ['professional-python'],
     title: { en: 'Math and data for AI', pt: 'Matemática e dados para IA' },
     description: {
@@ -127,7 +127,7 @@ const aiStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'machine-learning', order: 1, path: 'ai-local', status: 'planned', estimatedHours: 100,
+    id: 'machine-learning', order: 1, path: 'ai-local', status: 'available', phaseRange: [58, 60], estimatedHours: 100,
     prerequisites: ['ai-data-math'],
     title: { en: 'Machine learning', pt: 'Machine Learning' },
     description: {
@@ -140,7 +140,7 @@ const aiStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'deep-learning', order: 2, path: 'ai-local', status: 'planned', estimatedHours: 120,
+    id: 'deep-learning', order: 2, path: 'ai-local', status: 'available', phaseRange: [61, 62], estimatedHours: 120,
     prerequisites: ['machine-learning', 'advanced-python'],
     title: { en: 'Neural networks and PyTorch', pt: 'Redes neurais e PyTorch' },
     description: {
@@ -153,7 +153,7 @@ const aiStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'transformers', order: 3, path: 'ai-local', status: 'planned', estimatedHours: 120,
+    id: 'transformers', order: 3, path: 'ai-local', status: 'available', phaseRange: [63, 64], estimatedHours: 120,
     prerequisites: ['deep-learning'],
     title: { en: 'Language models and transformers', pt: 'Modelos de linguagem e Transformers' },
     description: {
@@ -166,7 +166,7 @@ const aiStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'local-ai-engineering', order: 4, path: 'ai-local', status: 'planned', estimatedHours: 120,
+    id: 'local-ai-engineering', order: 4, path: 'ai-local', status: 'available', phaseRange: [65, 67], estimatedHours: 120,
     prerequisites: ['transformers', 'software-engineering'],
     title: { en: 'Local AI engineering', pt: 'Engenharia de IA local' },
     description: {
@@ -179,7 +179,7 @@ const aiStages: CurriculumStage[] = [
     }
   },
   {
-    id: 'local-ai-capstone', order: 5, path: 'ai-local', status: 'planned', estimatedHours: 160,
+    id: 'local-ai-capstone', order: 5, path: 'ai-local', status: 'available', phaseRange: [68, 68], estimatedHours: 160,
     prerequisites: ['local-ai-engineering'],
     title: { en: 'Capstone: your local AI', pt: 'Capstone: sua IA local' },
     description: {

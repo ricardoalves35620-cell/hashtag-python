@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import type { Phase, Lang, UserProgress } from '../data/types'
 import { getPhaseStatus } from '../lib/progress'
+import { inferPhaseStage, getPhaseGroup } from '../data/phaseCatalog'
 
 interface Props {
   phase: Phase
@@ -20,6 +21,7 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
     phaseProgress?.exam_passed
   ].filter(Boolean).length
 
+  const group = getPhaseGroup(inferPhaseStage(phase))
   const isLocked = status === 'locked'
   const isDone = status === 'done'
 
@@ -48,7 +50,7 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted font-medium">
-              {lang === 'en' ? 'Phase' : 'Fase'} {phase.id}
+              {lang === 'en' ? 'Phase' : 'Fase'} {phase.id}{group ? ` · ${group.title[lang]}` : ''}
             </span>
             {isDone && (
               <span className="text-[10px] bg-green-900/50 text-green-400 px-2 py-0.5 rounded-full">
@@ -73,8 +75,9 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
 
       <div className="text-xs text-[#8888aa] mb-3 line-clamp-2">{phase.description[lang]}</div>
 
-      {phase.libraries.length > 0 && (
+      {(phase.desktopRequired || phase.libraries.length > 0) && (
         <div className="flex flex-wrap gap-1 mb-3">
+          {phase.desktopRequired && <span className="text-[10px] bg-amber-950/40 text-amber-300 border border-amber-800 px-2 py-0.5 rounded">{lang === 'en' ? 'Desktop practice recommended' : 'Prática desktop recomendada'}</span>}
           {phase.libraries.map(lib => (
             <span key={lib} className="text-[10px] font-mono bg-[#0d0d1f] text-purple-light border border-[#1e1e40] px-2 py-0.5 rounded">
               {lib}
@@ -82,6 +85,7 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
           ))}
         </div>
       )}
+
 
       <div className="space-y-1">
         <div className="flex justify-between items-center">
