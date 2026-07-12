@@ -1,66 +1,49 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 
+const icons = {
+  course: <path d="M4 3.5h8a2 2 0 0 1 2 2v9H6a2 2 0 0 0-2 2v-13Zm0 0v13a2 2 0 0 1 2-2h8" />,
+  paths: <><path d="m3 5 4-2 4 2 4-2v12l-4 2-4-2-4 2V5Z" /><path d="M7 3v12M11 5v12" /></>,
+  fast: <path d="m10 2-5 8h4l-1 6 5-8H9l1-6Z" />,
+  progress: <><path d="M3 15V9M8 15V5M13 15V2" /><path d="M2 16h14" /></>,
+  profile: <><circle cx="9" cy="6" r="3" /><path d="M3.5 16a5.5 5.5 0 0 1 11 0" /></>,
+}
+
+function NavIcon({ children }: { children: React.ReactNode }) {
+  return <svg width="21" height="21" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
+}
+
 export default function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
   const { lang } = useApp()
-
   const tabs = [
-    { path: '/', label: lang === 'en' ? 'Course' : 'Curso', icon: '📚' },
-    { path: '/roadmap', label: lang === 'en' ? 'Paths' : 'Trilhas', icon: '🗺️' },
-    { path: '/fasttrack', label: 'FastTrack', icon: '⚡' },
-    { path: '/progress', label: lang === 'en' ? 'Progress' : 'Progresso', icon: '📈' },
-    { path: '/profile', label: lang === 'en' ? 'Profile' : 'Perfil', icon: '👤' },
+    { path: '/', label: lang === 'en' ? 'Course' : 'Curso', icon: icons.course },
+    { path: '/roadmap', label: lang === 'en' ? 'Paths' : 'Trilhas', icon: icons.paths },
+    { path: '/fasttrack', label: 'FastTrack', icon: icons.fast },
+    { path: '/progress', label: lang === 'en' ? 'Progress' : 'Progresso', icon: icons.progress },
+    { path: '/profile', label: lang === 'en' ? 'Profile' : 'Perfil', icon: icons.profile },
   ]
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'stretch',
-        background: 'var(--c-card)',
-        borderTop: '0.5px solid var(--c-border)',
-        zIndex: 1000,
-        height: 'calc(60px + env(safe-area-inset-bottom, 0px))',
-        paddingBottom: 'env(safe-area-inset-bottom, 0)',
-      }}
-    >
-      {tabs.map(tab => {
-        const isActive = location.pathname === tab.path || 
-                        (tab.path === '/' && location.pathname.split('/').length === 2 && !location.pathname.match(/^\/[a-z]/))
-        return (
-          <button
-            key={tab.path}
-            onClick={() => navigate(tab.path)}
-            style={{
-              flex: 1,
-              background: isActive ? 'var(--c-purple-f)' : 'none',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-              padding: '8px 0',
-              color: isActive ? 'var(--c-purple-l)' : 'var(--c-muted)',
-              fontSize: 10,
-              fontWeight: 500,
-              transition: 'color 0.2s, background 0.2s',
-              borderTop: isActive ? '3px solid var(--c-purple)' : '3px solid transparent',
-            }}
-          >
-            <span style={{ fontSize: 18 }}>{tab.icon}</span>
-            <span>{tab.label}</span>
-          </button>
-        )
-      })}
-    </div>
+    <nav className="hp-bottom-nav" aria-label={lang === 'en' ? 'Main navigation' : 'Navegação principal'}>
+      <div className="hp-bottom-nav__inner">
+        {tabs.map(tab => {
+          const isActive = location.pathname === tab.path || (tab.path === '/' && location.pathname.split('/').length === 2 && !location.pathname.match(/^\/[a-z]/))
+          return (
+            <button
+              key={tab.path}
+              type="button"
+              onClick={() => navigate(tab.path)}
+              className={`hp-bottom-nav__item ${isActive ? 'hp-bottom-nav__item--active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              <span className="hp-bottom-nav__icon"><NavIcon>{tab.icon}</NavIcon></span>
+              <span className="hp-bottom-nav__label">{tab.label}</span>
+            </button>
+          )
+        })}
+      </div>
+    </nav>
   )
 }

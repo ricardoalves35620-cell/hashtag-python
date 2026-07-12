@@ -2,105 +2,49 @@ import { useNavigate } from 'react-router-dom'
 import type { Phase, Lang, UserProgress } from '../data/types'
 import { getPhaseStatus } from '../lib/progress'
 import { inferPhaseStage, getPhaseGroup } from '../data/phaseCatalog'
+import { Badge, Progress } from './ui'
 
-interface Props {
-  phase: Phase
-  progress: UserProgress[]
-  lang: Lang
-}
+interface Props { phase: Phase; progress: UserProgress[]; lang: Lang }
 
 export default function PhaseCard({ phase, progress, lang }: Props) {
   const navigate = useNavigate()
   const status = getPhaseStatus(progress, phase.id)
-
   const phaseProgress = progress.find(p => p.phase_id === phase.id)
-  const stepsCompleted = [
-    phaseProgress?.lesson_done,
-    phaseProgress?.exercises_done,
-    phaseProgress?.quiz_done,
-    phaseProgress?.exam_passed
-  ].filter(Boolean).length
-
+  const stepsCompleted = [phaseProgress?.lesson_done, phaseProgress?.exercises_done, phaseProgress?.quiz_done, phaseProgress?.exam_passed].filter(Boolean).length
   const group = getPhaseGroup(inferPhaseStage(phase))
   const isLocked = status === 'locked'
   const isDone = status === 'done'
 
   return (
     <button
+      type="button"
       onClick={() => !isLocked && navigate(`/phase/${phase.id}`)}
       disabled={isLocked}
-      className={`
-        w-full text-left rounded-xl border p-4 transition-all
-        ${isLocked
-          ? 'bg-card border-border opacity-50 cursor-not-allowed'
-          : isDone
-          ? 'bg-[#0a1f0a] border-[#1a4a1a] hover:border-green-700 cursor-pointer'
-          : 'bg-card border-border hover:border-purple-dim cursor-pointer active:scale-[0.99]'
-        }
-      `}
+      className={`hp-phase-card ${isDone ? 'hp-phase-card--done' : ''}`}
     >
-      <div className="flex items-center gap-3 mb-3">
-        <div className={`
-          w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0
-          ${isDone ? 'bg-green-900/40' : isLocked ? 'bg-[#111] ' : 'bg-purple-faint'}
-        `}>
-          {isDone ? '✅' : isLocked ? '🔒' : phase.icon}
+      <div className="flex items-center gap-3">
+        <div className={`hp-phase-card__icon ${isDone ? 'hp-phase-card__icon--done' : ''}`} aria-hidden="true">
+          {isDone ? '✓' : isLocked ? '🔒' : phase.icon}
         </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted font-medium">
-              {lang === 'en' ? 'Phase' : 'Fase'} {phase.id}{group ? ` · ${group.title[lang]}` : ''}
-            </span>
-            {isDone && (
-              <span className="text-[10px] bg-green-900/50 text-green-400 px-2 py-0.5 rounded-full">
-                {lang === 'en' ? 'Complete' : 'Completo'}
-              </span>
-            )}
-            {!isDone && !isLocked && stepsCompleted > 0 && (
-              <span className="text-[10px] bg-purple-dim text-purple-light px-2 py-0.5 rounded-full">
-                {lang === 'en' ? 'In Progress' : 'Em Andamento'}
-              </span>
-            )}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
+            <span className="text-caption font-semibold text-ink-muted">{lang === 'en' ? 'Phase' : 'Fase'} {phase.id}{group ? ` · ${group.title[lang]}` : ''}</span>
+            {isDone && <Badge variant="success">{lang === 'en' ? 'Complete' : 'Completo'}</Badge>}
+            {!isDone && !isLocked && stepsCompleted > 0 && <Badge variant="primary">{lang === 'en' ? 'In progress' : 'Em andamento'}</Badge>}
           </div>
-          <div className="text-sm font-medium text-white truncate">{phase.title[lang]}</div>
+          <div className="truncate text-sm font-bold text-ink">{phase.title[lang]}</div>
         </div>
-
-        {!isLocked && (
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-muted flex-shrink-0">
-            <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-        )}
+        {!isLocked && <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="flex-shrink-0 text-ink-muted" aria-hidden="true"><path d="m7 4 5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>}
       </div>
 
-      <div className="text-xs text-[#8888aa] mb-3 line-clamp-2">{phase.description[lang]}</div>
-
+      <p className="mt-3 mb-0 line-clamp-2 text-xs text-ink-secondary">{phase.description[lang]}</p>
       {(phase.desktopRequired || phase.libraries.length > 0) && (
-        <div className="flex flex-wrap gap-1 mb-3">
-          {phase.desktopRequired && <span className="text-[10px] bg-amber-950/40 text-amber-300 border border-amber-800 px-2 py-0.5 rounded">{lang === 'en' ? 'Desktop practice recommended' : 'Prática desktop recomendada'}</span>}
-          {phase.libraries.map(lib => (
-            <span key={lib} className="text-[10px] font-mono bg-[#0d0d1f] text-purple-light border border-[#1e1e40] px-2 py-0.5 rounded">
-              {lib}
-            </span>
-          ))}
+        <div className="mt-3 flex flex-wrap gap-2">
+          {phase.desktopRequired && <Badge variant="warning">{lang === 'en' ? 'Desktop recommended' : 'Desktop recomendado'}</Badge>}
+          {phase.libraries.map(lib => <Badge key={lib} variant="neutral" mono>{lib}</Badge>)}
         </div>
       )}
-
-
-      <div className="space-y-1">
-        <div className="flex justify-between items-center">
-          <span className="text-[10px] text-muted uppercase tracking-wide">
-            {stepsCompleted}/4 {lang === 'en' ? 'steps' : 'etapas'}
-          </span>
-          <span className="text-[10px] text-muted">{Math.round((stepsCompleted / 4) * 100)}%</span>
-        </div>
-        <div className="h-1.5 bg-[#0d0d1f] rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all ${isDone ? 'bg-green-500' : 'bg-purple-DEFAULT'}`}
-            style={{ width: `${(stepsCompleted / 4) * 100}%` }}
-          />
-        </div>
-      </div>
+      <div className="mt-4"><Progress value={stepsCompleted} max={4} label={`${stepsCompleted}/4 ${lang === 'en' ? 'steps' : 'etapas'}`} showValue tone={isDone ? 'success' : 'primary'} size="sm" /></div>
     </button>
   )
 }

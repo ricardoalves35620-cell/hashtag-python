@@ -77,3 +77,7 @@ All motion respects `prefers-reduced-motion`.
 - Use 44 px minimum touch targets.
 - Use `:focus-visible`; never remove focus without replacement.
 - Validate every component in both themes and at 390 px, 768 px, and 1280 px widths.
+
+## Canonical components — Foundation 1.2
+
+Product code should import from `src/components/ui`. Page-specific controls must not duplicate button, form, alert, progress, tab or card state styles. See `COMPONENT_GUIDE.md`.
