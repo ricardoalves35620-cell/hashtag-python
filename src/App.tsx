@@ -15,6 +15,8 @@ import Roadmap from './pages/Roadmap'
 import Onboarding from './pages/Onboarding'
 import ResetPassword from './pages/ResetPassword'
 import ConfigurationScreen from './components/ConfigurationScreen'
+import AppLoadingScreen from './components/AppLoadingScreen'
+import { ToastProvider } from './components/ui'
 import LearningProgress from './pages/LearningProgress'
 import Review from './pages/Review'
 import Diagnostic from './pages/Diagnostic'
@@ -28,11 +30,7 @@ import { appConfiguration } from './lib/config'
 // Redirect to /login if not authenticated
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, isGuest, loading } = useApp()
-  if (loading) return (
-    <div style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--c-bg)' }}>
-      <div style={{ color: 'var(--c-muted)', fontSize: 14 }}>Loading...</div>
-    </div>
-  )
+  if (loading) return <AppLoadingScreen label="Loading your learning space..." />
   if (!user && !isGuest) return <Navigate to="/login" replace />
   return <>{children}</>
 }
@@ -40,7 +38,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 // Redirect to / if already authenticated
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { user, isGuest, loading } = useApp()
-  if (loading) return null
+  if (loading) return <AppLoadingScreen label="Preparing your account..." />
   if (user || isGuest) return <Navigate to="/" replace />
   return <>{children}</>
 }
@@ -94,7 +92,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppProvider>
-        <AppRoutes />
+        <ToastProvider>
+          <AppRoutes />
+        </ToastProvider>
       </AppProvider>
     </BrowserRouter>
   )

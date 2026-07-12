@@ -119,3 +119,8 @@ npm audit
 - `docs/RELEASE_NOTES_2.0.md`: Python profissional.
 - `docs/RELEASE_NOTES_3.0.md`: Python avançado e engenharia.
 - `docs/RELEASE_NOTES_4.0.md`: dados, Machine Learning e IA local.
+
+
+## Current foundation release
+
+Foundation 1.6 adds final motion polish, accessible loading and success feedback, and reliable mouse, trackpad and touch scrolling.

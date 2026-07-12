@@ -17,6 +17,7 @@ import { analyzeCode, preparePythonEngine, runCode, runExam, type TestResult } f
 import { validateExamStructure } from '../lib/learningValidation'
 import { getSkill, getSkillsForPhase } from '../data/skills'
 import { extractErrorCategory } from '../lib/learningEngine'
+import SuccessCelebration from '../components/SuccessCelebration'
 
 type Tab = 'scenario' | 'code' | 'results'
 
@@ -543,6 +544,8 @@ export default function Exam() {
       )}
 
       {/* ── RESULTS TAB ── */}
+      <SuccessCelebration active={tab === 'results' && passed} label={lang === 'pt' ? 'Fase aprovada' : 'Phase passed'} />
+
       {tab === 'results' && (
         <div style={{ padding: '16px' }}>
           {score === null ? (

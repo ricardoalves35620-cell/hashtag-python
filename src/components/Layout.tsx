@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 import BottomNav from './BottomNav'
 import { Button } from './ui'
+import { shouldRouteWheelToMain } from '../lib/scrollRouting'
 
 interface Props {
   children: React.ReactNode
@@ -18,6 +19,23 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
   const location = useLocation()
   const navigate = useNavigate()
   const showNav = !hideNav
+  const shellRef = useRef<HTMLDivElement>(null)
+
+
+  useEffect(() => {
+    const shell = shellRef.current
+    const main = document.getElementById('main-scroll')
+    if (!shell || !main) return
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!shouldRouteWheelToMain(event, shell, main)) return
+      event.preventDefault()
+      main.scrollBy({ top: event.deltaY, left: 0, behavior: 'auto' })
+    }
+
+    shell.addEventListener('wheel', handleWheel, { passive: false })
+    return () => shell.removeEventListener('wheel', handleWheel)
+  }, [])
 
   useEffect(() => {
     const scroller = document.getElementById('main-scroll')
@@ -25,7 +43,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
   }, [location.pathname])
 
   return (
-    <div className={`hp-app-shell ${showNav ? 'hp-app-shell--with-nav' : ''}`}>
+    <div ref={shellRef} className={`hp-app-shell ${showNav ? 'hp-app-shell--with-nav' : ''}`}>
       <a className="hp-skip-link" href="#main-content">
         {lang === 'en' ? 'Skip to content' : 'Pular para o conteúdo'}
       </a>
@@ -80,7 +98,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
         id="main-scroll"
         aria-label={lang === 'en' ? 'Learning content' : 'Conteúdo de aprendizagem'}
       >
-        <div id="main-content" className="hp-main__content" tabIndex={-1}>
+        <div key={location.pathname} id="main-content" className="hp-main__content hp-page-enter" tabIndex={-1}>
           {children}
         </div>
       </main>

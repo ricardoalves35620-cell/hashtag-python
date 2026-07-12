@@ -5,6 +5,7 @@ import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
 import { getSkillsForPhase } from '../data/skills'
+import SuccessCelebration from '../components/SuccessCelebration'
 
 const QUIZ_PASS_SCORE = 80
 
@@ -102,6 +103,8 @@ export default function Quiz() {
 
   if (showResult) {
     return (
+      <>
+        <SuccessCelebration active={passed} label={lang === 'pt' ? 'Quiz aprovado' : 'Quiz passed'} />
       <Layout showBack backTo={`/phase/${phase.id}`} title={`${t.phase} ${phase.id}`}>
         <div className="p-4 space-y-4">
           <div className="rounded-xl p-6 text-center" style={{ background: 'var(--c-card)', border: `1px solid ${passed ? '#1f6f45' : '#7c5a13'}` }}>
@@ -123,6 +126,7 @@ export default function Quiz() {
           )}
         </div>
       </Layout>
+      </>
     )
   }
 

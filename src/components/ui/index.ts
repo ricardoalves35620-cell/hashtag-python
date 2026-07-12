@@ -8,3 +8,5 @@ export * from './Progress'
 export * from './Skeleton'
 export * from './Tabs'
 export * from './utils'
+
+export * from './Toast'
