@@ -3,11 +3,13 @@ import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { SKILLS, getSkill } from '../data/skills'
 import { getDueSkillStates, getLearningSummary, getWeakestSkillStates, masteryLabel } from '../lib/learningEngine'
+import { calculateGamification } from '../lib/gamification'
 
 export default function LearningProgress() {
   const navigate = useNavigate()
   const { lang, learningState } = useApp()
   const summary = getLearningSummary(learningState)
+  const game = calculateGamification(learningState)
   const due = getDueSkillStates(learningState)
   const weakest = getWeakestSkillStates(learningState, 4)
   const recent = [...learningState.attempts].reverse().slice(0, 8)
@@ -24,7 +26,7 @@ export default function LearningProgress() {
       diagnostic: learningState.diagnosticCompletedAt ? 'Retake diagnostic' : 'Take initial diagnostic',
       gaps: 'Priority gaps', allSkills: 'All skills', history: 'Recent attempts', commonErrors: 'Errors to understand', notAssessed: 'Not assessed',
       noHistory: 'Your attempts will appear here after exercises, quizzes, exams and reviews.',
-      success: 'Success', needsWork: 'Needs work', phase: 'Phase',
+      success: 'Success', needsWork: 'Needs work', phase: 'Phase', level: 'Level', streak: 'day streak', xp: 'XP earned', badges: 'Achievements',
     },
     pt: {
       title: 'Progresso de aprendizagem', subtitle: 'Domínio por habilidade, não apenas telas concluídas.',
@@ -33,7 +35,7 @@ export default function LearningProgress() {
       diagnostic: learningState.diagnosticCompletedAt ? 'Refazer diagnóstico' : 'Fazer diagnóstico inicial',
       gaps: 'Lacunas prioritárias', allSkills: 'Todas as habilidades', history: 'Tentativas recentes', commonErrors: 'Erros para entender', notAssessed: 'Não avaliada',
       noHistory: 'Suas tentativas aparecerão aqui após exercícios, quizzes, exames e revisões.',
-      success: 'Sucesso', needsWork: 'Precisa revisar', phase: 'Fase',
+      success: 'Sucesso', needsWork: 'Precisa revisar', phase: 'Fase', level: 'Nível', streak: 'dias de sequência', xp: 'XP conquistado', badges: 'Conquistas',
     },
   }[lang]
 
@@ -48,6 +50,25 @@ export default function LearningProgress() {
           <h1 className="text-xl font-semibold" style={{ color: 'var(--c-text)' }}>{t.title}</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--c-text2)' }}>{t.subtitle}</p>
         </div>
+
+        <section className="rounded-2xl p-4" style={{ background: 'linear-gradient(135deg, var(--c-purple-f), var(--c-card))', border: '1px solid var(--c-purple-dm)' }}>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-xs uppercase tracking-wide" style={{ color: 'var(--c-purple-l)' }}>{t.level} {game.level}</div>
+              <div className="text-2xl font-semibold mt-1" style={{ color: 'var(--c-text)' }}>{game.xp} {t.xp}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl">🔥</div>
+              <div className="text-xs" style={{ color: 'var(--c-text2)' }}>{game.streak} {t.streak}</div>
+            </div>
+          </div>
+          <div className="h-2 rounded-full overflow-hidden mt-4" style={{ background: 'var(--c-bg)' }}>
+            <div className="h-full rounded-full" style={{ width: `${game.progressPercent}%`, background: 'var(--c-purple)' }} />
+          </div>
+          <div className="flex justify-between text-[11px] mt-1" style={{ color: 'var(--c-muted)' }}>
+            <span>{game.currentLevelXp}/{game.nextLevelXp} XP</span><span>{game.progressPercent}%</span>
+          </div>
+        </section>
 
         <div className="grid grid-cols-3 gap-2">
           {[
@@ -119,6 +140,25 @@ export default function LearningProgress() {
             })}
           </div>
         </section>
+
+        {game.badges.length > 0 && (
+          <section style={cardStyle}>
+            <h2 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--c-muted)' }}>{t.badges}</h2>
+            <div className="grid grid-cols-2 gap-2">
+              {game.badges.map(id => {
+                const names: Record<string, [string, string, string]> = {
+                  'first-step': ['🌱', 'First step', 'Primeiro passo'],
+                  consistent: ['🎯', 'Consistent learner', 'Aluno consistente'],
+                  'perfect-exam': ['💯', 'Perfect exam', 'Exame perfeito'],
+                  'three-day-streak': ['🔥', '3-day streak', 'Sequência de 3 dias'],
+                  'skill-master': ['🏆', 'Skill mastery', 'Domínio de habilidade'],
+                }
+                const badge = names[id]
+                return <div key={id} className="rounded-xl p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-xl">{badge?.[0]}</div><div className="text-xs font-semibold mt-1" style={{ color: 'var(--c-text)' }}>{lang === 'en' ? badge?.[1] : badge?.[2]}</div></div>
+              })}
+            </div>
+          </section>
+        )}
 
         {commonErrors.length > 0 && (
           <section style={cardStyle}>

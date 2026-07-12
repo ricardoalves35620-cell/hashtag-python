@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import GlossaryPanel from '../components/glossary/GlossaryPanel'
 import GlossaryText from '../components/glossary/GlossaryText'
@@ -9,10 +9,18 @@ export default function Visualizer() {
   const { lang } = useApp()
   const [scenarioIndex, setScenarioIndex] = useState(0)
   const [stepIndex, setStepIndex] = useState(0)
+  const [playing, setPlaying] = useState(false)
   const scenario = VISUAL_SCENARIOS[scenarioIndex]
   const step = scenario.steps[stepIndex]
 
-  const selectScenario = (index: number) => { setScenarioIndex(index); setStepIndex(0) }
+  const selectScenario = (index: number) => { setScenarioIndex(index); setStepIndex(0); setPlaying(false) }
+
+  useEffect(() => {
+    if (!playing) return
+    if (stepIndex >= scenario.steps.length - 1) { setPlaying(false); return }
+    const timer = window.setTimeout(() => setStepIndex(value => value + 1), 1100)
+    return () => window.clearTimeout(timer)
+  }, [playing, stepIndex, scenario.steps.length])
 
   return (
     <Layout showBack backTo="/base-zero" title={lang === 'en' ? 'Visual Python Lab' : 'Laboratório Visual de Python'}>
@@ -43,7 +51,11 @@ export default function Visualizer() {
           <div className="rounded-xl p-4" style={{ background: '#050510', border: '1px solid var(--c-border)' }}><div className="text-xs uppercase tracking-wide mb-3" style={{ color: 'var(--c-muted)' }}>▶ {lang === 'en' ? 'Output' : 'Saída'}</div><div className="font-mono text-sm whitespace-pre-line" style={{ color: '#a7f3d0', minHeight: 36 }}>{step.output.join('\n') || (lang === 'en' ? '(nothing yet)' : '(nada ainda)')}</div></div>
         </div>
 
-        <div className="flex gap-3"><button onClick={() => setStepIndex(value => Math.max(0, value - 1))} disabled={stepIndex === 0} className="flex-1 rounded-xl py-3 text-sm disabled:opacity-30" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}>← {lang === 'en' ? 'Previous' : 'Anterior'}</button><button onClick={() => setStepIndex(value => Math.min(scenario.steps.length - 1, value + 1))} disabled={stepIndex === scenario.steps.length - 1} className="flex-1 rounded-xl py-3 text-sm font-semibold text-white disabled:opacity-30" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Next' : 'Próximo'} →</button></div>
+        <div className="grid grid-cols-3 gap-2">
+          <button onClick={() => { setPlaying(false); setStepIndex(value => Math.max(0, value - 1)) }} disabled={stepIndex === 0} className="rounded-xl py-3 text-sm disabled:opacity-30" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}>← {lang === 'en' ? 'Previous' : 'Anterior'}</button>
+          <button onClick={() => { if (stepIndex === scenario.steps.length - 1) setStepIndex(0); setPlaying(value => !value) }} className="rounded-xl py-3 text-sm font-semibold" style={{ background: 'var(--c-purple-f)', color: 'var(--c-purple-l)', border: '1px solid var(--c-purple-dm)' }}>{playing ? '⏸ ' + (lang === 'en' ? 'Pause' : 'Pausar') : '▶ ' + (lang === 'en' ? 'Auto' : 'Automático')}</button>
+          <button onClick={() => { setPlaying(false); setStepIndex(value => Math.min(scenario.steps.length - 1, value + 1)) }} disabled={stepIndex === scenario.steps.length - 1} className="rounded-xl py-3 text-sm font-semibold text-white disabled:opacity-30" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Next' : 'Próximo'} →</button>
+        </div>
       </div>
     </Layout>
   )

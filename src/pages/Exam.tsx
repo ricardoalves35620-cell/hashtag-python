@@ -14,7 +14,7 @@ import { loadExamDraft, saveExamDraft, clearExamDraft } from '../lib/examDraft'
 import LessonBlock from '../components/LessonBlock'
 import { analyzeCode, preparePythonEngine, runCode, runExam, type TestResult } from '../lib/pyodide'
 import { validateExamStructure } from '../lib/learningValidation'
-import { getSkillsForPhase } from '../data/skills'
+import { getSkill, getSkillsForPhase } from '../data/skills'
 import { extractErrorCategory } from '../lib/learningEngine'
 
 type Tab = 'scenario' | 'code' | 'results'
@@ -72,7 +72,7 @@ export default function Exam() {
       nextPhase: 'Go to next phase →', tryAgain: '← Try again',
       phase: 'Phase', minScore: 'Minimum 90% to pass',
       tip: '💡 Test your code with "Run my code" first, then submit when ready.',
-      testResults: 'Test results', passedLabel: 'passed',
+      testResults: 'Automatic checks', passedLabel: 'passed', reviewPhase: 'Review this phase', demonstrated: 'You demonstrated mastery in', nextLearning: 'Next, you will learn', internalCheck: 'Automatic verification', excellent: 'Excellent — you mastered this content.', ready: 'Great work — you are ready to continue.', reviewRecommended: 'You passed. Review the failed checks before continuing.',
     },
     pt: {
       scenario: 'Cenário', code: 'Código', results: 'Resultados',
@@ -85,7 +85,7 @@ export default function Exam() {
       nextPhase: 'Ir para próxima fase →', tryAgain: '← Tentar novamente',
       phase: 'Fase', minScore: 'Mínimo 90% para passar',
       tip: '💡 Teste com "Executar" primeiro, depois envie quando estiver pronto.',
-      testResults: 'Resultados dos testes', passedLabel: 'passaram',
+      testResults: 'Verificações automáticas', passedLabel: 'passaram', reviewPhase: 'Revisar esta fase', demonstrated: 'Você demonstrou domínio em', nextLearning: 'Na próxima fase, você aprenderá', internalCheck: 'Verificação automática', excellent: 'Excelente — você dominou completamente este conteúdo.', ready: 'Muito bom — você está pronto para continuar.', reviewRecommended: 'Você passou. Revise as verificações que falharam antes de seguir.',
     }
   }[lang]
 
@@ -206,7 +206,7 @@ export default function Exam() {
       title={`${lang === 'en' ? 'Exam' : 'Exame'} · ${phase.title[lang]}`}
     >
       {/* Tabs */}
-      <div style={{ display: 'flex', borderBottom: '0.5px solid var(--c-border)', padding: '0 16px' }}>
+      <div className="hp-tab-row" style={{ display: 'flex', borderBottom: '0.5px solid var(--c-border)', padding: '0 16px' }}>
         {tabs.map(t_ => (
           <button
             key={t_.id}
@@ -535,123 +535,87 @@ export default function Exam() {
       {tab === 'results' && (
         <div style={{ padding: '16px' }}>
           {score === null ? (
-            <div style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--c-muted)', fontSize: 14 }}>
+            <div className="hp-card" style={{ textAlign: 'center', padding: '40px 16px', color: 'var(--c-muted)', fontSize: 14 }}>
               {lang === 'en' ? 'Submit your code to see results.' : 'Envie seu código para ver os resultados.'}
             </div>
           ) : (
             <>
-              {/* Score card */}
-              <div style={{
-                borderRadius: 16, padding: '28px 20px', textAlign: 'center', marginBottom: 16,
-                background: passed ? '#052e16' : '#1f0505',
-                border: `1px solid ${passed ? '#166534' : '#7f1d1d'}`,
-              }}>
-                <div style={{ fontSize: 52, fontFamily: 'monospace', fontWeight: 600, color: '#fff' }}>
-                  {score}%
+              <section className={passed ? 'hp-success-card' : 'hp-danger-card'} style={{ borderRadius: 18, padding: '28px 20px', textAlign: 'center', marginBottom: 16 }} aria-live="polite">
+                <div style={{ fontSize: 54, fontFamily: 'monospace', fontWeight: 750, color: 'inherit', lineHeight: 1 }}>{score}%</div>
+                <div style={{ fontSize: 16, fontWeight: 700, marginTop: 12, color: 'inherit' }}>{passed ? t.passed : t.failed}</div>
+                <p style={{ margin: '10px auto 0', maxWidth: 420, fontSize: 13, lineHeight: 1.6, color: 'inherit' }}>
+                  {score === 100 ? t.excellent : passed ? t.ready : t.reviewRecommended}
+                </p>
+                <div style={{ marginTop: 16, height: 8, background: 'rgba(0,0,0,0.18)', borderRadius: 99, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', borderRadius: 99, width: `${score}%`, background: passed ? 'var(--c-success-border)' : 'var(--c-danger-border)' }} />
                 </div>
-                <div style={{
-                  fontSize: 14, fontWeight: 500, marginTop: 8,
-                  color: passed ? '#4ade80' : '#f87171',
-                }}>
-                  {passed ? t.passed : t.failed}
-                </div>
-                <div style={{ marginTop: 12, height: 6, background: 'rgba(0,0,0,0.3)', borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{
-                    height: '100%', borderRadius: 3, transition: 'width 1s ease',
-                    width: `${score}%`,
-                    background: passed ? '#22c55e' : '#ef4444',
-                  }} />
-                </div>
-              </div>
+              </section>
 
-              {/* Test results list */}
+              {passed && (
+                <section className="hp-card" style={{ padding: 16, marginBottom: 16 }}>
+                  <h2 style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-text)', marginBottom: 10 }}>{t.demonstrated}</h2>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {getSkillsForPhase(phase.id).map(skillId => {
+                      const skill = getSkill(skillId)
+                      return skill ? <span key={skillId} style={{ padding: '7px 10px', borderRadius: 999, background: 'var(--c-success-bg)', border: '1px solid var(--c-success-border)', color: 'var(--c-success-text)', fontSize: 12, fontWeight: 600 }}>✓ {skill.title[lang]}</span> : null
+                    })}
+                  </div>
+                  {ALL_PHASES[ALL_PHASES.findIndex(item => item.id === phase.id) + 1] && (
+                    <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--c-border)' }}>
+                      <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '.5px', color: 'var(--c-muted)', marginBottom: 4 }}>{t.nextLearning}</div>
+                      <div style={{ fontSize: 14, color: 'var(--c-text)', fontWeight: 600 }}>{ALL_PHASES[ALL_PHASES.findIndex(item => item.id === phase.id) + 1].title[lang]}</div>
+                    </div>
+                  )}
+                </section>
+              )}
+
               {results && (
-                <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 12, color: 'var(--c-muted)', marginBottom: 8 }}>
+                <section style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, color: 'var(--c-text2)', marginBottom: 10, fontWeight: 600 }}>
                     {t.testResults} · {results.filter(r => r.passed).length}/{results.length} {t.passedLabel}
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {results.map(result => (
-                      <div key={result.id} style={{
-                        borderRadius: 10, padding: '10px 14px',
-                        display: 'flex', alignItems: 'flex-start', gap: 10,
-                        background: result.passed ? '#0a1a0a' : '#1a0a0a',
-                        border: `0.5px solid ${result.passed ? '#1a4a1a' : '#4a1a1a'}`,
-                      }}>
-                        <span style={{ fontSize: 15, flexShrink: 0, marginTop: 1 }}>
-                          {result.passed ? '✅' : '❌'}
-                        </span>
+                      <article key={result.id} className={result.passed ? 'hp-success-card' : 'hp-danger-card'} style={{ borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                        <span aria-hidden style={{ fontSize: 17, flexShrink: 0 }}>{result.passed ? '✓' : '!'}</span>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, color: 'var(--c-text)', marginBottom: 4 }}>
-                            {result.hidden ? (lang === 'en' ? '🔒 Hidden behavior test' : '🔒 Teste oculto de comportamento') : result.description[lang]}
+                          <div style={{ fontSize: 13, color: 'inherit', fontWeight: 650, marginBottom: result.passed ? 0 : 6 }}>
+                            {result.hidden ? `🔒 ${t.internalCheck}` : result.description[lang]}
                           </div>
                           {!result.passed && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                              {result.error ? (
-                                <>
-                                  <div style={{ fontSize: 10, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                    {lang === 'en' ? '⚡ Error in your code:' : '⚡ Erro no código:'}
-                                  </div>
-                                  <div style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: '#f48771', background: '#1a0505', borderRadius: 4, padding: '6px 8px', wordBreak: 'break-all' }}>
-                                    {result.error.slice(0, 200)}
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  <div style={{ fontSize: 10, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                    {result.hidden ? (lang === 'en' ? '🔒 Hidden test failed' : '🔒 Teste oculto falhou') : (lang === 'en' ? '📤 Your output:' : '📤 Sua saída:')}
-                                  </div>
-                                  <div style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: '#fca5a5', background: '#1a0505', borderRadius: 4, padding: '6px 8px', maxHeight: 80, overflowY: 'auto' }}>
-                                    {result.hidden ? (lang === 'en' ? 'The hidden values are not shown. Review the requirement and make the logic general.' : 'Os valores ocultos não são exibidos. Revise o requisito e torne a lógica geral.') : (result.output ? result.output.slice(0, 300) : (lang === 'en' ? '(no output produced)' : '(nenhuma saída produzida)'))}
-                                  </div>
-                                  <div style={{ fontSize: 11, color: '#fbbf24', lineHeight: 1.5 }}>
-                                    💡 {result.hidden ? (lang === 'en' ? 'Avoid fixed answers; make the solution work for other values.' : 'Evite respostas fixas; faça a solução funcionar com outros valores.') : <>{lang === 'en' ? 'This test checked: ' : 'Este teste verificou: '}<em>{result.description[lang]}</em></>}
-                                  </div>
-                                </>
-                              )}
+                            <div style={{ fontSize: 12, color: 'inherit', lineHeight: 1.55 }}>
+                              {result.error
+                                ? result.error.slice(0, 220)
+                                : result.hidden
+                                  ? (lang === 'en' ? 'Your solution worked for the visible example, but not for another valid value. Avoid fixed answers and make the logic general.' : 'Sua solução funcionou no exemplo visível, mas não em outro valor válido. Evite respostas fixas e torne a lógica geral.')
+                                  : (result.output || (lang === 'en' ? 'No output was produced.' : 'Nenhuma saída foi produzida.'))}
                             </div>
                           )}
                         </div>
-                        <span style={{
-                          fontSize: 12, fontWeight: 500, flexShrink: 0,
-                          color: result.passed ? '#4ade80' : '#f87171',
-                        }}>
-                          {result.points}pt
-                        </span>
-                      </div>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: 'inherit', flexShrink: 0 }}>{result.points}pt</span>
+                      </article>
                     ))}
                   </div>
-                </div>
+                </section>
               )}
 
-              {/* CTA */}
-              {passed ? (
+              <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: passed ? '1fr 1fr' : '1fr', gap: 10 }}>
+                {passed && (
+                  <button onClick={() => navigate(`/phase/${phase.id}`)} className="hp-secondary-button" style={{ width: '100%', padding: 14 }}>{t.reviewPhase}</button>
+                )}
                 <button
                   onClick={() => {
+                    if (!passed) { setTab('code'); return }
                     const index = ALL_PHASES.findIndex(item => item.id === phase.id)
                     const next = ALL_PHASES[index + 1]
                     navigate(next ? `/phase/${next.id}` : '/roadmap')
                   }}
-                  style={{
-                    width: '100%', padding: '14px', borderRadius: 12,
-                    background: '#166534', color: '#fff',
-                    fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
-                  }}
+                  className="hp-primary-button"
+                  style={{ width: '100%', padding: 14 }}
                 >
-                  {t.nextPhase}
+                  {passed ? t.nextPhase : t.tryAgain}
                 </button>
-              ) : (
-                <button
-                  onClick={() => setTab('code')}
-                  style={{
-                    width: '100%', padding: '14px', borderRadius: 12,
-                    background: 'var(--c-purple)', color: '#fff',
-                    fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
-                  }}
-                >
-                  {t.tryAgain}
-                </button>
-              )}
+              </div>
             </>
           )}
           <div style={{ height: 16 }} />

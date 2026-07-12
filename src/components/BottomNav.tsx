@@ -40,7 +40,7 @@ export default function BottomNav() {
             onClick={() => navigate(tab.path)}
             style={{
               flex: 1,
-              background: 'none',
+              background: isActive ? 'var(--c-purple-f)' : 'none',
               border: 'none',
               cursor: 'pointer',
               display: 'flex',
@@ -49,10 +49,11 @@ export default function BottomNav() {
               justifyContent: 'center',
               gap: 4,
               padding: '8px 0',
-              color: isActive ? 'var(--c-purple)' : 'var(--c-muted)',
+              color: isActive ? 'var(--c-purple-l)' : 'var(--c-muted)',
               fontSize: 10,
               fontWeight: 500,
-              transition: 'color 0.2s',
+              transition: 'color 0.2s, background 0.2s',
+              borderTop: isActive ? '3px solid var(--c-purple)' : '3px solid transparent',
             }}
           >
             <span style={{ fontSize: 18 }}>{tab.icon}</span>

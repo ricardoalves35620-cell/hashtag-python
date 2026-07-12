@@ -30,6 +30,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
           borderBottom: '0.5px solid var(--c-border)',
           paddingTop: 'max(env(safe-area-inset-top, 0px), 14px)',
           paddingBottom: '10px',
+          minHeight: '64px',
           paddingLeft: 'max(env(safe-area-inset-left, 0px), 16px)',
           paddingRight: 'max(env(safe-area-inset-right, 0px), 16px)',
         }}
@@ -58,7 +59,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
 
         {/* Title */}
         {title ? (
-          <h1 className="flex-1 text-sm font-medium truncate px-1" style={{ color: 'var(--c-text)' }}>{title}</h1>
+          <h1 className="flex-1 text-sm font-semibold truncate px-1" style={{ color: 'var(--c-text)' }}>{title}</h1>
         ) : (
           <div className="flex-1" />
         )}
