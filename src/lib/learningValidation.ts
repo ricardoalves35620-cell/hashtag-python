@@ -1,5 +1,6 @@
 import type { CodeRequirement, Exercise, Lang } from '../data/types'
 import { meetsCodeRequirement, runCode, runExam, type PythonAnalysis, type TestResult } from './pyodide'
+import { findPythonPlaceholders } from './placeholders'
 
 export interface ValidationItem {
   id: string
@@ -7,6 +8,9 @@ export interface ValidationItem {
   passed: boolean
   hidden: boolean
   detail?: string
+  why?: string
+  fix?: string
+  concept?: string
 }
 
 export interface ExerciseGrade {
@@ -69,8 +73,15 @@ export function baseValidation(code: string, lang: Lang): { passed: boolean; mes
     return { passed: false, message: lang === 'en' ? 'Write a solution before continuing.' : 'Escreva uma solução antes de continuar.' }
   }
 
-  if (/___|\bTODO\b|YOUR CODE HERE/i.test(code)) {
-    return { passed: false, message: lang === 'en' ? 'Complete every placeholder before continuing.' : 'Complete todos os espaços antes de continuar.' }
+  const placeholders = findPythonPlaceholders(code)
+  if (placeholders.length > 0) {
+    const first = placeholders[0]
+    return {
+      passed: false,
+      message: lang === 'en'
+        ? `${placeholders.length} placeholder${placeholders.length === 1 ? '' : 's'} remain. Start on line ${first.line}.`
+        : `${placeholders.length} lacuna${placeholders.length === 1 ? '' : 's'} ainda precisa${placeholders.length === 1 ? '' : 'm'} ser preenchida${placeholders.length === 1 ? '' : 's'}. Comece pela linha ${first.line}.`,
+    }
   }
 
   return { passed: true, message: '' }
@@ -151,6 +162,9 @@ export async function gradeExercise(
       passed: !run.error,
       hidden: false,
       detail: run.timedOut ? (lang === 'en' ? 'Time limit exceeded' : 'Tempo limite excedido') : undefined,
+      why: run.timedOut ? (lang === 'en' ? 'A loop or operation did not reach its end before the safety limit.' : 'Um loop ou operação não chegou ao fim antes do limite de segurança.') : run.error ? run.error : undefined,
+      fix: run.timedOut ? (lang === 'en' ? 'Check whether loop variables change and whether the stop condition can become true.' : 'Verifique se as variáveis do loop mudam e se a condição de parada pode ser alcançada.') : undefined,
+      concept: lang === 'en' ? 'Program execution' : 'Execução do programa',
     },
   ]
 
@@ -162,6 +176,9 @@ export async function gradeExercise(
       passed: similarity.passed,
       hidden: false,
       detail: exercise.sampleOutput ? similarity.detail : undefined,
+      why: similarity.passed ? undefined : (lang === 'en' ? 'The program ran, but the visible result does not match the requested output.' : 'O programa executou, mas o resultado visível não corresponde à saída solicitada.'),
+      fix: similarity.passed ? undefined : (lang === 'en' ? 'Compare labels, values, line breaks and calculations with the expected output.' : 'Compare rótulos, valores, quebras de linha e cálculos com a saída esperada.'),
+      concept: lang === 'en' ? 'Output and result' : 'Saída e resultado',
     })
   }
 
@@ -172,6 +189,9 @@ export async function gradeExercise(
       label: requirementLabel(requirement, lang),
       passed: meetsCodeRequirement(run.analysis, requirement),
       hidden: true,
+      why: meetsCodeRequirement(run.analysis, requirement) ? undefined : (lang === 'en' ? `The required Python structure (${requirement.value}) was not found in executable code.` : `A estrutura Python exigida (${requirement.value}) não foi encontrada no código executável.`),
+      fix: meetsCodeRequirement(run.analysis, requirement) ? undefined : (lang === 'en' ? `Review the phase example and add ${requirement.value} as part of the solution logic.` : `Revise o exemplo da fase e adicione ${requirement.value} como parte da lógica da solução.`),
+      concept: requirementLabel(requirement, lang),
     })
   }
 
@@ -196,6 +216,13 @@ export async function gradeExercise(
           : result.description[lang],
         passed: result.passed,
         hidden: result.hidden,
+        why: result.passed ? undefined : (result.hidden
+          ? (lang === 'en' ? 'The solution worked for the visible example but failed with another valid input.' : 'A solução funcionou no exemplo visível, mas falhou com outra entrada válida.')
+          : (lang === 'en' ? 'One of the expected behaviors was not produced.' : 'Um dos comportamentos esperados não foi produzido.')),
+        fix: result.passed ? undefined : (result.hidden
+          ? (lang === 'en' ? 'Avoid fixed answers. Use the input variables and calculations so the logic works with different values.' : 'Evite respostas fixas. Use as variáveis de entrada e os cálculos para a lógica funcionar com valores diferentes.')
+          : (lang === 'en' ? 'Review the test description and compare the expected behavior with your output.' : 'Revise a descrição do teste e compare o comportamento esperado com sua saída.')),
+        concept: lang === 'en' ? 'Generalization and behavior' : 'Generalização e comportamento',
       })
     }
   }
