@@ -8,7 +8,7 @@ import { BASE_ZERO_MODULES, BASE_ZERO_READINESS } from '../data/baseZero'
 import {
   completeBaseZeroModule, isBaseZeroComplete, loadBaseZeroState, saveBaseZeroState,
   scoreClassification, scoreHardware, setReadinessScore, validateFileChallenge,
-  validateInstallSequence, type BaseZeroModuleId, type InstallStep,
+  evaluateInstallSequence, INSTALL_SEQUENCE, validateInstallSequence, type BaseZeroModuleId, type InstallStep,
 } from '../lib/baseZero'
 import { markStepDone } from '../lib/progress'
 import { getSkillsForPhase } from '../data/skills'
@@ -165,11 +165,11 @@ export default function BaseZero() {
         </div>
 
         <ModuleChallenge moduleId={module.id} lang={lang} completed={completed} onComplete={() => completeModule(module.id)} setFeedback={setFeedback} />
-        {feedback && <div className="rounded-xl p-3 text-sm" style={{ background: completed ? '#052e16' : 'var(--c-purple-f)', color: completed ? '#86efac' : 'var(--c-purple-l)', border: `1px solid ${completed ? '#15803d' : 'var(--c-purple-dm)'}` }}>{feedback}</div>}
+        {feedback && <div className={`rounded-xl p-4 text-sm leading-relaxed ${completed ? 'hp-success-card' : 'hp-feedback-card'}`} style={{ whiteSpace: 'pre-line' }}>{feedback}</div>}
 
         {completed && active < BASE_ZERO_MODULES.length - 1 && <button onClick={() => { setActive(value => value + 1); setFeedback(''); setShowAlternate(false) }} className="w-full rounded-xl py-3 text-sm font-semibold" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}>{t.next} →</button>}
 
-        <button onClick={() => navigate('/visualizer')} className="w-full rounded-xl p-4 text-left" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)', color: 'var(--c-purple-l)' }}>🧩 {t.visualizer} →</button>
+        <button onClick={() => navigate('/visualizer')} className="hp-practice-card w-full rounded-xl p-4 text-left" style={{ color: 'var(--c-purple-l)' }}>🧩 {t.visualizer} →</button>
 
         {allComplete && <button onClick={finish} disabled={finishing} className="w-full rounded-xl py-4 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{finishing ? '...' : t.finish} →</button>}
       </div>
@@ -192,7 +192,7 @@ function ModuleChallenge({ moduleId, lang, completed, onComplete, setFeedback }:
   if (completed) return <div className="rounded-xl p-4 text-sm" style={{ background: '#052e16', color: '#86efac', border: '1px solid #15803d' }}>✅ {lang === 'en' ? 'This practice was validated. You can repeat it anytime.' : 'Esta prática foi validada. Você pode repeti-la quando quiser.'}</div>
 
   if (moduleId === 'files') return (
-    <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}>
+    <div className="hp-practice-card rounded-xl p-4 space-y-3">
       <div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>🗂️ {lang === 'en' ? 'Explorer simulator' : 'Simulador do Explorador'}</div>
       <p className="text-xs" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Create the folder ProjetosPython and a Python file named meu_primeiro.py.' : 'Crie a pasta ProjetosPython e um arquivo Python chamado meu_primeiro.py.'}</p>
       <input value={folder} onChange={event => setFolder(event.target.value)} placeholder={lang === 'en' ? 'Folder name' : 'Nome da pasta'} className="w-full rounded-lg px-3 py-2.5 text-sm" style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }} />
@@ -201,27 +201,91 @@ function ModuleChallenge({ moduleId, lang, completed, onComplete, setFeedback }:
     </div>
   )
 
-  if (moduleId === 'downloads') return (
-    <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}>
-      <div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>🧱 {lang === 'en' ? 'Put the installation steps in order' : 'Coloque a instalação na ordem'}</div>
-      <div className="text-xs" style={{ color: 'var(--c-muted)' }}>{sequence.length ? sequence.map((step, index) => `${index + 1}. ${INSTALL_LABELS[step][lang]}`).join(' → ') : (lang === 'en' ? 'Click the first step.' : 'Clique na primeira etapa.')}</div>
-      <div className="grid gap-2">
-        {installChoices.map(step => <button key={step} disabled={sequence.includes(step)} onClick={() => setSequence(previous => [...previous, step])} className="text-left rounded-lg px-3 py-2 text-sm disabled:opacity-30" style={{ background: 'var(--c-bg)', color: 'var(--c-text2)', border: '1px solid var(--c-border)' }}>{INSTALL_LABELS[step][lang]}</button>)}
+  if (moduleId === 'downloads') {
+    const evaluation = evaluateInstallSequence(sequence)
+    const available = installChoices.filter(step => !sequence.includes(step))
+    const validateSequence = () => {
+      if (evaluation.correct) {
+        success(lang === 'en'
+          ? 'Perfect sequence. You marked PATH before installation and verified Python at the end.'
+          : 'Sequência perfeita. Você marcou o PATH antes da instalação e verificou o Python no final.')
+        return
+      }
+
+      const expectedText = INSTALL_SEQUENCE.map((step, index) => `${index + 1}. ${INSTALL_LABELS[step][lang]}`).join('\n')
+      if (sequence.length < INSTALL_SEQUENCE.length) {
+        fail(lang === 'en'
+          ? `You selected ${sequence.length} of ${INSTALL_SEQUENCE.length} steps. Complete the sequence before validating.\n\nCorrect sequence:\n${expectedText}`
+          : `Você selecionou ${sequence.length} de ${INSTALL_SEQUENCE.length} etapas. Complete a sequência antes de validar.\n\nSequência correta:\n${expectedText}`)
+        return
+      }
+
+      const wrongIndex = evaluation.firstWrongIndex ?? 0
+      const expectedStep = INSTALL_LABELS[INSTALL_SEQUENCE[wrongIndex]][lang]
+      const receivedStep = evaluation.received[wrongIndex] ? INSTALL_LABELS[evaluation.received[wrongIndex]][lang] : '—'
+      const explanation = lang === 'en'
+        ? `You got ${evaluation.correctPositions} of ${INSTALL_SEQUENCE.length} positions right.\n\nAt position ${wrongIndex + 1}, you chose “${receivedStep}”, but the correct step is “${expectedStep}”.\n\nImportant: “Add Python to PATH” must be checked before running the installation. This allows the terminal to recognize the python command. Verification comes last.\n\nCorrect sequence:\n${expectedText}`
+        : `Você acertou ${evaluation.correctPositions} de ${INSTALL_SEQUENCE.length} posições.\n\nNa posição ${wrongIndex + 1}, você escolheu “${receivedStep}”, mas a etapa correta é “${expectedStep}”.\n\nImportante: “Add Python to PATH” deve ser marcado antes de executar a instalação. Isso permite que o terminal reconheça o comando python. A verificação vem por último.\n\nSequência correta:\n${expectedText}`
+      fail(explanation)
+    }
+
+    return (
+      <div className="hp-practice-card rounded-xl p-4 space-y-4">
+        <div>
+          <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🧱 {lang === 'en' ? 'Put the installation steps in order' : 'Coloque a instalação na ordem'}</div>
+          <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>
+            {lang === 'en' ? 'Tap the steps in the order they happen. Your sequence appears below.' : 'Toque nas etapas na ordem em que acontecem. Sua sequência aparece abaixo.'}
+          </p>
+        </div>
+
+        <div className="rounded-xl p-3" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
+          <div className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Your sequence' : 'Sua sequência'}</div>
+          {sequence.length === 0 ? (
+            <div className="text-sm" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'No step selected yet.' : 'Nenhuma etapa selecionada ainda.'}</div>
+          ) : (
+            <ol className="space-y-2">
+              {sequence.map((step, index) => (
+                <li key={step} className="flex items-center gap-3 rounded-lg px-3 py-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)', color: 'var(--c-text)' }}>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{ background: 'var(--c-purple-dm)', color: 'var(--c-purple-l)' }}>{index + 1}</span>
+                  <span className="flex-1 text-sm">{INSTALL_LABELS[step][lang]}</span>
+                  <button type="button" aria-label={lang === 'en' ? `Remove ${INSTALL_LABELS[step][lang]}` : `Remover ${INSTALL_LABELS[step][lang]}`} onClick={() => setSequence(previous => previous.filter(item => item !== step))} className="rounded-lg px-2 text-lg" style={{ color: 'var(--c-muted)' }}>×</button>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        {available.length > 0 && (
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Available steps' : 'Etapas disponíveis'}</div>
+            <div className="grid gap-2">
+              {available.map(step => (
+                <button key={step} onClick={() => setSequence(previous => [...previous, step])} className="hp-choice-button text-left rounded-lg px-3 py-3 text-sm">
+                  <span aria-hidden>＋</span> {INSTALL_LABELS[step][lang]}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-2">
+          <button onClick={() => { setSequence([]); setFeedback('') }} className="hp-secondary-button py-3 text-sm">{lang === 'en' ? 'Start over' : 'Recomeçar'}</button>
+          <button onClick={validateSequence} className="hp-primary-button py-3 text-sm">{lang === 'en' ? 'Validate' : 'Validar'}</button>
+        </div>
       </div>
-      <div className="flex gap-2"><button onClick={() => setSequence([])} className="flex-1 rounded-lg py-2.5 text-sm" style={{ background: 'var(--c-bg)', color: 'var(--c-muted)', border: '1px solid var(--c-border)' }}>{lang === 'en' ? 'Reset' : 'Recomeçar'}</button><button onClick={() => validateInstallSequence(sequence) ? success(lang === 'en' ? 'Safe installation sequence understood.' : 'Sequência segura de instalação compreendida.') : fail(lang === 'en' ? 'The order is not safe yet. Download before opening and verify last.' : 'A ordem ainda não está segura. Baixe antes de abrir e verifique por último.')} className="flex-1 rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
-    </div>
-  )
+    )
+  }
 
   if (moduleId === 'local-cloud') {
     const items = [
       ['downloads-folder', { en: 'A file in Downloads', pt: 'Um arquivo em Downloads' }], ['google-drive', { en: 'A file only on Google Drive', pt: 'Um arquivo apenas no Google Drive' }],
       ['desktop-file', { en: 'A file on the Desktop', pt: 'Um arquivo na Área de Trabalho' }], ['onedrive-web', { en: 'OneDrive opened in a browser', pt: 'OneDrive aberto no navegador' }],
     ] as const
-    return <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}><div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>☁️ {lang === 'en' ? 'Classify where each item lives' : 'Classifique onde cada item está'}</div>{items.map(([id, label]) => <div key={id} className="rounded-lg p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-sm mb-2" style={{ color: 'var(--c-text2)' }}>{label[lang]}</div><div className="flex gap-2">{(['local', 'cloud'] as const).map(choice => <button key={choice} onClick={() => setClassification(previous => ({ ...previous, [id]: choice }))} className="flex-1 rounded-lg py-2 text-xs" style={{ background: classification[id] === choice ? 'var(--c-purple-dm)' : 'var(--c-card)', color: classification[id] === choice ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}>{choice === 'local' ? (lang === 'en' ? '💻 Local' : '💻 Local') : (lang === 'en' ? '☁️ Cloud' : '☁️ Nuvem')}</button>)}</div></div>)}<button onClick={() => scoreClassification(classification) === 100 ? success(lang === 'en' ? 'You can distinguish local and cloud storage.' : 'Você distingue armazenamento local e nuvem.') : fail(lang === 'en' ? `You got ${scoreClassification(classification)}%. Review what requires the internet.` : `Você acertou ${scoreClassification(classification)}%. Revise o que depende da internet.`)} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
+    return <div className="hp-practice-card rounded-xl p-4 space-y-3"><div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>☁️ {lang === 'en' ? 'Classify where each item lives' : 'Classifique onde cada item está'}</div>{items.map(([id, label]) => <div key={id} className="rounded-lg p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-sm mb-2" style={{ color: 'var(--c-text2)' }}>{label[lang]}</div><div className="flex gap-2">{(['local', 'cloud'] as const).map(choice => <button key={choice} onClick={() => setClassification(previous => ({ ...previous, [id]: choice }))} className="flex-1 rounded-lg py-2 text-xs" style={{ background: classification[id] === choice ? 'var(--c-purple-dm)' : 'var(--c-card)', color: classification[id] === choice ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}>{choice === 'local' ? (lang === 'en' ? '💻 Local' : '💻 Local') : (lang === 'en' ? '☁️ Cloud' : '☁️ Nuvem')}</button>)}</div></div>)}<button onClick={() => scoreClassification(classification) === 100 ? success(lang === 'en' ? 'You can distinguish local and cloud storage.' : 'Você distingue armazenamento local e nuvem.') : fail(lang === 'en' ? `You got ${scoreClassification(classification)}%. Review what requires the internet.` : `Você acertou ${scoreClassification(classification)}%. Revise o que depende da internet.`)} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
   }
 
   if (moduleId === 'terminal') return (
-    <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}>
+    <div className="hp-practice-card rounded-xl p-4 space-y-3">
       <div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>⌨️ {lang === 'en' ? 'Terminal simulator' : 'Simulador de terminal'}</div>
       <div className="rounded-lg p-3 font-mono text-sm" style={{ background: '#050510', color: '#a7f3d0' }}>PS C:\Projetos&gt; <span style={{ color: '#fff' }}>{terminalAnswer}</span></div>
       <p className="text-xs" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Type the command that asks Python for its installed version.' : 'Digite o comando que pede ao Python a versão instalada.'}</p>
@@ -234,5 +298,5 @@ function ModuleChallenge({ moduleId, lang, completed, onComplete, setFeedback }:
     ['calculate', { en: 'Executes general instructions', pt: 'Executa instruções gerais' }], ['temporary', { en: 'Temporary workspace for open apps', pt: 'Espaço temporário para apps abertos' }],
     ['permanent', { en: 'Keeps files after shutdown', pt: 'Mantém arquivos depois de desligar' }], ['parallel', { en: 'Many parallel calculations for AI', pt: 'Muitos cálculos paralelos para IA' }],
   ] as const
-  return <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}><div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>🧠 {lang === 'en' ? 'Match the computer resource' : 'Associe o recurso do computador'}</div>{rows.map(([id, label]) => <label key={id} className="block rounded-lg p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-xs mb-2" style={{ color: 'var(--c-text2)' }}>{label[lang]}</div><select value={hardware[id] || ''} onChange={event => setHardware(previous => ({ ...previous, [id]: event.target.value }))} className="w-full rounded-lg px-3 py-2 text-sm" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}><option value="">—</option><option value="cpu">CPU</option><option value="ram">RAM</option><option value="storage">SSD / Storage</option><option value="gpu">GPU</option></select></label>)}<button onClick={() => scoreHardware(hardware) === 100 ? success(lang === 'en' ? 'You understand the four core resources.' : 'Você entendeu os quatro recursos principais.') : fail(lang === 'en' ? `You got ${scoreHardware(hardware)}%. Think worker, workbench, warehouse and team.` : `Você acertou ${scoreHardware(hardware)}%. Pense em trabalhador, bancada, depósito e equipe.`)} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
+  return <div className="hp-practice-card rounded-xl p-4 space-y-3"><div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>🧠 {lang === 'en' ? 'Match the computer resource' : 'Associe o recurso do computador'}</div>{rows.map(([id, label]) => <label key={id} className="block rounded-lg p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-xs mb-2" style={{ color: 'var(--c-text2)' }}>{label[lang]}</div><select value={hardware[id] || ''} onChange={event => setHardware(previous => ({ ...previous, [id]: event.target.value }))} className="w-full rounded-lg px-3 py-2 text-sm" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}><option value="">—</option><option value="cpu">CPU</option><option value="ram">RAM</option><option value="storage">SSD / Storage</option><option value="gpu">GPU</option></select></label>)}<button onClick={() => scoreHardware(hardware) === 100 ? success(lang === 'en' ? 'You understand the four core resources.' : 'Você entendeu os quatro recursos principais.') : fail(lang === 'en' ? `You got ${scoreHardware(hardware)}%. Think worker, workbench, warehouse and team.` : `Você acertou ${scoreHardware(hardware)}%. Pense em trabalhador, bancada, depósito e equipe.`)} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
 }

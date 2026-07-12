@@ -147,3 +147,25 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .mobile-hide { display: none !important; }
   .mobile-full { width: 100% !important; }
 }
+
+/* ── Polishing: readable practice surfaces in both themes ── */
+.hp-practice-card {
+  background: var(--c-card2);
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+}
+.hp-choice-button {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+  font-weight: 550;
+}
+.hp-choice-button:hover {
+  border-color: var(--c-purple-l);
+  background: var(--c-purple-f);
+}
+.hp-feedback-card {
+  background: var(--c-warning-bg);
+  border: 1px solid var(--c-warning-border);
+  color: var(--c-warning-text);
+}

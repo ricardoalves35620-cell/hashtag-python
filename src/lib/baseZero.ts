@@ -70,8 +70,29 @@ export function validateFileChallenge(folderName: string, fileName: string) {
 export const INSTALL_SEQUENCE = ['download', 'open', 'path', 'install', 'verify'] as const
 export type InstallStep = typeof INSTALL_SEQUENCE[number]
 
+export interface InstallSequenceEvaluation {
+  correct: boolean
+  correctPositions: number
+  firstWrongIndex: number | null
+  expected: InstallStep[]
+  received: InstallStep[]
+}
+
+export function evaluateInstallSequence(sequence: InstallStep[]): InstallSequenceEvaluation {
+  const received = [...sequence]
+  const firstWrongIndex = INSTALL_SEQUENCE.findIndex((step, index) => received[index] !== step)
+  const correctPositions = INSTALL_SEQUENCE.filter((step, index) => received[index] === step).length
+  return {
+    correct: received.length === INSTALL_SEQUENCE.length && firstWrongIndex === -1,
+    correctPositions,
+    firstWrongIndex: firstWrongIndex === -1 ? null : firstWrongIndex,
+    expected: [...INSTALL_SEQUENCE],
+    received,
+  }
+}
+
 export function validateInstallSequence(sequence: InstallStep[]) {
-  return sequence.length === INSTALL_SEQUENCE.length && sequence.every((step, index) => step === INSTALL_SEQUENCE[index])
+  return evaluateInstallSequence(sequence).correct
 }
 
 export const LOCAL_CLOUD_ANSWERS: Record<string, 'local' | 'cloud'> = {

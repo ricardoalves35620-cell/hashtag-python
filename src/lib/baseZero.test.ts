@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   completeBaseZeroModule, createBaseZeroState, isBaseZeroComplete, scoreClassification,
-  scoreHardware, setReadinessScore, validateFileChallenge, validateInstallSequence,
+  evaluateInstallSequence, scoreHardware, setReadinessScore, validateFileChallenge, validateInstallSequence,
 } from './baseZero'
 
 describe('Base Zero learning engine', () => {
@@ -13,6 +13,15 @@ describe('Base Zero learning engine', () => {
   it('requires installation steps in the safe order', () => {
     expect(validateInstallSequence(['download', 'open', 'path', 'install', 'verify'])).toBe(true)
     expect(validateInstallSequence(['open', 'download', 'path', 'install', 'verify'])).toBe(false)
+  })
+
+  it('explains the first incorrect installation position', () => {
+    const result = evaluateInstallSequence(['download', 'open', 'install', 'path', 'verify'])
+    expect(result.correct).toBe(false)
+    expect(result.correctPositions).toBe(3)
+    expect(result.firstWrongIndex).toBe(2)
+    expect(result.expected[2]).toBe('path')
+    expect(result.received[2]).toBe('install')
   })
 
   it('scores local and cloud classification', () => {
