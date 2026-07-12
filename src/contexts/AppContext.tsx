@@ -42,10 +42,15 @@ const GUEST_ID = 'guest'
 
 function applyTheme(theme: Theme) {
   const root = document.documentElement
-  if (theme === 'system') {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    root.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
-  } else root.setAttribute('data-theme', theme)
+  const resolved = theme === 'system'
+    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    : theme
+
+  root.setAttribute('data-theme', resolved)
+  root.style.colorScheme = resolved
+
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+  if (themeColor) themeColor.content = resolved === 'dark' ? '#090914' : '#f7f6fb'
 }
 
 function getDisplayName(u: User | null): string {
