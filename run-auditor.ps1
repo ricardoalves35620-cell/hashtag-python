@@ -1,15 +1,17 @@
-param(
+﻿param(
   [int]$Cycles = 0,
   [int]$Minutes = 0,
   [int]$Batch = 1,
   [string]$Url = "",
   [switch]$Fresh,
   [switch]$Continue,
-  [switch]$NoOpen
+  [switch]$NoOpen,
+  [switch]$Visible,
+  [int]$SlowMo = 0
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "7.4.0"
+$AuditorVersion = "7.5.0"
 Set-Location $PSScriptRoot
 
 function Read-PositiveInteger {
@@ -28,6 +30,22 @@ function Read-PositiveInteger {
     }
 
     Write-Host "Digite um número inteiro maior que zero." -ForegroundColor Yellow
+  }
+}
+
+function Read-YesNo {
+  param(
+    [string]$Prompt,
+    [bool]$DefaultValue
+  )
+
+  $defaultLabel = if ($DefaultValue) { "S" } else { "N" }
+  while ($true) {
+    $answer = Read-Host "$Prompt [${defaultLabel}]"
+    if ([string]::IsNullOrWhiteSpace($answer)) { return $DefaultValue }
+    if ($answer -in @("S", "s", "Y", "y")) { return $true }
+    if ($answer -in @("N", "n")) { return $false }
+    Write-Host "Responda S ou N." -ForegroundColor Yellow
   }
 }
 
@@ -97,10 +115,20 @@ try {
   if (-not $Url -and $env:AUDIT_BASE_URL) { $Url = $env:AUDIT_BASE_URL }
   if (-not $Url) { $Url = "https://www.hashtagpython.com" }
 
-  if ($Cycles -le 0) {
+  if (-not $env:AUDIT_USER_EMAIL -or -not $env:AUDIT_USER_PASSWORD) {
+    throw "Credenciais de auditoria ausentes. Verifique .env.audit.local antes de iniciar."
+  }
+
+  $interactiveLaunch = $Cycles -le 0
+  if ($interactiveLaunch) {
     Write-Host "" 
     Write-Host "Hashtag Python Auditor Autopilot" -ForegroundColor Cyan
     $Cycles = Read-PositiveInteger -Prompt "Quantos ciclos deseja executar?" -DefaultValue 20
+    $defaultVisible = $Cycles -le 5
+    $Visible = Read-YesNo -Prompt "Deseja acompanhar o navegador na tela?" -DefaultValue $defaultVisible
+    if ($Visible -and $SlowMo -le 0) {
+      $SlowMo = Read-PositiveInteger -Prompt "Pausa entre ações em milissegundos" -DefaultValue 350
+    }
   }
 
   if ($Batch -le 0) { $Batch = 1 }
@@ -118,9 +146,13 @@ try {
   if ($Minutes -gt 0) { Write-Host "Maximum minutes: $Minutes" }
   else { Write-Host "Time limit: none (ends after the requested cycles)" }
   Write-Host "Target: $Url"
-  if ($env:AUDIT_USER_EMAIL) { Write-Host "Audit account: $($env:AUDIT_USER_EMAIL)" }
-  else { Write-Host "Audit mode: guest" }
+  Write-Host "Audit account: $($env:AUDIT_USER_EMAIL)"
+  Write-Host "Browser: $(if ($Visible) { 'visible' } else { 'headless' })$(if ($Visible -and $SlowMo -gt 0) { " · slow motion ${SlowMo}ms" } else { '' })"
   Write-Host "Report ZIP: $reportZip"
+
+  $env:HP_AUDIT_REQUIRE_LOGIN = "true"
+  $env:HP_AUDIT_HEADED = if ($Visible) { "true" } else { "false" }
+  $env:HP_AUDIT_SLOW_MO = [string]([Math]::Max(0, $SlowMo))
 
   $auditSpec = Join-Path $PSScriptRoot "tests\audit\app.audit.spec.ts"
   if (-not (Test-Path $auditSpec)) { throw "Arquivo de auditoria não encontrado: $auditSpec" }

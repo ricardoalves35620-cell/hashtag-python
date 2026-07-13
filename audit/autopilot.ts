@@ -2,7 +2,7 @@ import { spawnSync, type SpawnSyncReturns } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const AUDITOR_VERSION = '7.4.0'
+const AUDITOR_VERSION = '7.5.0'
 
 interface Args {
   cycles: number
@@ -317,6 +317,9 @@ for (
     HP_AUDIT_RESULTS_OUTPUT: visualOutput,
     HP_AUDIT_HTML_OUTPUT: htmlOutput,
     HP_AUDIT_ARTIFACTS_OUTPUT: artifactsOutput,
+    HP_AUDIT_REQUIRE_LOGIN: 'true',
+    HP_AUDIT_HEADED: process.env.HP_AUDIT_HEADED || 'false',
+    HP_AUDIT_SLOW_MO: process.env.HP_AUDIT_SLOW_MO || '0',
   }
 
   console.log(

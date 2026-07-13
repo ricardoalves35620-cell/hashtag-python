@@ -4,6 +4,8 @@ const externalBaseURL = (process.env.HP_AUDIT_BASE_URL || process.env.AUDIT_BASE
 const resultsOutput = process.env.HP_AUDIT_RESULTS_OUTPUT || 'playwright-report/results.json'
 const htmlOutput = process.env.HP_AUDIT_HTML_OUTPUT || 'playwright-report/html'
 const artifactsOutput = process.env.HP_AUDIT_ARTIFACTS_OUTPUT || 'test-results'
+const headed = process.env.HP_AUDIT_HEADED === 'true'
+const slowMo = Math.max(0, Number(process.env.HP_AUDIT_SLOW_MO || 0))
 
 export default defineConfig({
   testDir: './tests/audit',
@@ -21,6 +23,8 @@ export default defineConfig({
   ],
   use: {
     baseURL: externalBaseURL || 'http://127.0.0.1:4173',
+    headless: !headed,
+    launchOptions: slowMo > 0 ? { slowMo } : undefined,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
