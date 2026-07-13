@@ -5,6 +5,7 @@ import BottomNav from './BottomNav'
 import { Button } from './ui'
 import { shouldRouteWheelToMain } from '../lib/scrollRouting'
 import { isVirtualKeyboardOpen } from '../lib/mobileViewport'
+import SyncStatusIndicator from './SyncStatusIndicator'
 
 interface Props {
   children: React.ReactNode
@@ -114,6 +115,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
           {title ? <h1 className="hp-app-header__title" title={title}>{title}</h1> : <div className="hp-app-header__title-spacer" />}
 
           <div className="hp-app-header__actions">
+            <SyncStatusIndicator compact />
             <div className="hp-segmented" role="group" aria-label={lang === 'en' ? 'Language' : 'Idioma'}>
               {(['en', 'pt'] as const).map(language => (
                 <button

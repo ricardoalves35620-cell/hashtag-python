@@ -11,6 +11,7 @@ import {
 } from '../lib/learningEngine'
 import { migrateGuestBaseZeroState } from '../lib/baseZero'
 import { chooseNewestLearningState, fetchRemoteLearningState, scheduleLearningStateSync } from '../lib/learningSync'
+import { initialSyncState, SYNC_EVENT, type SyncSnapshot } from '../lib/syncStatus'
 
 export type Theme = 'dark' | 'light' | 'system'
 export type EditorHeightMode = 'auto' | 'compact'
@@ -44,6 +45,8 @@ interface AppContextType {
   recordLearningAttempts: (attempts: LearningAttemptInput[]) => void
   completeDiagnostic: () => void
   refreshLearningState: () => void
+  syncSnapshot: SyncSnapshot
+  syncNow: () => Promise<void>
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -88,6 +91,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [accountDisplayName, setAccountDisplayName] = useState('Student')
   const [learningState, setLearningState] = useState<LearningState>(() => createEmptyLearningState())
+  const [syncSnapshot, setSyncSnapshot] = useState<SyncSnapshot>(() => initialSyncState())
   const learnerId = user?.id || (isGuest ? GUEST_ID : null)
   const displayName = isGuest ? (lang === 'pt' ? 'Aluno visitante' : 'Guest student') : accountDisplayName
 
@@ -177,6 +181,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => mq.removeEventListener('change', handler)
   }, [theme])
 
+
+  useEffect(() => {
+    const handleSync = (event: Event) => {
+      const detail = (event as CustomEvent<SyncSnapshot>).detail
+      if (detail) setSyncSnapshot(detail)
+    }
+    const handleOffline = () => setSyncSnapshot(current => ({ ...current, state: 'offline', message: lang === 'pt' ? 'Sem conexão. Alterações salvas neste aparelho.' : 'Offline. Changes are saved on this device.' }))
+    const handleOnline = () => setSyncSnapshot(current => ({ ...current, state: 'pending', message: lang === 'pt' ? 'Conexão recuperada. Sincronizando...' : 'Connection restored. Syncing...' }))
+    window.addEventListener(SYNC_EVENT, handleSync)
+    window.addEventListener('offline', handleOffline)
+    window.addEventListener('online', handleOnline)
+    return () => {
+      window.removeEventListener(SYNC_EVENT, handleSync)
+      window.removeEventListener('offline', handleOffline)
+      window.removeEventListener('online', handleOnline)
+    }
+  }, [lang])
+
   const refreshProgress = useCallback(async () => {
     if (!learnerId) { setProgress([]); return }
     try { setProgress(await fetchProgress(learnerId)) } catch (error) { console.error(error) }
@@ -263,6 +285,35 @@ export function AppProvider({ children }: { children: ReactNode }) {
     })
   }, [learnerId, user])
 
+
+  const syncNow = useCallback(async () => {
+    if (!user) return
+    setSyncSnapshot(current => ({ ...current, state: navigator.onLine ? 'syncing' : 'offline' }))
+    if (!navigator.onLine) return
+    try {
+      await refreshProgress()
+      const local = loadLearningState(user.id)
+      const remote = await fetchRemoteLearningState(user.id)
+      const chosen = chooseNewestLearningState(local, remote)
+      saveLearningState(user.id, chosen)
+      setLearningState(chosen)
+      scheduleLearningStateSync(user.id, chosen)
+    } catch (error) {
+      setSyncSnapshot(current => ({ ...current, state: 'error', message: error instanceof Error ? error.message : 'Sync failed' }))
+    }
+  }, [user, refreshProgress])
+
+  useEffect(() => {
+    if (!user) return
+    const retry = () => { if (navigator.onLine) void syncNow() }
+    window.addEventListener('online', retry)
+    window.addEventListener('focus', retry)
+    return () => {
+      window.removeEventListener('online', retry)
+      window.removeEventListener('focus', retry)
+    }
+  }, [user, syncNow])
+
   const recordLearningAttempt = useCallback((attempt: LearningAttemptInput) => persistLearningState(state => applyLearningAttempt(state, attempt)), [persistLearningState])
   const recordLearningAttempts = useCallback((attempts: LearningAttemptInput[]) => persistLearningState(state => applyLearningAttempts(state, attempts)), [persistLearningState])
   const completeDiagnostic = useCallback(() => persistLearningState(state => markDiagnosticCompleteState(state)), [persistLearningState])
@@ -273,6 +324,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       user, isGuest, learnerId, continueAsGuest, exitGuest,
       loading, progress, refreshProgress, refreshUser, displayName, avatarUrl, learningState,
       recordLearningAttempt, recordLearningAttempts, completeDiagnostic, refreshLearningState,
+      syncSnapshot, syncNow,
     }}>
       {children}
     </AppContext.Provider>

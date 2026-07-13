@@ -1,6 +1,7 @@
 import { getSupabase } from './supabase'
 import type { UserProgress } from '../data/types'
 import { ALL_PHASES } from '../data/phases'
+import { emitSyncState } from './syncStatus'
 
 const GUEST_ID = 'guest'
 
@@ -126,6 +127,11 @@ function cloudPayload(row: UserProgress, userId: string) {
  */
 export async function syncProgressToCloud(userId: string): Promise<UserProgress[]> {
   const local = loadLocalProgress(userId)
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    emitSyncState('pending', 'Progress saved locally while offline')
+    return local
+  }
+  emitSyncState('syncing')
   if (userId === GUEST_ID) return local
 
   const { data, error } = await getSupabase()
@@ -135,6 +141,7 @@ export async function syncProgressToCloud(userId: string): Promise<UserProgress[
 
   if (error) {
     markPending(userId, local.map(row => row.phase_id))
+    emitSyncState('error', 'Could not reach the progress service')
     throw error
   }
 
@@ -156,6 +163,7 @@ export async function syncProgressToCloud(userId: string): Promise<UserProgress[
     clearPending(userId, changed.map(row => row.phase_id))
   }
 
+  emitSyncState('synced')
   return merged
 }
 

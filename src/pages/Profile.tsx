@@ -5,6 +5,7 @@ import { useApp } from '../contexts/AppContext'
 import { getSupabase } from '../lib/supabase'
 import type { Theme } from '../contexts/AppContext'
 import EditorPreferences from '../components/EditorPreferences'
+import SyncStatusIndicator from '../components/SyncStatusIndicator'
 
 const COUNTRY_CODES = [
   { code: '+1',   label: '+1 (US/CA)' },
@@ -250,6 +251,8 @@ export default function Profile() {
   return (
     <Layout title={t.title}>
       <div className="p-4">
+
+        <SyncStatusIndicator />
 
         {/* ── Photo ── */}
         <div style={sectionStyle}>

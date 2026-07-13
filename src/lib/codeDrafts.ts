@@ -1,4 +1,5 @@
 import { getSupabase } from './supabase'
+import { emitSyncState } from './syncStatus'
 
 export interface CodeDraft {
   code: string
@@ -45,9 +46,14 @@ export async function fetchRemoteDraft(userId: string, phaseId: number, exercise
   }
 }
 
-export async function saveRemoteDraft(userId: string, phaseId: number, exerciseId: string, draft: CodeDraft) {
+export async function saveRemoteDraft(userId: string, phaseId: number, exerciseId: string, draft: CodeDraft): Promise<boolean> {
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    emitSyncState('pending', 'Draft saved locally while offline')
+    return false
+  }
+  emitSyncState('syncing')
   try {
-    await getSupabase().from('code_drafts').upsert({
+    const { error } = await getSupabase().from('code_drafts').upsert({
       user_id: userId,
       phase_id: phaseId,
       exercise_id: exerciseId,
@@ -55,8 +61,12 @@ export async function saveRemoteDraft(userId: string, phaseId: number, exerciseI
       input_values: draft.inputs,
       updated_at: draft.updatedAt,
     }, { onConflict: 'user_id,phase_id,exercise_id' })
+    if (error) throw error
+    emitSyncState('synced')
+    return true
   } catch {
-    // Local draft remains the source of truth while offline or before SQL setup.
+    emitSyncState('pending', 'Draft saved locally; cloud sync will retry')
+    return false
   }
 }
 

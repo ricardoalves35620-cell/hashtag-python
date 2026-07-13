@@ -1,5 +1,6 @@
 import { getSupabase } from './supabase'
 import type { LearningState } from './learningEngine'
+import { emitSyncState } from './syncStatus'
 
 export async function fetchRemoteLearningState(userId: string): Promise<LearningState | null> {
   try {
@@ -16,13 +17,20 @@ let syncTimer: ReturnType<typeof setTimeout> | null = null
 export function scheduleLearningStateSync(userId: string, state: LearningState) {
   if (syncTimer) clearTimeout(syncTimer)
   syncTimer = setTimeout(async () => {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      emitSyncState('pending', 'Learning history saved locally while offline')
+      return
+    }
+    emitSyncState('syncing')
     try {
-      await getSupabase().from('learning_states').upsert(
+      const { error } = await getSupabase().from('learning_states').upsert(
         { user_id: userId, state, updated_at: new Date(state.updatedAt).toISOString() },
         { onConflict: 'user_id' },
       )
+      if (error) throw error
+      emitSyncState('synced')
     } catch {
-      // Local state remains the source of truth when the optional sync table is unavailable.
+      emitSyncState('pending', 'Learning history is waiting to sync')
     }
   }, 800)
 }
