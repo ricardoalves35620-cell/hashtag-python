@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 10.3.0 — Learning Engine V2.4: do exercício ao projeto profissional.**
+**Versão atual: 10.6.0 — Learning Engine V2.6: fundamentos completos com raciocínio específico.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -100,6 +100,15 @@ supabase/learning-project-progress.sql
 ```
 
 Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.4.md`.
+
+
+## Learning Engine V2.6
+
+As fases 0–27 da trilha de fundamentos agora possuem roteiros pedagógicos escritos individualmente. Funções, parâmetros, documentação, escopo, arquivos, JSON, datas, biblioteca padrão, tratamento de erros e os quatro projetos de consolidação ensinam o caminho mental antes da sintaxe.
+
+A progressão normal foi preservada: não existe atalho de proprietário ou administrador para abrir fases bloqueadas. A auditoria integral continua sendo responsabilidade dos agentes automatizados.
+
+Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.6.md`.
 
 ## Requisitos
 

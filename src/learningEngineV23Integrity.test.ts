@@ -3,11 +3,10 @@ import { ALL_PHASES } from './data/phases'
 import { getPedagogicalJourney, isFoundationV2Migrated } from './lib/pedagogicalJourney'
 
 describe('Learning Engine V2.3 curriculum migration', () => {
-  it('ships dedicated reasoning blueprints through phase 12', () => {
+  it('keeps the dedicated phase 0–12 reasoning blueprints intact', () => {
     for (let phaseId = 0; phaseId <= 12; phaseId += 1) {
       expect(isFoundationV2Migrated(phaseId)).toBe(true)
     }
-    expect(isFoundationV2Migrated(13)).toBe(false)
   })
 
   it('gives phases 5–12 concept-specific mental models instead of generic copy', () => {
