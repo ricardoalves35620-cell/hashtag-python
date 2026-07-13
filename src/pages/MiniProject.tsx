@@ -2,7 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
-import { Alert, Badge, Button, Card, Progress } from '../components/ui'
+import { Alert, Badge, Button, Card } from '../components/ui'
+import LearningCallout from '../components/learning/LearningCallout'
+import LearningHero from '../components/learning/LearningHero'
+import LearningStageRail from '../components/learning/LearningStageRail'
+import StickyLearningActions from '../components/learning/StickyLearningActions'
 import { useApp } from '../contexts/AppContext'
 import { getMiniProject, type ProjectCheckpointId } from '../data/miniProjects'
 import {
@@ -214,6 +218,22 @@ export default function MiniProject() {
     scrollToTop()
   }
 
+  const stageItems = CHECKPOINTS.map((checkpoint, index) => ({
+    id: checkpoint.id,
+    icon: checkpoint.icon,
+    title: checkpoint[lang],
+    description: ({
+      understand: lang === 'pt' ? 'Defina o contrato do problema.' : 'Define the problem contract.',
+      plan: lang === 'pt' ? 'Transforme o problema em passos.' : 'Turn the problem into steps.',
+      build: lang === 'pt' ? 'Implemente uma responsabilidade por vez.' : 'Implement one responsibility at a time.',
+      test: lang === 'pt' ? 'Comprove o comportamento.' : 'Prove the behavior.',
+      refactor: lang === 'pt' ? 'Melhore sem quebrar.' : 'Improve without breaking behavior.',
+    } as Record<ProjectCheckpointId, string>)[checkpoint.id],
+    active: progress.currentCheckpoint === checkpoint.id,
+    done: progress.completedCheckpoints.includes(checkpoint.id),
+    available: progress.completedCheckpoints.includes(checkpoint.id) || index <= currentIndex,
+  }))
+
   return (
     <Layout
       showBack
@@ -221,51 +241,35 @@ export default function MiniProject() {
       backLabel={`${t.back} ${project.milestonePhaseId}`}
       title={`${t.title} · ${project.title[lang]}`}
     >
-      <div className="p-4 space-y-4">
-        <Card variant="raised" padding="lg">
-          <div className="flex gap-3 items-start">
-            <div className="text-4xl" aria-hidden="true">{project.icon}</div>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap gap-2 items-center">
-                <Badge>{t.workflow}</Badge>
-                <span className="text-xs" style={{ color: 'var(--c-muted)' }}>≈ {project.estimatedMinutes} min</span>
-              </div>
-              <h1 className="text-xl font-semibold mt-2" style={{ color: 'var(--c-text)' }}>{project.title[lang]}</h1>
-              <p className="text-sm mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{project.subtitle[lang]}</p>
-            </div>
-          </div>
-          <div className="mt-4 flex justify-between text-xs" style={{ color: 'var(--c-muted)' }}><span>{progress.completedCheckpoints.length}/{CHECKPOINTS.length}</span><span>{completionPercent}%</span></div>
-          <Progress value={completionPercent} className="mt-2" />
-          <div className="grid grid-cols-5 gap-1 mt-4">
-            {CHECKPOINTS.map((checkpoint, index) => {
-              const done = progress.completedCheckpoints.includes(checkpoint.id)
-              const active = progress.currentCheckpoint === checkpoint.id
-              const available = done || index <= currentIndex
-              return <button
-                key={checkpoint.id}
-                type="button"
-                disabled={!available}
-                onClick={() => openCheckpoint(checkpoint.id)}
-                className="rounded-lg px-1 py-2 text-center text-[10px] sm:text-xs"
-                style={{
-                  border: '1px solid var(--c-border)',
-                  background: active ? 'var(--c-purple-dm)' : done ? 'var(--c-card2)' : 'var(--c-bg)',
-                  color: available ? 'var(--c-text)' : 'var(--c-dimmer)',
-                }}
-                title={checkpoint[lang]}
-              >
-                <div>{done ? '✓' : checkpoint.icon}</div>
-                <div className="mt-1 truncate">{checkpoint[lang]}</div>
-              </button>
-            })}
-          </div>
-        </Card>
+      <div className="learning-workspace">
+        <div className="learning-workspace__grid">
+          <aside className="learning-workspace__aside">
+            <LearningStageRail
+              items={stageItems}
+              currentId={progress.currentCheckpoint}
+              onSelect={id => openCheckpoint(id as ProjectCheckpointId)}
+              label={lang === 'pt' ? 'Ciclo profissional do projeto' : 'Professional project cycle'}
+              compactLabel={t.workflow}
+            />
+          </aside>
+          <main className="learning-reading-column learning-content-stack" data-testid="project-workspace-v25">
+            <LearningHero
+              eyebrow={`${t.title} · ${t.workflow}`}
+              title={project.title[lang]}
+              description={project.subtitle[lang]}
+              icon={project.icon}
+              current={currentIndex + 1}
+              total={CHECKPOINTS.length}
+              progress={completionPercent}
+              progressLabel={lang === 'pt' ? 'Progresso do projeto' : 'Project progress'}
+              secondaryLabel={`${progress.completedCheckpoints.length}/${CHECKPOINTS.length} · ≈ ${project.estimatedMinutes} min`}
+              action={<Badge>{t.workflow}</Badge>}
+            />
 
-        <Card variant="info" padding="md">
-          <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>{lang === 'pt' ? 'O problema real' : 'The real problem'}</div>
-          <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{project.scenario[lang]}</p>
-          <p className="text-xs mt-3 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{project.professionalContext[lang]}</p>
-        </Card>
+            <LearningCallout variant="professional" title={lang === 'pt' ? 'O problema real' : 'The real problem'}>
+              <p className="m-0">{project.scenario[lang]}</p>
+              <p className="mt-2 mb-0 text-xs">{project.professionalContext[lang]}</p>
+            </LearningCallout>
 
         {progress.currentCheckpoint === 'understand' && <Card padding="lg">
           <h2 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{t.understandTitle}</h2>
@@ -373,15 +377,20 @@ export default function MiniProject() {
 
         {message && <Alert variant={progress.completed ? 'success' : 'info'}>{message}</Alert>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <Button variant="secondary" disabled={currentIndex === 0} onClick={() => openCheckpoint(CHECKPOINTS[currentIndex - 1].id)}>
-            ← {lang === 'pt' ? 'Checkpoint anterior' : 'Previous checkpoint'}
-          </Button>
-          {!progress.completed
+        <StickyLearningActions
+          status={`${currentIndex + 1}/${CHECKPOINTS.length} · ${t.saved}`}
+          previous={(
+            <Button variant="secondary" disabled={currentIndex === 0} onClick={() => openCheckpoint(CHECKPOINTS[currentIndex - 1].id)}>
+              ← {lang === 'pt' ? 'Checkpoint anterior' : 'Previous checkpoint'}
+            </Button>
+          )}
+          next={!progress.completed
             ? <Button onClick={completeCheckpoint}>{progress.currentCheckpoint === 'refactor' ? t.finish : t.next} →</Button>
             : <Button variant="success" onClick={() => navigate(`/phase/${project.milestonePhaseId}`)}>{t.openPhase} →</Button>}
+        />
+        <div className="h-4" />
+          </main>
         </div>
-        <div className="text-center text-xs" style={{ color: 'var(--c-muted)' }}>{t.saved}</div>
       </div>
     </Layout>
   )

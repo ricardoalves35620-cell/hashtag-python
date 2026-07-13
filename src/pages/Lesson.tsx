@@ -6,12 +6,17 @@ import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
 import GlossaryPanel from '../components/glossary/GlossaryPanel'
+import LearningCallout from '../components/learning/LearningCallout'
+import LearningHero from '../components/learning/LearningHero'
+import LearningStageRail from '../components/learning/LearningStageRail'
+import StickyLearningActions from '../components/learning/StickyLearningActions'
 import {
   getPedagogicalJourney,
   loadLessonReflection,
   saveLessonReflection,
 } from '../lib/pedagogicalJourney'
 import { loadJournalPreferences, loadJourneyProgress, markJourneyUnitVisited, saveJournalEntry } from '../lib/learningJournal'
+import { scrollToTop } from '../lib/scroll'
 
 export default function Lesson() {
   const { id } = useParams()
@@ -21,7 +26,6 @@ export default function Lesson() {
   const phase = ALL_PHASES.find(p => p.id === Number(id))
   const requestedUnit = Number(searchParams.get('unit') || '0')
   const [reflection, setReflection] = useState('')
-  const [validationMessage, setValidationMessage] = useState('')
   const [visitedUnits, setVisitedUnits] = useState<string[]>([])
   const [journalVisible, setJournalVisible] = useState(() => loadJournalPreferences().showJournal)
   const titleRef = useRef<HTMLHeadingElement>(null)
@@ -36,18 +40,19 @@ export default function Lesson() {
       return
     }
     setReflection(loadLessonReflection(learnerId, phase.id, unit.id))
-    setVisitedUnits(markJourneyUnitVisited(learnerId, phase.id, unit.id))
+    const stored = loadJourneyProgress(learnerId, phase.id)
+    const visited = markJourneyUnitVisited(learnerId, phase.id, unit.id)
+    setVisitedUnits(Array.from(new Set([...stored, ...visited])))
     setJournalVisible(loadJournalPreferences().showJournal)
-    setValidationMessage('')
   }, [learnerId, phase, unit])
 
   if (!phase || !unit) return null
 
   const goToUnit = (next: number) => {
-    setSearchParams({ unit: String(next) })
+    const bounded = Math.min(Math.max(next, 0), journey.length - 1)
+    setSearchParams({ unit: String(bounded) })
     requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: 'auto' })
-      document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' })
+      scrollToTop()
       setTimeout(() => titleRef.current?.focus({ preventScroll: true }), 0)
     })
   }
@@ -60,8 +65,12 @@ export default function Lesson() {
   const syncOptionalReflection = () => {
     if (!learnerId || !reflection.trim()) return
     void saveJournalEntry({
-      userId: learnerId, phaseId: phase.id, unitId: unit.id,
-      prompt: unit.checkpoint[lang], response: reflection, language: lang,
+      userId: learnerId,
+      phaseId: phase.id,
+      unitId: unit.id,
+      prompt: unit.checkpoint[lang],
+      response: reflection,
+      language: lang,
     })
   }
 
@@ -74,25 +83,45 @@ export default function Lesson() {
     if (!learnerId) return
     await markStepDone(learnerId, phase.id, 'lesson')
     await refreshProgress()
+    scrollToTop()
     navigate(`/phase/${phase.id}/exercises`)
   }
 
   const t = {
     en: {
       of: 'Phase', journey: 'Learning journey', previous: 'Previous lesson', next: 'Next lesson',
-      complete: 'Complete learning journey →', checkpoint: 'Reasoning checkpoint',
-      saved: 'Optional — saved on this device', lesson: 'learning step', lessons: 'learning steps',
-      optional: 'Optional Programmer Journal', skip: 'Skip for now', completed: 'journey completed',
+      complete: 'Complete journey and practice →', lesson: 'learning step', lessons: 'learning steps',
+      optional: 'Programmer Journal', skip: 'Hide for now', completed: 'of the journey explored',
+      progress: 'Journey progress', journalBadge: 'Optional', journalHelp: 'Use this space when writing helps you organize your reasoning. Leaving it empty never blocks your progress.',
+      currentGoal: 'Your goal in this step', professionalHabit: 'Professional habit', professionalText: 'Do not rush to the final code. First make the problem, data and decision visible. Experienced developers reduce uncertainty before they type.',
+      visited: 'visited', openGlossary: 'Open glossary', navigation: 'Journey map',
     },
     pt: {
       of: 'Fase', journey: 'Jornada de aprendizagem', previous: 'Aula anterior', next: 'Próxima aula',
-      complete: 'Concluir jornada de aprendizagem →', checkpoint: 'Parada de raciocínio',
-      saved: 'Opcional — salvo neste aparelho', lesson: 'etapa de aprendizagem', lessons: 'etapas de aprendizagem',
-      optional: 'Diário do Programador — opcional', skip: 'Pular por agora', completed: 'da jornada concluída',
+      complete: 'Concluir jornada e praticar →', lesson: 'etapa de aprendizagem', lessons: 'etapas de aprendizagem',
+      optional: 'Diário do Programador', skip: 'Ocultar por agora', completed: 'da jornada explorada',
+      progress: 'Progresso da jornada', journalBadge: 'Opcional', journalHelp: 'Use este espaço quando escrever ajudar a organizar seu raciocínio. Deixar vazio nunca bloqueia seu progresso.',
+      currentGoal: 'Seu objetivo nesta etapa', professionalHabit: 'Hábito profissional', professionalText: 'Não corra para o código final. Primeiro torne visíveis o problema, os dados e a decisão. Desenvolvedores experientes reduzem a incerteza antes de digitar.',
+      visited: 'visitadas', openGlossary: 'Abrir glossário', navigation: 'Mapa da jornada',
     },
   }[lang]
 
-  const progressPercent = Math.round((visitedUnits.length / journey.length) * 100)
+  const visitedSet = new Set(visitedUnits)
+  const progressPercent = Math.round((visitedSet.size / journey.length) * 100)
+  const stageItems = journey.map((item, index) => ({
+    id: item.id,
+    icon: item.icon,
+    title: item.title[lang].replace(/^\d+\.\s*/, ''),
+    description: item.purpose[lang],
+    active: item.id === unit.id,
+    done: visitedSet.has(item.id) && item.id !== unit.id,
+    available: visitedSet.has(item.id) || index <= unitIndex,
+  }))
+
+  const openStage = (stageId: string) => {
+    const index = journey.findIndex(item => item.id === stageId)
+    if (index >= 0) goToUnit(index)
+  }
 
   return (
     <Layout
@@ -101,91 +130,105 @@ export default function Lesson() {
       backLabel={`${t.of} ${phase.id}`}
       title={`${t.journey} · ${phase.title[lang]}`}
     >
-      <div className="p-4 space-y-4">
-        <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
-          <div className="flex items-start gap-3">
-            <div className="text-3xl" aria-hidden="true">{unit.icon}</div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs mb-1" style={{ color: 'var(--c-muted)' }}>
-                {unitIndex + 1}/{journey.length} {journey.length === 1 ? t.lesson : t.lessons}
-              </div>
-              <h1 ref={titleRef} tabIndex={-1} className="text-lg font-semibold outline-none" style={{ color: 'var(--c-text)' }}>{unit.title[lang]}</h1>
-              <p className="text-sm mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{unit.purpose[lang]}</p>
+      <div className="learning-workspace">
+        <div className="learning-workspace__grid">
+          <aside className="learning-workspace__aside">
+            <LearningStageRail
+              items={stageItems}
+              currentId={unit.id}
+              onSelect={openStage}
+              label={t.navigation}
+              compactLabel={t.journey}
+            />
+          </aside>
+
+          <main className="learning-reading-column" data-testid="learning-engine-v25">
+            <div className="learning-content-stack">
+              <LearningHero
+                eyebrow={`${t.of} ${phase.id} · ${phase.title[lang]}`}
+                title={unit.title[lang].replace(/^\d+\.\s*/, '')}
+                description={unit.purpose[lang]}
+                icon={unit.icon}
+                current={unitIndex + 1}
+                total={journey.length}
+                progress={progressPercent}
+                progressLabel={t.progress}
+                secondaryLabel={`${visitedSet.size}/${journey.length} ${journey.length === 1 ? t.lesson : t.lessons} ${t.visited} · ${progressPercent}% ${t.completed}`}
+                action={<GlossaryPanel lang={lang} />}
+                titleRef={titleRef}
+              />
+
+              <LearningCallout variant="idea" title={t.currentGoal}>
+                {unit.checkpoint[lang]}
+              </LearningCallout>
+
+              <article className="learning-content-card learning-content-stack" aria-labelledby="lesson-content-title">
+                <span id="lesson-content-title" className="sr-only">{unit.title[lang]}</span>
+                {unit.blocks.map((block, index) => <LessonBlock key={`${unit.id}-${index}`} block={block} lang={lang} />)}
+              </article>
+
+              <LearningCallout variant="professional" title={t.professionalHabit}>
+                {t.professionalText}
+              </LearningCallout>
+
+              {journalVisible && (
+                <section className="learning-journal-card" data-testid="optional-learning-journal">
+                  <div className="learning-journal-card__header">
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-base font-semibold m-0" style={{ color: 'var(--c-text)' }}>{t.optional}</h2>
+                        <span className="learning-journal-card__optional">{t.journalBadge}</span>
+                      </div>
+                      <p className="text-xs mt-2 mb-0 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{t.journalHelp}</p>
+                    </div>
+                    <button type="button" onClick={() => setJournalVisible(false)} className="text-xs underline" style={{ color: 'var(--c-muted)', background: 'none', border: 0 }}>{t.skip}</button>
+                  </div>
+                  <p className="text-sm leading-relaxed mt-4 mb-3 font-medium" style={{ color: 'var(--c-text2)' }}>{unit.checkpoint[lang]}</p>
+                  <textarea
+                    value={reflection}
+                    onChange={event => persistReflection(event.target.value)}
+                    placeholder={unit.checkpointPlaceholder[lang]}
+                    rows={5}
+                    className="w-full rounded-xl p-3 text-sm leading-relaxed resize-y"
+                    style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)', minHeight: 120 }}
+                    data-testid="lesson-reflection"
+                  />
+                  <div className="flex justify-between gap-3 mt-2 text-xs" style={{ color: 'var(--c-muted)' }}>
+                    <span>{t.journalHelp}</span>
+                    <span aria-label={`${reflection.trim().length} characters`}>{reflection.trim().length}</span>
+                  </div>
+                </section>
+              )}
+
+              <StickyLearningActions
+                status={`${unitIndex + 1}/${journey.length}`}
+                previous={(
+                  <button
+                    type="button"
+                    onClick={() => goToUnit(unitIndex - 1)}
+                    disabled={unitIndex === 0}
+                    className="rounded-xl py-3 px-4 text-sm font-semibold"
+                    style={{ border: '1px solid var(--c-border)', background: 'var(--c-card)', color: 'var(--c-text2)' }}
+                  >
+                    ← {t.previous}
+                  </button>
+                )}
+                next={(
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="rounded-xl py-3 px-4 text-sm font-semibold text-white"
+                    style={{ border: 'none', background: 'var(--c-purple)', boxShadow: '0 2px 12px rgba(124,58,237,0.35)' }}
+                    data-testid="lesson-next"
+                  >
+                    {unitIndex === journey.length - 1 ? t.complete : `${t.next} →`}
+                  </button>
+                )}
+              />
+              <div className="h-4" />
             </div>
-            <GlossaryPanel lang={lang} />
-          </div>
-          <div className="flex justify-between gap-3 mt-4 text-xs" style={{ color: 'var(--c-muted)' }}><span>{visitedUnits.length}/{journey.length}</span><span>{progressPercent}% {t.completed}</span></div>
-          <div className="mt-2 h-2 rounded-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
-            <div className="h-full rounded-full transition-all" style={{ width: `${progressPercent}%`, background: 'var(--c-purple)' }} />
-          </div>
-          <div className="grid gap-1 mt-3" style={{ gridTemplateColumns: `repeat(${Math.min(journey.length, 5)}, minmax(0, 1fr))` }} aria-label={t.journey}>
-            {journey.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => index <= unitIndex && goToUnit(index)}
-                disabled={index > unitIndex}
-                title={item.title[lang]}
-                className="rounded-lg py-2 text-xs"
-                style={{
-                  border: '1px solid var(--c-border)',
-                  background: index === unitIndex ? 'var(--c-purple-dm)' : index < unitIndex ? 'var(--c-card2)' : 'var(--c-bg)',
-                  color: index <= unitIndex ? 'var(--c-text)' : 'var(--c-dimmer)',
-                  cursor: index <= unitIndex ? 'pointer' : 'not-allowed',
-                }}
-              >
-                {index < unitIndex ? '✓' : index + 1}
-              </button>
-            ))}
-          </div>
+          </main>
         </div>
-
-        <div className="space-y-2">
-          {unit.blocks.map((block, index) => <LessonBlock key={`${unit.id}-${index}`} block={block} lang={lang} />)}
-        </div>
-
-        {journalVisible && <section className="rounded-xl p-4" style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}>
-          <div className="flex items-center justify-between gap-3 mb-2"><div className="text-sm font-semibold" style={{ color: 'var(--c-purple-l)' }}>{t.optional}</div><button type="button" onClick={() => setJournalVisible(false)} className="text-xs underline" style={{ color: 'var(--c-muted)' }}>{t.skip}</button></div>
-          <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--c-text2)' }}>{unit.checkpoint[lang]}</p>
-          <textarea
-            value={reflection}
-            onChange={event => persistReflection(event.target.value)}
-            placeholder={unit.checkpointPlaceholder[lang]}
-            rows={5}
-            className="w-full rounded-xl p-3 text-sm leading-relaxed resize-y"
-            style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)', minHeight: 120 }}
-            data-testid="lesson-reflection"
-          />
-          <div className="flex justify-between gap-3 mt-2 text-xs" style={{ color: validationMessage ? '#fca5a5' : 'var(--c-muted)' }}>
-            <span>{validationMessage || t.saved}</span>
-            <span>{reflection.trim().length}</span>
-          </div>
-        </section>}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
-          <button
-            type="button"
-            onClick={() => goToUnit(unitIndex - 1)}
-            disabled={unitIndex === 0}
-            className="rounded-xl py-3 px-4 text-sm font-semibold"
-            style={{
-              border: '1px solid var(--c-border)', background: 'var(--c-card)', color: 'var(--c-text2)',
-              opacity: unitIndex === 0 ? 0.45 : 1,
-            }}
-          >
-            ← {t.previous}
-          </button>
-          <button
-            type="button"
-            onClick={handleNext}
-            className="rounded-xl py-3 px-4 text-sm font-semibold text-white"
-            style={{ border: 'none', background: 'var(--c-purple)', boxShadow: '0 2px 12px rgba(124,58,237,0.35)' }}
-            data-testid="lesson-next"
-          >
-            {unitIndex === journey.length - 1 ? t.complete : `${t.next} →`}
-          </button>
-        </div>
-        <div className="h-4" />
       </div>
     </Layout>
   )

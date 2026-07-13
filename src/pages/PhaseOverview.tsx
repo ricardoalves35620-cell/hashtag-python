@@ -1,13 +1,26 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { scrollToTop } from '../lib/scroll'
 import { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
+import { Progress } from '../components/ui/Progress'
+import LearningCallout from '../components/learning/LearningCallout'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { getPhaseStatus } from '../lib/progress'
 import { inferPhaseStage, getPhaseGroup } from '../data/phaseCatalog'
 import { getMiniProjectForPhase } from '../data/miniProjects'
 import { fetchRemoteProjectProgress, loadLocalProjectProgress, mergeProjectProgress, saveLocalProjectProgress } from '../lib/projectProgress'
+import { scrollToTop } from '../lib/scroll'
+
+interface PhaseStep {
+  id: string
+  icon: string
+  label: { en: string; pt: string }
+  desc: { en: string; pt: string }
+  done: boolean
+  active: boolean
+  path: string
+  score?: number | null
+}
 
 export default function PhaseOverview() {
   const { id } = useParams()
@@ -37,7 +50,6 @@ export default function PhaseOverview() {
     return () => window.removeEventListener('hp:project-progress', update)
   }, [project, learnerId, lang])
 
-  // Refresh progress when page gains focus — catches updates from other devices
   useEffect(() => {
     const refresh = () => refreshProgress()
     window.addEventListener('focus', refresh)
@@ -51,169 +63,163 @@ export default function PhaseOverview() {
   const status = getPhaseStatus(progress, phase.id)
   const effectiveProjectDone = projectDone || Boolean(phaseProgress?.project_done)
 
-  const steps = [
+  const steps: PhaseStep[] = [
     {
-      id: 'lesson',
-      icon: '📚',
+      id: 'lesson', icon: '📚',
       label: { en: 'Learning journey', pt: 'Jornada de aprendizagem' },
-      desc: { en: '10 steps: problem, logic, Python, debugging, practice and transfer', pt: '10 etapas: problema, lógica, Python, depuração, prática e transferência' },
-      done: !!phaseProgress?.lesson_done,
-      active: true,
-      path: phase.id === 0 ? '/base-zero' : `/phase/${phase.id}/lesson`
+      desc: { en: 'Understand the problem, build the logic, translate to Python, debug and transfer.', pt: 'Entenda o problema, construa a lógica, traduza para Python, depure e transfira.' },
+      done: Boolean(phaseProgress?.lesson_done), active: true,
+      path: phase.id === 0 ? '/base-zero' : `/phase/${phase.id}/lesson`,
     },
     {
-      id: 'exercises',
-      icon: '🏋️',
-      label: { en: 'Exercises', pt: 'Exercícios' },
-      desc: { en: 'Guided practice tasks', pt: 'Tarefas práticas guiadas' },
-      done: !!phaseProgress?.exercises_done,
-      active: !!phaseProgress?.lesson_done,
-      path: `/phase/${phase.id}/exercises`
+      id: 'exercises', icon: '🏋️',
+      label: { en: 'Deliberate practice', pt: 'Prática deliberada' },
+      desc: { en: 'Predict, modify, write, test and explain instead of only running ready-made code.', pt: 'Preveja, modifique, escreva, teste e explique, em vez de apenas executar código pronto.' },
+      done: Boolean(phaseProgress?.exercises_done), active: Boolean(phaseProgress?.lesson_done),
+      path: `/phase/${phase.id}/exercises`,
     },
     {
-      id: 'quiz',
-      icon: '🧠',
-      label: { en: 'Mini-test', pt: 'Mini-teste' },
-      desc: { en: 'Quick knowledge check — no grade', pt: 'Verificação rápida — sem nota' },
-      done: !!phaseProgress?.quiz_done,
-      active: !!phaseProgress?.exercises_done,
-      path: `/phase/${phase.id}/quiz`
+      id: 'quiz', icon: '🧠',
+      label: { en: 'Knowledge check', pt: 'Verificação de conhecimento' },
+      desc: { en: 'Reveal misunderstandings before the final assessment.', pt: 'Revele mal-entendidos antes da avaliação final.' },
+      done: Boolean(phaseProgress?.quiz_done), active: Boolean(phaseProgress?.exercises_done),
+      path: `/phase/${phase.id}/quiz`,
     },
     {
-      id: 'exam',
-      icon: '🎯',
-      label: { en: 'Final Exam', pt: 'Exame Final' },
-      desc: { en: 'Write code — needs 90% to pass', pt: 'Escreva código — precisa de 90% para passar' },
-      done: !!phaseProgress?.exam_passed,
-      active: !!phaseProgress?.quiz_done,
-      path: `/phase/${phase.id}/exam`,
-      score: phaseProgress?.exam_score
+      id: 'exam', icon: '🎯',
+      label: { en: 'Competency assessment', pt: 'Avaliação de competência' },
+      desc: { en: 'Build a working solution and reach at least 90%.', pt: 'Construa uma solução funcional e alcance pelo menos 90%.' },
+      done: Boolean(phaseProgress?.exam_passed), active: Boolean(phaseProgress?.quiz_done),
+      path: `/phase/${phase.id}/exam`, score: phaseProgress?.exam_score,
     },
     ...(project ? [{
-      id: 'mini-project',
-      icon: '🧰',
-      label: { en: 'Block mini-project', pt: 'Mini projeto do bloco' },
-      desc: { en: 'Understand → plan → implement → test → refactor', pt: 'Entender → planejar → implementar → testar → refatorar' },
-      done: effectiveProjectDone,
-      active: !!phaseProgress?.exam_passed,
-      path: `/mini-project/${project.id}`,
-      score: null,
+      id: 'mini-project', icon: '🧰',
+      label: { en: 'Professional mini-project', pt: 'Mini projeto profissional' },
+      desc: { en: 'Understand → plan → implement → test → refactor.', pt: 'Entender → planejar → implementar → testar → refatorar.' },
+      done: effectiveProjectDone, active: Boolean(phaseProgress?.exam_passed),
+      path: `/mini-project/${project.id}`, score: null,
     }] : []),
   ]
 
-  const stepsCompleted = steps.filter(s => s.done).length
+  const stepsCompleted = steps.filter(step => step.done).length
+  const progressPercent = Math.round((stepsCompleted / steps.length) * 100)
   const phaseMastered = status === 'done' && (!project || effectiveProjectDone)
+  const currentStepIndex = Math.max(0, steps.findIndex(step => !step.done && step.active))
+  const currentStep = phaseMastered ? steps[steps.length - 1] : steps[currentStepIndex]
+
+  const t = {
+    en: {
+      home: 'Home', phase: 'Phase', mastery: 'Topic mastery', complete: 'complete',
+      continue: phaseMastered ? 'Review this topic' : 'Continue learning', current: 'Your next action',
+      map: 'Learning path', currentBadge: 'Current', locked: 'Complete the previous step first',
+      mastered: 'Topic mastered', masteredText: 'You completed the learning journey, practice and assessment evidence for this topic.',
+      projectPending: 'The assessment passed. The topic is not mastered yet.',
+      projectPendingText: 'Complete the mini-project to prove that you can plan, build, test and improve a solution.',
+      hours: 'estimated study', desktop: 'Desktop practice recommended', lab: 'Open practical lab',
+      evidence: 'Progress here measures evidence of learning—not clicks.',
+    },
+    pt: {
+      home: 'Início', phase: 'Fase', mastery: 'Domínio do tópico', complete: 'concluído',
+      continue: phaseMastered ? 'Revisar este tópico' : 'Continuar aprendendo', current: 'Sua próxima ação',
+      map: 'Caminho de aprendizagem', currentBadge: 'Atual', locked: 'Conclua a etapa anterior primeiro',
+      mastered: 'Tópico dominado', masteredText: 'Você concluiu a jornada, a prática e as evidências de avaliação deste tópico.',
+      projectPending: 'A avaliação passou. O tópico ainda não foi dominado.',
+      projectPendingText: 'Conclua o mini projeto para provar que consegue planejar, construir, testar e melhorar uma solução.',
+      hours: 'de estudo estimado', desktop: 'Prática desktop recomendada', lab: 'Abrir laboratório prático',
+      evidence: 'O progresso aqui mede evidências de aprendizagem — não cliques.',
+    },
+  }[lang]
+
+  const openStep = (step: PhaseStep) => {
+    if (!step.active && !step.done) return
+    scrollToTop()
+    navigate(step.path)
+  }
 
   return (
-    <Layout
-      showBack
-      backTo="/"
-      backLabel={lang === 'en' ? 'Home' : 'Início'}
-      title={`${lang === 'en' ? 'Phase' : 'Fase'} ${phase.id}`}
-    >
-      <div className="p-4 space-y-4">
-        {/* Phase header */}
-        <div className="bg-[#0d0d1f] border border-[#1e1e40] rounded-xl p-4">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="text-3xl">{phase.icon}</div>
-            <div>
-              <div className="text-xs text-muted mb-0.5">{lang === 'en' ? 'Phase' : 'Fase'} {phase.id}{group ? ` · ${group.title[lang]}` : ''}</div>
-              <h1 className="text-lg font-medium text-white">{phase.title[lang]}</h1>
+    <Layout showBack backTo="/" backLabel={t.home} title={`${t.phase} ${phase.id}`}>
+      <div className="learning-workspace">
+        <div className="learning-reading-column learning-content-stack" data-testid="phase-learning-path-v25">
+          <header className="learning-hero">
+            <div className="learning-hero__eyebrow">{t.phase} {phase.id}{group ? ` · ${group.title[lang]}` : ''}</div>
+            <div className="learning-hero__content">
+              <div className="learning-hero__icon" aria-hidden="true">{phase.icon}</div>
+              <div className="learning-hero__copy">
+                <h1 className="learning-hero__title">{phase.title[lang]}</h1>
+                <p className="learning-hero__description">{phase.description[lang]}</p>
+              </div>
             </div>
-          </div>
-          <div className="text-sm text-[#8888aa] mb-3">{phase.description[lang]}</div>
 
-          <div className="flex flex-wrap gap-2 mb-3">
-            {phase.estimatedHours && <span className="text-[10px] px-2 py-1 rounded-full bg-[#0a0a18] text-muted">≈ {phase.estimatedHours}h</span>}
-            {phase.desktopRequired && <span className="text-[10px] px-2 py-1 rounded-full bg-amber-950/40 text-amber-300 border border-amber-800">{lang === 'en' ? 'Desktop practice recommended' : 'Prática desktop recomendada'}</span>}
-            {phase.labPath && <button onClick={() => navigate(phase.labPath!)} className="text-[10px] px-2 py-1 rounded-full bg-purple-faint text-purple-light border border-purple-dim">{lang === 'en' ? 'Open practical lab' : 'Abrir laboratório prático'} →</button>}
-          </div>
-
-          {phase.libraries.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {phase.libraries.map(lib => (
-                <span key={lib} className="text-xs font-mono bg-[#0a0a18] text-purple-light border border-[#1e1e40] px-2 py-0.5 rounded">
-                  pip install {lib}
-                </span>
-              ))}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {phase.estimatedHours && <span className="text-xs px-2.5 py-1 rounded-full" style={{ background: 'var(--c-bg)', color: 'var(--c-muted)', border: '1px solid var(--c-border)' }}>≈ {phase.estimatedHours}h {t.hours}</span>}
+              {phase.desktopRequired && <span className="text-xs px-2.5 py-1 rounded-full" style={{ background: 'var(--c-warning-bg)', color: 'var(--c-warning-text)', border: '1px solid var(--c-warning-border)' }}>{t.desktop}</span>}
+              {phase.labPath && <button onClick={() => navigate(phase.labPath!)} className="text-xs px-2.5 py-1 rounded-full" style={{ background: 'var(--c-purple-f)', color: 'var(--c-purple-l)', border: '1px solid var(--c-purple-dm)' }}>{t.lab} →</button>}
             </div>
+
+            {phase.libraries.length > 0 && <div className="flex flex-wrap gap-1.5 mt-3">{phase.libraries.map(lib => <code key={lib} className="text-xs px-2 py-1 rounded" style={{ background: 'var(--c-code-bg)', color: 'var(--c-purple-l)', border: '1px solid var(--c-border)' }}>pip install {lib}</code>)}</div>}
+
+            <div className="learning-hero__progress-copy"><span>{t.mastery}</span><strong>{progressPercent}%</strong></div>
+            <Progress value={progressPercent} className="learning-hero__progress" />
+            <div className="learning-hero__secondary">{stepsCompleted}/{steps.length} · {progressPercent}% {t.complete}</div>
+          </header>
+
+          {!phaseMastered && currentStep && (
+            <section className="learning-content-card">
+              <div className="text-xs font-extrabold uppercase tracking-wider" style={{ color: 'var(--c-purple-l)' }}>{t.current}</div>
+              <div className="flex items-start gap-3 mt-3">
+                <div className="text-3xl" aria-hidden="true">{currentStep.icon}</div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg font-semibold m-0">{currentStep.label[lang]}</h2>
+                  <p className="text-sm mt-1 mb-0 leading-relaxed">{currentStep.desc[lang]}</p>
+                </div>
+              </div>
+              <button onClick={() => openStep(currentStep)} className="w-full rounded-xl py-3 px-4 mt-4 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)', border: 0 }}>{t.continue} →</button>
+            </section>
           )}
 
-          <div className="space-y-1">
-            <div className="flex justify-between text-xs text-muted">
-              <span>{stepsCompleted}/{steps.length} {lang === 'en' ? 'steps' : 'etapas'}</span>
-              <span>{Math.round((stepsCompleted / steps.length) * 100)}%</span>
-            </div>
-            <div className="h-1.5 bg-[#0a0a18] rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all ${stepsCompleted === steps.length ? 'bg-green-500' : 'bg-purple-DEFAULT'}`}
-                style={{ width: `${(stepsCompleted / steps.length) * 100}%` }}
-              />
-            </div>
-          </div>
-        </div>
+          <LearningCallout variant="remember" title={t.mastery}>{t.evidence}</LearningCallout>
 
-        {/* Steps */}
-        <div className="space-y-2">
-          {steps.map((step) => (
-            <button
-              key={step.id}
-              onClick={() => step.active && navigate(step.path)}
-              disabled={!step.active && !step.done}
-              className={`
-                w-full text-left rounded-xl border p-4 flex items-center gap-3 transition-all
-                ${step.done
-                  ? 'bg-[#0a1a0a] border-[#1a4a1a] hover:border-green-700 cursor-pointer'
-                  : step.active
-                  ? 'bg-card border-border hover:border-purple-dim cursor-pointer active:scale-[0.99]'
-                  : 'bg-card border-border opacity-40 cursor-not-allowed'
-                }
-              `}
-            >
-              {/* Step indicator */}
-              <div className={`
-                w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0
-                ${step.done ? 'bg-green-900/40' : step.active ? 'bg-purple-faint' : 'bg-[#0a0a18]'}
-              `}>
-                {step.done ? '✅' : !step.active ? '🔒' : step.icon}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-white">{step.label[lang]}</span>
-                  {step.done && step.score !== undefined && step.score !== null && (
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${step.score >= 90 ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'}`}>
-                      {step.score}%
+          <section>
+            <div className="text-xs font-extrabold uppercase tracking-wider mb-3" style={{ color: 'var(--c-muted)' }}>{t.map}</div>
+            <div className="phase-path">
+              {steps.map((step, index) => {
+                const isCurrent = !phaseMastered && step.id === currentStep?.id
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    onClick={() => openStep(step)}
+                    disabled={!step.active && !step.done}
+                    className={`phase-path__step${step.done ? ' is-done' : ''}${isCurrent ? ' is-current' : ''}`}
+                    title={!step.active && !step.done ? t.locked : step.label[lang]}
+                  >
+                    <span className="phase-path__marker" aria-hidden="true">{step.done ? '✓' : !step.active ? '🔒' : step.icon}</span>
+                    <span className="phase-path__copy">
+                      <span className="phase-path__title">
+                        {index + 1}. {step.label[lang]}
+                        {isCurrent && <span className="phase-path__badge">{t.currentBadge}</span>}
+                        {step.done && step.score !== undefined && step.score !== null && <span className="phase-path__badge">{step.score}%</span>}
+                      </span>
+                      <span className="phase-path__description">{step.desc[lang]}</span>
                     </span>
-                  )}
-                </div>
-                <div className="text-xs text-muted mt-0.5">{step.desc[lang]}</div>
-              </div>
-
-              {(step.active || step.done) && (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-muted flex-shrink-0">
-                  <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {phaseProgress?.exam_passed && project && !effectiveProjectDone && (
-          <div className="rounded-xl p-4" style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}>
-            <div className="font-medium text-sm" style={{ color: 'var(--c-purple-l)' }}>{lang === 'en' ? 'The assessment passed. The block is not mastered yet.' : 'A avaliação passou. O bloco ainda não foi dominado.'}</div>
-            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{lang === 'en' ? 'Complete the mini-project to practice the professional cycle: understand, plan, implement, test, and refactor.' : 'Conclua o mini projeto para praticar o ciclo profissional: entender, planejar, implementar, testar e refatorar.'}</div>
-          </div>
-        )}
-
-        {phaseMastered && (
-          <div className="bg-[#0a1f0a] border border-[#1a4a1a] rounded-xl p-4 text-center">
-            <div className="text-2xl mb-2">🎉</div>
-            <div className="text-green-400 font-medium text-sm">
-              {lang === 'en' ? 'Phase complete! Well done.' : 'Fase completa! Parabéns.'}
+                    {(step.active || step.done) && <span aria-hidden="true">→</span>}
+                  </button>
+                )
+              })}
             </div>
-          </div>
-        )}
+          </section>
+
+          {phaseProgress?.exam_passed && project && !effectiveProjectDone && <LearningCallout variant="professional" title={t.projectPending}>{t.projectPendingText}</LearningCallout>}
+
+          {phaseMastered && (
+            <section className="learning-content-card text-center" style={{ borderColor: 'var(--c-success-border)', background: 'var(--c-success-bg)' }}>
+              <div className="text-3xl mb-2" aria-hidden="true">🎉</div>
+              <h2 className="text-lg font-semibold">{t.mastered}</h2>
+              <p className="text-sm mb-0">{t.masteredText}</p>
+              <button onClick={() => openStep(steps[0])} className="rounded-xl py-3 px-4 mt-4 text-sm font-semibold" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}>{t.continue}</button>
+            </section>
+          )}
+        </div>
       </div>
     </Layout>
   )

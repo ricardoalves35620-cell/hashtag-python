@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import VSCodeBlock from './VSCodeBlock'
 import GlossaryText from './glossary/GlossaryText'
+import LearningCallout from './learning/LearningCallout'
 import type { LessonBlock as LessonBlockType, Lang } from '../data/types'
 import { resolveLocalizedCode } from '../lib/localization'
 
@@ -93,10 +94,12 @@ export default function LessonBlock({ block, lang }: Props) {
     const isTip = block.type === 'tip'
     return (
       <div>
-        <div style={{ display: 'flex', gap: 10, background: isTip ? '#0a1f0a' : '#1f1000', border: `1px solid ${isTip ? '#1a4a1a' : '#4a2a00'}`, borderRadius: 10, padding: 14, margin: '10px 0' }}>
-          <span style={{ fontSize: 16, flexShrink: 0 }}>{isTip ? '💡' : '⚠️'}</span>
-          <GlossaryText text={t(block.content)} lang={lang} className="lesson-prose" style={{ fontSize: 13, color: isTip ? '#86efac' : '#fbbf24', lineHeight: 1.6 }} />
-        </div>
+        <LearningCallout
+          variant={isTip ? 'idea' : 'warning'}
+          title={isTip ? (lang === 'en' ? 'Key idea' : 'Ideia principal') : (lang === 'en' ? 'Common mistake' : 'Erro comum')}
+        >
+          <GlossaryText text={t(block.content)} lang={lang} className="lesson-prose" />
+        </LearningCallout>
         <AlternateExplanation block={block} lang={lang} />
       </div>
     )
