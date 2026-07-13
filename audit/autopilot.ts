@@ -2,7 +2,7 @@ import { spawnSync, type SpawnSyncReturns } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const AUDITOR_VERSION = '7.5.0'
+const AUDITOR_VERSION = '7.6.0'
 
 interface Args {
   cycles: number
@@ -318,6 +318,8 @@ for (
     HP_AUDIT_HTML_OUTPUT: htmlOutput,
     HP_AUDIT_ARTIFACTS_OUTPUT: artifactsOutput,
     HP_AUDIT_REQUIRE_LOGIN: 'true',
+    HP_AUDIT_CYCLE: String(cycle),
+    HP_AUDIT_LIVE_STATUS: path.join(reportDir, 'live-status.txt'),
     HP_AUDIT_HEADED: process.env.HP_AUDIT_HEADED || 'false',
     HP_AUDIT_SLOW_MO: process.env.HP_AUDIT_SLOW_MO || '0',
   }
@@ -457,8 +459,18 @@ for (
   fs.writeFileSync(stateFile, JSON.stringify(state, null, 2))
   writeHtml(path.join(reportDir, 'index.html'), state)
 
+  const completedThisRun = iteration
+  const elapsedMs = Date.now() - started
+  const averageMs = elapsedMs / completedThisRun
+  const remainingCycles = Math.max(0, args.cycles - completedThisRun)
+  const etaMs = averageMs * remainingCycles
+  const etaMinutes = Math.max(0, Math.round(etaMs / 60_000))
+
   console.log(
     `Cycle complete. New issues: ${newIssues}; already known and ignored for stopping: ${knownIssues}.`,
+  )
+  console.log(
+    `Progress: ${completedThisRun}/${args.cycles} cycle(s) in this run · average ${Math.max(1, Math.round(averageMs / 1000))}s/cycle · estimated ${etaMinutes} min remaining.`,
   )
 }
 

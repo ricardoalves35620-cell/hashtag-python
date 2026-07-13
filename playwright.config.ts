@@ -10,11 +10,11 @@ const slowMo = Math.max(0, Number(process.env.HP_AUDIT_SLOW_MO || 0))
 export default defineConfig({
   testDir: './tests/audit',
   outputDir: artifactsOutput,
-  timeout: 45_000,
-  expect: { timeout: 8_000 },
+  timeout: 360_000,
+  expect: { timeout: 12_000 },
   fullyParallel: false,
   forbidOnly: true,
-  retries: 1,
+  retries: 0,
   workers: 1,
   reporter: [
     ['list'],
@@ -26,6 +26,8 @@ export default defineConfig({
     headless: !headed,
     launchOptions: slowMo > 0 ? { slowMo } : undefined,
     trace: 'retain-on-failure',
+    actionTimeout: 20_000,
+    navigationTimeout: 35_000,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     locale: 'pt-BR',

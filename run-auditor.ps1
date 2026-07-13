@@ -11,7 +11,19 @@
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "7.5.0"
+$AuditorVersion = "7.6.0"
+
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+public static class AuditPower {
+  [DllImport("kernel32.dll")]
+  public static extern uint SetThreadExecutionState(uint esFlags);
+}
+"@ -ErrorAction SilentlyContinue
+
+[uint32]$ES_CONTINUOUS = 2147483648
+[uint32]$ES_SYSTEM_REQUIRED = 1
 Set-Location $PSScriptRoot
 
 function Read-PositiveInteger {
@@ -87,10 +99,18 @@ function Export-AuditReport {
   }
 
   Remove-Item $DestinationZip -Force -ErrorAction SilentlyContinue
-  Compress-Archive `
-    -Path (Join-Path $reportRoot "*") `
-    -DestinationPath $DestinationZip `
-    -Force
+  $autopilotRoot = Join-Path $reportRoot "autopilot"
+  if (Test-Path $autopilotRoot) {
+    Compress-Archive `
+      -Path (Join-Path $autopilotRoot "*") `
+      -DestinationPath $DestinationZip `
+      -Force
+  } else {
+    Compress-Archive `
+      -Path (Join-Path $reportRoot "*") `
+      -DestinationPath $DestinationZip `
+      -Force
+  }
 
   Write-Host "" 
   Write-Host "ZIP do relatório pronto:" -ForegroundColor Green
@@ -103,6 +123,9 @@ $reportZip = Join-Path $desktop "hashtag-python-audit-report.zip"
 $runStatus = "Concluído"
 
 try {
+  [AuditPower]::SetThreadExecutionState([uint32]($ES_CONTINUOUS -bor $ES_SYSTEM_REQUIRED)) | Out-Null
+  Write-Host "Suspensão automática bloqueada durante a auditoria." -ForegroundColor DarkGray
+
   $envFile = Join-Path $PSScriptRoot ".env.audit.local"
   if (Test-Path $envFile) {
     Get-Content $envFile | ForEach-Object {
@@ -123,7 +146,7 @@ try {
   if ($interactiveLaunch) {
     Write-Host "" 
     Write-Host "Hashtag Python Auditor Autopilot" -ForegroundColor Cyan
-    $Cycles = Read-PositiveInteger -Prompt "Quantos ciclos deseja executar?" -DefaultValue 20
+    $Cycles = Read-PositiveInteger -Prompt "Quantos ciclos deseja executar?" -DefaultValue 69
     $defaultVisible = $Cycles -le 5
     $Visible = Read-YesNo -Prompt "Deseja acompanhar o navegador na tela?" -DefaultValue $defaultVisible
     if ($Visible -and $SlowMo -le 0) {
@@ -132,6 +155,7 @@ try {
   }
 
   if ($Batch -le 0) { $Batch = 1 }
+  if ($Batch -gt 1) { Write-Host "Para auditoria profunda, Batch=1 é recomendado." -ForegroundColor Yellow }
 
   if ($Continue -and $Fresh) {
     throw "Use apenas -Fresh ou -Continue, não os dois juntos."
@@ -157,15 +181,15 @@ try {
   $auditSpec = Join-Path $PSScriptRoot "tests\audit\app.audit.spec.ts"
   if (-not (Test-Path $auditSpec)) { throw "Arquivo de auditoria não encontrado: $auditSpec" }
   $auditSpecText = Get-Content $auditSpec -Raw
-  if ($auditSpecText -notmatch "main#main-scroll") {
-    throw "Auditor desatualizado: seletor principal antigo detectado. Instale o patch mais recente antes de continuar."
+  if ($auditSpecText -notmatch "deep learning journey" -or $auditSpecText -notmatch "exercise editor, errors, draft and layout") {
+    throw "Auditor desatualizado: fluxo profundo 7.6 não encontrado. Instale o patch mais recente."
   }
 
   $autopilotFile = Join-Path $PSScriptRoot "audit\autopilot.ts"
   if (-not (Test-Path $autopilotFile)) { throw "Arquivo do Autopilot não encontrado: $autopilotFile" }
   $autopilotText = Get-Content $autopilotFile -Raw
-  if ($autopilotText -notmatch "HP_AUDIT_RESULTS_OUTPUT" -or $autopilotText -notmatch "fileIsFresh") {
-    throw "Autopilot desatualizado: proteção contra resultados antigos não encontrada. Instale o patch 7.4 ou superior."
+  if ($autopilotText -notmatch "HP_AUDIT_RESULTS_OUTPUT" -or $autopilotText -notmatch "fileIsFresh" -or $autopilotText -notmatch "HP_AUDIT_CYCLE") {
+    throw "Autopilot desatualizado: recursos profundos/frescos não encontrados. Instale o patch 7.6 ou superior."
   }
 
   if (-not (Test-Path "node_modules")) {
@@ -208,6 +232,7 @@ catch {
   Write-Host $runStatus -ForegroundColor Red
 }
 finally {
+  [AuditPower]::SetThreadExecutionState($ES_CONTINUOUS) | Out-Null
   try {
     Write-RunSummary `
       -Status $runStatus `
