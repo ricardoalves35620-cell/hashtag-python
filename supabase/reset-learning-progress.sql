@@ -37,3 +37,10 @@ create policy "Users delete own fasttrack"
 on public.user_fasttrack for delete
 to authenticated
 using (auth.uid() = user_id);
+
+alter table if exists public.learning_project_progress enable row level security;
+drop policy if exists "Users delete own mini projects" on public.learning_project_progress;
+create policy "Users delete own mini projects"
+on public.learning_project_progress for delete
+to authenticated
+using (auth.uid() = user_id);

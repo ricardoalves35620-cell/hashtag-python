@@ -26,6 +26,7 @@ import ProjectLab from './pages/ProjectLab'
 import EngineeringLab from './pages/EngineeringLab'
 import AILab from './pages/AILab'
 import CareerReadiness from './pages/CareerReadiness'
+import MiniProject from './pages/MiniProject'
 import { appConfiguration } from './lib/config'
 
 // Redirect to /login if not authenticated
@@ -62,6 +63,7 @@ function AppRoutes() {
       <Route path="/phase/:id/exercises" element={<PrivateRoute><Exercises /></PrivateRoute>} />
       <Route path="/phase/:id/quiz" element={<PrivateRoute><Quiz /></PrivateRoute>} />
       <Route path="/phase/:id/exam" element={<PrivateRoute><Exam /></PrivateRoute>} />
+      <Route path="/mini-project/:projectId" element={<PrivateRoute><MiniProject /></PrivateRoute>} />
 
       {/* Other pages */}
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />

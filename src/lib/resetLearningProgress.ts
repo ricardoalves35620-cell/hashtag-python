@@ -1,6 +1,7 @@
 import { getSupabase } from './supabase'
 
-const CLOUD_TABLES = ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack'] as const
+const CLOUD_TABLES = ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack', 'learning_project_progress'] as const
+const OPTIONAL_CLOUD_TABLES = new Set<string>(['learning_project_progress'])
 
 const PRESERVED_LOCAL_KEYS = new Set([
   'hp_lang', 'hp_theme', 'hp_editor_height', 'hp_editor_wrap', 'hp_editor_font_size',
@@ -17,6 +18,7 @@ function isLearningKey(key: string) {
     || key.startsWith('hp_lesson_reflection_')
     || key === 'hp_ft_done'
     || key.startsWith('hp_project_lab_')
+    || key.startsWith('hp_mini_project_')
     || key.startsWith('hp_engineering_lab_')
     || key.startsWith('hp_ai_lab_')
     || key.startsWith('hp_diagnostic_')
@@ -33,7 +35,8 @@ export async function resetLearningProgress(userId: string) {
 
   for (const table of CLOUD_TABLES) {
     const { error } = await getSupabase().from(table).delete().eq('user_id', userId)
-    if (error) failures.push(`${table}: ${error.message}`)
+    const optionalTableMissing = Boolean(error && OPTIONAL_CLOUD_TABLES.has(table) && /does not exist|schema cache|could not find/i.test(error.message))
+    if (error && !optionalTableMissing) failures.push(`${table}: ${error.message}`)
   }
 
   if (failures.length) {

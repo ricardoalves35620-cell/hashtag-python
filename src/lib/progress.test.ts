@@ -61,3 +61,18 @@ describe('phase progression', () => {
     })
   })
 })
+
+describe('mini-project mastery gates', () => {
+  it('keeps the phase after a milestone locked until the project is complete', () => {
+    const milestone = 4
+    const nextPhase = 5
+    const passedWithoutProject: UserProgress = { ...row(milestone, true), project_done: false }
+    const passedWithProject: UserProgress = { ...row(milestone, true), project_done: true }
+
+    const previous = row(3, true)
+    expect(getPhaseStatus([previous, passedWithoutProject], milestone)).toBe('active')
+    expect(getPhaseStatus([previous, passedWithoutProject], nextPhase)).toBe('locked')
+    expect(getPhaseStatus([previous, passedWithProject], milestone)).toBe('done')
+    expect(getPhaseStatus([previous, passedWithProject], nextPhase)).toBe('active')
+  })
+})

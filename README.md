@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 8.1.0 — Release gate e qualidade contínua.**
+**Versão atual: 10.3.0 — Learning Engine V2.4: do exercício ao projeto profissional.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -87,6 +87,19 @@ supabase/learning-states.sql
 ```
 
 A aplicação continua funcionando se essa tabela opcional ainda não tiver sido criada.
+
+
+## Learning Engine V2.4
+
+Os blocos de fundamentos agora terminam em mini projetos com cinco checkpoints: entender, planejar, implementar, testar e refatorar. As entradas sugeridas são as mesmas usadas na validação, e um único exemplo nunca é tratado como prova suficiente.
+
+Para sincronizar mini projetos entre dispositivos, execute:
+
+```text
+supabase/learning-project-progress.sql
+```
+
+Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.4.md`.
 
 ## Requisitos
 

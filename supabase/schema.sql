@@ -11,6 +11,7 @@ create table if not exists user_progress (
   exam_done boolean default false,
   exam_score integer default null,
   exam_passed boolean default false,
+  project_done boolean default false,
   updated_at timestamptz default now(),
   unique(user_id, phase_id)
 );

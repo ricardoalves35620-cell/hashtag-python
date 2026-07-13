@@ -5,10 +5,10 @@ import { resolve } from 'node:path'
 describe('Sprint 9.2 integrity', () => {
   it('ships RLS delete policies required by account reset', () => {
     const sql = readFileSync(resolve('supabase/reset-learning-progress.sql'), 'utf8')
-    for (const table of ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack']) {
+    for (const table of ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack', 'learning_project_progress']) {
       expect(sql).toContain(table)
     }
-    expect((sql.match(/for delete/g) || [])).toHaveLength(5)
+    expect((sql.match(/for delete/g) || [])).toHaveLength(6)
     expect(sql).toContain('auth.uid() = user_id')
   })
 

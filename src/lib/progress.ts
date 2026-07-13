@@ -2,6 +2,7 @@ import { getSupabase } from './supabase'
 import type { UserProgress } from '../data/types'
 import { ALL_PHASES } from '../data/phases'
 import { emitSyncState } from './syncStatus'
+import { getMiniProjectForPhase } from '../data/miniProjects'
 
 const GUEST_ID = 'guest'
 
@@ -52,6 +53,7 @@ function emptyRow(userId: string, phaseId: number): UserProgress {
     exam_done: false,
     exam_score: null,
     exam_passed: false,
+    project_done: false,
   }
 }
 
@@ -89,6 +91,7 @@ export function mergeProgress(remote: UserProgress[], local: UserProgress[]) {
         quiz_done: previous.quiz_done || row.quiz_done,
         exam_done: Boolean(previous.exam_done || row.exam_done),
         exam_passed: previous.exam_passed || row.exam_passed,
+        project_done: Boolean(previous.project_done || row.project_done),
         exam_score: bestScore || null,
         updated_at: [previous.updated_at, row.updated_at].filter(Boolean).sort().at(-1),
       })
@@ -105,6 +108,7 @@ function sameProgress(a: UserProgress | undefined, b: UserProgress) {
     && Boolean(a.exam_done) === Boolean(b.exam_done)
     && (a.exam_score ?? null) === (b.exam_score ?? null)
     && Boolean(a.exam_passed) === Boolean(b.exam_passed)
+    && Boolean(a.project_done) === Boolean(b.project_done)
 }
 
 function cloudPayload(row: UserProgress, userId: string) {
@@ -117,6 +121,7 @@ function cloudPayload(row: UserProgress, userId: string) {
     exam_done: Boolean(row.exam_done),
     exam_score: row.exam_score,
     exam_passed: Boolean(row.exam_passed),
+    project_done: Boolean(row.project_done),
     updated_at: new Date().toISOString(),
   }
 }
@@ -186,6 +191,12 @@ export async function markStepDone(userId: string, phaseId: number, step: 'lesso
   await syncProgressToCloud(userId)
 }
 
+export async function markProjectDone(userId: string, phaseId: number) {
+  upsertLocalProgress(userId, phaseId, { project_done: true })
+  if (userId === GUEST_ID) return
+  await syncProgressToCloud(userId)
+}
+
 export async function saveExamScore(userId: string, phaseId: number, score: number) {
   const passed = score >= 90
   const current = loadLocalProgress(userId).find(row => row.phase_id === phaseId)
@@ -232,15 +243,24 @@ export function getPhaseStatus(progress: UserProgress[], phaseId: number): 'lock
   const orderedIds = ALL_PHASES.map(phase => phase.id)
   const phaseIndex = orderedIds.indexOf(phaseId)
   if (phaseIndex === -1) return 'locked'
+
   const current = progress.find(row => row.phase_id === phaseId)
-  if (current?.exam_passed) return 'done'
+  const currentHasProject = Boolean(getMiniProjectForPhase(phaseId))
+  const currentMastered = Boolean(current?.exam_passed && (!currentHasProject || current.project_done))
+  if (currentMastered) return 'done'
+
   if (phaseIndex === 0) return 'active'
-  const previous = progress.find(row => row.phase_id === orderedIds[phaseIndex - 1])
-  return previous?.exam_passed ? 'active' : 'locked'
+  const previousPhaseId = orderedIds[phaseIndex - 1]
+  const previous = progress.find(row => row.phase_id === previousPhaseId)
+  const previousHasProject = Boolean(getMiniProjectForPhase(previousPhaseId))
+  const previousMastered = Boolean(previous?.exam_passed && (!previousHasProject || previous.project_done))
+  return previousMastered ? 'active' : 'locked'
 }
 
 export function getOverallProgress(progress: UserProgress[]): number {
-  const publishedIds = new Set(ALL_PHASES.map(phase => phase.id))
-  const passed = progress.filter(row => row.exam_passed && publishedIds.has(row.phase_id)).length
-  return ALL_PHASES.length > 0 ? Math.round((passed / ALL_PHASES.length) * 100) : 0
+  const mastered = ALL_PHASES.filter(phase => {
+    const row = progress.find(item => item.phase_id === phase.id)
+    return Boolean(row?.exam_passed && (!getMiniProjectForPhase(phase.id) || row.project_done))
+  }).length
+  return ALL_PHASES.length > 0 ? Math.round((mastered / ALL_PHASES.length) * 100) : 0
 }

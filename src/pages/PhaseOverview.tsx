@@ -1,19 +1,41 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { scrollToTop } from '../lib/scroll'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { getPhaseStatus } from '../lib/progress'
 import { inferPhaseStage, getPhaseGroup } from '../data/phaseCatalog'
+import { getMiniProjectForPhase } from '../data/miniProjects'
+import { fetchRemoteProjectProgress, loadLocalProjectProgress, mergeProjectProgress, saveLocalProjectProgress } from '../lib/projectProgress'
 
 export default function PhaseOverview() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { lang, progress, refreshProgress } = useApp()
+  const { lang, learnerId, progress, refreshProgress } = useApp()
   const phase = ALL_PHASES.find(p => p.id === Number(id))
+  const project = phase ? getMiniProjectForPhase(phase.id) : undefined
+  const [projectDone, setProjectDone] = useState(false)
 
   useEffect(() => { scrollToTop() }, [])
+
+  useEffect(() => {
+    if (!project || !learnerId) { setProjectDone(false); return }
+    const starterCode = project.starterCode[lang]
+    const local = loadLocalProjectProgress(learnerId, project.id, starterCode)
+    setProjectDone(local.completed)
+    void fetchRemoteProjectProgress(learnerId, project.id).then(remote => {
+      const merged = mergeProjectProgress(local, remote)
+      saveLocalProjectProgress(learnerId, merged)
+      setProjectDone(merged.completed)
+    })
+    const update = (event: Event) => {
+      const detail = (event as CustomEvent<{ projectId?: string; completed?: boolean }>).detail
+      if (detail?.projectId === project.id) setProjectDone(Boolean(detail.completed))
+    }
+    window.addEventListener('hp:project-progress', update)
+    return () => window.removeEventListener('hp:project-progress', update)
+  }, [project, learnerId, lang])
 
   // Refresh progress when page gains focus — catches updates from other devices
   useEffect(() => {
@@ -27,13 +49,14 @@ export default function PhaseOverview() {
   const group = getPhaseGroup(inferPhaseStage(phase))
   const phaseProgress = progress.find(p => p.phase_id === phase.id)
   const status = getPhaseStatus(progress, phase.id)
+  const effectiveProjectDone = projectDone || Boolean(phaseProgress?.project_done)
 
   const steps = [
     {
       id: 'lesson',
       icon: '📚',
       label: { en: 'Learning journey', pt: 'Jornada de aprendizagem' },
-      desc: { en: '6 lessons: intuition, logic, Python, debugging, practice and transfer', pt: '6 aulas: intuição, lógica, Python, depuração, prática e transferência' },
+      desc: { en: '10 steps: problem, logic, Python, debugging, practice and transfer', pt: '10 etapas: problema, lógica, Python, depuração, prática e transferência' },
       done: !!phaseProgress?.lesson_done,
       active: true,
       path: phase.id === 0 ? '/base-zero' : `/phase/${phase.id}/lesson`
@@ -65,10 +88,21 @@ export default function PhaseOverview() {
       active: !!phaseProgress?.quiz_done,
       path: `/phase/${phase.id}/exam`,
       score: phaseProgress?.exam_score
-    }
+    },
+    ...(project ? [{
+      id: 'mini-project',
+      icon: '🧰',
+      label: { en: 'Block mini-project', pt: 'Mini projeto do bloco' },
+      desc: { en: 'Understand → plan → implement → test → refactor', pt: 'Entender → planejar → implementar → testar → refatorar' },
+      done: effectiveProjectDone,
+      active: !!phaseProgress?.exam_passed,
+      path: `/mini-project/${project.id}`,
+      score: null,
+    }] : []),
   ]
 
   const stepsCompleted = steps.filter(s => s.done).length
+  const phaseMastered = status === 'done' && (!project || effectiveProjectDone)
 
   return (
     <Layout
@@ -107,13 +141,13 @@ export default function PhaseOverview() {
 
           <div className="space-y-1">
             <div className="flex justify-between text-xs text-muted">
-              <span>{stepsCompleted}/4 {lang === 'en' ? 'steps' : 'etapas'}</span>
-              <span>{Math.round((stepsCompleted / 4) * 100)}%</span>
+              <span>{stepsCompleted}/{steps.length} {lang === 'en' ? 'steps' : 'etapas'}</span>
+              <span>{Math.round((stepsCompleted / steps.length) * 100)}%</span>
             </div>
             <div className="h-1.5 bg-[#0a0a18] rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all ${stepsCompleted === 4 ? 'bg-green-500' : 'bg-purple-DEFAULT'}`}
-                style={{ width: `${(stepsCompleted / 4) * 100}%` }}
+                className={`h-full rounded-full transition-all ${stepsCompleted === steps.length ? 'bg-green-500' : 'bg-purple-DEFAULT'}`}
+                style={{ width: `${(stepsCompleted / steps.length) * 100}%` }}
               />
             </div>
           </div>
@@ -121,7 +155,7 @@ export default function PhaseOverview() {
 
         {/* Steps */}
         <div className="space-y-2">
-          {steps.map((step, i) => (
+          {steps.map((step) => (
             <button
               key={step.id}
               onClick={() => step.active && navigate(step.path)}
@@ -165,7 +199,14 @@ export default function PhaseOverview() {
           ))}
         </div>
 
-        {status === 'done' && (
+        {phaseProgress?.exam_passed && project && !effectiveProjectDone && (
+          <div className="rounded-xl p-4" style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}>
+            <div className="font-medium text-sm" style={{ color: 'var(--c-purple-l)' }}>{lang === 'en' ? 'The assessment passed. The block is not mastered yet.' : 'A avaliação passou. O bloco ainda não foi dominado.'}</div>
+            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{lang === 'en' ? 'Complete the mini-project to practice the professional cycle: understand, plan, implement, test, and refactor.' : 'Conclua o mini projeto para praticar o ciclo profissional: entender, planejar, implementar, testar e refatorar.'}</div>
+          </div>
+        )}
+
+        {phaseMastered && (
           <div className="bg-[#0a1f0a] border border-[#1a4a1a] rounded-xl p-4 text-center">
             <div className="text-2xl mb-2">🎉</div>
             <div className="text-green-400 font-medium text-sm">

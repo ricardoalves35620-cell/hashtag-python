@@ -1,4 +1,5 @@
 import type { Bilingual, LessonBlock, Phase } from '../data/types'
+import { getMiniProjectForPhase } from '../data/miniProjects'
 
 export type LessonUnitKind =
   | 'challenge'
@@ -227,6 +228,7 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
   const sourceCode = authoredCode(blocks)
   const warnings = authoredWarnings(blocks)
   const concept = phase.title
+  const miniProject = getMiniProjectForPhase(phase.id)
 
   return [
     {
@@ -337,6 +339,10 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
         heading('The editor is where you test reasoning', 'O editor é onde você testa o raciocínio'),
         text(`This phase has ${phase.exercises.length} exercises. Before each one, restate its contract: inputs, output, rules, edge cases, and evidence of correctness.`, `Esta fase tem ${phase.exercises.length} exercícios. Antes de cada um, reformule o contrato: entradas, saída, regras, casos limite e evidência de correção.`),
         tip('Use a hint only after writing exactly where your reasoning stopped. Copying removes the evidence needed to learn.', 'Use uma dica somente depois de escrever exatamente onde seu raciocínio parou. Copiar remove a evidência necessária para aprender.'),
+        ...(miniProject ? [tip(
+          `This block ends with the mini-project “${miniProject.title.en}”. You will have to understand, plan, implement, test, and refactor—not merely reproduce an example.`,
+          `Este bloco termina com o mini projeto “${miniProject.title.pt}”. Você terá que entender, planejar, implementar, testar e refatorar — não apenas reproduzir um exemplo.`,
+        )] : []),
       ],
       checkpoint: { en: 'Plan the first exercise: contract, approach, first test, and expected result.', pt: 'Planeje o primeiro exercício: contrato, abordagem, primeiro teste e resultado esperado.' },
       checkpointPlaceholder: { en: 'Contract...\nApproach...\nFirst test...\nExpected result...', pt: 'Contrato...\nAbordagem...\nPrimeiro teste...\nResultado esperado...' },
