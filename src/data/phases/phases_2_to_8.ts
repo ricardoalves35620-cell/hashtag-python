@@ -1671,6 +1671,21 @@ print("Reorder needed!")`,
         pt: 'Construa o processador em lote:\n• Loop exatamente 4 vezes\n• Pergunte o dano, subtraia R$200 de franquia\n• Acumule o pagamento total\n• Após o loop: imprima total E média'
       },
       starterCode: `# Batch processor (4 claims):`,
+      suggestedInputs: ['2750', '2750', '2750', '2750'],
+      grading: {
+        tests: [{
+          id: 'ex7-zero-consistent-inputs',
+          description: { en: 'Suggested inputs produce the published expected result', pt: 'As entradas sugeridas produzem o resultado esperado publicado' },
+          inputs: ['2750', '2750', '2750', '2750'],
+          checks: [
+            { type: 'contains', value: '10200' },
+            { type: 'contains', value: '2550' },
+            { type: 'no_error' },
+          ],
+          points: 100,
+          codeRequirements: [{ kind: 'node', value: 'While' }],
+        }],
+      },
       hints: [
         { en: 'total = 0 and count = 1 before the loop', pt: 'total = 0 e count = 1 antes do loop' },
         { en: 'Average: total / 4 (after the loop)', pt: 'Média: total / 4 (após o loop)' }

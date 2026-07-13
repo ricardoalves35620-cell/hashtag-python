@@ -110,10 +110,10 @@ export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
     exercises: [
       {
         id: `p${spec.id}-observe`,
-        title: { en: 'Observe and predict', pt: 'Observe e preveja' },
+        title: { en: 'Predict, run, change and explain', pt: 'Preveja, execute, mude e explique' },
         description: {
-          en: 'Read every line first. Predict the output, run it, and then change one value to verify your mental model.',
-          pt: 'Leia cada linha primeiro. Preveja a saída, execute e depois mude um valor para confirmar seu modelo mental.'
+          en: 'Read every line first. Record your prediction, run the code, change one meaningful value or operator, run again, and explain why the result changed.',
+          pt: 'Leia cada linha primeiro. Registre sua previsão, execute, mude um valor ou operador relevante, execute novamente e explique por que o resultado mudou.'
         },
         starterCode: spec.exampleCode,
         hints: [

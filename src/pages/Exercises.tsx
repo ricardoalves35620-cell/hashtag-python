@@ -48,6 +48,9 @@ export default function Exercises() {
   const [validationMessage, setValidationMessage] = useState('')
   const [validationChecks, setValidationChecks] = useState<Record<string, ValidationItem[]>>({})
   const [attempts, setAttempts] = useState<Record<string, AttemptView[]>>({})
+  const [predictions, setPredictions] = useState<Record<string, string>>({})
+  const [changePlans, setChangePlans] = useState<Record<string, string>>({})
+  const [observationRuns, setObservationRuns] = useState<Record<string, boolean>>({})
   const [draftStatus, setDraftStatus] = useState<'loading' | 'saved' | 'local' | 'idle'>('loading')
   const [hydratedDraftKey, setHydratedDraftKey] = useState<string | null>(null)
   const saveTimer = useRef<number | null>(null)
@@ -60,6 +63,10 @@ export default function Exercises() {
 
   const exercise = phase.exercises[activeEx]
   const currentValidated = Boolean(validated[exercise.id])
+  const isFirstExercise = activeEx === 0
+  const starterCode = resolveLocalizedCode(exercise.starterCode, lang)
+  const codeChanged = (codes[exercise.id] ?? starterCode).trim() !== starterCode.trim()
+  const thinkingReady = (predictions[exercise.id] || '').trim().length >= 10 && (changePlans[exercise.id] || '').trim().length >= 3
   const allValidated = phase.exercises.every(item => validated[item.id])
   const checks = validationChecks[exercise.id] || []
   const passedChecks = checks.filter(check => check.passed).length
@@ -144,14 +151,16 @@ export default function Exercises() {
       hint: 'Reveal first hint', nextHint: 'Reveal next hint', allHints: 'All hints revealed', output: 'Console output', complete: 'All validated — go to knowledge check',
       next: 'Next exercise', phase: 'Phase', sampleOutput: 'Expected output', lockedNext: 'Run this exercise successfully to continue.',
       validated: 'Validated', reset: 'Restore starter code', saved: 'Saved across devices', local: 'Saved on this device', attempts: 'Recent attempts',
-      noOutput: 'The program finished without printing anything.', ready: 'Ready to run', progress: 'Validation progress'
+      noOutput: 'The program finished without printing anything.', ready: 'Ready to run', progress: 'Validation progress',
+      thinkTitle: 'Think before running', predict: 'What do you predict this code will do?', plan: 'What one value, operator or line will you change after the first run?', thinkHelp: 'The first exercise is a predict → run → modify → run challenge. Merely pressing Run is not enough.', observeDone: 'Observation complete. Now make the planned code change and run again.'
     },
     pt: {
       exercise: 'Exercício', run: 'Executar e validar', running: 'Executando seu código', loading: 'Preparando o Python',
       hint: 'Revelar primeira dica', nextHint: 'Revelar próxima dica', allHints: 'Todas as dicas reveladas', output: 'Saída do console', complete: 'Todos validados — ir para verificação',
       next: 'Próximo exercício', phase: 'Fase', sampleOutput: 'Saída esperada', lockedNext: 'Execute este exercício corretamente para continuar.',
       validated: 'Validado', reset: 'Restaurar código inicial', saved: 'Salvo entre dispositivos', local: 'Salvo neste aparelho', attempts: 'Tentativas recentes',
-      noOutput: 'O programa terminou sem imprimir nada.', ready: 'Pronto para executar', progress: 'Progresso da validação'
+      noOutput: 'O programa terminou sem imprimir nada.', ready: 'Pronto para executar', progress: 'Progresso da validação',
+      thinkTitle: 'Pense antes de executar', predict: 'O que você prevê que este código fará?', plan: 'Qual valor, operador ou linha você mudará depois da primeira execução?', thinkHelp: 'O primeiro exercício agora segue prever → executar → modificar → executar. Apenas apertar Executar não é suficiente.', observeDone: 'Observação concluída. Agora faça a alteração planejada no código e execute novamente.'
     }
   })[lang], [lang])
 
@@ -186,7 +195,16 @@ export default function Exercises() {
       setOutput(grade.output || (grade.error ? '' : t.noOutput))
       setValidationChecks(previous => ({ ...previous, [exercise.id]: grade.checks }))
       setValidated(previous => ({ ...previous, [exercise.id]: grade.passed }))
-      setValidationMessage(grade.message)
+      if (isFirstExercise && !observationRuns[exercise.id]) {
+        setObservationRuns(previous => ({ ...previous, [exercise.id]: true }))
+        setValidated(previous => ({ ...previous, [exercise.id]: false }))
+        setValidationMessage(t.observeDone)
+      } else if (isFirstExercise && !codeChanged) {
+        setValidated(previous => ({ ...previous, [exercise.id]: false }))
+        setValidationMessage(t.observeDone)
+      } else {
+        setValidationMessage(grade.message)
+      }
 
       const passed = grade.checks.filter(check => check.passed).length
       setAttempts(previous => ({ ...previous, [exercise.id]: [{
@@ -244,6 +262,16 @@ export default function Exercises() {
           {exercise.sampleOutput && <div className="mt-3 rounded-lg border border-line bg-raised p-3"><div className="mb-1 text-xs text-muted">{t.sampleOutput}</div><pre className="whitespace-pre-wrap font-mono text-sm text-success-text">{exercise.sampleOutput[lang]}</pre></div>}
         </Card>
 
+        {isFirstExercise && <Card padding="md" variant="subtle">
+          <h3 className="font-semibold text-ink">🧠 {t.thinkTitle}</h3>
+          <p className="mt-1 text-sm leading-6 text-ink-secondary">{t.thinkHelp}</p>
+          <label className="mt-3 block text-sm font-medium text-ink">{t.predict}</label>
+          <textarea className="mt-1 min-h-20 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={predictions[exercise.id] || ''} onChange={event => setPredictions(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
+          <label className="mt-3 block text-sm font-medium text-ink">{t.plan}</label>
+          <input className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={changePlans[exercise.id] || ''} onChange={event => setChangePlans(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
+          {observationRuns[exercise.id] && !codeChanged && <Alert variant="info" className="mt-3">{t.observeDone}</Alert>}
+        </Card>}
+
         <VSCodeEditor
           value={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)}
           onChange={value => {
@@ -274,10 +302,10 @@ export default function Exercises() {
               setDraftStatus('local')
             }
             clearResult()
-          }} lang={lang} /></div>
+          }} lang={lang} suggestedInputs={exercise.suggestedInputs} /></div>
 
         <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
-          <Button data-testid="exercise-run-button" fullWidth size="lg" loading={running || pyodideLoading} onClick={handleRun} leftIcon="▶">
+          <Button data-testid="exercise-run-button" fullWidth size="lg" loading={running || pyodideLoading} disabled={isFirstExercise && !thinkingReady} onClick={handleRun} leftIcon="▶">
             {pyodideLoading ? t.loading : running ? t.running : t.run}
           </Button>
           <Button variant="secondary" size="lg" onClick={() => {

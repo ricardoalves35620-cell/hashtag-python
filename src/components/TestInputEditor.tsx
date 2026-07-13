@@ -52,9 +52,10 @@ interface Props {
   value: string          // newline-separated values (same format as before)
   onChange: (value: string) => void
   lang: Lang
+  suggestedInputs?: string[]
 }
 
-export default function TestInputEditor({ code, value, onChange, lang }: Props) {
+export default function TestInputEditor({ code, value, onChange, lang, suggestedInputs = [] }: Props) {
   const [rows, setRows] = useState<InputRow[]>([])
 
   const [hasLoop, setHasLoop] = useState(false)
@@ -70,12 +71,13 @@ export default function TestInputEditor({ code, value, onChange, lang }: Props) 
       return
     }
 
-    const currentValues = value.split('\n')
+    const currentValues = (value.trim() ? value.split('\n') : suggestedInputs)
 
     // For loops: show at least as many rows as current values, minimum 2
     let allPrompts = [...prompts]
     if (loop) {
-      const needed = Math.max(currentValues.filter(v => v !== '').length + 1, 2)
+      const suggestedCount = suggestedInputs.length
+      const needed = suggestedCount > 0 ? suggestedCount : Math.max(currentValues.filter(v => v !== '').length + 1, 2)
       while (allPrompts.length < needed) {
         allPrompts.push(prompts[0] ?? '') // repeat the loop's prompt label
       }
@@ -88,7 +90,7 @@ export default function TestInputEditor({ code, value, onChange, lang }: Props) 
 
     setRows(newRows)
     onChange(newRows.map(r => r.value).join('\n'))
-  }, [code])
+  }, [code, suggestedInputs.join('\n')])
 
   const updateRow = (index: number, newValue: string) => {
     let updated = rows.map((r, i) => i === index ? { ...r, value: newValue } : r)
@@ -105,13 +107,13 @@ export default function TestInputEditor({ code, value, onChange, lang }: Props) 
       label: 'Test inputs',
       hint: 'Each field matches an input() call in your code.',
       noInputs: 'This code has no input() calls — no test inputs needed.',
-      field: 'Input',
+      field: 'Input', suggested: 'Suggested values loaded automatically',
     },
     pt: {
       label: 'Entradas de teste',
       hint: 'Cada campo corresponde a uma chamada input() no seu código.',
       noInputs: 'Este código não tem chamadas input() — sem entradas necessárias.',
-      field: 'Entrada',
+      field: 'Entrada', suggested: 'Valores sugeridos carregados automaticamente',
     }
   }[lang]
 
@@ -144,7 +146,7 @@ export default function TestInputEditor({ code, value, onChange, lang }: Props) 
           {t.label}
         </div>
         <div style={{ fontSize: 11, color: 'var(--c-dimmer)' }}>
-          {hasLoop
+          {suggestedInputs.length > 0 ? `✓ ${t.suggested}` : hasLoop
             ? (lang === 'en'
                 ? '⟳ Loop detected — add one value per iteration. New rows appear as you type.'
                 : '⟳ Loop detectado — adicione um valor por iteração. Novas linhas aparecem ao digitar.')

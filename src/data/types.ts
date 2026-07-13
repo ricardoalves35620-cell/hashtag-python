@@ -33,6 +33,7 @@ export interface Exercise {
   successCriteria?: { en: string[]; pt: string[] }
   commonMistakes?: { en: string[]; pt: string[] }
   workplaceContext?: Bilingual
+  suggestedInputs?: string[]
 }
 
 export interface ExerciseGrading {
