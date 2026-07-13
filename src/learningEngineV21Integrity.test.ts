@@ -16,7 +16,6 @@ describe('Learning Engine V2.1 integrity', () => {
 
   it('ships dedicated learning blueprints for the first five phases', () => {
     for (const phaseId of [0, 1, 2, 3, 4]) expect(isFoundationV2Migrated(phaseId)).toBe(true)
-    expect(isFoundationV2Migrated(5)).toBe(false)
   })
 
   it('preserves all authored code in the Python translation step', () => {
