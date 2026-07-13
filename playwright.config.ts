@@ -1,9 +1,13 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const externalBaseURL = (process.env.HP_AUDIT_BASE_URL || process.env.AUDIT_BASE_URL)?.trim()
+const resultsOutput = process.env.HP_AUDIT_RESULTS_OUTPUT || 'playwright-report/results.json'
+const htmlOutput = process.env.HP_AUDIT_HTML_OUTPUT || 'playwright-report/html'
+const artifactsOutput = process.env.HP_AUDIT_ARTIFACTS_OUTPUT || 'test-results'
 
 export default defineConfig({
   testDir: './tests/audit',
+  outputDir: artifactsOutput,
   timeout: 45_000,
   expect: { timeout: 8_000 },
   fullyParallel: false,
@@ -12,8 +16,8 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ['list'],
-    ['json', { outputFile: 'playwright-report/results.json' }],
-    ['html', { outputFolder: 'playwright-report/html', open: 'never' }],
+    ['json', { outputFile: resultsOutput }],
+    ['html', { outputFolder: htmlOutput, open: 'never' }],
   ],
   use: {
     baseURL: externalBaseURL || 'http://127.0.0.1:4173',

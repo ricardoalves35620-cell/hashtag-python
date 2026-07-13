@@ -9,7 +9,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "7.3.0"
+$AuditorVersion = "7.4.0"
 Set-Location $PSScriptRoot
 
 function Read-PositiveInteger {
@@ -129,15 +129,29 @@ try {
     throw "Auditor desatualizado: seletor principal antigo detectado. Instale o patch mais recente antes de continuar."
   }
 
+  $autopilotFile = Join-Path $PSScriptRoot "audit\autopilot.ts"
+  if (-not (Test-Path $autopilotFile)) { throw "Arquivo do Autopilot não encontrado: $autopilotFile" }
+  $autopilotText = Get-Content $autopilotFile -Raw
+  if ($autopilotText -notmatch "HP_AUDIT_RESULTS_OUTPUT" -or $autopilotText -notmatch "fileIsFresh") {
+    throw "Autopilot desatualizado: proteção contra resultados antigos não encontrada. Instale o patch 7.4 ou superior."
+  }
+
   if (-not (Test-Path "node_modules")) {
     npm ci
     if ($LASTEXITCODE -ne 0) { throw "npm ci failed" }
   }
 
+  $nodeCommand = (Get-Command node -ErrorAction Stop).Source
+  $playwrightCli = Join-Path $PSScriptRoot "node_modules\@playwright\test\cli.js"
+  $tsxCli = Join-Path $PSScriptRoot "node_modules\tsx\dist\cli.mjs"
+
+  if (-not (Test-Path $playwrightCli)) { throw "Playwright CLI não encontrado: $playwrightCli" }
+  if (-not (Test-Path $tsxCli)) { throw "tsx CLI não encontrado: $tsxCli" }
+
   $browserPath = Join-Path $env:LOCALAPPDATA "ms-playwright"
   if (-not (Test-Path $browserPath)) {
     Write-Host "Installing Playwright Chromium (first run only)..." -ForegroundColor Yellow
-    npx playwright install chromium
+    & $nodeCommand $playwrightCli install chromium
     if ($LASTEXITCODE -ne 0) { throw "Could not install Playwright Chromium" }
   }
 
@@ -150,7 +164,7 @@ try {
   )
   if ($Fresh) { $argsList += "--fresh" }
 
-  npx tsx @argsList
+  & $nodeCommand $tsxCli @argsList
   if ($LASTEXITCODE -ne 0) {
     $runStatus = "Finalizado com erro do auditor"
     throw "Auditor ended with an unexpected error"
