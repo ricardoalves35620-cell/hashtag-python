@@ -1167,29 +1167,54 @@ else:
     print("Batch must be discarded")` },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
-      { type: 'code', code: `damage = 8000
+      { type: 'code', code: {
+        en: `damage = 8000
 
-# ❌ MISTAKE 1: wrong ORDER — broad condition first
-if damage > 1000:            # 8000 > 1000? True → STOPS HERE!
-    print("Normal")           # WRONG! Should be Urgent
+# ❌ MISTAKE 1: placing a broad condition first
+if damage > 1000:            # 8000 > 1000? True → stops here
+    print("Normal")           # wrong: it should be Urgent
 elif damage > 5000:
-    print("Urgent")           # never reached!
+    print("Urgent")           # never reached
 
-# ✅ FIX: most SPECIFIC (highest) condition first
+# ✅ FIX: place the most specific condition first
 if damage > 10000:
     print("Critical")
 elif damage > 5000:
-    print("Urgent")            # now 8000 lands correctly
+    print("Urgent")           # 8000 now reaches the correct branch
 elif damage > 1000:
     print("Normal")
 
-# ❌ MISTAKE 2: using multiple ifs instead of elif
+# ❌ MISTAKE 2: using separate if statements instead of elif
 if damage > 5000:
-    print("Urgent")            # prints!
+    print("Urgent")           # prints
 if damage > 1000:
-    print("Normal")            # ALSO prints! Two ifs = independent checks
+    print("Normal")           # also prints: separate ifs are independent
 
-# ✅ elif makes them exclusive — only ONE branch ever runs` },
+# ✅ elif makes the branches exclusive: only one branch runs`,
+        pt: `dano = 8000
+
+# ❌ ERRO 1: colocar uma condição ampla primeiro
+if dano > 1000:              # 8000 > 1000? True → para aqui
+    print("Normal")           # errado: deveria ser Urgente
+elif dano > 5000:
+    print("Urgente")          # nunca é alcançado
+
+# ✅ CORREÇÃO: coloque a condição mais específica primeiro
+if dano > 10000:
+    print("Crítico")
+elif dano > 5000:
+    print("Urgente")          # agora 8000 chega ao ramo correto
+elif dano > 1000:
+    print("Normal")
+
+# ❌ ERRO 2: usar ifs separados em vez de elif
+if dano > 5000:
+    print("Urgente")          # imprime
+if dano > 1000:
+    print("Normal")           # também imprime: ifs separados são independentes
+
+# ✅ elif torna os ramos exclusivos: apenas um ramo é executado`
+      } },
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: elif chains as waterfalls.\nWrite conditions from the TOP floor (highest value) down.\nWater (your value) falls until it lands on the first floor that catches it.\nDesign the waterfall on paper before coding — 30 seconds of sketching saves 30 minutes of debugging.',
@@ -1331,17 +1356,30 @@ export const phase7: Phase = {
       }},
 
       { type: 'heading', content: { en: '🐍 The fundamentals', pt: '🐍 Os fundamentos' } },
-      { type: 'code', code: `# The 3-piece anatomy
+      { type: 'code', code: {
+        en: `# The three-part structure of a while loop
 count = 1                       # 1️⃣ starting state
 
-while count <= 5:               # 2️⃣ keep-going condition
+while count <= 5:              # 2️⃣ condition for continuing
     print("Processing claim #", count)
-    count += 1                  # 3️⃣ progress! (CRITICAL)
+    count += 1                 # 3️⃣ progress toward the end
 
-print("All done!")              # runs after loop ends
+print("All done!")             # runs after the loop ends
 
-# Trace it: count goes 1→2→3→4→5→6.
-# When count=6, 6<=5 is False → loop exits.` },
+# Trace: count changes from 1→2→3→4→5→6.
+# When count is 6, 6 <= 5 is False and the loop ends.`,
+        pt: `# A estrutura de três partes de um loop while
+contador = 1                    # 1️⃣ estado inicial
+
+while contador <= 5:            # 2️⃣ condição para continuar
+    print("Processando solicitação #", contador)
+    contador += 1               # 3️⃣ progresso em direção ao fim
+
+print("Tudo concluído!")        # executa depois que o loop termina
+
+# Acompanhe: contador muda de 1→2→3→4→5→6.
+# Quando contador é 6, 6 <= 5 é False e o loop termina.`
+      } },
 
       { type: 'heading', content: { en: '🐍 Deeper: accumulators, break, and validation loops', pt: '🐍 Aprofundando: acumuladores, break e loops de validação' } },
       { type: 'code', code: `# PATTERN 1: accumulator inside a loop
@@ -1367,16 +1405,17 @@ while age < 0 or age > 120:
 print("Valid age:", age)` },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Batch claim processing', pt: '🏗️ Cenário Real 1: Processamento em lote' } },
-      { type: 'code', code: `# End of day: process all pending claims
+      { type: 'code', code: {
+        en: `# End of day: process every pending claim
 print("=== BATCH PROCESSOR ===")
-pending = int(input("How many claims to process? "))
+pending = int(input("How many claims should be processed? "))
 
 count = 1
 total_payout = 0
 
 while count <= pending:
     print(f"--- Claim {count} of {pending} ---")
-    damage = int(input("Damage: $"))
+    damage = int(input("Damage amount: $"))
     payout = damage - 250
     total_payout += payout
     print(f"Payout: \${payout}")
@@ -1385,48 +1424,109 @@ while count <= pending:
 print()
 print(f"Batch complete: {pending} claims")
 print(f"Total payout: \${total_payout}")
-print(f"Average: \${total_payout / pending}")` },
+print(f"Average payout: \${total_payout / pending}")`,
+        pt: `# No fim do dia, processe todas as solicitações pendentes
+print("=== PROCESSADOR EM LOTE ===")
+pendentes = int(input("Quantas solicitações devem ser processadas? "))
+
+contador = 1
+total_indenizacoes = 0
+
+while contador <= pendentes:
+    print(f"--- Solicitação {contador} de {pendentes} ---")
+    dano = int(input("Valor do dano: $"))
+    indenizacao = dano - 250
+    total_indenizacoes += indenizacao
+    print(f"Indenização: \${indenizacao}")
+    contador += 1
+
+print()
+print(f"Lote concluído: {pendentes} solicitações")
+print(f"Total de indenizações: \${total_indenizacoes}")
+print(f"Indenização média: \${total_indenizacoes / pendentes}")`
+      } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Material stock countdown', pt: '🏗️ Cenário Real 2: Contagem regressiva de estoque' } },
-      { type: 'code', code: `# Site warehouse: consume cement until stock runs low
-stock = 47                      # bags in warehouse
+      { type: 'code', code: {
+        en: `# Site warehouse: use cement until stock runs low
+stock = 47                     # bags in the warehouse
 day = 1
 
-while stock >= 12:              # 12 bags = daily usage
-    stock -= 12                 # consume a day of work
-    print(f"Day {day}: used 12 bags, {stock} remaining")
+while stock >= 12:             # 12 bags are used per day
+    stock -= 12                # consume one day of material
+    print(f"Day {day}: used 12 bags; {stock} remaining")
     day += 1
 
-print(f"⚠️ Day {day}: only {stock} bags left — REORDER NOW")` },
+print(f"⚠️ Day {day}: only {stock} bags remain — REORDER NOW")`,
+        pt: `# Almoxarifado da obra: use cimento até o estoque ficar baixo
+estoque = 47                   # sacos no almoxarifado
+dia = 1
+
+while estoque >= 12:           # são usados 12 sacos por dia
+    estoque -= 12              # consome o material de um dia
+    print(f"Dia {dia}: 12 sacos usados; restam {estoque}")
+    dia += 1
+
+print(f"⚠️ Dia {dia}: restam apenas {estoque} sacos — FAÇA UM NOVO PEDIDO")`
+      } },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
-      { type: 'code', code: `# ❌ MISTAKE 1: forgetting to update the counter
+      { type: 'code', code: {
+        en: `# ❌ MISTAKE 1: forgetting to update the counter
 # count = 1
 # while count <= 5:
-#     print(count)          # count never changes → INFINITE LOOP!
+#     print(count)          # count never changes → infinite loop
 
-# ✅ FIX: always include the progress line
+# ✅ FIX: always include a line that makes progress
 count = 1
 while count <= 5:
     print(count)
     count += 1
 
-# ❌ MISTAKE 2: updating in the wrong place
+# ❌ MISTAKE 2: updating the counter too early
 count = 1
 while count <= 3:
-    count += 1              # updated BEFORE using...
-    print(count)            # prints 2, 3, 4 — not 1, 2, 3!
+    count += 1              # updated before it is used
+    print(count)            # prints 2, 3, 4 instead of 1, 2, 3
 
-# ✅ FIX: use first, update last
+# ✅ FIX: use the value first and update it last
 count = 1
 while count <= 3:
-    print(count)            # prints 1, 2, 3 ✅
+    print(count)            # prints 1, 2, 3
     count += 1
 
-# ❌ MISTAKE 3: condition that starts False
+# ❌ MISTAKE 3: starting with a false condition
 count = 10
-while count <= 5:           # 10 <= 5? False → loop NEVER runs
-    print("never printed")` },
+while count <= 5:           # 10 <= 5 is False, so the loop never runs
+    print("This is never printed")`,
+        pt: `# ❌ ERRO 1: esquecer de atualizar o contador
+# contador = 1
+# while contador <= 5:
+#     print(contador)       # contador nunca muda → loop infinito
+
+# ✅ CORREÇÃO: sempre inclua uma linha que gere progresso
+contador = 1
+while contador <= 5:
+    print(contador)
+    contador += 1
+
+# ❌ ERRO 2: atualizar o contador cedo demais
+contador = 1
+while contador <= 3:
+    contador += 1           # atualizado antes de ser usado
+    print(contador)         # imprime 2, 3, 4 em vez de 1, 2, 3
+
+# ✅ CORREÇÃO: use o valor primeiro e atualize por último
+contador = 1
+while contador <= 3:
+    print(contador)         # imprime 1, 2, 3
+    contador += 1
+
+# ❌ ERRO 3: começar com uma condição falsa
+contador = 10
+while contador <= 5:        # 10 <= 5 é False, então o loop nunca executa
+    print("Isto nunca é impresso")`
+      } },
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: stuck in an infinite loop while testing?\nThe stop button (⏹) kills the program. In VS Code terminal: Ctrl+C.\nBefore running any while, mentally answer: "what line brings the condition closer to False?" If you can\'t point at it — don\'t run it.',
