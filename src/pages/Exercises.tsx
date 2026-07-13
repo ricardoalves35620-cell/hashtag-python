@@ -210,17 +210,17 @@ export default function Exercises() {
         <div><TestInputEditor code={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)} value={customInputs[exercise.id] || ''} onChange={value => { setCustomInputs(previous => ({ ...previous, [exercise.id]: value })); clearResult() }} lang={lang} /></div>
 
         <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
-          <Button fullWidth size="lg" loading={running || pyodideLoading} onClick={handleRun} leftIcon="▶">
+          <Button data-testid="exercise-run-button" fullWidth size="lg" loading={running || pyodideLoading} onClick={handleRun} leftIcon="▶">
             {pyodideLoading ? t.loading : running ? t.running : t.run}
           </Button>
           <Button variant="secondary" size="lg" onClick={() => { setCodes(previous => ({ ...previous, [exercise.id]: exercise.starterCode })); clearResult() }}>{t.reset}</Button>
         </div>
 
-        {checks.length > 0 && <Progress value={passedChecks} max={checks.length} label={t.progress} showValue tone={currentValidated ? 'success' : 'warning'} />}
+        <div data-testid="exercise-feedback">{checks.length > 0 && <Progress value={passedChecks} max={checks.length} label={t.progress} showValue tone={currentValidated ? 'success' : 'warning'} />}
         {validationMessage && <Alert variant={currentValidated ? 'success' : 'warning'} title={currentValidated ? t.validated : (lang === 'en' ? 'Keep improving' : 'Continue ajustando')}>{validationMessage}</Alert>}
-        <ExerciseFeedback checks={checks} lang={lang} />
+        <ExerciseFeedback checks={checks} lang={lang} /></div>
 
-        {(output || errorExplanation) && <Card padding="none" className="overflow-hidden"><div className="border-b border-line px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted">{t.output}</div>{errorExplanation ? <div className="p-3"><ErrorExplainer explanation={errorExplanation} lang={lang} rawError={output} showRaw={showRawError} onToggleRaw={() => setShowRawError(value => !value)} /></div> : <pre className="max-h-72 overflow-auto whitespace-pre-wrap bg-[#0d1117] p-4 font-mono text-sm leading-6 text-[#7ee787]">{output}</pre>}</Card>}
+        {(output || errorExplanation) && <Card data-testid="exercise-output" padding="none" className="overflow-hidden"><div className="border-b border-line px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted">{t.output}</div>{errorExplanation ? <div className="p-3"><ErrorExplainer explanation={errorExplanation} lang={lang} rawError={output} showRaw={showRawError} onToggleRaw={() => setShowRawError(value => !value)} /></div> : <pre className="max-h-72 overflow-auto whitespace-pre-wrap bg-[#0d1117] p-4 font-mono text-sm leading-6 text-[#7ee787]">{output}</pre>}</Card>}
 
         {exercise.hints.length > 0 && <Card variant="subtle" padding="md"><Button variant="ghost" size="sm" disabled={(hintLevels[exercise.id] || 0) >= exercise.hints.length} onClick={() => setHintLevels(previous => ({ ...previous, [exercise.id]: Math.min((previous[exercise.id] || 0) + 1, exercise.hints.length) }))}>💡 {(hintLevels[exercise.id] || 0) === 0 ? t.hint : (hintLevels[exercise.id] || 0) < exercise.hints.length ? t.nextHint : t.allHints}</Button>{(hintLevels[exercise.id] || 0) > 0 && <div className="mt-3 space-y-2">{exercise.hints.slice(0, hintLevels[exercise.id] || 0).map((hint, index) => <Alert key={index} variant="info" title={lang === 'en' ? `Hint ${index + 1}` : `Dica ${index + 1}`}>{hint[lang]}</Alert>)}</div>}</Card>}
 

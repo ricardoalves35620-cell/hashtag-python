@@ -11,7 +11,7 @@
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "7.6.0"
+$AuditorVersion = "7.7.0"
 
 Add-Type @"
 using System;
@@ -146,7 +146,8 @@ try {
   if ($interactiveLaunch) {
     Write-Host "" 
     Write-Host "Hashtag Python Auditor Autopilot" -ForegroundColor Cyan
-    $Cycles = Read-PositiveInteger -Prompt "Quantos ciclos deseja executar?" -DefaultValue 69
+    Write-Host "69 ciclos = 1 volta completa; 414 ciclos = 6 voltas (aprox. 4-6 horas)." -ForegroundColor DarkGray
+    $Cycles = Read-PositiveInteger -Prompt "Quantos ciclos deseja executar?" -DefaultValue 414
     $defaultVisible = $Cycles -le 5
     $Visible = Read-YesNo -Prompt "Deseja acompanhar o navegador na tela?" -DefaultValue $defaultVisible
     if ($Visible -and $SlowMo -le 0) {
@@ -166,7 +167,7 @@ try {
 
   Write-Host "" 
   Write-Host "Hashtag Python Auditor Autopilot v$AuditorVersion" -ForegroundColor Cyan
-  Write-Host "Cycles: $Cycles | Phases per cycle: $Batch"
+  Write-Host "Cycles: $Cycles | Phases per cycle: $Batch | Curriculum passes: $([Math]::Round(($Cycles * $Batch) / 69, 1))"
   if ($Minutes -gt 0) { Write-Host "Maximum minutes: $Minutes" }
   else { Write-Host "Time limit: none (ends after the requested cycles)" }
   Write-Host "Target: $Url"

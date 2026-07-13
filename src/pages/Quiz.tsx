@@ -149,7 +149,7 @@ export default function Quiz() {
         </div>
 
         <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
-          <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{question.question[lang]}</p>
+          <p data-testid="quiz-question" className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{question.question[lang]}</p>
         </div>
 
         <div className="space-y-2">
@@ -167,7 +167,7 @@ export default function Quiz() {
               else opacity = 0.5
             }
             return (
-              <button key={originalIndex} onClick={() => handleSelect(originalIndex)} disabled={isAnswered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color, opacity }}>
+              <button data-testid="quiz-option" key={originalIndex} onClick={() => handleSelect(originalIndex)} disabled={isAnswered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color, opacity }}>
                 <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + displayIndex)}.</span>
                 <span className="whitespace-pre-line">{conciseAssessmentOption(option[lang])}</span>
               </button>
@@ -176,7 +176,7 @@ export default function Quiz() {
         </div>
 
         {isAnswered && (
-          <div className="rounded-xl p-4" style={{ background: selected === question.correctIndex ? '#052e16' : '#1f0a0a', border: `1px solid ${selected === question.correctIndex ? '#15803d' : '#7f1d1d'}` }}>
+          <div data-testid="quiz-feedback" className="rounded-xl p-4" style={{ background: selected === question.correctIndex ? '#052e16' : '#1f0a0a', border: `1px solid ${selected === question.correctIndex ? '#15803d' : '#7f1d1d'}` }}>
             <div className="text-sm font-medium mb-2" style={{ color: selected === question.correctIndex ? '#4ade80' : '#f87171' }}>
               {selected === question.correctIndex ? `✅ ${t.correct}` : `❌ ${t.wrong}`}
             </div>
@@ -186,7 +186,7 @@ export default function Quiz() {
         )}
 
         {isAnswered && (
-          <button onClick={handleNext} className="w-full text-white font-semibold rounded-xl" style={{ padding: 14, background: 'var(--c-purple)', border: 'none' }}>
+          <button data-testid="quiz-next" onClick={handleNext} className="w-full text-white font-semibold rounded-xl" style={{ padding: 14, background: 'var(--c-purple)', border: 'none' }}>
             {current + 1 >= questions.length ? t.score : t.next}
           </button>
         )}

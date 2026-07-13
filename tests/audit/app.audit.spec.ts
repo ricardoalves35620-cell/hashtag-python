@@ -3,6 +3,7 @@ import path from 'node:path'
 import { test, expect, type BrowserContext, type Page, type TestInfo } from '@playwright/test'
 import { ALL_PHASES } from '../../src/data/phases/index'
 import { conciseAssessmentOption } from '../../src/lib/assessmentIntegrity'
+import { auditTextsMatch } from '../../src/lib/auditText'
 
 const phaseStart = Math.max(0, Number(process.env.HP_AUDIT_PHASE_START || 0))
 const phaseCount = Math.max(1, Number(process.env.HP_AUDIT_PHASE_COUNT || 1))
@@ -157,26 +158,77 @@ async function readEditorCode(page: Page) {
   return (await editor.innerText()).replace(/\u00a0/g, ' ')
 }
 
-async function clickFirstVisible(page: Page, patterns: RegExp[]) {
+async function visibleButtonByName(page: Page, patterns: RegExp[]) {
   for (const pattern of patterns) {
     const buttons = page.getByRole('button', { name: pattern })
     const count = await buttons.count()
     for (let index = 0; index < count; index += 1) {
       const button = buttons.nth(index)
-      if (await button.isVisible()) {
-        await button.click()
-        return
-      }
+      if (await button.isVisible()) return button
     }
   }
-  throw new Error(`No visible button matched: ${patterns.map(item => item.source).join(' | ')}`)
+  return null
 }
 
-async function waitForExerciseFeedback(page: Page) {
+async function clickFirstVisible(page: Page, patterns: RegExp[]) {
+  const button = await visibleButtonByName(page, patterns)
+  if (!button) throw new Error(`No visible button matched: ${patterns.map(item => item.source).join(' | ')}`)
+  await button.click()
+}
+
+async function getExerciseRunButton(page: Page) {
+  const stable = page.getByTestId('exercise-run-button').first()
+  if (await stable.count() && await stable.isVisible()) return stable
+
+  const fallback = await visibleButtonByName(page, [/Executar e validar|Run and validate/i])
+  if (fallback) return fallback
+
+  throw new Error('Exercise run button did not render')
+}
+
+async function runExerciseAndWait(page: Page) {
+  const feedback = page.getByTestId('exercise-feedback')
+  const output = page.getByTestId('exercise-output')
+  const button = await getExerciseRunButton(page)
+
+  await button.click()
+
   await expect.poll(async () => {
-    const text = await page.locator('main#main-scroll').innerText()
-    return /Saída do console|Console output|Progresso da validação|Validation progress|SyntaxError|Erro|Error|Continue ajustando|Keep improving/i.test(text)
-  }, { timeout: 60_000, message: 'Exercise did not produce feedback' }).toBe(true)
+    const current = await getExerciseRunButton(page).catch(() => null)
+    if (!current) return false
+    const text = (await current.innerText()).trim()
+    return (await current.isEnabled()) && /Executar e validar|Run and validate/i.test(text)
+  }, {
+    timeout: 75_000,
+    message: 'Exercise execution did not finish or restore the run button',
+  }).toBe(true)
+
+  await expect.poll(async () => {
+    const feedbackText = await feedback.innerText().catch(() => '')
+    const outputVisible = await output.isVisible().catch(() => false)
+    return feedbackText.trim().length > 0 || outputVisible
+  }, {
+    timeout: 10_000,
+    message: 'Exercise finished but did not render fresh feedback',
+  }).toBe(true)
+}
+
+async function findExactQuizOption(page: Page, expected: string) {
+  const stableOptions = page.getByTestId('quiz-option')
+  const options = await stableOptions.count() > 0
+    ? stableOptions
+    : page.locator('main#main-scroll button').filter({ hasNot: page.getByTestId('quiz-next') })
+
+  const available: string[] = []
+  for (let index = 0; index < await options.count(); index += 1) {
+    const option = options.nth(index)
+    if (!await option.isVisible()) continue
+    const text = await option.innerText()
+    available.push(text)
+    if (auditTextsMatch(text, expected)) return option
+  }
+
+  throw new Error(`Correct quiz option not found exactly: ${expected}. Visible options: ${available.join(' | ')}`)
 }
 
 async function answerQuizCorrectly(page: Page, phaseId: number) {
@@ -185,20 +237,28 @@ async function answerQuizCorrectly(page: Page, phaseId: number) {
 
   log(`Phase ${phaseId}: answering ${phase.quiz.length} quiz questions`)
   for (let index = 0; index < phase.quiz.length; index += 1) {
-    const pageText = await page.locator('main#main-scroll').innerText()
-    const currentQuestion = phase.quiz.find(item => pageText.includes(item.question[language]))
-    if (!currentQuestion) throw new Error(`Could not identify the current quiz question for phase ${phaseId}`)
+    const questionText = await page.getByTestId('quiz-question').innerText().catch(async () => page.locator('main#main-scroll').innerText())
+    const currentQuestion = phase.quiz.find(item => questionText.includes(item.question[language]))
+    if (!currentQuestion) throw new Error(`Could not identify the current quiz question for phase ${phaseId}: ${questionText}`)
 
     const expected = conciseAssessmentOption(currentQuestion.options[currentQuestion.correctIndex][language])
-    const optionButton = page.getByRole('button', { name: new RegExp(escapeRegex(expected), 'i') }).first()
-    await expect(optionButton, `Correct quiz option not found: ${expected}`).toBeVisible()
+    const optionButton = await findExactQuizOption(page, expected)
     await optionButton.click()
 
-    await expect(page.getByText(language === 'pt' ? 'Correto!' : 'Correct!', { exact: false })).toBeVisible()
-    await clickFirstVisible(page, [
-      /Próxima questão|Next question/i,
-      /Sua pontuação|Your score/i,
-    ])
+    const feedback = page.getByTestId('quiz-feedback')
+    await expect(feedback, 'Quiz feedback did not render after selecting an option').toBeVisible({ timeout: 12_000 })
+    await expect(feedback, `The auditor selected an incorrect option instead of: ${expected}`).toContainText(
+      language === 'pt' ? /Correto!/i : /Correct!/i,
+    )
+
+    const next = page.getByTestId('quiz-next')
+    if (await next.count() && await next.isVisible()) await next.click()
+    else {
+      await clickFirstVisible(page, [
+        /Próxima questão|Next question/i,
+        /Sua pontuação|Your score/i,
+      ])
+    }
   }
 
   await expect(page.getByText(/100%/).first(), 'Quiz did not finish with 100%').toBeVisible({ timeout: 15_000 })
@@ -250,21 +310,19 @@ async function exerciseDiagnostics(page: Page, phaseId: number) {
 
   log(`Phase ${phaseId}: testing syntax-error feedback`)
   await replaceEditorCode(page, 'print(')
-  await clickFirstVisible(page, [/Executar e validar|Run and validate/i])
-  await waitForExerciseFeedback(page)
+  await runExerciseAndWait(page)
   await expect(page.locator('main#main-scroll')).toContainText(/SyntaxError|erro de sintaxe|syntax/i)
 
   log(`Phase ${phaseId}: testing placeholder detection inside a comment`)
   await replaceEditorCode(page, '# ___ comentário legítimo do auditor\nprint("audit")')
-  await clickFirstVisible(page, [/Executar e validar|Run and validate/i])
-  await waitForExerciseFeedback(page)
+  await runExerciseAndWait(page)
   const body = await page.locator('main#main-scroll').innerText()
   expect(body).not.toMatch(/lacuna.*não preenchida|unfilled placeholder/i)
 
   if (cycleNumber % 12 === 0) {
     log(`Phase ${phaseId}: testing infinite-loop timeout`)
     await replaceEditorCode(page, 'while True:\n    pass')
-    await clickFirstVisible(page, [/Executar e validar|Run and validate/i])
+    await runExerciseAndWait(page)
     await expect.poll(async () => (await page.locator('main#main-scroll').innerText()), {
       timeout: 20_000,
       message: 'Timeout feedback was not rendered',

@@ -11,6 +11,8 @@ describe('deep overnight auditor integrity', () => {
     expect(spec).toContain('exercise editor, errors, draft and layout')
     expect(spec).toContain('shuffled quiz with correct answers')
     expect(spec).toContain('exam execution and pedagogical feedback')
+    expect(spec).toContain('runExerciseAndWait')
+    expect(spec).toContain('findExactQuizOption')
   })
 
   it('keeps per-cycle status and estimates remaining runtime', () => {
@@ -19,8 +21,8 @@ describe('deep overnight auditor integrity', () => {
     expect(autopilot).toContain('estimated ${etaMinutes} min remaining')
   })
 
-  it('defaults to a complete 69-phase pass and keeps Windows awake', () => {
-    expect(runner).toContain('DefaultValue 69')
+  it('defaults to a multi-pass overnight run and keeps Windows awake', () => {
+    expect(runner).toContain('DefaultValue 414')
     expect(runner).toContain('SetThreadExecutionState')
     expect(runner).toContain('hashtag-python-audit-report.zip')
   })
