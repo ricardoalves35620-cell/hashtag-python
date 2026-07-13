@@ -2,7 +2,7 @@ import { spawnSync, type SpawnSyncReturns } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const AUDITOR_VERSION = '7.7.0'
+const AUDITOR_VERSION = '7.8.0'
 
 interface Args {
   cycles: number
@@ -31,6 +31,21 @@ interface CommandResult {
   finishedAt: string
   durationMs: number
 }
+
+const AUDIT_ENVIRONMENTS = [
+  { device: 'iphone-chromium', lang: 'pt', theme: 'dark' },
+  { device: 'desktop-chromium', lang: 'en', theme: 'dark' },
+  { device: 'tablet-chromium', lang: 'pt', theme: 'light' },
+  { device: 'iphone-chromium', lang: 'en', theme: 'light' },
+  { device: 'desktop-chromium', lang: 'pt', theme: 'light' },
+  { device: 'tablet-chromium', lang: 'en', theme: 'dark' },
+  { device: 'iphone-chromium', lang: 'pt', theme: 'light' },
+  { device: 'desktop-chromium', lang: 'en', theme: 'light' },
+  { device: 'tablet-chromium', lang: 'pt', theme: 'dark' },
+  { device: 'iphone-chromium', lang: 'en', theme: 'dark' },
+  { device: 'desktop-chromium', lang: 'pt', theme: 'dark' },
+  { device: 'tablet-chromium', lang: 'en', theme: 'light' },
+] as const
 
 function parseArgs(): Args {
   const argv = process.argv.slice(2)
@@ -110,6 +125,15 @@ function normalizeFailureSignature(title: string, message: string) {
   return `${normalizedTitle}|${normalizedMessage}`
 }
 
+function extractAffectedPhases(message: string) {
+  return Array.from(
+    new Set(
+      Array.from(message.matchAll(/phase\s+(\d+)/gi), match => Number(match[1]))
+        .filter(value => Number.isInteger(value)),
+    ),
+  ).sort((a, b) => a - b)
+}
+
 function playwrightIssues(payload: any, cycle: number): AggregatedIssue[] {
   const issues: AggregatedIssue[] = []
   const suites = payload?.suites || []
@@ -137,6 +161,7 @@ function playwrightIssues(payload: any, cycle: number): AggregatedIssue[] {
               details: {
                 title: spec.title,
                 affectedTests: [spec.title],
+                affectedPhases: extractAffectedPhases(stripAnsi(message)),
                 trail: nextTrail,
                 status: result.status,
                 message: stripAnsi(message),
@@ -278,14 +303,12 @@ for (
   const cycleStart = Date.now()
   const phaseStart = state.cursor % 69
   const phaseCount = Math.min(args.batch, 69 - phaseStart)
-  const lang = cycle % 2 === 0 ? 'en' : 'pt'
-  const theme = cycle % 3 === 0 ? 'light' : 'dark'
-  const device =
-    cycle % 3 === 1
-      ? 'iphone-chromium'
-      : cycle % 3 === 2
-        ? 'desktop-chromium'
-        : 'tablet-chromium'
+
+  // One complete curriculum pass uses one fixed environment. After 12 passes,
+  // every phase has been tested in the full device × language × theme matrix.
+  const curriculumPass = Math.floor((cycle - 1) / 69)
+  const environment = AUDIT_ENVIRONMENTS[curriculumPass % AUDIT_ENVIRONMENTS.length]
+  const { lang, theme, device } = environment
 
   if (fs.existsSync(path.resolve('.autopilot-stop-after-cycle'))) {
     console.log('Graceful stop requested. Ending before the next cycle.')
@@ -411,18 +434,30 @@ for (
 
       const currentDetails = existing.details as {
         affectedTests?: string[]
+        affectedPhases?: number[]
+        message?: string
+        latestMessage?: string
       }
-      const incomingDetails = issue.details as { title?: string }
+      const incomingDetails = issue.details as {
+        title?: string
+        affectedPhases?: number[]
+        message?: string
+      }
 
       if (incomingDetails.title) {
         currentDetails.affectedTests ||= []
-        if (
-          !currentDetails.affectedTests.includes(
-            incomingDetails.title,
-          )
-        ) {
+        if (!currentDetails.affectedTests.includes(incomingDetails.title)) {
           currentDetails.affectedTests.push(incomingDetails.title)
         }
+      }
+
+      currentDetails.affectedPhases = Array.from(new Set([
+        ...(currentDetails.affectedPhases || []),
+        ...(incomingDetails.affectedPhases || []),
+      ])).sort((a, b) => a - b)
+
+      if (incomingDetails.message && incomingDetails.message !== currentDetails.message) {
+        currentDetails.latestMessage = incomingDetails.message
       }
 
       knownIssues += 1

@@ -11,7 +11,7 @@
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "7.7.0"
+$AuditorVersion = "7.8.0"
 
 Add-Type @"
 using System;
@@ -99,22 +99,29 @@ function Export-AuditReport {
   }
 
   Remove-Item $DestinationZip -Force -ErrorAction SilentlyContinue
-  $autopilotRoot = Join-Path $reportRoot "autopilot"
-  if (Test-Path $autopilotRoot) {
-    Compress-Archive `
-      -Path (Join-Path $autopilotRoot "*") `
-      -DestinationPath $DestinationZip `
-      -Force
+  $sourceRoot = Join-Path $reportRoot "autopilot"
+  if (-not (Test-Path $sourceRoot)) { $sourceRoot = $reportRoot }
+
+  # Compress-Archive loads large reports into memory and failed after 828 cycles.
+  # Windows tar streams files incrementally and can package multi-gigabyte runs.
+  $tar = Join-Path $env:SystemRoot "System32\tar.exe"
+  if (Test-Path $tar) {
+    & $tar -a -c -f $DestinationZip -C $sourceRoot .
+    if ($LASTEXITCODE -ne 0) {
+      throw "tar.exe não conseguiu compactar o relatório (código $LASTEXITCODE)."
+    }
   } else {
     Compress-Archive `
-      -Path (Join-Path $reportRoot "*") `
+      -Path (Join-Path $sourceRoot "*") `
       -DestinationPath $DestinationZip `
       -Force
   }
 
-  Write-Host "" 
+  $zipInfo = Get-Item $DestinationZip
+  Write-Host ""
   Write-Host "ZIP do relatório pronto:" -ForegroundColor Green
   Write-Host $DestinationZip -ForegroundColor Green
+  Write-Host ("Tamanho: {0:N2} MB" -f ($zipInfo.Length / 1MB)) -ForegroundColor DarkGray
 }
 
 $startedAt = Get-Date
@@ -146,8 +153,8 @@ try {
   if ($interactiveLaunch) {
     Write-Host "" 
     Write-Host "Hashtag Python Auditor Autopilot" -ForegroundColor Cyan
-    Write-Host "69 ciclos = 1 volta completa; 414 ciclos = 6 voltas (aprox. 4-6 horas)." -ForegroundColor DarkGray
-    $Cycles = Read-PositiveInteger -Prompt "Quantos ciclos deseja executar?" -DefaultValue 414
+    Write-Host "69 ciclos = 1 volta; 828 ciclos = matriz completa (3 dispositivos × 2 idiomas × 2 temas)." -ForegroundColor DarkGray
+    $Cycles = Read-PositiveInteger -Prompt "Quantos ciclos deseja executar?" -DefaultValue 828
     $defaultVisible = $Cycles -le 5
     $Visible = Read-YesNo -Prompt "Deseja acompanhar o navegador na tela?" -DefaultValue $defaultVisible
     if ($Visible -and $SlowMo -le 0) {

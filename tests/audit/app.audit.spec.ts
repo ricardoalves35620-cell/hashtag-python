@@ -213,22 +213,11 @@ async function runExerciseAndWait(page: Page) {
   }).toBe(true)
 }
 
-async function findExactQuizOption(page: Page, expected: string) {
-  const stableOptions = page.getByTestId('quiz-option')
-  const options = await stableOptions.count() > 0
-    ? stableOptions
-    : page.locator('main#main-scroll button').filter({ hasNot: page.getByTestId('quiz-next') })
+async function findQuizOptionByOriginalIndex(page: Page, originalIndex: number) {
+  const stable = page.locator(`[data-testid="quiz-option"][data-option-index="${originalIndex}"]`).first()
+  if (await stable.count() && await stable.isVisible()) return stable
 
-  const available: string[] = []
-  for (let index = 0; index < await options.count(); index += 1) {
-    const option = options.nth(index)
-    if (!await option.isVisible()) continue
-    const text = await option.innerText()
-    available.push(text)
-    if (auditTextsMatch(text, expected)) return option
-  }
-
-  throw new Error(`Correct quiz option not found exactly: ${expected}. Visible options: ${available.join(' | ')}`)
+  throw new Error(`Quiz option with original index ${originalIndex} did not render`)
 }
 
 async function answerQuizCorrectly(page: Page, phaseId: number) {
@@ -237,12 +226,18 @@ async function answerQuizCorrectly(page: Page, phaseId: number) {
 
   log(`Phase ${phaseId}: answering ${phase.quiz.length} quiz questions`)
   for (let index = 0; index < phase.quiz.length; index += 1) {
-    const questionText = await page.getByTestId('quiz-question').innerText().catch(async () => page.locator('main#main-scroll').innerText())
-    const currentQuestion = phase.quiz.find(item => questionText.includes(item.question[language]))
-    if (!currentQuestion) throw new Error(`Could not identify the current quiz question for phase ${phaseId}: ${questionText}`)
+    const question = page.getByTestId('quiz-question')
+    await expect(question, 'Quiz question did not render').toBeVisible({ timeout: 12_000 })
+
+    const questionId = await question.getAttribute('data-question-id')
+    const currentQuestion = phase.quiz.find(item => item.id === questionId)
+    if (!currentQuestion) {
+      const questionText = await question.innerText()
+      throw new Error(`Could not identify the current quiz question for phase ${phaseId}: id=${questionId || 'missing'} text=${questionText}`)
+    }
 
     const expected = conciseAssessmentOption(currentQuestion.options[currentQuestion.correctIndex][language])
-    const optionButton = await findExactQuizOption(page, expected)
+    const optionButton = await findQuizOptionByOriginalIndex(page, currentQuestion.correctIndex)
     await optionButton.click()
 
     const feedback = page.getByTestId('quiz-feedback')
@@ -329,12 +324,36 @@ async function exerciseDiagnostics(page: Page, phaseId: number) {
     }).toMatch(/tempo|timeout|time limit|loop infinito|infinite loop/i)
   }
 
-  await replaceEditorCode(page, original)
-  await page.waitForTimeout(800)
+  const draftMarker = `# hp-audit-draft-${phaseId}-${cycleNumber}`
+  const markedDraft = `${draftMarker}\n${original}`
+  await replaceEditorCode(page, markedDraft)
+
+  const draftStatus = page.getByTestId('draft-status')
+  await expect.poll(async () => {
+    const text = await draftStatus.innerText().catch(() => '')
+    return /Salvo|Saved/i.test(text)
+  }, {
+    timeout: 12_000,
+    message: 'Exercise draft was not acknowledged as saved before reload',
+  }).toBe(true)
+
   await page.reload({ waitUntil: 'domcontentloaded' })
   await assertAppMainVisible(page)
-  const restored = await readEditorCode(page)
-  expect(restored.trim(), 'Exercise draft did not survive reload').toBe(original.trim())
+
+  await expect.poll(async () => await readEditorCode(page), {
+    timeout: 15_000,
+    message: 'Exercise draft did not survive reload',
+  }).toContain(draftMarker)
+
+  // Restore the original draft so the audit account does not accumulate markers.
+  await replaceEditorCode(page, original)
+  await expect.poll(async () => {
+    const text = await draftStatus.innerText().catch(() => '')
+    return /Salvo|Saved/i.test(text)
+  }, {
+    timeout: 12_000,
+    message: 'Exercise draft cleanup was not saved',
+  }).toBe(true)
 }
 
 async function examDiagnostics(page: Page, phaseId: number) {

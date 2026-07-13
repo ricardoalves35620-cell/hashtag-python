@@ -8,7 +8,7 @@ type Severity = 'error' | 'warning'
 interface Issue { fingerprint: string; severity: Severity; phaseId: number; location: string; message: string; sample?: string }
 
 const ptWords = /\b(erro|corre[cç][aã]o|sempre|nunca|contador|condi[cç][aã]o|linha|idade|dano|processar|solicita[cç][oõ]es|estoque|restante|imprime|enquanto)\b/i
-const enWords = /\b(error|mistake|fix|always|never|counter|condition|line|age|damage|process|claims|stock|remaining|prints|while)\b/i
+const enWords = /\b(error|mistake|fix|always|never|counter|condition|process|claims|remaining|prints|should|inside|outside|caller|returned|scattered)\b/i
 const translatedPython = /\b(Mostre|Imprima|Enquanto|Senao|Senão|Verdadeiro|Falso)\s*\(/i
 const obviousEnglishComment = /\b(each|inner|claim|row|forgetting|update|counter|always|never|process|pending|should|specific|highest|condition|reached|using|instead|inside|outside|remaining|payout)\b/i
 const obviousPortugueseComment = /\b(cada|interna|sinistro|linha|esquecer|atualizar|contador|sempre|nunca|processar|pendente|deve|específica|maior|condição|alcançado|usando|dentro|fora|restante|pagamento)\b/i

@@ -12,18 +12,20 @@ describe('deep overnight auditor integrity', () => {
     expect(spec).toContain('shuffled quiz with correct answers')
     expect(spec).toContain('exam execution and pedagogical feedback')
     expect(spec).toContain('runExerciseAndWait')
-    expect(spec).toContain('findExactQuizOption')
+    expect(spec).toContain('findQuizOptionByOriginalIndex')
   })
 
-  it('keeps per-cycle status and estimates remaining runtime', () => {
+  it('keeps per-cycle status, full environment coverage and runtime estimates', () => {
     expect(autopilot).toContain('HP_AUDIT_CYCLE')
     expect(autopilot).toContain('HP_AUDIT_LIVE_STATUS')
+    expect(autopilot).toContain('AUDIT_ENVIRONMENTS')
     expect(autopilot).toContain('estimated ${etaMinutes} min remaining')
   })
 
   it('defaults to a multi-pass overnight run and keeps Windows awake', () => {
-    expect(runner).toContain('DefaultValue 414')
+    expect(runner).toContain('DefaultValue 828')
     expect(runner).toContain('SetThreadExecutionState')
     expect(runner).toContain('hashtag-python-audit-report.zip')
+    expect(runner).toContain('tar.exe')
   })
 })

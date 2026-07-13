@@ -12,3 +12,6 @@ Thumbs.db
 coverage/
 playwright-report/
 test-results/
+
+# Local auditor credentials (never commit)
+.env.audit.local

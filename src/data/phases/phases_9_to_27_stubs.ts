@@ -323,18 +323,32 @@ print(claim["status"])   # approved`
       { type: 'heading', content: { en: '🐍 Step 2 — add, update, delete', pt: '🐍 Passo 2 — adicionar, atualizar, deletar' } },
       {
         type: 'code',
-        code: `claim = {"id": 2501, "damage": 5230}
+        code: {
+          en: `claim = {"id": 2501, "damage": 5230}
 
 # Add a new key
 claim["deductible"] = 250
 
-# Update existing key
+# Update an existing key
 claim["damage"] = 5500
 
 # Delete a key
 del claim["deductible"]
 
-print(claim)   # {"id": 2501, "damage": 5500}`
+print(claim)   # {"id": 2501, "damage": 5500}`,
+          pt: `sinistro = {"id": 2501, "dano": 5230}
+
+# Adicione uma nova chave
+sinistro["franquia"] = 250
+
+# Atualize uma chave existente
+sinistro["dano"] = 5500
+
+# Exclua uma chave
+del sinistro["franquia"]
+
+print(sinistro)   # {"id": 2501, "dano": 5500}`
+        }
       },
       { type: 'heading', content: { en: '🐍 Step 3 — loop through a dictionary', pt: '🐍 Passo 3 — percorra um dicionário' } },
       {
@@ -961,16 +975,28 @@ greet("Carlos")   # Hello, Carlos`
       { type: 'heading', content: { en: '🐍 Step 3 — return a value', pt: '🐍 Passo 3 — retorne um valor' } },
       {
         type: 'code',
-        code: `def calculate_payout(damage, deductible):
+        code: {
+          en: `def calculate_payout(damage, deductible):
     payout = damage - deductible
-    return payout            # sends value back to caller
+    return payout            # sends the value back to the caller
 
-# Use the returned value:
+# Store and use the returned value:
 result = calculate_payout(5230, 250)
 print("Payout:", result)     # Payout: 4980
 
-# Or use directly:
-print(calculate_payout(8000, 300))   # 7700`
+# Or use the returned value directly:
+print(calculate_payout(8000, 300))   # 7700`,
+          pt: `def calcular_pagamento(dano, franquia):
+    pagamento = dano - franquia
+    return pagamento         # devolve o valor para quem chamou a função
+
+# Armazene e use o valor retornado:
+resultado = calcular_pagamento(5230, 250)
+print("Pagamento:", resultado)     # Pagamento: 4980
+
+# Ou use diretamente o valor retornado:
+print(calcular_pagamento(8000, 300))   # 7700`
+        }
       },
       {
         type: 'tip',
@@ -2858,12 +2884,20 @@ export const phase25: Phase = {
         pt: 'WhatsApp: Criar mensagem, Ler chat, Atualizar status, Deletar mensagem.\nNetflix: Criar conta, Ler biblioteca, Atualizar lista, Deletar histórico.\n\nCRUD = as 4 operações por trás de todo app já construído.'
       }},
       { type: 'heading', content: { en: '🆚 Messy vs Structured', pt: '🆚 Bagunçado vs Estruturado' } },
-      { type: 'code', code: `# ❌ MESSY: scattered data manipulation
+      { type: 'code', code: {
+        en: `# ❌ MESSY: scattered data manipulation
 claims = []
 claims.append({"id": 1, "client": "Alice"})   # create
 print(claims[0])                                # read
 claims[0]["client"] = "Alicia"                  # update
-claims.pop(0)                                   # delete` },
+claims.pop(0)                                   # delete`,
+        pt: `# ❌ BAGUNÇADO: manipulação de dados espalhada
+sinistros = []
+sinistros.append({"id": 1, "cliente": "Alice"})   # criar
+print(sinistros[0])                                # ler
+sinistros[0]["cliente"] = "Alicia"                  # atualizar
+sinistros.pop(0)                                     # excluir`
+      } },
       { type: 'code', code: `# ✅ CLEAN: named CRUD functions
 def create(db, client, damage):
     db.append({"id": len(db)+1, "client": client, "damage": damage})

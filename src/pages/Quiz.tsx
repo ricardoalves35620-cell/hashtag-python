@@ -149,7 +149,7 @@ export default function Quiz() {
         </div>
 
         <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
-          <p data-testid="quiz-question" className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{question.question[lang]}</p>
+          <p data-testid="quiz-question" data-question-id={question.id} className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{question.question[lang]}</p>
         </div>
 
         <div className="space-y-2">
@@ -167,7 +167,7 @@ export default function Quiz() {
               else opacity = 0.5
             }
             return (
-              <button data-testid="quiz-option" key={originalIndex} onClick={() => handleSelect(originalIndex)} disabled={isAnswered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color, opacity }}>
+              <button data-testid="quiz-option" data-option-index={originalIndex} key={originalIndex} onClick={() => handleSelect(originalIndex)} disabled={isAnswered} className="w-full text-left rounded-xl px-4 py-3 text-sm" style={{ background, border: `1px solid ${border}`, color, opacity }}>
                 <span className="font-mono text-xs mr-3 opacity-60">{String.fromCharCode(65 + displayIndex)}.</span>
                 <span className="whitespace-pre-line">{conciseAssessmentOption(option[lang])}</span>
               </button>

@@ -49,7 +49,10 @@ export default function Exercises() {
   const [validationChecks, setValidationChecks] = useState<Record<string, ValidationItem[]>>({})
   const [attempts, setAttempts] = useState<Record<string, AttemptView[]>>({})
   const [draftStatus, setDraftStatus] = useState<'loading' | 'saved' | 'local' | 'idle'>('loading')
+  const [hydratedDraftKey, setHydratedDraftKey] = useState<string | null>(null)
   const saveTimer = useRef<number | null>(null)
+  const draftLoadToken = useRef(0)
+  const lastEditAt = useRef(0)
 
   if (!phase || phase.exercises.length === 0) {
     return <Layout showBack backTo={`/phase/${phase?.id}`} title={lang === 'en' ? 'Exercises' : 'Exercícios'}><div className="page-shell"><Alert variant="info">{lang === 'en' ? 'Exercises for this phase are being prepared.' : 'Os exercícios desta fase estão sendo preparados.'}</Alert></div></Layout>
@@ -65,35 +68,75 @@ export default function Exercises() {
 
   useEffect(() => {
     let cancelled = false
+    const token = ++draftLoadToken.current
+    const loadStartedAt = Date.now()
+
     const load = async () => {
-      if (!learnerId) { setDraftStatus('idle'); return }
+      setHydratedDraftKey(null)
+
+      if (!learnerId) {
+        setDraftStatus('idle')
+        return
+      }
+
       setDraftStatus('loading')
       const local = loadLocalDraft(learnerId, phase.id, exercise.id)
-      const remote = user ? await fetchRemoteDraft(user.id, phase.id, exercise.id) : null
-      const chosen = chooseNewestDraft(local, remote)
-      if (cancelled) return
-      if (chosen) {
-        setCodes(previous => ({ ...previous, [exercise.id]: chosen.code }))
-        setCustomInputs(previous => ({ ...previous, [exercise.id]: chosen.inputs }))
+
+      // Restore the local copy immediately. This prevents a slow network request
+      // from leaving the editor on starter code or overwriting a new edit.
+      if (local) {
+        setCodes(previous => ({ ...previous, [exercise.id]: local.code }))
+        setCustomInputs(previous => ({ ...previous, [exercise.id]: local.inputs }))
+        setDraftStatus('local')
       }
-      setDraftStatus(chosen ? (user ? 'saved' : 'local') : 'idle')
+
+      const remote = user ? await fetchRemoteDraft(user.id, phase.id, exercise.id) : null
+      if (cancelled || token !== draftLoadToken.current) return
+
+      // Only apply the cloud copy when the learner has not typed since loading
+      // started. User input always wins over a late network response.
+      if (lastEditAt.current <= loadStartedAt) {
+        const chosen = chooseNewestDraft(local, remote)
+        if (chosen) {
+          setCodes(previous => ({ ...previous, [exercise.id]: chosen.code }))
+          setCustomInputs(previous => ({ ...previous, [exercise.id]: chosen.inputs }))
+        }
+        setDraftStatus(chosen ? (user ? 'saved' : 'local') : 'idle')
+      }
+
+      setHydratedDraftKey(draftKey)
     }
-    load()
+
+    void load()
     return () => { cancelled = true }
   }, [draftKey, learnerId, phase.id, exercise.id, user])
 
   useEffect(() => {
-    if (!learnerId) return
+    if (!learnerId || hydratedDraftKey !== draftKey) return
+
+    const draft = {
+      code: codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang),
+      inputs: customInputs[exercise.id] || '',
+      updatedAt: new Date().toISOString(),
+    }
+
+    // Local persistence is synchronous and immediate. A refresh or tab close
+    // right after typing must not lose work.
+    saveLocalDraft(learnerId, phase.id, exercise.id, draft)
+    setDraftStatus('local')
+
     if (saveTimer.current) window.clearTimeout(saveTimer.current)
-    setDraftStatus('idle')
-    saveTimer.current = window.setTimeout(() => {
-      const draft = { code: codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang), inputs: customInputs[exercise.id] || '', updatedAt: new Date().toISOString() }
-      saveLocalDraft(learnerId, phase.id, exercise.id, draft)
-      setDraftStatus(user ? 'saved' : 'local')
-      if (user) void saveRemoteDraft(user.id, phase.id, exercise.id, draft)
-    }, 650)
-    return () => { if (saveTimer.current) window.clearTimeout(saveTimer.current) }
-  }, [codes, customInputs, learnerId, phase.id, exercise.id, user])
+    if (user) {
+      saveTimer.current = window.setTimeout(async () => {
+        const synced = await saveRemoteDraft(user.id, phase.id, exercise.id, draft)
+        setDraftStatus(synced ? 'saved' : 'local')
+      }, 650)
+    }
+
+    return () => {
+      if (saveTimer.current) window.clearTimeout(saveTimer.current)
+    }
+  }, [codes, customInputs, learnerId, phase.id, exercise.id, user, hydratedDraftKey, draftKey, lang])
 
   const t = useMemo(() => ({
     en: {
@@ -196,24 +239,52 @@ export default function Exercises() {
         <Card padding="md">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div><h2 className="text-lg font-semibold text-ink">{exercise.title[lang]}</h2><p className="mt-1 text-sm leading-6 text-ink-secondary">{exercise.description[lang]}</p></div>
-            <Badge variant={draftStatus === 'saved' ? 'success' : 'neutral'}>{draftStatus === 'saved' ? `✓ ${t.saved}` : draftStatus === 'local' ? `✓ ${t.local}` : t.ready}</Badge>
+            <Badge data-testid="draft-status" variant={draftStatus === 'saved' ? 'success' : 'neutral'}>{draftStatus === 'saved' ? `✓ ${t.saved}` : draftStatus === 'local' ? `✓ ${t.local}` : t.ready}</Badge>
           </div>
           {exercise.sampleOutput && <div className="mt-3 rounded-lg border border-line bg-raised p-3"><div className="mb-1 text-xs text-muted">{t.sampleOutput}</div><pre className="whitespace-pre-wrap font-mono text-sm text-success-text">{exercise.sampleOutput[lang]}</pre></div>}
         </Card>
 
         <VSCodeEditor
           value={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)}
-          onChange={value => { setCodes(previous => ({ ...previous, [exercise.id]: value })); clearResult() }}
+          onChange={value => {
+            lastEditAt.current = Date.now()
+            setCodes(previous => ({ ...previous, [exercise.id]: value }))
+            if (learnerId) {
+              saveLocalDraft(learnerId, phase.id, exercise.id, {
+                code: value,
+                inputs: customInputs[exercise.id] || '',
+                updatedAt: new Date().toISOString(),
+              })
+              setDraftStatus('local')
+            }
+            clearResult()
+          }}
           filename={`exercise_${activeEx + 1}.py`} height="clamp(280px, 48vh, 520px)" label={lang === 'en' ? 'editable' : 'editável'}
         />
 
-        <div><TestInputEditor code={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)} value={customInputs[exercise.id] || ''} onChange={value => { setCustomInputs(previous => ({ ...previous, [exercise.id]: value })); clearResult() }} lang={lang} /></div>
+        <div><TestInputEditor code={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)} value={customInputs[exercise.id] || ''} onChange={value => {
+            lastEditAt.current = Date.now()
+            setCustomInputs(previous => ({ ...previous, [exercise.id]: value }))
+            if (learnerId) {
+              saveLocalDraft(learnerId, phase.id, exercise.id, {
+                code: codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang),
+                inputs: value,
+                updatedAt: new Date().toISOString(),
+              })
+              setDraftStatus('local')
+            }
+            clearResult()
+          }} lang={lang} /></div>
 
         <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
           <Button data-testid="exercise-run-button" fullWidth size="lg" loading={running || pyodideLoading} onClick={handleRun} leftIcon="▶">
             {pyodideLoading ? t.loading : running ? t.running : t.run}
           </Button>
-          <Button variant="secondary" size="lg" onClick={() => { setCodes(previous => ({ ...previous, [exercise.id]: exercise.starterCode })); clearResult() }}>{t.reset}</Button>
+          <Button variant="secondary" size="lg" onClick={() => {
+            lastEditAt.current = Date.now()
+            setCodes(previous => ({ ...previous, [exercise.id]: resolveLocalizedCode(exercise.starterCode, lang) }))
+            clearResult()
+          }}>{t.reset}</Button>
         </div>
 
         <div data-testid="exercise-feedback">{checks.length > 0 && <Progress value={passedChecks} max={checks.length} label={t.progress} showValue tone={currentValidated ? 'success' : 'warning'} />}
