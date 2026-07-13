@@ -21,8 +21,6 @@ describe('Learning Engine V2.6 foundation completion', () => {
     for (let phaseId = 0; phaseId <= 27; phaseId += 1) {
       expect(isLearningEngineV2Migrated(phaseId)).toBe(true)
     }
-
-    expect(isLearningEngineV2Migrated(28)).toBe(false)
   })
 
   it('gives phases 13–27 a concept-specific mental model', () => {

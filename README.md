@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 10.6.0 — Learning Engine V2.6: fundamentos completos com raciocínio específico.**
+**Versão atual: 10.7.0 — Learning Engine V2.7: Python profissional com raciocínio específico.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -109,6 +109,14 @@ As fases 0–27 da trilha de fundamentos agora possuem roteiros pedagógicos esc
 A progressão normal foi preservada: não existe atalho de proprietário ou administrador para abrir fases bloqueadas. A auditoria integral continua sendo responsabilidade dos agentes automatizados.
 
 Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.6.md`.
+
+## Learning Engine V2.7
+
+As fases 28–39 da trilha Python profissional agora possuem roteiros pedagógicos escritos individualmente. O aluno aprende por que projetos são divididos, como ambientes e imports funcionam, como uma CLI se torna uma fronteira, como Git registra intenção, como testes produzem evidência e como tipos, logging, depuração e composição sustentam software modificável.
+
+A progressão normal continua preservada. Não há desbloqueio de proprietário; os agentes automatizados auditam o conteúdo ainda bloqueado para o aluno.
+
+Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.7.md`.
 
 ## Requisitos
 
