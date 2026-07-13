@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import Layout from '../components/Layout'
 import LessonBlock from '../components/LessonBlock'
@@ -11,6 +11,7 @@ import {
   loadLessonReflection,
   saveLessonReflection,
 } from '../lib/pedagogicalJourney'
+import { loadJournalPreferences, loadJourneyProgress, markJourneyUnitVisited, saveJournalEntry } from '../lib/learningJournal'
 
 export default function Lesson() {
   const { id } = useParams()
@@ -21,6 +22,9 @@ export default function Lesson() {
   const requestedUnit = Number(searchParams.get('unit') || '0')
   const [reflection, setReflection] = useState('')
   const [validationMessage, setValidationMessage] = useState('')
+  const [visitedUnits, setVisitedUnits] = useState<string[]>([])
+  const [journalVisible, setJournalVisible] = useState(() => loadJournalPreferences().showJournal)
+  const titleRef = useRef<HTMLHeadingElement>(null)
 
   const journey = useMemo(() => phase ? getPedagogicalJourney(phase) : [], [phase])
   const unitIndex = Math.min(Math.max(Number.isFinite(requestedUnit) ? requestedUnit : 0, 0), Math.max(journey.length - 1, 0))
@@ -32,6 +36,8 @@ export default function Lesson() {
       return
     }
     setReflection(loadLessonReflection(learnerId, phase.id, unit.id))
+    setVisitedUnits(markJourneyUnitVisited(learnerId, phase.id, unit.id))
+    setJournalVisible(loadJournalPreferences().showJournal)
     setValidationMessage('')
   }, [learnerId, phase, unit])
 
@@ -39,7 +45,11 @@ export default function Lesson() {
 
   const goToUnit = (next: number) => {
     setSearchParams({ unit: String(next) })
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'auto' })
+      document.scrollingElement?.scrollTo({ top: 0, behavior: 'auto' })
+      setTimeout(() => titleRef.current?.focus({ preventScroll: true }), 0)
+    })
   }
 
   const persistReflection = (value: string) => {
@@ -47,20 +57,16 @@ export default function Lesson() {
     if (learnerId) saveLessonReflection(learnerId, phase.id, unit.id, value)
   }
 
-  const validateReflection = () => {
-    const normalized = reflection.trim()
-    if (normalized.length < 12) {
-      setValidationMessage(lang === 'pt'
-        ? 'Explique com pelo menos uma frase completa. A resposta é para organizar seu raciocínio, não para dar nota.'
-        : 'Explain with at least one complete sentence. This response organizes your reasoning; it is not graded.')
-      return false
-    }
-    setValidationMessage('')
-    return true
+  const syncOptionalReflection = () => {
+    if (!learnerId || !reflection.trim()) return
+    void saveJournalEntry({
+      userId: learnerId, phaseId: phase.id, unitId: unit.id,
+      prompt: unit.checkpoint[lang], response: reflection, language: lang,
+    })
   }
 
   const handleNext = async () => {
-    if (!validateReflection()) return
+    syncOptionalReflection()
     if (unitIndex < journey.length - 1) {
       goToUnit(unitIndex + 1)
       return
@@ -75,16 +81,18 @@ export default function Lesson() {
     en: {
       of: 'Phase', journey: 'Learning journey', previous: 'Previous lesson', next: 'Next lesson',
       complete: 'Complete learning journey →', checkpoint: 'Reasoning checkpoint',
-      saved: 'Saved on this device', lesson: 'learning step', lessons: 'learning steps',
+      saved: 'Optional — saved on this device', lesson: 'learning step', lessons: 'learning steps',
+      optional: 'Optional Programmer Journal', skip: 'Skip for now', completed: 'journey completed',
     },
     pt: {
       of: 'Fase', journey: 'Jornada de aprendizagem', previous: 'Aula anterior', next: 'Próxima aula',
       complete: 'Concluir jornada de aprendizagem →', checkpoint: 'Parada de raciocínio',
-      saved: 'Salvo neste aparelho', lesson: 'etapa de aprendizagem', lessons: 'etapas de aprendizagem',
+      saved: 'Opcional — salvo neste aparelho', lesson: 'etapa de aprendizagem', lessons: 'etapas de aprendizagem',
+      optional: 'Diário do Programador — opcional', skip: 'Pular por agora', completed: 'da jornada concluída',
     },
   }[lang]
 
-  const progressPercent = Math.round(((unitIndex + 1) / journey.length) * 100)
+  const progressPercent = Math.round((visitedUnits.length / journey.length) * 100)
 
   return (
     <Layout
@@ -101,12 +109,13 @@ export default function Lesson() {
               <div className="text-xs mb-1" style={{ color: 'var(--c-muted)' }}>
                 {unitIndex + 1}/{journey.length} {journey.length === 1 ? t.lesson : t.lessons}
               </div>
-              <h1 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{unit.title[lang]}</h1>
+              <h1 ref={titleRef} tabIndex={-1} className="text-lg font-semibold outline-none" style={{ color: 'var(--c-text)' }}>{unit.title[lang]}</h1>
               <p className="text-sm mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{unit.purpose[lang]}</p>
             </div>
             <GlossaryPanel lang={lang} />
           </div>
-          <div className="mt-4 h-2 rounded-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
+          <div className="flex justify-between gap-3 mt-4 text-xs" style={{ color: 'var(--c-muted)' }}><span>{visitedUnits.length}/{journey.length}</span><span>{progressPercent}% {t.completed}</span></div>
+          <div className="mt-2 h-2 rounded-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
             <div className="h-full rounded-full transition-all" style={{ width: `${progressPercent}%`, background: 'var(--c-purple)' }} />
           </div>
           <div className="grid gap-1 mt-3" style={{ gridTemplateColumns: `repeat(${Math.min(journey.length, 5)}, minmax(0, 1fr))` }} aria-label={t.journey}>
@@ -135,8 +144,8 @@ export default function Lesson() {
           {unit.blocks.map((block, index) => <LessonBlock key={`${unit.id}-${index}`} block={block} lang={lang} />)}
         </div>
 
-        <section className="rounded-xl p-4" style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}>
-          <div className="text-sm font-semibold mb-2" style={{ color: 'var(--c-purple-l)' }}>{t.checkpoint}</div>
+        {journalVisible && <section className="rounded-xl p-4" style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}>
+          <div className="flex items-center justify-between gap-3 mb-2"><div className="text-sm font-semibold" style={{ color: 'var(--c-purple-l)' }}>{t.optional}</div><button type="button" onClick={() => setJournalVisible(false)} className="text-xs underline" style={{ color: 'var(--c-muted)' }}>{t.skip}</button></div>
           <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--c-text2)' }}>{unit.checkpoint[lang]}</p>
           <textarea
             value={reflection}
@@ -151,7 +160,7 @@ export default function Lesson() {
             <span>{validationMessage || t.saved}</span>
             <span>{reflection.trim().length}</span>
           </div>
-        </section>
+        </section>}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
           <button
