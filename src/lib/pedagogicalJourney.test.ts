@@ -3,13 +3,14 @@ import { ALL_PHASES } from '../data/phases'
 import { getPedagogicalJourney } from './pedagogicalJourney'
 
 describe('multi-lesson pedagogy for every phase', () => {
-  it('gives all 69 phases a six-lesson reasoning journey', () => {
+  it('gives all 69 phases a ten-step reasoning-first journey', () => {
     expect(ALL_PHASES).toHaveLength(69)
     for (const phase of ALL_PHASES) {
       const journey = getPedagogicalJourney(phase)
-      expect(journey).toHaveLength(6)
+      expect(journey).toHaveLength(10)
       expect(journey.map(unit => unit.kind)).toEqual([
-        'intuition', 'logic', 'python', 'debug', 'practice', 'mastery',
+        'challenge', 'intuition', 'decomposition', 'flow', 'pseudocode',
+        'python', 'walkthrough', 'debug', 'practice', 'transfer',
       ])
       expect(journey.every(unit => unit.blocks.length >= 2)).toBe(true)
       expect(journey.every(unit => unit.checkpoint.en.length > 20 && unit.checkpoint.pt.length > 20)).toBe(true)

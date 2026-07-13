@@ -75,12 +75,12 @@ export default function Lesson() {
     en: {
       of: 'Phase', journey: 'Learning journey', previous: 'Previous lesson', next: 'Next lesson',
       complete: 'Complete learning journey →', checkpoint: 'Reasoning checkpoint',
-      saved: 'Saved on this device', lesson: 'lesson', lessons: 'lessons',
+      saved: 'Saved on this device', lesson: 'learning step', lessons: 'learning steps',
     },
     pt: {
       of: 'Fase', journey: 'Jornada de aprendizagem', previous: 'Aula anterior', next: 'Próxima aula',
       complete: 'Concluir jornada de aprendizagem →', checkpoint: 'Parada de raciocínio',
-      saved: 'Salvo neste aparelho', lesson: 'aula', lessons: 'aulas',
+      saved: 'Salvo neste aparelho', lesson: 'etapa de aprendizagem', lessons: 'etapas de aprendizagem',
     },
   }[lang]
 
@@ -109,7 +109,7 @@ export default function Lesson() {
           <div className="mt-4 h-2 rounded-full overflow-hidden" style={{ background: 'var(--c-bg)' }}>
             <div className="h-full rounded-full transition-all" style={{ width: `${progressPercent}%`, background: 'var(--c-purple)' }} />
           </div>
-          <div className="grid grid-cols-6 gap-1 mt-3" aria-label={t.journey}>
+          <div className="grid gap-1 mt-3" style={{ gridTemplateColumns: `repeat(${Math.min(journey.length, 5)}, minmax(0, 1fr))` }} aria-label={t.journey}>
             {journey.map((item, index) => (
               <button
                 key={item.id}
