@@ -207,8 +207,14 @@ function translateCommentToPt(comment: string): string {
   const exact = exactPt[core]
   if (exact) return `${leading}${exact}${trailing}`
 
-  let translated = core
+  const protectedTokens: string[] = []
+  const protectPattern = /\b(?:print|input|int|float|str|bool|if|elif|else|for|while|return|break|continue|range|len|sum|min|max|append|True|False)\b(?:\(\))?/gi
+  let translated = core.replace(protectPattern, token => {
+    protectedTokens.push(token)
+    return `__PY_TOKEN_${protectedTokens.length - 1}__`
+  })
   for (const [pattern, replacement] of phraseRules) translated = translated.replace(pattern, replacement)
+  translated = translated.replace(/__PY_TOKEN_(\d+)__/g, (_, index) => protectedTokens[Number(index)] || '')
   return `${leading}${translated}${trailing}`
 }
 

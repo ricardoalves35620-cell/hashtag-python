@@ -37,24 +37,40 @@ export const phase9: Phase = {
       { type: 'heading', content: { en: '🐍 Step 1 — a list inside a list', pt: '🐍 Passo 1 — uma lista dentro de uma lista' } },
       {
         type: 'code',
-        code: `# Each inner list = one claim row
+        code: {
+          en: `# Each inner list represents one claim row
 claim1 = ["Alice",  5230, "approved"]
 claim2 = ["Bob",    1200, "pending"]
 claim3 = ["Carlos", 8000, "approved"]
 
-# The outer list holds all claims
+# The outer list stores all claims
 claims = [claim1, claim2, claim3]
 
 # Access: claims[row][column]
 print(claims[0])       # ['Alice', 5230, 'approved']
 print(claims[0][0])    # Alice  (row 0, column 0)
 print(claims[0][1])    # 5230   (row 0, column 1)
-print(claims[2][2])    # approved`
+print(claims[2][2])    # approved`,
+          pt: `# Cada lista interna representa uma linha de sinistro
+sinistro1 = ["Alice",  5230, "aprovado"]
+sinistro2 = ["Bob",    1200, "pendente"]
+sinistro3 = ["Carlos", 8000, "aprovado"]
+
+# A lista externa armazena todos os sinistros
+sinistros = [sinistro1, sinistro2, sinistro3]
+
+# Acesso: sinistros[linha][coluna]
+print(sinistros[0])       # ['Alice', 5230, 'aprovado']
+print(sinistros[0][0])    # Alice  (linha 0, coluna 0)
+print(sinistros[0][1])    # 5230   (linha 0, coluna 1)
+print(sinistros[2][2])    # aprovado`,
+        }
       },
       { type: 'heading', content: { en: '🐍 Step 2 — loop through nested list', pt: '🐍 Passo 2 — percorra a lista aninhada' } },
       {
         type: 'code',
-        code: `claims = [
+        code: {
+          en: `claims = [
     ["Alice",  5230, "approved"],
     ["Bob",    1200, "pending"],
     ["Carlos", 8000, "approved"]
@@ -64,12 +80,25 @@ for claim in claims:
     name   = claim[0]
     amount = claim[1]
     status = claim[2]
-    print(name, "→ $", amount, "→", status)`
+    print(name, "→ $", amount, "→", status)`,
+          pt: `sinistros = [
+    ["Alice",  5230, "aprovado"],
+    ["Bob",    1200, "pendente"],
+    ["Carlos", 8000, "aprovado"]
+]
+
+for sinistro in sinistros:
+    nome   = sinistro[0]
+    valor  = sinistro[1]
+    status = sinistro[2]
+    print(nome, "→ R$", valor, "→", status)`,
+        }
       },
       { type: 'heading', content: { en: '🐍 Step 3 — calculate from nested data', pt: '🐍 Passo 3 — calcule com dados aninhados' } },
       {
         type: 'code',
-        code: `claims = [
+        code: {
+          en: `claims = [
     ["Alice",  5230, "approved"],
     ["Bob",    1200, "pending"],
     ["Carlos", 8000, "approved"]
@@ -77,10 +106,23 @@ for claim in claims:
 
 total = 0
 for claim in claims:
-    if claim[2] == "approved":      # only count approved
+    if claim[2] == "approved":      # count approved claims only
         total += claim[1]
 
-print("Total approved payout:", total)  # 13230`
+print("Total approved payout:", total)  # 13230`,
+          pt: `sinistros = [
+    ["Alice",  5230, "aprovado"],
+    ["Bob",    1200, "pendente"],
+    ["Carlos", 8000, "aprovado"]
+]
+
+total = 0
+for sinistro in sinistros:
+    if sinistro[2] == "aprovado":      # some apenas os sinistros aprovados
+        total += sinistro[1]
+
+print("Total de pagamentos aprovados:", total)  # 13230`,
+        }
       },
       {
         type: 'tip',

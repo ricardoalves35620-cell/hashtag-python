@@ -23,7 +23,7 @@ function parseArgs(): Args {
 }
 
 function run(command: string, args: string[], env: NodeJS.ProcessEnv) {
-  const result = spawnSync(command, args, { stdio: 'inherit', shell: process.platform === 'win32', env })
+  const result = spawnSync(command, args, { stdio: 'inherit', shell: false, env })
   return result.status ?? 1
 }
 
@@ -37,6 +37,21 @@ function hash(value: string) {
   return (h >>> 0).toString(16)
 }
 
+function stripAnsi(value: string) {
+  return value.replace(/\u001b\[[0-9;]*m/g, '')
+}
+
+function normalizeFailureSignature(title: string, message: string) {
+  const normalizedTitle = title.replace(/phase\s+\d+/gi, 'phase #')
+  const normalizedMessage = stripAnsi(message)
+    .replace(/[A-Z]:\\[^\n]+?app\.audit\.spec\.ts/gi, '<audit-file>')
+    .replace(/phase\s+\d+/gi, 'phase #')
+    .replace(/\b\d+ms\b/g, '<duration>')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return `${normalizedTitle}|${normalizedMessage}`
+}
+
 function playwrightIssues(payload: any, cycle: number): AggregatedIssue[] {
   const issues: AggregatedIssue[] = []
   const suites = payload?.suites || []
@@ -48,9 +63,9 @@ function playwrightIssues(payload: any, cycle: number): AggregatedIssue[] {
           for (const result of test.results || []) {
             if (result.status === 'passed' || result.status === 'skipped') continue
             const message = result.error?.message || result.status
-            const signature = `${nextTrail.join(' > ')}|${spec.title}|${message}`
+            const signature = normalizeFailureSignature(spec.title, message)
             const now = new Date().toISOString()
-            issues.push({ fingerprint: `visual-${hash(signature)}`, source: 'playwright', cycle, firstSeen: now, lastSeen: now, occurrences: 1, details: { title: spec.title, trail: nextTrail, status: result.status, message } })
+            issues.push({ fingerprint: `visual-${hash(signature)}`, source: 'playwright', cycle, firstSeen: now, lastSeen: now, occurrences: 1, details: { title: spec.title, affectedTests: [spec.title], trail: nextTrail, status: result.status, message: stripAnsi(message) } })
           }
         }
       }
@@ -82,9 +97,10 @@ if (args.fresh) fs.rmSync(reportDir, { recursive: true, force: true })
 fs.mkdirSync(reportDir, { recursive: true })
 const state = readJson(stateFile) || { startedAt: new Date().toISOString(), updatedAt: '', cursor: args.start, cycles: [], issues: {} }
 const started = Date.now()
-const deadline = started + args.minutes * 60_000
+const deadline = args.minutes > 0 ? started + args.minutes * 60_000 : Number.POSITIVE_INFINITY
 
-for (let cycle = 1; cycle <= args.cycles && Date.now() < deadline; cycle += 1) {
+for (let iteration = 1; iteration <= args.cycles && Date.now() < deadline; iteration += 1) {
+  const cycle = state.cycles.length + 1
   const cycleStart = Date.now()
   const phaseStart = state.cursor % 69
   const phaseCount = Math.min(args.batch, 69 - phaseStart)
@@ -110,7 +126,15 @@ for (let cycle = 1; cycle <= args.cycles && Date.now() < deadline; cycle += 1) {
   for (const issue of found) {
     const existing = state.issues[issue.fingerprint] as AggregatedIssue | undefined
     if (existing) {
-      existing.lastSeen = new Date().toISOString(); existing.occurrences += 1; knownIssues += 1
+      existing.lastSeen = new Date().toISOString()
+      existing.occurrences += 1
+      const currentDetails = existing.details as { affectedTests?: string[] }
+      const incomingDetails = issue.details as { title?: string }
+      if (incomingDetails.title) {
+        currentDetails.affectedTests ||= []
+        if (!currentDetails.affectedTests.includes(incomingDetails.title)) currentDetails.affectedTests.push(incomingDetails.title)
+      }
+      knownIssues += 1
     } else {
       state.issues[issue.fingerprint] = issue; newIssues += 1
     }

@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { ALL_PHASES } from '../src/data/phases/index'
 import type { Bilingual, LessonBlock, Phase } from '../src/data/types'
+import { resolveLocalizedCode } from '../src/lib/localization'
 
 type Severity = 'error' | 'warning'
 interface Issue { fingerprint: string; severity: Severity; phaseId: number; location: string; message: string; sample?: string }
@@ -9,6 +10,8 @@ interface Issue { fingerprint: string; severity: Severity; phaseId: number; loca
 const ptWords = /\b(erro|corre[cç][aã]o|sempre|nunca|contador|condi[cç][aã]o|linha|idade|dano|processar|solicita[cç][oõ]es|estoque|restante|imprime|enquanto)\b/i
 const enWords = /\b(error|mistake|fix|always|never|counter|condition|line|age|damage|process|claims|stock|remaining|prints|while)\b/i
 const translatedPython = /\b(Mostre|Imprima|Enquanto|Senao|Senão|Verdadeiro|Falso)\s*\(/i
+const obviousEnglishComment = /\b(each|inner|claim|row|forgetting|update|counter|always|never|process|pending|should|specific|highest|condition|reached|using|instead|inside|outside|remaining|payout)\b/i
+const obviousPortugueseComment = /\b(cada|interna|sinistro|linha|esquecer|atualizar|contador|sempre|nunca|processar|pendente|deve|específica|maior|condição|alcançado|usando|dentro|fora|restante|pagamento)\b/i
 
 function fingerprint(parts: string[]) {
   return parts.join('|').toLowerCase().replace(/\s+/g, ' ').slice(0, 500)
@@ -28,12 +31,30 @@ function auditBilingual(issues: Issue[], phase: Phase, value: Bilingual | undefi
 
 function auditCode(issues: Issue[], phase: Phase, block: LessonBlock, index: number) {
   if (!block.code) return
-  const entries = typeof block.code === 'string' ? [['shared', block.code] as const] : [['en', block.code.en] as const, ['pt', block.code.pt] as const]
-  for (const [lang, code] of entries) {
+
+  const rendered = [
+    ['en', resolveLocalizedCode(block.code, 'en')] as const,
+    ['pt', resolveLocalizedCode(block.code, 'pt')] as const,
+  ]
+
+  for (const [lang, code] of rendered) {
     if (translatedPython.test(code)) push(issues, { severity: 'error', phaseId: phase.id, location: `lesson.blocks[${index}].code.${lang}`, message: 'Python command appears translated and may be invalid', sample: code.match(translatedPython)?.[0] })
-    const comments = code.split(/\r?\n/).filter(line => line.trim().startsWith('#')).join('\n')
-    if (lang === 'pt' && enWords.test(comments) && ptWords.test(comments)) push(issues, { severity: 'warning', phaseId: phase.id, location: `lesson.blocks[${index}].code.pt`, message: 'Portuguese code comments contain mixed English', sample: comments.slice(0, 260) })
-    if (lang === 'en' && ptWords.test(comments) && enWords.test(comments)) push(issues, { severity: 'warning', phaseId: phase.id, location: `lesson.blocks[${index}].code.en`, message: 'English code comments contain mixed Portuguese', sample: comments.slice(0, 260) })
+
+    const comments = code
+      .split(/\r?\n/)
+      .map(line => {
+        const commentIndex = line.indexOf('#')
+        return commentIndex >= 0 ? line.slice(commentIndex + 1) : ''
+      })
+      .filter(Boolean)
+      .join('\n')
+
+    if (lang === 'pt' && obviousEnglishComment.test(comments)) {
+      push(issues, { severity: 'warning', phaseId: phase.id, location: `lesson.blocks[${index}].code.pt`, message: 'Portuguese code comments still contain English prose', sample: comments.slice(0, 300) })
+    }
+    if (lang === 'en' && obviousPortugueseComment.test(comments)) {
+      push(issues, { severity: 'warning', phaseId: phase.id, location: `lesson.blocks[${index}].code.en`, message: 'English code comments still contain Portuguese prose', sample: comments.slice(0, 300) })
+    }
   }
 }
 

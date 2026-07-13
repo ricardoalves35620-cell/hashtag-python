@@ -1678,7 +1678,8 @@ print(sum(damages))   # 13950 — sum all numbers
 print(max(damages))   # 8000 — biggest` },
 
       { type: 'heading', content: { en: '🐍 Step 2 — the for loop', pt: '🐍 Passo 2 — o for loop' } },
-      { type: 'code', code: `clients = ["Alice", "Bob", "Carlos"]
+      { type: 'code', code: {
+        en: `clients = ["Alice", "Bob", "Carlos"]
 
 # "for EACH name IN the list"
 for name in clients:
@@ -1692,7 +1693,23 @@ for name in clients:
 
 # range() generates number sequences to loop over:
 for i in range(3):        # 0, 1, 2
-    print("Attempt", i + 1)` },
+    print("Attempt", i + 1)`,
+        pt: `clientes = ["Alice", "Bob", "Carlos"]
+
+# "para CADA nome NA lista"
+for nome in clientes:
+    print("Olá,", nome)
+
+# A variável do laço (nome) recebe UM item por vez:
+# volta 1: nome = "Alice"
+# volta 2: nome = "Bob"
+# volta 3: nome = "Carlos"
+# a lista termina → o laço termina. Não precisa de contador!
+
+# range() gera sequências numéricas para percorrer:
+for i in range(3):        # 0, 1, 2
+    print("Tentativa", i + 1)`,
+      } },
 
       { type: 'heading', content: { en: '🐍 Step 3 — loop + filter + accumulate', pt: '🐍 Passo 3 — loop + filtro + acumular' } },
       { type: 'code', code: `damages = [1200, 4500, 8000, 250, 3100]
@@ -1710,7 +1727,8 @@ print(f"Total payout: \${total}")
 print(f"Big claims: {big_claims} of {len(damages)}")` },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claims dashboard', pt: '🏗️ Cenário Real 1: Dashboard de sinistros' } },
-      { type: 'code', code: `# Morning dashboard: process the overnight claim queue
+      { type: 'code', code: {
+        en: `# Morning dashboard: process the overnight claim queue
 damages = [5230, 1200, 8000, 450, 3100, 9200]
 total = 0
 critical = 0
@@ -1729,7 +1747,28 @@ print()
 print(f"Queue: {len(damages)} claims")
 print(f"Critical: {critical}")
 print(f"Total payout: \${total}")
-print(f"Average: \${total / len(damages):.2f}")` },
+print(f"Average: \${total / len(damages):.2f}")`,
+        pt: `# Dashboard matinal: processe a fila de sinistros da madrugada
+danos = [5230, 1200, 8000, 450, 3100, 9200]
+total = 0
+criticos = 0
+
+print("=== FILA DA MANHÃ ===")
+for dano in danos:
+    pagamento = dano - 250
+    total += pagamento
+    if dano > 8000:
+        criticos += 1
+        print(f"🔴 R\${dano} → CRÍTICO, encaminhando")
+    else:
+        print(f"🟢 R\${dano} → pagamento R\${pagamento}")
+
+print()
+print(f"Fila: {len(danos)} sinistros")
+print(f"Críticos: {criticos}")
+print(f"Pagamento total: R\${total}")
+print(f"Média: R\${total / len(danos):.2f}")`,
+      } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Multi-site inspection round', pt: '🏗️ Cenário Real 2: Ronda de inspeção multi-obra' } },
       { type: 'code', code: `# Friday inspection: visit every active site
@@ -1748,7 +1787,8 @@ for i in range(len(sites)):        # loop by INDEX to pair two lists
     print(f"{site}: {pct}% — {status}")` },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
-      { type: 'code', code: `items = ["a", "b", "c"]
+      { type: 'code', code: {
+        en: `items = ["a", "b", "c"]
 
 # ❌ MISTAKE 1: forgetting lists start at 0
 # print(items[3])       → IndexError! Positions are 0, 1, 2
@@ -1768,7 +1808,29 @@ print(total)             # 60 ✅
 # ❌ MISTAKE 3: modifying a list while looping over it
 # for item in items:
 #     items.remove(item)   → skips items unpredictably!
-# ✅ FIX: loop over a COPY: for item in items[:]` },
+# ✅ FIX: loop over a COPY: for item in items[:]`,
+        pt: `itens = ["a", "b", "c"]
+
+# ❌ ERRO 1: esquecer que os índices começam em 0
+# print(itens[3])       → IndexError! As posições são 0, 1 e 2
+# ✅ Último item: itens[2] ou itens[-1]
+print(itens[-1])          # c
+
+# ❌ ERRO 2: reiniciar o acumulador DENTRO do laço
+for x in [10, 20, 30]:
+    total = 0             # ← reinicia em cada volta! Sempre termina em 30
+    total += x
+# ✅ CORREÇÃO: inicialize ANTES do laço
+total = 0
+for x in [10, 20, 30]:
+    total += x
+print(total)              # 60 ✅
+
+# ❌ ERRO 3: modificar uma lista enquanto a percorre
+# for item in itens:
+#     itens.remove(item)   → pula itens de forma imprevisível!
+# ✅ CORREÇÃO: percorra uma CÓPIA: for item in itens[:]`,
+      } },
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: name the loop variable as the SINGULAR of the list.\nfor client in clients / for damage in damages / for site in sites\nYour code reads like English and bugs become obvious: "for damage in clients" instantly looks wrong.',
