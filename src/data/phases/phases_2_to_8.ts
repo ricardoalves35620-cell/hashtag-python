@@ -104,21 +104,42 @@ print("Cement bags possible:", materials // 50)   # floor division!
 print("Money left over: $", materials % 50)       # remainder!` },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
-      { type: 'code', code: `# ❌ MISTAKE 1: expecting / to give whole numbers
+      { type: 'code', code: {
+        en: `# ❌ MISTAKE 1: expecting / to return a whole number
 result = 10 / 2
-print(result)          # 5.0 — surprise! Division always gives float
+print(result)          # 5.0 — division with / always returns a float
 
 # ❌ MISTAKE 2: forgetting operator precedence
 average = 10 + 20 / 2
-print(average)         # 20.0 — WRONG! Only 20 was divided
-# ✅ FIX:
+print(average)         # 20.0 — only 20 was divided by 2
+
+# ✅ FIX: use parentheses to control the order
 average = (10 + 20) / 2
-print(average)         # 15.0 — correct
+print(average)         # 15.0
 
 # ❌ MISTAKE 3: using x for multiplication
-# print(5 x 3)         → SyntaxError! x is not an operator
-# ✅ FIX: always use *
-print(5 * 3)           # 15` },
+# print(5 x 3)         → SyntaxError! x is not a Python operator
+
+# ✅ FIX: use *
+print(5 * 3)           # 15`,
+        pt: `# ❌ ERRO 1: esperar que / retorne um número inteiro
+resultado = 10 / 2
+print(resultado)       # 5.0 — a divisão com / sempre retorna float
+
+# ❌ ERRO 2: esquecer a precedência dos operadores
+media = 10 + 20 / 2
+print(media)           # 20.0 — apenas 20 foi dividido por 2
+
+# ✅ CORREÇÃO: use parênteses para controlar a ordem
+media = (10 + 20) / 2
+print(media)           # 15.0
+
+# ❌ ERRO 3: usar x para multiplicar
+# print(5 x 3)         → SyntaxError! x não é um operador do Python
+
+# ✅ CORREÇÃO: use *
+print(5 * 3)           # 15`
+      } },
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: percentage cheat sheet\n• 80% of X → X * 0.80\n• X plus 10% → X * 1.10\n• X minus 25% → X * 0.75\nMemorize these three patterns — they appear in EVERY financial calculation.',
@@ -262,23 +283,42 @@ export const phase3: Phase = {
       }},
 
       { type: 'heading', content: { en: '🐍 Creating and using variables', pt: '🐍 Criando e usando variáveis' } },
-      { type: 'code', code: `# label = value
-client_name = "Alice Costa"    # str  (text, needs quotes)
-claim_amount = 5230             # int  (whole number)
-coverage_rate = 0.80            # float (decimal number)
-is_approved = True              # bool (True or False, capital first letter!)
+      { type: 'code', code: {
+        en: `# label = value
+client_name = "Alice Costa"    # str: text needs quotes
+claim_amount = 5230             # int: whole number
+coverage_rate = 0.80            # float: decimal number
+is_approved = True              # bool: True or False, with a capital first letter
 
-# Use them by name
+# Use variables by name
 print(client_name)              # Alice Costa
 print(claim_amount)             # 5230
 
-# Combine in calculations
+# Combine variables in calculations
 payout = claim_amount * coverage_rate
 print("Payout:", payout)        # Payout: 4184.0
 
-# Check any variable's type
+# Check the type of a variable
 print(type(client_name))        # <class 'str'>
-print(type(claim_amount))       # <class 'int'>` },
+print(type(claim_amount))       # <class 'int'>`,
+        pt: `# etiqueta = valor
+nome_cliente = "Alice Costa"   # str: texto precisa de aspas
+valor_sinistro = 5230           # int: número inteiro
+taxa_cobertura = 0.80           # float: número decimal
+aprovado = True                 # bool: True ou False, com inicial maiúscula
+
+# Use as variáveis pelo nome
+print(nome_cliente)             # Alice Costa
+print(valor_sinistro)           # 5230
+
+# Combine variáveis em cálculos
+indenizacao = valor_sinistro * taxa_cobertura
+print("Indenização:", indenizacao)  # Indenização: 4184.0
+
+# Consulte o tipo de uma variável
+print(type(nome_cliente))       # <class 'str'>
+print(type(valor_sinistro))     # <class 'int'>`
+      } },
 
       { type: 'heading', content: { en: '🐍 Deeper: updating, swapping, and building strings', pt: '🐍 Aprofundando: atualizar, trocar e montar strings' } },
       { type: 'code', code: `# Variables can be UPDATED anytime
@@ -345,23 +385,46 @@ print("Total spent this week: $", total_spent)
 # That's the superpower a calculator doesn't have.` },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
-      { type: 'code', code: `# ❌ MISTAKE 1: using a variable before creating it
+      { type: 'code', code: {
+        en: `# ❌ MISTAKE 1: using a variable before creating it
 # print(salary)        → NameError: name 'salary' is not defined
-# ✅ FIX: create first, use after
+
+# ✅ FIX: create the variable first, then use it
 salary = 5000
 print(salary)
 
 # ❌ MISTAKE 2: invalid variable names
-# 2client = "Ana"      → SyntaxError (can't start with number)
-# client-name = "Ana"  → SyntaxError (no hyphens)
-# client name = "Ana"  → SyntaxError (no spaces)
-# ✅ FIX: letters, numbers, underscore — start with letter
+# 2client = "Ana"      → SyntaxError: a name cannot start with a number
+# client-name = "Ana"  → SyntaxError: hyphens are not allowed
+# client name = "Ana"  → SyntaxError: spaces are not allowed
+
+# ✅ FIX: use letters, numbers and underscores; start with a letter
 client_name2 = "Ana"
 
 # ❌ MISTAKE 3: confusing = with ==
-# = STORES a value.  == COMPARES two values.
+# = stores a value; == compares two values
 x = 5           # store 5 in x
-print(x == 5)   # compare: is x equal to 5? → True` },
+print(x == 5)   # is x equal to 5? → True`,
+        pt: `# ❌ ERRO 1: usar uma variável antes de criá-la
+# print(salario)       → NameError: name 'salario' is not defined
+
+# ✅ CORREÇÃO: crie a variável antes de usá-la
+salario = 5000
+print(salario)
+
+# ❌ ERRO 2: nomes de variáveis inválidos
+# 2cliente = "Ana"     → SyntaxError: o nome não pode começar com número
+# nome-cliente = "Ana" → SyntaxError: hífens não são permitidos
+# nome cliente = "Ana" → SyntaxError: espaços não são permitidos
+
+# ✅ CORREÇÃO: use letras, números e sublinhados; comece com uma letra
+nome_cliente2 = "Ana"
+
+# ❌ ERRO 3: confundir = com ==
+# = armazena um valor; == compara dois valores
+x = 5           # armazena 5 em x
+print(x == 5)   # x é igual a 5? → True`
+      } },
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: name variables like you\'d explain them to a colleague.\n❌ x, a, temp, data2\n✅ client_name, total_payout, monthly_premium\nGood names make code self-documenting. 6 months from now, "x" tells you nothing.',
@@ -542,22 +605,40 @@ print(height * 100, "cm")
 # str(x)    → back to text     str(42) → "42"` },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claim intake form', pt: '🏗️ Cenário Real 1: Formulário de sinistro' } },
-      { type: 'code', code: `# Complete claim intake — mixing text and number inputs
+      { type: 'code', code: {
+        en: `# Complete claim intake: text and numeric inputs
 print("=== NEW CLAIM INTAKE ===")
 
-client   = input("Client name: ")               # text, no conversion
-phone    = input("Phone: ")                     # phone is TEXT (has dashes!)
-damage   = int(input("Damage amount: $"))       # number for math
-ded      = int(input("Deductible: $"))          # number for math
+client = input("Client name: ")                 # text; no conversion needed
+phone = input("Phone: ")                        # keep as text because it may contain dashes
+damage = int(input("Damage amount: $"))         # number used in calculations
+deductible = int(input("Deductible: $"))        # number used in calculations
 
-payout = damage - ded
+payout = damage - deductible
 
 print()
-print(f"=== CLAIM SUMMARY ===")
+print("=== CLAIM SUMMARY ===")
 print(f"Client: {client}")
-print(f"Phone:  {phone}")
+print(f"Phone: {phone}")
 print(f"Damage: {damage}")
-print(f"Payout: {payout}")` },
+print(f"Payout: {payout}")`,
+        pt: `# Cadastro completo do sinistro: entradas de texto e de número
+print("=== NOVO SINISTRO ===")
+
+cliente = input("Nome do cliente: ")             # texto; não precisa de conversão
+telefone = input("Telefone: ")                   # mantenha como texto, pois pode conter hífens
+dano = int(input("Valor do dano: $"))            # número usado em cálculos
+franquia = int(input("Franquia: $"))             # número usado em cálculos
+
+indenizacao = dano - franquia
+
+print()
+print("=== RESUMO DO SINISTRO ===")
+print(f"Cliente: {cliente}")
+print(f"Telefone: {telefone}")
+print(f"Dano: {dano}")
+print(f"Indenização: {indenizacao}")`
+      } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Construction estimate calculator', pt: '🏗️ Cenário Real 2: Calculadora de orçamento de obra' } },
       { type: 'code', code: `# Interactive area & cost estimator

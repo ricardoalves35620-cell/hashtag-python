@@ -9,6 +9,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$AuditorVersion = "7.3.0"
 Set-Location $PSScriptRoot
 
 function Read-PositiveInteger {
@@ -47,6 +48,7 @@ function Write-RunSummary {
 
   @(
     "Hashtag Python Auditor"
+    "Version: $AuditorVersion"
     "Status: $Status"
     "Started: $($StartedAt.ToString('s'))"
     "Finished: $($finishedAt.ToString('s'))"
@@ -111,7 +113,7 @@ try {
   if (-not $Continue) { $Fresh = $true }
 
   Write-Host "" 
-  Write-Host "Hashtag Python Auditor Autopilot" -ForegroundColor Cyan
+  Write-Host "Hashtag Python Auditor Autopilot v$AuditorVersion" -ForegroundColor Cyan
   Write-Host "Cycles: $Cycles | Phases per cycle: $Batch"
   if ($Minutes -gt 0) { Write-Host "Maximum minutes: $Minutes" }
   else { Write-Host "Time limit: none (ends after the requested cycles)" }
@@ -119,6 +121,13 @@ try {
   if ($env:AUDIT_USER_EMAIL) { Write-Host "Audit account: $($env:AUDIT_USER_EMAIL)" }
   else { Write-Host "Audit mode: guest" }
   Write-Host "Report ZIP: $reportZip"
+
+  $auditSpec = Join-Path $PSScriptRoot "tests\audit\app.audit.spec.ts"
+  if (-not (Test-Path $auditSpec)) { throw "Arquivo de auditoria não encontrado: $auditSpec" }
+  $auditSpecText = Get-Content $auditSpec -Raw
+  if ($auditSpecText -notmatch "main#main-scroll") {
+    throw "Auditor desatualizado: seletor principal antigo detectado. Instale o patch mais recente antes de continuar."
+  }
 
   if (-not (Test-Path "node_modules")) {
     npm ci

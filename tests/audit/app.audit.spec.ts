@@ -7,6 +7,7 @@ const language = process.env.HP_AUDIT_LANG === 'en' ? 'en' : 'pt'
 const theme = process.env.HP_AUDIT_THEME === 'light' ? 'light' : 'dark'
 const auditEmail = process.env.AUDIT_USER_EMAIL?.trim()
 const auditPassword = process.env.AUDIT_USER_PASSWORD?.trim()
+const configuredBaseURL = (process.env.HP_AUDIT_BASE_URL || process.env.AUDIT_BASE_URL)?.trim()
 
 async function setAuditPreferences(page: Page) {
   await page.addInitScript(({ language, theme }) => {
@@ -45,6 +46,17 @@ async function enterForAudit(page: Page) {
 }
 
 async function assertAppMainVisible(page: Page) {
+  const configurationError = page.getByText(/CONFIGURAÇÃO NECESSÁRIA|CONFIGURATION REQUIRED/i)
+  if (await configurationError.count()) {
+    throw new Error('The auditor opened an app build without valid Supabase configuration. Check AUDIT_BASE_URL/HP_AUDIT_BASE_URL and the deployed environment.')
+  }
+
+  if (configuredBaseURL) {
+    const expectedOrigin = new URL(configuredBaseURL).origin
+    const actualOrigin = new URL(page.url()).origin
+    expect(actualOrigin, `Auditor navigated to ${actualOrigin}, expected ${expectedOrigin}`).toBe(expectedOrigin)
+  }
+
   const main = page.locator('main#main-scroll')
   await expect(main, 'The main learning area did not render').toBeVisible()
 }

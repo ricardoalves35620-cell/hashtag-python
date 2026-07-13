@@ -130,3 +130,8 @@ Foundation 1.6 adds final motion polish, accessible loading and success feedback
 ## Sprint 3 — Localization quality
 
 Portuguese and English now share the same localization architecture. Python comments are localized for Portuguese learners, Phase 5 was manually revised in both languages, glossary terms only match complete words, and automated tests verify bilingual content completeness. See `docs/LOCALIZATION_GUIDE.md`.
+
+
+## Sprint 7.3
+
+Auditor provenance checks and bilingual fixes for phases 1–4. See `docs/RELEASE_NOTES_SPRINT_7_3.md`.

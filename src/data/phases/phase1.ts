@@ -93,23 +93,42 @@ print("Steel cost: $", 85 * 15)       # 85 bars × $15 = $1275
 print("Total spent: $", 120 * 8 + 85 * 15 + 32 * 25)` },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes (everyone makes these)', pt: '⚠️ Erros comuns (todo mundo comete)' } },
-      { type: 'code', code: `# ❌ MISTAKE 1: forgetting quotes on text
-# print(Hello)          → NameError! Python thinks Hello is a variable
+      { type: 'code', code: {
+        en: `# ❌ MISTAKE 1: forgetting quotes around text
+# print(Hello)          → NameError! Python treats Hello as a variable name
 
 # ✅ FIX:
 print("Hello")
 
-# ❌ MISTAKE 2: quotes on math (turns it into text!)
-print("10 + 5")          # prints: 10 + 5  (literally, no math!)
+# ❌ MISTAKE 2: putting a calculation inside quotes
+print("10 + 5")          # displays the text 10 + 5; it does not calculate
 
-# ✅ FIX: no quotes when you want calculation
-print(10 + 5)            # prints: 15
+# ✅ FIX: remove the quotes when you want Python to calculate
+print(10 + 5)            # displays 15
 
-# ❌ MISTAKE 3: Print with capital P
+# ❌ MISTAKE 3: using Print with a capital P
 # Print("hi")           → NameError! Python is case-sensitive
 
-# ✅ FIX: always lowercase
-print("hi")` },
+# ✅ FIX: use lowercase print
+print("hi")`,
+        pt: `# ❌ ERRO 1: esquecer as aspas ao redor do texto
+# print(Ola)            → NameError! Python interpreta Ola como nome de variável
+
+# ✅ CORREÇÃO:
+print("Olá")
+
+# ❌ ERRO 2: colocar um cálculo entre aspas
+print("10 + 5")          # exibe o texto 10 + 5; não realiza o cálculo
+
+# ✅ CORREÇÃO: remova as aspas quando quiser que Python calcule
+print(10 + 5)            # exibe 15
+
+# ❌ ERRO 3: usar Print com P maiúsculo
+# Print("oi")           → NameError! Python diferencia maiúsculas e minúsculas
+
+# ✅ CORREÇÃO: use print em letras minúsculas
+print("oi")`
+      } },
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: Python is case-sensitive.\nprint ≠ Print ≠ PRINT. Only lowercase print() exists.\nThis rule applies to EVERYTHING in Python — remember it forever.',

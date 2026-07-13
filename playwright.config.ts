@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const externalBaseURL = process.env.HP_AUDIT_BASE_URL?.trim()
+const externalBaseURL = (process.env.HP_AUDIT_BASE_URL || process.env.AUDIT_BASE_URL)?.trim()
 
 export default defineConfig({
   testDir: './tests/audit',

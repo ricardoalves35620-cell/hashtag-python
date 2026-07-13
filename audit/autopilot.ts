@@ -2,6 +2,8 @@ import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
+const AUDITOR_VERSION = '7.3.0'
+
 interface Args { cycles: number; minutes: number; batch: number; start: number; url: string; fresh: boolean }
 interface AggregatedIssue { fingerprint: string; source: string; cycle: number; firstSeen: string; lastSeen: string; occurrences: number; details: unknown }
 
@@ -84,7 +86,7 @@ function contentIssues(payload: any, cycle: number): AggregatedIssue[] {
 function writeHtml(file: string, data: any) {
   const rows = Object.values(data.issues as Record<string, AggregatedIssue>).map((issue: any) => `<tr><td>${issue.source}</td><td>${issue.cycle}</td><td>${issue.occurrences}</td><td><code>${issue.fingerprint}</code></td><td><pre>${escapeHtml(JSON.stringify(issue.details, null, 2))}</pre></td></tr>`).join('')
   const cycles = data.cycles.map((cycle: any) => `<tr><td>${cycle.number}</td><td>${cycle.phaseStart}-${cycle.phaseEnd}</td><td>${cycle.lang}</td><td>${cycle.theme}</td><td>${cycle.newIssues}</td><td>${cycle.knownIssues}</td><td>${cycle.durationSeconds}s</td></tr>`).join('')
-  fs.writeFileSync(file, `<!doctype html><html><head><meta charset="utf-8"><title>Hashtag Python Audit</title><style>body{font-family:system-ui;margin:24px;background:#0b0b16;color:#eee}table{border-collapse:collapse;width:100%;margin:16px 0}th,td{border:1px solid #34344d;padding:8px;vertical-align:top}th{background:#1b1732}pre{white-space:pre-wrap;max-width:900px}code{color:#c4b5fd}.ok{color:#4ade80}.warn{color:#fbbf24}</style></head><body><h1>Hashtag Python — Auditor Autopilot</h1><p>Generated: ${data.updatedAt}</p><p>Cycles: ${data.cycles.length} · Unique issues: <strong>${Object.keys(data.issues).length}</strong></p><h2>Cycles</h2><table><thead><tr><th>#</th><th>Phases</th><th>Lang</th><th>Theme</th><th>New</th><th>Known</th><th>Duration</th></tr></thead><tbody>${cycles}</tbody></table><h2>Deduplicated issues</h2><table><thead><tr><th>Source</th><th>First cycle</th><th>Occurrences</th><th>Fingerprint</th><th>Details</th></tr></thead><tbody>${rows}</tbody></table></body></html>`)
+  fs.writeFileSync(file, `<!doctype html><html><head><meta charset="utf-8"><title>Hashtag Python Audit</title><style>body{font-family:system-ui;margin:24px;background:#0b0b16;color:#eee}table{border-collapse:collapse;width:100%;margin:16px 0}th,td{border:1px solid #34344d;padding:8px;vertical-align:top}th{background:#1b1732}pre{white-space:pre-wrap;max-width:900px}code{color:#c4b5fd}.ok{color:#4ade80}.warn{color:#fbbf24}</style></head><body><h1>Hashtag Python — Auditor Autopilot</h1><p>Version: ${escapeHtml(data.auditorVersion || 'unknown')} · Generated: ${data.updatedAt}</p><p>Cycles: ${data.cycles.length} · Unique issues: <strong>${Object.keys(data.issues).length}</strong></p><h2>Cycles</h2><table><thead><tr><th>#</th><th>Phases</th><th>Lang</th><th>Theme</th><th>New</th><th>Known</th><th>Duration</th></tr></thead><tbody>${cycles}</tbody></table><h2>Deduplicated issues</h2><table><thead><tr><th>Source</th><th>First cycle</th><th>Occurrences</th><th>Fingerprint</th><th>Details</th></tr></thead><tbody>${rows}</tbody></table></body></html>`)
 }
 
 function escapeHtml(value: string) { return value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!)) }
@@ -95,7 +97,8 @@ fs.mkdirSync(reportDir, { recursive: true })
 const stateFile = path.join(reportDir, 'state.json')
 if (args.fresh) fs.rmSync(reportDir, { recursive: true, force: true })
 fs.mkdirSync(reportDir, { recursive: true })
-const state = readJson(stateFile) || { startedAt: new Date().toISOString(), updatedAt: '', cursor: args.start, cycles: [], issues: {} }
+const state = readJson(stateFile) || { auditorVersion: AUDITOR_VERSION, startedAt: new Date().toISOString(), updatedAt: '', cursor: args.start, cycles: [], issues: {} }
+state.auditorVersion = AUDITOR_VERSION
 const started = Date.now()
 const deadline = args.minutes > 0 ? started + args.minutes * 60_000 : Number.POSITIVE_INFINITY
 
@@ -147,4 +150,4 @@ for (let iteration = 1; iteration <= args.cycles && Date.now() < deadline; itera
   console.log(`Cycle complete. New issues: ${newIssues}; already known and ignored for stopping: ${knownIssues}.`)
 }
 
-console.log(`\nAutopilot finished. Report: ${path.join(reportDir, 'index.html')}`)
+console.log(`\nAutopilot v${AUDITOR_VERSION} finished. Report: ${path.join(reportDir, 'index.html')}`)
