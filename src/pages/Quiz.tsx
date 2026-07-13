@@ -149,7 +149,7 @@ export default function Quiz() {
         </div>
 
         <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
-          <p data-testid="quiz-question" data-question-id={question.id} className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{question.question[lang]}</p>
+          <p data-testid="quiz-question" data-question-id={question.id || `phase-${phase.id}-quiz-${current}`} className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--c-text)' }}>{question.question[lang]}</p>
         </div>
 
         <div className="space-y-2">

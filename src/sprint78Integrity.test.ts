@@ -15,7 +15,7 @@ describe('sprint 7.8 reliability fixes', () => {
     const quiz = readFileSync('src/pages/Quiz.tsx', 'utf8')
     const audit = readFileSync('tests/audit/app.audit.spec.ts', 'utf8')
 
-    expect(quiz).toContain('data-question-id={question.id}')
+    expect(quiz).toContain('data-question-id={question.id ||')
     expect(quiz).toContain('data-option-index={originalIndex}')
     expect(audit).toContain('findQuizOptionByOriginalIndex')
     expect(audit).toContain("getAttribute('data-question-id')")
@@ -25,6 +25,6 @@ describe('sprint 7.8 reliability fixes', () => {
     const audit = readFileSync('tests/audit/app.audit.spec.ts', 'utf8')
 
     expect(audit).toContain('hp-audit-draft-')
-    expect(audit).toContain('Exercise draft cleanup was not saved')
+    expect(audit).toContain('Exercise draft cleanup was not persisted')
   })
 })

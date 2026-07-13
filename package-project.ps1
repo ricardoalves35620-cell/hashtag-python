@@ -1,13 +1,29 @@
-$source = (Get-Location).Path
-$parent = Split-Path $source -Parent
-$name = Split-Path $source -Leaf
-$zip = Join-Path $parent "$name-source.zip"
-$staging = Join-Path $parent "$name-package-temp"
+$ErrorActionPreference = "Stop"
+Set-Location $PSScriptRoot
 
-Remove-Item $staging -Recurse -Force -ErrorAction SilentlyContinue
+$insideGit = git rev-parse --is-inside-work-tree 2>$null
+if ($LASTEXITCODE -ne 0 -or $insideGit.Trim() -ne "true") {
+  throw "Esta pasta não é um repositório Git válido."
+}
+
+$status = git status --porcelain
+if ($status) {
+  Write-Host "Existem alterações locais ainda não commitadas:" -ForegroundColor Yellow
+  $status | ForEach-Object { Write-Host $_ }
+  throw "Faça commit das alterações antes de gerar o ZIP do projeto."
+}
+
+$desktop = [Environment]::GetFolderPath("Desktop")
+$zip = Join-Path $desktop "hashtag-python-source.zip"
 Remove-Item $zip -Force -ErrorAction SilentlyContinue
-robocopy $source $staging /E /XD ".git" "node_modules" "dist" ".vite" /XF ".env" ".env.local" ".env.production" "*.log"
-if ($LASTEXITCODE -ge 8) { throw "Robocopy failed with code $LASTEXITCODE" }
-Compress-Archive -Path "$staging\*" -DestinationPath $zip -CompressionLevel Optimal
-Remove-Item $staging -Recurse -Force
-Write-Host "ZIP criado em: $zip"
+
+git archive --format=zip --output=$zip HEAD
+if ($LASTEXITCODE -ne 0) {
+  throw "git archive não conseguiu gerar o ZIP."
+}
+
+$file = Get-Item $zip
+Write-Host ""
+Write-Host "ZIP limpo criado:" -ForegroundColor Green
+Write-Host $file.FullName
+Write-Host ("Tamanho: {0:N2} MB" -f ($file.Length / 1MB)) -ForegroundColor DarkGray

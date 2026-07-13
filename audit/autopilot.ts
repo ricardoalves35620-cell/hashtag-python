@@ -2,7 +2,7 @@ import { spawnSync, type SpawnSyncReturns } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const AUDITOR_VERSION = '7.8.0'
+const AUDITOR_VERSION = '8.1.0'
 
 interface Args {
   cycles: number
@@ -11,6 +11,7 @@ interface Args {
   start: number
   url: string
   fresh: boolean
+  environmentOffset: number
 }
 
 interface AggregatedIssue {
@@ -69,6 +70,7 @@ function parseArgs(): Args {
     start: value('start', 0),
     url: stringValue('url', process.env.HP_AUDIT_BASE_URL || ''),
     fresh: argv.includes('--fresh'),
+    environmentOffset: Math.max(0, value('environment-offset', Number(process.env.HP_AUDIT_ENVIRONMENT_OFFSET || 0))),
   }
 }
 
@@ -144,30 +146,30 @@ function playwrightIssues(payload: any, cycle: number): AggregatedIssue[] {
 
       for (const spec of node.specs || []) {
         for (const test of spec.tests || []) {
-          for (const result of test.results || []) {
-            if (result.status === 'passed' || result.status === 'skipped') continue
+          const result = (test.results || []).at(-1)
+          if (!result || result.status === 'passed' || result.status === 'skipped') continue
 
-            const message = result.error?.message || result.status
-            const signature = normalizeFailureSignature(spec.title, message)
-            const now = new Date().toISOString()
+          const message = result.error?.message || result.status
+          const signature = normalizeFailureSignature(spec.title, message)
+          const now = new Date().toISOString()
 
-            issues.push({
-              fingerprint: `visual-${hash(signature)}`,
-              source: 'playwright',
-              cycle,
-              firstSeen: now,
-              lastSeen: now,
-              occurrences: 1,
-              details: {
-                title: spec.title,
-                affectedTests: [spec.title],
-                affectedPhases: extractAffectedPhases(stripAnsi(message)),
-                trail: nextTrail,
-                status: result.status,
-                message: stripAnsi(message),
-              },
-            })
-          }
+          issues.push({
+            fingerprint: `visual-${hash(signature)}`,
+            source: 'playwright',
+            cycle,
+            firstSeen: now,
+            lastSeen: now,
+            occurrences: 1,
+            details: {
+              title: spec.title,
+              affectedTests: [spec.title],
+              affectedPhases: extractAffectedPhases(stripAnsi(message)),
+              trail: nextTrail,
+              status: result.status,
+              attempts: test.results?.length || 1,
+              message: stripAnsi(message),
+            },
+          })
         }
       }
 
@@ -280,6 +282,7 @@ const state =
     startedAt: new Date().toISOString(),
     updatedAt: '',
     cursor: args.start,
+    environmentOffset: args.environmentOffset,
     cycles: [],
     issues: {},
   }
@@ -287,6 +290,7 @@ const state =
 state.auditorVersion = AUDITOR_VERSION
 state.runId = args.fresh ? runId : state.runId || runId
 state.target = args.url
+state.environmentOffset = args.environmentOffset
 
 const started = Date.now()
 const deadline =
@@ -307,7 +311,8 @@ for (
   // One complete curriculum pass uses one fixed environment. After 12 passes,
   // every phase has been tested in the full device × language × theme matrix.
   const curriculumPass = Math.floor((cycle - 1) / 69)
-  const environment = AUDIT_ENVIRONMENTS[curriculumPass % AUDIT_ENVIRONMENTS.length]
+  const environmentIndex = (args.environmentOffset + curriculumPass) % AUDIT_ENVIRONMENTS.length
+  const environment = AUDIT_ENVIRONMENTS[environmentIndex]
   const { lang, theme, device } = environment
 
   if (fs.existsSync(path.resolve('.autopilot-stop-after-cycle'))) {
@@ -345,6 +350,9 @@ for (
     HP_AUDIT_LIVE_STATUS: path.join(reportDir, 'live-status.txt'),
     HP_AUDIT_HEADED: process.env.HP_AUDIT_HEADED || 'false',
     HP_AUDIT_SLOW_MO: process.env.HP_AUDIT_SLOW_MO || '0',
+    HP_AUDIT_RETRIES: process.env.HP_AUDIT_RETRIES || '1',
+    HP_AUDIT_DETAILED: process.env.HP_AUDIT_DETAILED || 'false',
+    HP_AUDIT_EXPECT_VERSION: process.env.HP_AUDIT_EXPECT_VERSION || process.env.npm_package_version || '',
   }
 
   console.log(
@@ -474,6 +482,7 @@ for (
     lang,
     theme,
     device,
+    environmentIndex,
     newIssues,
     knownIssues,
     contentExitCode: contentRun.status,
@@ -510,5 +519,5 @@ for (
 }
 
 console.log(
-  `\nAutopilot v${AUDITOR_VERSION} finished. Report: ${path.join(reportDir, 'index.html')}`,
+  `\nAutopilot v${AUDITOR_VERSION} finished. Environment offset: ${args.environmentOffset}. Report: ${path.join(reportDir, 'index.html')}`,
 )

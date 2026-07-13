@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 7.1.0 — Sprint 5 (viewport móvel e editor responsivo).**
+**Versão atual: 8.1.0 — Release gate e qualidade contínua.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -135,3 +135,21 @@ Portuguese and English now share the same localization architecture. Python comm
 ## Sprint 7.3
 
 Auditor provenance checks and bilingual fixes for phases 1–4. See `docs/RELEASE_NOTES_SPRINT_7_3.md`.
+
+
+## Qualidade contínua
+
+```powershell
+npm run quality:gate
+```
+
+Validação local compacta:
+
+```powershell
+.\run-auditor.ps1 -Cycles 69 -NoOpen
+```
+
+Use `-DetailedReport` somente quando vídeos e traces forem necessários.
+
+Configuração: `docs/CI_SETUP.md`  
+Critérios de release: `docs/RELEASE_READINESS.md`

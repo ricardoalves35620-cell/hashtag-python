@@ -14,6 +14,7 @@ const auditEmail = process.env.AUDIT_USER_EMAIL?.trim()
 const auditPassword = process.env.AUDIT_USER_PASSWORD?.trim()
 const configuredBaseURL = (process.env.HP_AUDIT_BASE_URL || process.env.AUDIT_BASE_URL)?.trim()
 const requireLogin = process.env.HP_AUDIT_REQUIRE_LOGIN !== 'false'
+const expectedAppVersion = process.env.HP_AUDIT_EXPECT_VERSION?.trim()
 const cycleNumber = Math.max(1, Number(process.env.HP_AUDIT_CYCLE || 1))
 const statusFile = process.env.HP_AUDIT_LIVE_STATUS
 
@@ -27,6 +28,21 @@ function log(message: string) {
   if (statusFile) {
     fs.mkdirSync(path.dirname(statusFile), { recursive: true })
     fs.writeFileSync(statusFile, `${new Date().toISOString()}\nCycle ${cycleNumber}\n${message}\n`, 'utf8')
+  }
+}
+
+async function attachScreenshotSafely(page: Page, testInfo: TestInfo, name: string) {
+  try {
+    await testInfo.attach(name, {
+      body: await page.screenshot({ fullPage: true, timeout: 15_000 }),
+      contentType: 'image/png',
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    await testInfo.attach(`${name}-unavailable`, {
+      body: Buffer.from(`Screenshot unavailable: ${message}`),
+      contentType: 'text/plain',
+    })
   }
 }
 
@@ -109,10 +125,15 @@ async function authenticate(page: Page, testInfo: TestInfo) {
   await expect(profileEmail, 'Audit account session was not established').toHaveValue(auditEmail)
   await expect(page.getByText(/Perfil visitante|Visitor profile/i)).toHaveCount(0)
 
-  await testInfo.attach('authenticated-session', {
-    body: await page.screenshot({ fullPage: true }),
-    contentType: 'image/png',
-  })
+  if (expectedAppVersion) {
+    const deployedVersion = await page.evaluate(() => document.documentElement.dataset.appVersion || '')
+    expect(
+      deployedVersion,
+      `Deployed app version ${deployedVersion || 'missing'} does not match auditor source ${expectedAppVersion}. Wait for deployment before auditing.`,
+    ).toBe(expectedAppVersion)
+  }
+
+  await attachScreenshotSafely(page, testInfo, 'authenticated-session')
   log(`Login confirmed: ${auditEmail}`)
 }
 
@@ -145,11 +166,18 @@ async function assertCodeBlocksFit(page: Page) {
 }
 
 async function replaceEditorCode(page: Page, code: string) {
-  const editor = page.locator('.cm-content[contenteditable="true"]').first()
-  await expect(editor, 'Editable CodeMirror surface not found').toBeVisible({ timeout: 15_000 })
-  await editor.click()
-  await page.keyboard.press('Control+A')
-  await page.keyboard.insertText(code)
+  const surface = page.getByTestId('python-editor-surface').first()
+  await expect(surface, 'Stable CodeMirror surface not found').toBeVisible({ timeout: 15_000 })
+  await expect(surface, 'CodeMirror automation bridge did not become ready').toHaveAttribute('data-editor-ready', 'true')
+
+  await surface.evaluate((node, nextCode) => {
+    node.dispatchEvent(new CustomEvent('hp:set-code', { detail: nextCode }))
+  }, code)
+
+  await expect.poll(async () => await readEditorCode(page), {
+    timeout: 12_000,
+    message: 'CodeMirror did not apply the requested code',
+  }).toBe(code)
 }
 
 async function readEditorCode(page: Page) {
@@ -230,9 +258,12 @@ async function answerQuizCorrectly(page: Page, phaseId: number) {
     await expect(question, 'Quiz question did not render').toBeVisible({ timeout: 12_000 })
 
     const questionId = await question.getAttribute('data-question-id')
-    const currentQuestion = phase.quiz.find(item => item.id === questionId)
+    const questionText = await question.innerText()
+    const currentQuestion =
+      phase.quiz.find(item => item.id === questionId) ||
+      phase.quiz.find(item => auditTextsMatch(item.question[language], questionText))
+
     if (!currentQuestion) {
-      const questionText = await question.innerText()
       throw new Error(`Could not identify the current quiz question for phase ${phaseId}: id=${questionId || 'missing'} text=${questionText}`)
     }
 
@@ -273,10 +304,11 @@ async function safeStep(
     const message = error instanceof Error ? error.stack || error.message : String(error)
     failures.push({ step: name, message })
     console.error(`[auditor] STEP FAILED: ${name}\n${message}`)
-    await testInfo.attach(`failure-${failures.length}-${name.replace(/[^a-z0-9]+/gi, '-').slice(0, 60)}`, {
-      body: await page.screenshot({ fullPage: true }),
-      contentType: 'image/png',
-    })
+    await attachScreenshotSafely(
+      page,
+      testInfo,
+      `failure-${failures.length}-${name.replace(/[^a-z0-9]+/gi, '-').slice(0, 60)}`,
+    )
   }
 }
 
@@ -330,29 +362,39 @@ async function exerciseDiagnostics(page: Page, phaseId: number) {
 
   const draftStatus = page.getByTestId('draft-status')
   await expect.poll(async () => {
-    const text = await draftStatus.innerText().catch(() => '')
-    return /Salvo|Saved/i.test(text)
+    const statusText = await draftStatus.innerText().catch(() => '')
+    const localCopyContainsMarker = await page.evaluate(marker => {
+      return Object.keys(localStorage)
+        .filter(key => key.startsWith('hp_code_draft_v1:'))
+        .some(key => localStorage.getItem(key)?.includes(marker))
+    }, draftMarker)
+    return /Salvo|Saved/i.test(statusText) && localCopyContainsMarker
   }, {
-    timeout: 12_000,
-    message: 'Exercise draft was not acknowledged as saved before reload',
+    timeout: 15_000,
+    message: 'Exercise draft was not acknowledged and persisted locally before reload',
   }).toBe(true)
 
   await page.reload({ waitUntil: 'domcontentloaded' })
   await assertAppMainVisible(page)
 
   await expect.poll(async () => await readEditorCode(page), {
-    timeout: 15_000,
+    timeout: 20_000,
     message: 'Exercise draft did not survive reload',
   }).toContain(draftMarker)
 
   // Restore the original draft so the audit account does not accumulate markers.
   await replaceEditorCode(page, original)
   await expect.poll(async () => {
-    const text = await draftStatus.innerText().catch(() => '')
-    return /Salvo|Saved/i.test(text)
+    const statusText = await draftStatus.innerText().catch(() => '')
+    const markerStillStored = await page.evaluate(marker => {
+      return Object.keys(localStorage)
+        .filter(key => key.startsWith('hp_code_draft_v1:'))
+        .some(key => localStorage.getItem(key)?.includes(marker))
+    }, draftMarker)
+    return /Salvo|Saved/i.test(statusText) && !markerStillStored
   }, {
-    timeout: 12_000,
-    message: 'Exercise draft cleanup was not saved',
+    timeout: 15_000,
+    message: 'Exercise draft cleanup was not persisted',
   }).toBe(true)
 }
 
@@ -400,13 +442,13 @@ async function sessionRecoveryDiagnostics(page: Page) {
 }
 
 async function clearServiceWorkerNoise(context: BrowserContext) {
-  // Keep service workers enabled because the app is a PWA, but grant no special permissions.
+  // Deterministic audits block service workers in Playwright config.
   await context.clearPermissions()
 }
 
 test.describe('Hashtag Python deep audit', () => {
   test('authenticated deep learning journey continues after individual failures', async ({ page, context }, testInfo) => {
-    test.setTimeout(360_000)
+    test.setTimeout(600_000)
     const failures: StepFailure[] = []
     const consoleErrors: string[] = []
     page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()) })

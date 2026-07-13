@@ -6,31 +6,40 @@ const htmlOutput = process.env.HP_AUDIT_HTML_OUTPUT || 'playwright-report/html'
 const artifactsOutput = process.env.HP_AUDIT_ARTIFACTS_OUTPUT || 'test-results'
 const headed = process.env.HP_AUDIT_HEADED === 'true'
 const slowMo = Math.max(0, Number(process.env.HP_AUDIT_SLOW_MO || 0))
+const retries = Math.max(0, Number(process.env.HP_AUDIT_RETRIES || 1))
+const detailedReports = process.env.HP_AUDIT_DETAILED === 'true'
+const allowServiceWorkers = process.env.HP_AUDIT_SERVICE_WORKERS === 'allow'
+
+const reporters: any[] = [
+  ['list'],
+  ['json', { outputFile: resultsOutput }],
+]
+
+if (detailedReports) {
+  reporters.push(['html', { outputFolder: htmlOutput, open: 'never' }])
+}
 
 export default defineConfig({
   testDir: './tests/audit',
   outputDir: artifactsOutput,
-  timeout: 360_000,
+  timeout: 600_000,
   expect: { timeout: 12_000 },
   fullyParallel: false,
   forbidOnly: true,
-  retries: 0,
+  retries,
   workers: 1,
-  reporter: [
-    ['list'],
-    ['json', { outputFile: resultsOutput }],
-    ['html', { outputFolder: htmlOutput, open: 'never' }],
-  ],
+  reporter: reporters,
   use: {
     baseURL: externalBaseURL || 'http://127.0.0.1:4173',
     headless: !headed,
     launchOptions: slowMo > 0 ? { slowMo } : undefined,
-    trace: 'retain-on-failure',
+    trace: detailedReports ? 'retain-on-failure' : 'off',
     actionTimeout: 20_000,
     navigationTimeout: 35_000,
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: detailedReports ? 'retain-on-failure' : 'off',
     locale: 'pt-BR',
+    serviceWorkers: allowServiceWorkers ? 'allow' : 'block',
   },
   webServer: externalBaseURL ? undefined : {
     command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4173',

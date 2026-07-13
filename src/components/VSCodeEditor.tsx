@@ -135,10 +135,25 @@ export default function VSCodeEditor({
     if (editorWrapMode === 'wrap') extensions.push(EditorView.lineWrapping)
 
     const state = EditorState.create({ doc: value, extensions })
-    const view = new EditorView({ state, parent: containerRef.current })
+    const container = containerRef.current
+    const view = new EditorView({ state, parent: container })
     viewRef.current = view
 
+    const handleProgrammaticCode = (event: Event) => {
+      if (!(event instanceof CustomEvent) || typeof event.detail !== 'string') return
+      const current = view.state.doc.toString()
+      view.dispatch({
+        changes: { from: 0, to: current.length, insert: event.detail },
+        selection: { anchor: event.detail.length },
+      })
+    }
+
+    container.dataset.editorReady = 'true'
+    container.addEventListener('hp:set-code', handleProgrammaticCode)
+
     return () => {
+      container.removeEventListener('hp:set-code', handleProgrammaticCode)
+      delete container.dataset.editorReady
       view.destroy()
       viewRef.current = null
     }
@@ -268,6 +283,7 @@ export default function VSCodeEditor({
 
       <div
         ref={containerRef}
+        data-testid="python-editor-surface"
         className={`hp-code-editor__surface ${autoHeight ? 'hp-code-editor__surface--auto' : 'hp-code-editor__surface--compact'} ${editorWrapMode === 'wrap' ? 'hp-code-editor__surface--wrap' : 'hp-code-editor__surface--scroll'}`}
         style={autoHeight ? undefined : { height }}
       />

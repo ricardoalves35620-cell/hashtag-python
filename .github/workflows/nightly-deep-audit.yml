@@ -1,0 +1,112 @@
+name: Nightly Deep Audit
+
+on:
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+    inputs:
+      cycles:
+        description: Number of deep audit cycles
+        required: false
+        default: '69'
+      base_url:
+        description: Published application URL
+        required: false
+        default: 'https://www.hashtagpython.com'
+      environment_offset:
+        description: Matrix environment offset from 0 to 11; blank rotates by day
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-deep-audit
+  cancel-in-progress: false
+
+jobs:
+  deep-audit:
+    name: Authenticated production audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      AUDIT_USER_EMAIL: ${{ secrets.AUDIT_USER_EMAIL }}
+      AUDIT_USER_PASSWORD: ${{ secrets.AUDIT_USER_PASSWORD }}
+      HP_AUDIT_REQUIRE_LOGIN: 'true'
+      HP_AUDIT_HEADED: 'false'
+      HP_AUDIT_RETRIES: '1'
+      HP_AUDIT_DETAILED: 'false'
+      HP_AUDIT_SERVICE_WORKERS: 'block'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Validate audit secrets
+        shell: bash
+        run: |
+          if [ -z "$AUDIT_USER_EMAIL" ] || [ -z "$AUDIT_USER_PASSWORD" ]; then
+            echo "Configure AUDIT_USER_EMAIL and AUDIT_USER_PASSWORD in repository Actions secrets."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Resolve audit settings
+        id: settings
+        shell: bash
+        env:
+          INPUT_CYCLES: ${{ inputs.cycles }}
+          INPUT_BASE_URL: ${{ inputs.base_url }}
+          INPUT_ENVIRONMENT_OFFSET: ${{ inputs.environment_offset }}
+        run: |
+          cycles="${INPUT_CYCLES:-69}"
+          base_url="${INPUT_BASE_URL:-https://www.hashtagpython.com}"
+          if [ -n "$INPUT_ENVIRONMENT_OFFSET" ]; then
+            offset="$INPUT_ENVIRONMENT_OFFSET"
+          else
+            offset=$((10#$(date -u +%j) % 12))
+          fi
+
+          echo "cycles=$cycles" >> "$GITHUB_OUTPUT"
+          echo "base_url=$base_url" >> "$GITHUB_OUTPUT"
+          echo "environment_offset=$offset" >> "$GITHUB_OUTPUT"
+
+      - name: Run deep production audit
+        run: |
+          npm run audit:autopilot -- \
+            --cycles "${{ steps.settings.outputs.cycles }}" \
+            --minutes 0 \
+            --batch 1 \
+            --url "${{ steps.settings.outputs.base_url }}" \
+            --environment-offset "${{ steps.settings.outputs.environment_offset }}" \
+            --fresh
+
+      - name: Create compact report
+        if: always()
+        run: npm run audit:slim
+
+      - name: Upload compact audit report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: hashtag-python-audit-${{ github.run_number }}
+          path: playwright-report/slim
+          if-no-files-found: warn
+          retention-days: 21
+          compression-level: 9
+
+      - name: Enforce audit gate
+        if: always()
+        run: npm run audit:state

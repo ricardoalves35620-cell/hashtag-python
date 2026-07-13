@@ -1,4 +1,4 @@
-﻿param(
+param(
   [int]$Cycles = 0,
   [int]$Minutes = 0,
   [int]$Batch = 1,
@@ -7,11 +7,13 @@
   [switch]$Continue,
   [switch]$NoOpen,
   [switch]$Visible,
-  [int]$SlowMo = 0
+  [int]$SlowMo = 0,
+  [int]$EnvironmentOffset = 0,
+  [switch]$DetailedReport
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "7.8.0"
+$AuditorVersion = "8.1.0"
 
 Add-Type @"
 using System;
@@ -68,7 +70,9 @@ function Write-RunSummary {
     [int]$BatchSize,
     [string]$Target,
     [datetime]$StartedAt,
-    [string]$ReportZip
+    [string]$ReportZip,
+    [string]$ReportMode,
+    [int]$EnvironmentOffset
   )
 
   $summaryDir = Join-Path $PSScriptRoot "playwright-report\autopilot"
@@ -85,41 +89,84 @@ function Write-RunSummary {
     "Requested cycles: $RequestedCycles"
     "Phases per cycle: $BatchSize"
     "Target: $Target"
+    "Environment offset: $EnvironmentOffset"
+    "Report mode: $ReportMode"
     "Report ZIP: $ReportZip"
   ) | Set-Content -Path $summaryFile -Encoding UTF8
 }
 
 function Export-AuditReport {
-  param([string]$DestinationZip)
+  param(
+    [string]$DestinationZip,
+    [bool]$IncludeDetailed
+  )
 
   $reportRoot = Join-Path $PSScriptRoot "playwright-report"
-  if (-not (Test-Path $reportRoot)) {
-    New-Item -ItemType Directory -Path $reportRoot -Force | Out-Null
-    "Nenhum relatório foi produzido." | Set-Content (Join-Path $reportRoot "README.txt") -Encoding UTF8
+  $sourceRoot = Join-Path $reportRoot "autopilot"
+  if (-not (Test-Path $sourceRoot)) {
+    New-Item -ItemType Directory -Path $sourceRoot -Force | Out-Null
+    "Nenhum relatório foi produzido." | Set-Content (Join-Path $sourceRoot "README.txt") -Encoding UTF8
   }
 
   Remove-Item $DestinationZip -Force -ErrorAction SilentlyContinue
-  $sourceRoot = Join-Path $reportRoot "autopilot"
-  if (-not (Test-Path $sourceRoot)) { $sourceRoot = $reportRoot }
-
-  # Compress-Archive loads large reports into memory and failed after 828 cycles.
-  # Windows tar streams files incrementally and can package multi-gigabyte runs.
   $tar = Join-Path $env:SystemRoot "System32\tar.exe"
-  if (Test-Path $tar) {
-    & $tar -a -c -f $DestinationZip -C $sourceRoot .
-    if ($LASTEXITCODE -ne 0) {
-      throw "tar.exe não conseguiu compactar o relatório (código $LASTEXITCODE)."
+
+  if ($IncludeDetailed) {
+    if (Test-Path $tar) {
+      & $tar -a -c -f $DestinationZip -C $sourceRoot .
+      if ($LASTEXITCODE -ne 0) {
+        throw "tar.exe não conseguiu compactar o relatório detalhado (código $LASTEXITCODE)."
+      }
+    } else {
+      Compress-Archive -Path (Join-Path $sourceRoot "*") -DestinationPath $DestinationZip -Force
     }
-  } else {
-    Compress-Archive `
-      -Path (Join-Path $sourceRoot "*") `
-      -DestinationPath $DestinationZip `
-      -Force
+  }
+  else {
+    $staging = Join-Path $env:TEMP "hashtag-python-audit-slim"
+    Remove-Item $staging -Recurse -Force -ErrorAction SilentlyContinue
+    New-Item -ItemType Directory -Path $staging -Force | Out-Null
+
+    try {
+      foreach ($name in @("index.html", "state.json", "live-status.txt", "last-run.txt")) {
+        $sourceFile = Join-Path $sourceRoot $name
+        if (Test-Path $sourceFile) {
+          Copy-Item $sourceFile (Join-Path $staging $name) -Force
+        }
+      }
+
+      $cyclesRoot = Join-Path $sourceRoot "cycles"
+      if (Test-Path $cyclesRoot) {
+        Get-ChildItem $cyclesRoot -Directory | ForEach-Object {
+          $destination = Join-Path (Join-Path $staging "cycles") $_.Name
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+
+          foreach ($name in @("content.json", "results.json")) {
+            $sourceFile = Join-Path $_.FullName $name
+            if (Test-Path $sourceFile) {
+              Copy-Item $sourceFile (Join-Path $destination $name) -Force
+            }
+          }
+        }
+      }
+
+      if (Test-Path $tar) {
+        & $tar -a -c -f $DestinationZip -C $staging .
+        if ($LASTEXITCODE -ne 0) {
+          throw "tar.exe não conseguiu compactar o relatório slim (código $LASTEXITCODE)."
+        }
+      } else {
+        Compress-Archive -Path (Join-Path $staging "*") -DestinationPath $DestinationZip -Force
+      }
+    }
+    finally {
+      Remove-Item $staging -Recurse -Force -ErrorAction SilentlyContinue
+    }
   }
 
   $zipInfo = Get-Item $DestinationZip
+  $mode = if ($IncludeDetailed) { "detalhado" } else { "slim" }
   Write-Host ""
-  Write-Host "ZIP do relatório pronto:" -ForegroundColor Green
+  Write-Host "ZIP do relatório $mode pronto:" -ForegroundColor Green
   Write-Host $DestinationZip -ForegroundColor Green
   Write-Host ("Tamanho: {0:N2} MB" -f ($zipInfo.Length / 1MB)) -ForegroundColor DarkGray
 }
@@ -149,6 +196,12 @@ try {
     throw "Credenciais de auditoria ausentes. Verifique .env.audit.local antes de iniciar."
   }
 
+  $package = Get-Content (Join-Path $PSScriptRoot "package.json") -Raw | ConvertFrom-Json
+  $env:HP_AUDIT_EXPECT_VERSION = [string]$package.version
+  $env:HP_AUDIT_RETRIES = "1"
+  $env:HP_AUDIT_DETAILED = if ($DetailedReport) { "true" } else { "false" }
+  $env:HP_AUDIT_SERVICE_WORKERS = "block"
+
   $interactiveLaunch = $Cycles -le 0
   if ($interactiveLaunch) {
     Write-Host "" 
@@ -164,6 +217,8 @@ try {
 
   if ($Batch -le 0) { $Batch = 1 }
   if ($Batch -gt 1) { Write-Host "Para auditoria profunda, Batch=1 é recomendado." -ForegroundColor Yellow }
+  if ($EnvironmentOffset -lt 0) { $EnvironmentOffset = 0 }
+  $EnvironmentOffset = $EnvironmentOffset % 12
 
   if ($Continue -and $Fresh) {
     throw "Use apenas -Fresh ou -Continue, não os dois juntos."
@@ -178,9 +233,11 @@ try {
   if ($Minutes -gt 0) { Write-Host "Maximum minutes: $Minutes" }
   else { Write-Host "Time limit: none (ends after the requested cycles)" }
   Write-Host "Target: $Url"
+  Write-Host "Expected deployed version: $($env:HP_AUDIT_EXPECT_VERSION)"
+  Write-Host "Environment offset: $EnvironmentOffset"
   Write-Host "Audit account: $($env:AUDIT_USER_EMAIL)"
   Write-Host "Browser: $(if ($Visible) { 'visible' } else { 'headless' })$(if ($Visible -and $SlowMo -gt 0) { " · slow motion ${SlowMo}ms" } else { '' })"
-  Write-Host "Report ZIP: $reportZip"
+  Write-Host "Report ZIP: $reportZip ($(if ($DetailedReport) { 'detailed' } else { 'slim' }))"
 
   $env:HP_AUDIT_REQUIRE_LOGIN = "true"
   $env:HP_AUDIT_HEADED = if ($Visible) { "true" } else { "false" }
@@ -224,7 +281,8 @@ try {
     "--cycles", "$Cycles",
     "--minutes", "$Minutes",
     "--batch", "$Batch",
-    "--url", $Url
+    "--url", $Url,
+    "--environment-offset", "$EnvironmentOffset"
   )
   if ($Fresh) { $argsList += "--fresh" }
 
@@ -248,9 +306,11 @@ finally {
       -BatchSize $Batch `
       -Target $Url `
       -StartedAt $startedAt `
-      -ReportZip $reportZip
+      -ReportZip $reportZip `
+      -ReportMode $(if ($DetailedReport) { "detailed" } else { "slim" }) `
+      -EnvironmentOffset $EnvironmentOffset
 
-    Export-AuditReport -DestinationZip $reportZip
+    Export-AuditReport -DestinationZip $reportZip -IncludeDetailed:$DetailedReport
 
     $report = Join-Path $PSScriptRoot "playwright-report\autopilot\index.html"
     if ((Test-Path $report) -and -not $NoOpen) {
