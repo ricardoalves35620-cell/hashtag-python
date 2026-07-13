@@ -6,6 +6,7 @@ import { getSupabase } from '../lib/supabase'
 import type { Theme } from '../contexts/AppContext'
 import EditorPreferences from '../components/EditorPreferences'
 import SyncStatusIndicator from '../components/SyncStatusIndicator'
+import { clearLocalLearningData, resetLearningProgress } from '../lib/resetLearningProgress'
 
 const COUNTRY_CODES = [
   { code: '+1',   label: '+1 (US/CA)' },
@@ -31,7 +32,7 @@ const COUNTRY_CODES = [
 ]
 
 export default function Profile() {
-  const { lang, setLang, theme, setTheme, user, isGuest, exitGuest, displayName, avatarUrl, refreshUser } = useApp()
+  const { lang, setLang, theme, setTheme, user, isGuest, exitGuest, displayName, avatarUrl, refreshUser, refreshProgress } = useApp()
   const navigate = useNavigate()
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -45,6 +46,9 @@ export default function Profile() {
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [showLogout, setShowLogout] = useState(false)
+  const [showReset, setShowReset] = useState(false)
+  const [resetting, setResetting] = useState(false)
+  const [resetConfirmation, setResetConfirmation] = useState('')
 
   // Load user data when user object is available or changes (multi-device: always fresh)
   useEffect(() => {
@@ -78,6 +82,10 @@ export default function Profile() {
       logout: 'Sign out', logoutConfirm: 'Are you sure you want to sign out?',
       cancel: 'Cancel', confirm: 'Sign out',
       guestTitle: 'Visitor profile', guestText: 'Your progress is stored only in this browser. Create an account to use synchronization and access it on other devices.', guestAction: 'Create account or sign in',
+      learningData: 'Learning data', resetProgress: 'Reset all learning progress',
+      resetDescription: 'Start the course again from Phase 0. This permanently deletes completed lessons, exercises, quizzes, exams, drafts, diagnostic results and lab progress from this account and this device.',
+      resetOpen: 'Reset progress', resetTitle: 'Start from zero?', resetWarning: 'This cannot be undone. Your profile, email, language, theme and editor preferences will be preserved.',
+      resetType: 'Type RESET to confirm', resetAction: 'Delete progress and start over', resetting: 'Resetting...', resetCancel: 'Keep my progress', resetDone: 'Progress reset. Returning to the beginning...',
     },
     pt: {
       title: 'Perfil',
@@ -95,6 +103,10 @@ export default function Profile() {
       logout: 'Sair', logoutConfirm: 'Tem certeza que deseja sair?',
       cancel: 'Cancelar', confirm: 'Sair',
       guestTitle: 'Perfil visitante', guestText: 'Seu progresso fica apenas neste navegador. Crie uma conta para sincronizar e acessar em outros dispositivos.', guestAction: 'Criar conta ou entrar',
+      learningData: 'Dados de aprendizagem', resetProgress: 'Resetar todo o progresso',
+      resetDescription: 'Comece o curso novamente desde a Fase 0. Isso apaga permanentemente aulas, exercícios, quizzes, exames, rascunhos, diagnóstico e progresso dos laboratórios desta conta e deste aparelho.',
+      resetOpen: 'Resetar progresso', resetTitle: 'Começar do zero?', resetWarning: 'Esta ação não pode ser desfeita. Seu perfil, email, idioma, tema e preferências do editor serão preservados.',
+      resetType: 'Digite RESETAR para confirmar', resetAction: 'Apagar progresso e recomeçar', resetting: 'Resetando...', resetCancel: 'Manter meu progresso', resetDone: 'Progresso resetado. Voltando ao início...',
     }
   }[lang]
 
@@ -112,6 +124,12 @@ export default function Profile() {
             <div className="text-xs uppercase tracking-wide mb-3" style={{ color: 'var(--c-muted)' }}>{t.preferences}</div>
             <div className="grid grid-cols-3 gap-2 mb-4">{([{ value: 'dark', label: t.dark, icon: '🌙' }, { value: 'light', label: t.light, icon: '☀️' }, { value: 'system', label: t.system, icon: '📱' }] as const).map(option => <button key={option.value} onClick={() => setTheme(option.value)} className="rounded-xl p-3 text-xs" style={{ background: theme === option.value ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: theme === option.value ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}><div className="text-xl mb-1">{option.icon}</div>{option.label}</button>)}</div>
             <div className="grid grid-cols-2 gap-2">{([{ code: 'en' as const, label: '🇨🇦 English' }, { code: 'pt' as const, label: '🇧🇷 Português' }]).map(option => <button key={option.code} onClick={() => setLang(option.code)} className="rounded-xl py-3 text-sm" style={{ background: lang === option.code ? 'var(--c-purple-dm)' : 'var(--c-bg)', color: lang === option.code ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}>{option.label}</button>)}</div>
+          </div>
+          <div style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)', borderRadius: 14, padding: 16 }}>
+            <div className="text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--c-muted)' }}>{t.learningData}</div>
+            <div className="text-sm font-semibold mb-2" style={{ color: 'var(--c-text)' }}>{t.resetProgress}</div>
+            <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--c-text2)' }}>{t.resetDescription}</p>
+            <button onClick={() => { clearLocalLearningData(); navigate('/phase/0', { replace: true }); window.location.reload() }} className="w-full rounded-xl py-3 text-sm font-semibold" style={{ background: '#3f1117', color: '#fca5a5', border: '1px solid #7f1d1d' }}>{t.resetOpen}</button>
           </div>
           <EditorPreferences />
         </div>
@@ -189,6 +207,30 @@ export default function Profile() {
       setError(e instanceof Error ? e.message : 'Save failed')
     } finally {
       setSaving(false)
+    }
+  }
+
+  // ── Reset learning progress ──
+  const handleResetProgress = async () => {
+    if (!user) return
+    const expected = lang === 'pt' ? 'RESETAR' : 'RESET'
+    if (resetConfirmation.trim().toUpperCase() !== expected) return
+    setResetting(true)
+    setError('')
+    try {
+      await resetLearningProgress(user.id)
+      await refreshProgress()
+      setResetConfirmation('')
+      setShowReset(false)
+      setSaved(true)
+      setTimeout(() => {
+        navigate('/phase/0', { replace: true })
+        window.location.reload()
+      }, 900)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not reset learning progress')
+    } finally {
+      setResetting(false)
     }
   }
 
@@ -437,6 +479,38 @@ export default function Profile() {
         </button>
 
         {/* Logout confirm overlay */}
+        {showReset && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 80, padding: 16 }} role="dialog" aria-modal="true">
+            <div style={{ width: '100%', maxWidth: 440, background: 'var(--c-card)', border: '1px solid #7f1d1d', borderRadius: 18, padding: 20 }}>
+              <div style={{ fontSize: 22, marginBottom: 8 }}>⚠️</div>
+              <h2 style={{ fontSize: 18, color: 'var(--c-text)', fontWeight: 700, marginBottom: 8 }}>{t.resetTitle}</h2>
+              <p style={{ fontSize: 13, color: 'var(--c-text2)', lineHeight: 1.6, marginBottom: 14 }}>{t.resetWarning}</p>
+              <label style={labelStyle}>{t.resetType}</label>
+              <input
+                value={resetConfirmation}
+                onChange={event => setResetConfirmation(event.target.value)}
+                autoComplete="off"
+                style={{ ...inputStyle, marginBottom: 12 }}
+                data-testid="reset-progress-confirmation"
+              />
+              <button
+                onClick={handleResetProgress}
+                disabled={resetting || resetConfirmation.trim().toUpperCase() !== (lang === 'pt' ? 'RESETAR' : 'RESET')}
+                style={{ width: '100%', padding: 14, borderRadius: 12, background: '#dc2626', color: '#fff', fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer', marginBottom: 8, opacity: resetting || resetConfirmation.trim().toUpperCase() !== (lang === 'pt' ? 'RESETAR' : 'RESET') ? 0.45 : 1 }}
+              >
+                {resetting ? t.resetting : t.resetAction}
+              </button>
+              <button
+                onClick={() => { setShowReset(false); setResetConfirmation('') }}
+                disabled={resetting}
+                style={{ width: '100%', padding: 12, borderRadius: 12, background: 'transparent', color: 'var(--c-muted)', fontSize: 14, border: '1px solid var(--c-border)', cursor: 'pointer' }}
+              >
+                {t.resetCancel}
+              </button>
+            </div>
+          </div>
+        )}
+
         {showLogout && (
           <div
             style={{

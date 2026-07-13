@@ -32,8 +32,8 @@ export default function PhaseOverview() {
     {
       id: 'lesson',
       icon: '📚',
-      label: { en: 'Lesson', pt: 'Aula' },
-      desc: { en: 'Content + video examples', pt: 'Conteúdo + exemplos em vídeo' },
+      label: { en: 'Learning journey', pt: 'Jornada de aprendizagem' },
+      desc: { en: '6 lessons: intuition, logic, Python, debugging, practice and transfer', pt: '6 aulas: intuição, lógica, Python, depuração, prática e transferência' },
       done: !!phaseProgress?.lesson_done,
       active: true,
       path: phase.id === 0 ? '/base-zero' : `/phase/${phase.id}/lesson`
