@@ -76,7 +76,7 @@ export default function MiniProject() {
       inputs: 'What enters the program?', output: 'What must the program produce?', rules: 'Which rules transform input into output?', edge: 'Which edge case will you test?',
       planTitle: 'Write the solution as ordered steps', planHelp: 'Do not write Python yet. Your pseudocode should be precise enough that each line can later become a small piece of code.',
       buildTitle: 'Implement one responsibility at a time', buildHelp: 'Use the suggested input below. First make the program run without errors; correctness is proven in the next checkpoint.',
-      suggested: 'Suggested run inputs', run: 'Run project', running: 'Running', outputLabel: 'Console output',
+      suggested: 'Suggested run inputs', expected: 'Expected output evidence', run: 'Run project', running: 'Running', outputLabel: 'Console output',
       testTitle: 'Prove behavior with multiple tests', testHelp: 'A single example is not proof. The app will execute the same program with every listed input set.', runTests: 'Run all tests',
       refactorTitle: 'Improve without changing behavior', refactorHelp: 'Choose at least one improvement, apply it, and run the tests again. Refactoring is complete only when behavior still passes.',
       completed: 'Project completed', accomplishment: 'You can now', openPhase: 'Return to phase',
@@ -92,7 +92,7 @@ export default function MiniProject() {
       inputs: 'O que entra no programa?', output: 'O que o programa precisa produzir?', rules: 'Quais regras transformam entrada em saída?', edge: 'Qual caso limite você vai testar?',
       planTitle: 'Escreva a solução como passos ordenados', planHelp: 'Ainda não escreva Python. O pseudocódigo deve ser preciso o bastante para que cada linha depois vire uma pequena parte do código.',
       buildTitle: 'Implemente uma responsabilidade por vez', buildHelp: 'Use a entrada sugerida abaixo. Primeiro faça o programa executar sem erros; a correção será comprovada no próximo checkpoint.',
-      suggested: 'Entradas sugeridas para executar', run: 'Executar projeto', running: 'Executando', outputLabel: 'Saída do console',
+      suggested: 'Entradas sugeridas para executar', expected: 'Evidências de saída esperadas', run: 'Executar projeto', running: 'Executando', outputLabel: 'Saída do console',
       testTitle: 'Comprove o comportamento com vários testes', testHelp: 'Um único exemplo não é prova. O app executará o mesmo programa com todos os conjuntos de entrada listados.', runTests: 'Executar todos os testes',
       refactorTitle: 'Melhore sem alterar o comportamento', refactorHelp: 'Escolha pelo menos uma melhoria, aplique-a e execute os testes novamente. A refatoração só termina quando o comportamento continua aprovado.',
       completed: 'Projeto concluído', accomplishment: 'Agora você consegue', openPhase: 'Voltar para a fase',
@@ -331,6 +331,8 @@ export default function MiniProject() {
             <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.buildHelp}</p>
             <div className="mt-3 text-xs" style={{ color: 'var(--c-muted)' }}>{t.suggested}</div>
             <pre className="rounded-lg p-3 mt-1 text-xs overflow-x-auto" style={{ background: 'var(--c-code-bg)', color: 'var(--c-text2)' }}>{project.tests[0]?.inputs.join('\n') || '—'}</pre>
+            <div className="mt-3 text-xs" style={{ color: 'var(--c-muted)' }}>{t.expected}</div>
+            <pre className="rounded-lg p-3 mt-1 text-xs overflow-x-auto" style={{ background: 'var(--c-code-bg)', color: 'var(--c-text2)' }}>{project.tests[0]?.expectedOutput.join('\n') || '—'}</pre>
           </Card>
           <VSCodeEditor value={progress.code} onChange={code => persist({ code, testResults: [], testedCode: '' })} filename={`${project.id}.py`} label={project.title[lang]} />
           <Button onClick={runBuild} loading={running} fullWidth>{running ? t.running : t.run}</Button>

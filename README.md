@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 10.13.0 — Sprint 10.2: projeto integrador de Python profissional e segundo artefato de portfólio.**
+**Versão atual: 10.16.0 — Sprint 10.5: projeto integrador de Dados e Machine Learning.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 

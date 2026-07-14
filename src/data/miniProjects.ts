@@ -903,7 +903,316 @@ if __name__ == "__main__":
       { en: 'prove normal, invalid, duplicate and empty behavior', pt: 'comprovar comportamentos normal, inválido, duplicado e vazio' },
       { en: 'produce an engineering portfolio artifact you can defend', pt: 'produzir um artefato de engenharia que você consegue defender' },
     ],
+  },
+  {
+    id: 'data-ml-risk-pipeline',
+    milestonePhaseId: 60,
+    icon: '📈',
+    title: { en: 'Claim Risk Classification Pipeline', pt: 'Pipeline de Classificação de Risco de Sinistros' },
+    subtitle: {
+      en: 'Build and evaluate a small classification pipeline without hiding the data flow behind a library.',
+      pt: 'Construa e avalie um pequeno pipeline de classificação sem esconder o fluxo dos dados atrás de uma biblioteca.',
+    },
+    scenario: {
+      en: 'A claims analytics team has labeled historical records and a separate evaluation set. Build a reproducible pipeline that validates rows, fits preprocessing only on training data, learns class centroids, predicts the evaluation rows and reports honest metrics.',
+      pt: 'Uma equipe de análise de sinistros possui registros históricos rotulados e um conjunto separado de avaliação. Construa um pipeline reproduzível que valide linhas, ajuste o pré-processamento apenas nos dados de treino, aprenda centroides por classe, faça previsões e publique métricas honestas.',
+    },
+    professionalContext: {
+      en: 'A model is more than a prediction formula. Professional ML separates training from evaluation, prevents leakage, records the contract and reports what the metrics actually measure.',
+      pt: 'Um modelo é mais do que uma fórmula de previsão. Machine Learning profissional separa treino de avaliação, evita vazamento, registra o contrato e informa o que as métricas realmente medem.',
+    },
+    estimatedMinutes: 210,
+    skills: [
+      { en: 'dataset contracts and validation', pt: 'contratos e validação de dados' },
+      { en: 'train/evaluation separation', pt: 'separação entre treino e avaliação' },
+      { en: 'feature scaling without leakage', pt: 'normalização de atributos sem vazamento' },
+      { en: 'nearest-centroid classification', pt: 'classificação por centroide mais próximo' },
+      { en: 'accuracy, precision and recall', pt: 'acurácia, precisão e recall' },
+      { en: 'reproducible model evaluation', pt: 'avaliação reproduzível de modelos' },
+    ],
+    requirements: {
+      en: [
+        'Represent every validated row with a dataclass',
+        'Parse TRAIN|id|amount|days_open|label and TEST|id|amount|days_open|label',
+        'Reject invalid identifiers, negative values and labels outside 0 or 1',
+        'Fit min/max feature scaling using training rows only',
+        'Fit one centroid for label 0 and one centroid for label 1',
+        'Predict each TEST row by the closest centroid',
+        'Print PRED=<id>|<predicted>|<actual> for every evaluation row',
+        'Print METRICS=<correct>|<total>|<accuracy>|<precision>|<recall>',
+        'Protect empty evaluation sets and missing training classes',
+      ],
+      pt: [
+        'Represente cada linha validada com uma dataclass',
+        'Interprete TRAIN|id|amount|days_open|label e TEST|id|amount|days_open|label',
+        'Rejeite identificadores inválidos, valores negativos e rótulos fora de 0 ou 1',
+        'Ajuste a normalização min/max usando somente as linhas de treino',
+        'Ajuste um centroide para o rótulo 0 e outro para o rótulo 1',
+        'Classifique cada linha TEST pelo centroide mais próximo',
+        'Imprima PRED=<id>|<previsto>|<real> para cada linha de avaliação',
+        'Imprima METRICS=<corretos>|<total>|<acurácia>|<precisão>|<recall>',
+        'Proteja conjunto de avaliação vazio e classes ausentes no treino',
+      ],
+    },
+    inputContract: {
+      en: 'Rows begin with TRAIN or TEST, followed by id|amount|days_open|label. END finishes the dataset.',
+      pt: 'Cada linha começa com TRAIN ou TEST, seguida de id|amount|days_open|label. END encerra o conjunto.',
+    },
+    outputContract: {
+      en: 'Invalid rows use INVALID=<id>. Predictions use PRED=<id>|<predicted>|<actual>. The final line reports METRICS=<correct>|<total>|<accuracy>|<precision>|<recall>. A training set without both labels reports MODEL_ERROR=need_both_labels.',
+      pt: 'Linhas inválidas usam INVALID=<id>. Previsões usam PRED=<id>|<previsto>|<real>. A linha final informa METRICS=<corretos>|<total>|<acurácia>|<precisão>|<recall>. Treino sem as duas classes informa MODEL_ERROR=need_both_labels.',
+    },
+    ruleContract: {
+      en: 'Calculate scaling ranges and class centroids only from TRAIN rows. Use normalized amount and days_open. Choose label 0 when both distances are equal. Metrics use the TEST labels only.',
+      pt: 'Calcule intervalos de normalização e centroides somente com linhas TRAIN. Use amount e days_open normalizados. Escolha o rótulo 0 quando as distâncias forem iguais. As métricas usam somente os rótulos TEST.',
+    },
+    edgeCases: {
+      en: 'Prove empty evaluation data, invalid rows, zero feature ranges and a training set that does not contain both labels.',
+      pt: 'Comprove avaliação vazia, linhas inválidas, atributos sem variação e treino que não contenha os dois rótulos.',
+    },
+    starterCode: {
+      en: `# Portfolio project: Claim Risk Classification Pipeline
+from dataclasses import dataclass
+import math
+
+
+@dataclass(frozen=True)
+class ClaimRow:
+    split: str
+    claim_id: str
+    amount: float
+    days_open: float
+    label: int
+
+
+def parse_record(line: str) -> ClaimRow:
+    # TODO: parse SPLIT|id|amount|days_open|label
+    # TODO: validate split, identifier, non-negative features and binary label
+    raise NotImplementedError
+
+
+def fit_scaler(train_rows: list[ClaimRow]) -> dict[str, float]:
+    # TODO: calculate min and max from TRAIN rows only
+    # Use a span of 1.0 when a feature has no variation.
+    return {"amount_min": 0.0, "amount_span": 1.0, "days_min": 0.0, "days_span": 1.0}
+
+
+def transform(row: ClaimRow, scaler: dict[str, float]) -> tuple[float, float]:
+    # TODO: apply the training scaler to one row
+    return (0.0, 0.0)
+
+
+def fit_centroids(train_rows: list[ClaimRow], scaler: dict[str, float]) -> dict[int, tuple[float, float]]:
+    # TODO: average the normalized vectors separately for labels 0 and 1
+    return {}
+
+
+def predict(row: ClaimRow, scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> int:
+    # TODO: compare Euclidean distances to both centroids
+    return 0
+
+
+def evaluate(test_rows: list[ClaimRow], scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> None:
+    # TODO: print every PRED line and the final METRICS line
+    pass
+
+
+def main() -> None:
+    train_rows: list[ClaimRow] = []
+    test_rows: list[ClaimRow] = []
+
+    while True:
+        line = input("Record: ").strip()
+        if line.upper() == "END":
+            break
+        try:
+            row = parse_record(line)
+        except ValueError:
+            parts = line.split("|")
+            claim_id = parts[1].strip() if len(parts) > 1 and parts[1].strip() else "UNKNOWN"
+            print(f"INVALID={claim_id}")
+            continue
+
+        if row.split == "TRAIN":
+            train_rows.append(row)
+        else:
+            test_rows.append(row)
+
+    scaler = fit_scaler(train_rows)
+    centroids = fit_centroids(train_rows, scaler)
+    if 0 not in centroids or 1 not in centroids:
+        print("MODEL_ERROR=need_both_labels")
+        return
+    evaluate(test_rows, scaler, centroids)
+
+
+if __name__ == "__main__":
+    main()`,
+      pt: `# Projeto de portfólio: Pipeline de Classificação de Risco
+from dataclasses import dataclass
+import math
+
+
+@dataclass(frozen=True)
+class ClaimRow:
+    split: str
+    claim_id: str
+    amount: float
+    days_open: float
+    label: int
+
+
+def parse_record(line: str) -> ClaimRow:
+    # TODO: interprete SPLIT|id|amount|days_open|label
+    # TODO: valide divisão, identificador, atributos não negativos e rótulo binário
+    raise NotImplementedError
+
+
+def fit_scaler(train_rows: list[ClaimRow]) -> dict[str, float]:
+    # TODO: calcule mínimo e máximo usando somente as linhas TRAIN
+    # Use span 1.0 quando um atributo não tiver variação.
+    return {"amount_min": 0.0, "amount_span": 1.0, "days_min": 0.0, "days_span": 1.0}
+
+
+def transform(row: ClaimRow, scaler: dict[str, float]) -> tuple[float, float]:
+    # TODO: aplique a normalização de treino em uma linha
+    return (0.0, 0.0)
+
+
+def fit_centroids(train_rows: list[ClaimRow], scaler: dict[str, float]) -> dict[int, tuple[float, float]]:
+    # TODO: calcule a média dos vetores normalizados separadamente para rótulos 0 e 1
+    return {}
+
+
+def predict(row: ClaimRow, scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> int:
+    # TODO: compare as distâncias euclidianas aos dois centroides
+    return 0
+
+
+def evaluate(test_rows: list[ClaimRow], scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> None:
+    # TODO: imprima cada linha PRED e a linha final METRICS
+    pass
+
+
+def main() -> None:
+    train_rows: list[ClaimRow] = []
+    test_rows: list[ClaimRow] = []
+
+    while True:
+        line = input("Registro: ").strip()
+        if line.upper() == "END":
+            break
+        try:
+            row = parse_record(line)
+        except ValueError:
+            parts = line.split("|")
+            claim_id = parts[1].strip() if len(parts) > 1 and parts[1].strip() else "UNKNOWN"
+            print(f"INVALID={claim_id}")
+            continue
+
+        if row.split == "TRAIN":
+            train_rows.append(row)
+        else:
+            test_rows.append(row)
+
+    scaler = fit_scaler(train_rows)
+    centroids = fit_centroids(train_rows, scaler)
+    if 0 not in centroids or 1 not in centroids:
+        print("MODEL_ERROR=need_both_labels")
+        return
+    evaluate(test_rows, scaler, centroids)
+
+
+if __name__ == "__main__":
+    main()`,
+    },
+    tests: [
+      {
+        id: 'risk-perfect-separation',
+        title: { en: 'Separated evaluation examples', pt: 'Exemplos de avaliação separados' },
+        inputs: [
+          'TRAIN|T1|1000|5|0',
+          'TRAIN|T2|2000|10|0',
+          'TRAIN|T3|9000|40|1',
+          'TRAIN|T4|11000|50|1',
+          'TEST|E1|1500|7|0',
+          'TEST|E2|10000|45|1',
+          'END',
+        ],
+        expectedOutput: [
+          'PRED=E1|0|0',
+          'PRED=E2|1|1',
+          'METRICS=2|2|1.00|1.00|1.00',
+        ],
+      },
+      {
+        id: 'risk-false-positive',
+        title: { en: 'A false positive changes the metrics', pt: 'Um falso positivo altera as métricas' },
+        inputs: [
+          'TRAIN|T1|1000|5|0',
+          'TRAIN|T2|2000|10|0',
+          'TRAIN|T3|9000|40|1',
+          'TRAIN|T4|11000|50|1',
+          'TEST|E3|7000|25|0',
+          'TEST|E4|8500|35|1',
+          'END',
+        ],
+        expectedOutput: [
+          'PRED=E3|1|0',
+          'PRED=E4|1|1',
+          'METRICS=1|2|0.50|0.50|1.00',
+        ],
+      },
+      {
+        id: 'risk-invalid-empty-evaluation',
+        title: { en: 'Invalid row and empty evaluation set', pt: 'Linha inválida e avaliação vazia' },
+        inputs: [
+          'TRAIN|T1|1000|5|0',
+          'TRAIN|T2|2000|10|0',
+          'TRAIN|T3|9000|40|1',
+          'TRAIN|T4|11000|50|1',
+          'TEST|BAD|-1|10|0',
+          'END',
+        ],
+        expectedOutput: [
+          'INVALID=BAD',
+          'METRICS=0|0|0.00|0.00|0.00',
+        ],
+      },
+      {
+        id: 'risk-missing-class',
+        title: { en: 'Training data missing one class', pt: 'Treino sem uma das classes' },
+        inputs: [
+          'TRAIN|T1|1000|5|0',
+          'TRAIN|T2|1200|7|0',
+          'TEST|E1|1100|6|0',
+          'END',
+        ],
+        expectedOutput: ['MODEL_ERROR=need_both_labels'],
+      },
+    ],
+    requiredNodes: ['ClassDef', 'Try', 'While', 'AnnAssign', 'Raise'],
+    requiredImports: ['dataclasses', 'math'],
+    requiredFunctions: ['parse_record', 'fit_scaler', 'transform', 'fit_centroids', 'predict', 'evaluate', 'main'],
+    requireMainGuard: true,
+    refactorOptions: [
+      { en: 'Keep parsing, preprocessing, model fitting, prediction and evaluation in separate functions.', pt: 'Mantenha interpretação, pré-processamento, ajuste, previsão e avaliação em funções separadas.' },
+      { en: 'Make the training-only fit boundary impossible to confuse with evaluation.', pt: 'Deixe impossível confundir o ajuste feito no treino com a avaliação.' },
+      { en: 'Name every metric component so precision and recall can be audited.', pt: 'Nomeie cada componente das métricas para que precisão e recall possam ser auditados.' },
+      { en: 'Protect zero denominators explicitly instead of relying on exceptions.', pt: 'Proteja denominadores zero explicitamente em vez de depender de exceções.' },
+      { en: 'Document why a nearest-centroid baseline is useful and what it cannot model.', pt: 'Documente por que um baseline de centroide é útil e o que ele não consegue modelar.' },
+      { en: 'Explain how you verified that preprocessing did not inspect TEST rows.', pt: 'Explique como você confirmou que o pré-processamento não examinou linhas TEST.' },
+    ],
+    accomplishment: [
+      { en: 'define and validate a machine-learning dataset contract', pt: 'definir e validar o contrato de um conjunto de Machine Learning' },
+      { en: 'separate model fitting from honest evaluation', pt: 'separar ajuste do modelo de uma avaliação honesta' },
+      { en: 'prevent preprocessing leakage', pt: 'evitar vazamento no pré-processamento' },
+      { en: 'implement a classifier from vector distances', pt: 'implementar um classificador usando distâncias entre vetores' },
+      { en: 'calculate accuracy, precision and recall safely', pt: 'calcular acurácia, precisão e recall com segurança' },
+      { en: 'produce a data and ML portfolio artifact you can explain', pt: 'produzir um artefato de dados e ML que você consegue explicar' },
+    ],
   }
+
 ]
 
 export function getMiniProject(projectId: string) {
