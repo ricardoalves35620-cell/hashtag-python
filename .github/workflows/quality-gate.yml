@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   quality:
-    name: Typecheck, tests, build and content audit
+    name: Typecheck, tests, build and curriculum audit
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -47,6 +47,10 @@ jobs:
           HP_AUDIT_CONTENT_OUTPUT: playwright-report/content-audit.json
         run: npm run audit:content
 
+
+      - name: Learning Engine curriculum audit
+        run: npm run audit:curriculum
+
       - name: Dependency audit
         run: npm audit --audit-level=high
 
@@ -55,6 +59,8 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: quality-evidence-${{ github.run_number }}
-          path: playwright-report/content-audit.json
+          path: |
+            playwright-report/content-audit.json
+            curriculum-audit-report
           if-no-files-found: warn
           retention-days: 14

@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 10.9.0 — Learning Engine V2.9: dados, Machine Learning, redes neurais e IA local com jornadas específicas.**
+**Versão atual: 10.10.0 — Learning Engine V2.10: auditoria integral do currículo e gate de qualidade baseado no motor pedagógico atual.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -198,3 +198,16 @@ Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.9.md`.
 As fases 40–53 agora possuem roteiros individuais para Python avançado e engenharia. Todo exame mostra entradas visíveis e saída ou comportamento esperado antes da correção. Casos ocultos continuam protegidos. O contrato publicado é auditado contra os mesmos checks do validador.
 
 Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.8.md`.
+
+
+## Learning Engine V2.10
+
+A auditoria pedagógica antiga foi substituída por um gate que entende as dez etapas reais da jornada, contratos visíveis de exame, prática verificada, generalização, progressão, projetos e conteúdo bilíngue. O relatório não esconde melhorias pendentes: apenas contradições capazes de enganar o aluno bloqueiam uma release.
+
+Execute:
+
+```powershell
+npm run audit:curriculum
+```
+
+Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.10.md` e `docs/CURRICULUM_AUDIT_STANDARD.md`.

@@ -1,7 +1,7 @@
 {
   "name": "hashtag-python",
   "private": true,
-  "version": "10.9.0",
+  "version": "10.10.0",
   "type": "module",
   "engines": {
     "node": ">=22.12.0",
@@ -19,10 +19,11 @@
     "audit:visual": "playwright test",
     "audit": "npm run audit:content && npm run audit:visual",
     "audit:autopilot": "tsx audit/autopilot.ts",
-    "quality:gate": "npm run typecheck && npm run test && npm run build && npm run audit:content && npm run audit:pedagogy && npm audit --audit-level=high",
+    "quality:gate": "npm run typecheck && npm run test && npm run build && npm run audit:content && npm run audit:curriculum && npm audit --audit-level=high",
     "audit:state": "node scripts/audit/check-audit-state.mjs",
     "audit:slim": "node scripts/audit/create-slim-report.mjs",
-    "audit:pedagogy": "tsx audit/pedagogy-audit.ts"
+    "audit:pedagogy": "tsx audit/curriculum-audit.ts",
+    "audit:curriculum": "tsx audit/curriculum-audit.ts"
   },
   "dependencies": {
     "@codemirror/commands": "^6.3.3",

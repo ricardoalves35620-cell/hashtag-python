@@ -24,7 +24,7 @@ export interface LessonUnit {
   checkpointPlaceholder: Bilingual
 }
 
-interface PhaseBlueprint {
+export interface PhaseBlueprint {
   situation: Bilingual
   humanReasoning: Bilingual
   decomposition: Bilingual
@@ -783,8 +783,13 @@ function authoredWarnings(blocks: LessonBlock[]) {
  * All phases 0–68 have hand-authored reasoning blueprints.
  * The generic fallback remains only as a defensive guard for future phases.
  */
+export function getPedagogicalBlueprintStatus(phase: Phase): { authored: boolean; blueprint: PhaseBlueprint } {
+  const authored = Object.prototype.hasOwnProperty.call(AUTHORED_BLUEPRINTS, phase.id)
+  return { authored, blueprint: authored ? AUTHORED_BLUEPRINTS[phase.id] : genericBlueprint(phase) }
+}
+
 export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
-  const blueprint = AUTHORED_BLUEPRINTS[phase.id] || genericBlueprint(phase)
+  const blueprint = getPedagogicalBlueprintStatus(phase).blueprint
   const blocks = phase.lesson.blocks
   const sourceText = authoredText(blocks)
   const sourceCode = authoredCode(blocks)

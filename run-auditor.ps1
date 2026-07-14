@@ -13,7 +13,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "8.2.0"
+$AuditorVersion = "8.3.0"
 
 Add-Type @"
 using System;
@@ -149,6 +149,11 @@ function Export-AuditReport {
         }
       }
 
+      $curriculumRoot = Join-Path $sourceRoot "curriculum-audit"
+      if (Test-Path $curriculumRoot) {
+        Copy-Item $curriculumRoot (Join-Path $staging "curriculum-audit") -Recurse -Force
+      }
+
       if (Test-Path $tar) {
         & $tar -a -c -f $DestinationZip -C $staging .
         if ($LASTEXITCODE -ne 0) {
@@ -274,6 +279,13 @@ try {
     Write-Host "Installing Playwright Chromium (first run only)..." -ForegroundColor Yellow
     & $nodeCommand $playwrightCli install chromium
     if ($LASTEXITCODE -ne 0) { throw "Could not install Playwright Chromium" }
+  }
+
+  $env:HP_CURRICULUM_AUDIT_OUTPUT_DIR = Join-Path $PSScriptRoot "playwright-report\autopilot\curriculum-audit"
+  Write-Host "Running Learning Engine V2.10 curriculum gate..." -ForegroundColor Cyan
+  & $nodeCommand $tsxCli "audit/curriculum-audit.ts"
+  if ($LASTEXITCODE -ne 0) {
+    throw "Curriculum audit found a blocking contradiction. Review playwright-report\autopilot\curriculum-audit."
   }
 
   $argsList = @(

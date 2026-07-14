@@ -31,4 +31,10 @@ if (fs.existsSync(cyclesRoot)) {
   }
 }
 
+
+const curriculumRoot = path.join(source, 'curriculum-audit')
+if (fs.existsSync(curriculumRoot)) {
+  fs.cpSync(curriculumRoot, path.join(destination, 'curriculum-audit'), { recursive: true })
+}
+
 console.log(`Slim audit report created at ${destination}`)

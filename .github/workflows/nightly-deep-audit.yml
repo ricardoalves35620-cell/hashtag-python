@@ -83,6 +83,11 @@ jobs:
           echo "base_url=$base_url" >> "$GITHUB_OUTPUT"
           echo "environment_offset=$offset" >> "$GITHUB_OUTPUT"
 
+      - name: Run Learning Engine curriculum gate
+        env:
+          HP_CURRICULUM_AUDIT_OUTPUT_DIR: playwright-report/autopilot/curriculum-audit
+        run: npm run audit:curriculum
+
       - name: Run deep production audit
         run: |
           npm run audit:autopilot -- \
