@@ -80,7 +80,8 @@ describe('Sprint 10.4 advanced engineering portfolio', () => {
 
   it('adds the third artifact without bypassing normal progression', () => {
     const portfolio = source('pages/Portfolio.tsx')
-    expect(portfolio).toContain("'engineering-order-service'")
+    const portfolioModel = source('lib/portfolio.ts')
+    expect(portfolioModel).toContain("'engineering-order-service'")
     expect(portfolio).toContain('project.milestonePhaseId === 39')
     expect(portfolio).toContain('t.engineering')
     expect(portfolio).toContain("getPhaseStatus(progress, project.milestonePhaseId) !== 'locked'")

@@ -1500,7 +1500,366 @@ if __name__ == "__main__":
       { en: 'handle unknown tokens without hallucinating data', pt: 'tratar tokens desconhecidos sem inventar dados' },
       { en: 'produce a neural-NLP portfolio artifact you can explain line by line', pt: 'produzir um artefato de NLP neural que você consegue explicar linha por linha' },
     ],
+
+  },
+  {
+    id: 'local-rag-copilot',
+    milestonePhaseId: 68,
+    icon: '🧭',
+    title: { en: 'Private Local Document Copilot', pt: 'Copiloto Privado de Documentos Locais' },
+    subtitle: {
+      en: 'Build an auditable retrieval and grounded-answer core without an external AI API.',
+      pt: 'Construa um núcleo auditável de recuperação e resposta fundamentada sem API externa de IA.',
+    },
+    scenario: {
+      en: 'A private assistant must answer questions using only approved local documents. Build the retrieval core, show the evidence used and abstain when the documents do not support an answer.',
+      pt: 'Um assistente privado precisa responder usando somente documentos locais aprovados. Construa o núcleo de recuperação, mostre as evidências usadas e se abstenha quando os documentos não sustentarem uma resposta.',
+    },
+    professionalContext: {
+      en: 'A trustworthy RAG system is not merely a chat screen. It needs explicit ingestion, vectorization, retrieval, ranking, grounded output, citations, abstention and tests that expose unsupported answers.',
+      pt: 'Um sistema RAG confiável não é apenas uma tela de chat. Ele precisa de ingestão explícita, vetorização, recuperação, ranqueamento, saída fundamentada, citações, abstenção e testes que exponham respostas sem suporte.',
+    },
+    estimatedMinutes: 300,
+    skills: [
+      { en: 'private document ingestion', pt: 'ingestão de documentos privados' },
+      { en: 'token-based vectorization', pt: 'vetorização baseada em tokens' },
+      { en: 'cosine similarity retrieval', pt: 'recuperação por similaridade de cosseno' },
+      { en: 'grounded extractive answers', pt: 'respostas extrativas fundamentadas' },
+      { en: 'citations and abstention', pt: 'citações e abstenção' },
+      { en: 'offline-first AI architecture', pt: 'arquitetura de IA offline-first' },
+    ],
+    requirements: {
+      en: [
+        'Represent document chunks with an immutable dataclass',
+        'Parse EMBED|token|x|y, CHUNK|source|id|text and QUERY|text records',
+        'Tokenize text consistently before vectorization',
+        'Build vectors only from explicitly known local embeddings',
+        'Calculate cosine similarity safely',
+        'Retrieve the best supported chunks with a minimum evidence threshold',
+        'Print each retrieved citation and its score',
+        'Create an answer only from a retrieved sentence',
+        'Print all citations used by the answer',
+        'Abstain when query terms are unknown or no chunk reaches the evidence threshold',
+        'Do not call an external AI API',
+      ],
+      pt: [
+        'Represente trechos de documentos com uma dataclass imutável',
+        'Interprete registros EMBED|token|x|y, CHUNK|fonte|id|texto e QUERY|texto',
+        'Tokenize os textos de forma consistente antes da vetorização',
+        'Construa vetores somente com embeddings locais conhecidos',
+        'Calcule similaridade de cosseno com segurança',
+        'Recupere os melhores trechos acima de um limite mínimo de evidência',
+        'Mostre cada citação recuperada e sua pontuação',
+        'Crie uma resposta somente a partir de uma frase recuperada',
+        'Mostre todas as citações usadas pela resposta',
+        'Abstenha-se quando os termos da consulta forem desconhecidos ou não houver evidência suficiente',
+        'Não chame API externa de IA',
+      ],
+    },
+    inputContract: {
+      en: 'Define local token vectors with EMBED|token|x|y, add chunks with CHUNK|source|id|text, provide one QUERY|text and finish with END.',
+      pt: 'Defina vetores locais com EMBED|token|x|y, adicione trechos com CHUNK|fonte|id|texto, informe uma QUERY|texto e finalize com END.',
+    },
+    outputContract: {
+      en: 'Supported queries print RETRIEVED=<source>#<id>|<score>, then ANSWER=<sentence> and CITATIONS=<source>#<id>. Unsupported queries print ABSTAIN=unknown_query_terms or ABSTAIN=no_relevant_evidence.',
+      pt: 'Consultas sustentadas imprimem RETRIEVED=<fonte>#<id>|<pontuação>, depois ANSWER=<frase> e CITATIONS=<fonte>#<id>. Consultas sem suporte imprimem ABSTAIN=unknown_query_terms ou ABSTAIN=no_relevant_evidence.',
+    },
+    ruleContract: {
+      en: 'Average known token vectors for the query and each chunk. Rank chunks by cosine similarity, keep at most two with score >= 0.45, answer with a sentence from the best chunk and cite every retrieved chunk. Never invent text that is absent from the evidence.',
+      pt: 'Calcule a média dos vetores conhecidos da consulta e de cada trecho. Ordene por similaridade de cosseno, mantenha no máximo dois com pontuação >= 0,45, responda com uma frase do melhor trecho e cite todos os trechos recuperados. Nunca invente texto ausente das evidências.',
+    },
+    edgeCases: {
+      en: 'Test unknown query terms, unrelated documents, malformed records, empty vectors, tied scores and chunks containing only unknown tokens.',
+      pt: 'Teste termos desconhecidos na consulta, documentos não relacionados, registros malformados, vetores vazios, empates e trechos contendo apenas tokens desconhecidos.',
+    },
+    starterCode: {
+      en: `# Final portfolio capstone: Private Local Document Copilot
+from dataclasses import dataclass
+import math
+import re
+
+
+@dataclass(frozen=True)
+class Chunk:
+    source: str
+    chunk_id: str
+    text: str
+
+
+def tokenize(text: str) -> list[str]:
+    # TODO: return normalized words using re.findall
+    return []
+
+
+def average_vector(text: str, embeddings: dict[str, tuple[float, float]]):
+    # TODO: average only the vectors of known tokens
+    # Return None when the text has no known token
+    return None
+
+
+def cosine_similarity(left: tuple[float, float], right: tuple[float, float]) -> float:
+    # TODO: calculate dot product and vector norms with math.sqrt
+    # Return 0.0 when one norm is zero
+    return 0.0
+
+
+def retrieve(
+    query_text: str,
+    chunks: list[Chunk],
+    embeddings: dict[str, tuple[float, float]],
+    top_k: int = 2,
+    min_score: float = 0.45,
+):
+    # TODO: vectorize query and chunks
+    # TODO: keep supported chunks, sort by score and citation
+    return []
+
+
+def grounded_answer(query_text: str, retrieved):
+    # TODO: choose a sentence that exists in the best retrieved chunk
+    # Never invent a sentence that is absent from the document
+    return None
+
+
+def main() -> None:
+    embeddings: dict[str, tuple[float, float]] = {}
+    chunks: list[Chunk] = []
+    query_text = ""
+
+    while True:
+        line = input("Record: ").strip()
+        if line.upper() == "END":
+            break
+        try:
+            kind, payload = line.split("|", 1)
+            kind = kind.upper()
+            if kind == "EMBED":
+                token, x, y = payload.split("|")
+                embeddings[token.strip().lower()] = (float(x), float(y))
+            elif kind == "CHUNK":
+                source, chunk_id, chunk_text = payload.split("|", 2)
+                chunks.append(Chunk(source.strip(), chunk_id.strip(), chunk_text.strip()))
+            elif kind == "QUERY":
+                query_text = payload.strip()
+            else:
+                raise ValueError
+        except (ValueError, TypeError):
+            print("INVALID_RECORD")
+
+    query_vector = average_vector(query_text, embeddings)
+    if query_vector is None:
+        print("ABSTAIN=unknown_query_terms")
+        return
+
+    retrieved = retrieve(query_text, chunks, embeddings)
+    if not retrieved:
+        print("ABSTAIN=no_relevant_evidence")
+        return
+
+    for score, chunk in retrieved:
+        print(f"RETRIEVED={chunk.source}#{chunk.chunk_id}|{score:.2f}")
+
+    answer = grounded_answer(query_text, retrieved)
+    if not answer:
+        print("ABSTAIN=no_relevant_evidence")
+        return
+
+    print(f"ANSWER={answer}")
+    citations = ",".join(f"{chunk.source}#{chunk.chunk_id}" for _, chunk in retrieved)
+    print(f"CITATIONS={citations}")
+
+
+if __name__ == "__main__":
+    main()`,
+      pt: `# Capstone final do portfólio: Copiloto Privado de Documentos Locais
+from dataclasses import dataclass
+import math
+import re
+
+
+@dataclass(frozen=True)
+class Chunk:
+    source: str
+    chunk_id: str
+    text: str
+
+
+def tokenize(text: str) -> list[str]:
+    # TODO: retorne palavras normalizadas usando re.findall
+    return []
+
+
+def average_vector(text: str, embeddings: dict[str, tuple[float, float]]):
+    # TODO: calcule a média somente dos vetores de tokens conhecidos
+    # Retorne None quando o texto não tiver token conhecido
+    return None
+
+
+def cosine_similarity(left: tuple[float, float], right: tuple[float, float]) -> float:
+    # TODO: calcule produto escalar e normas com math.sqrt
+    # Retorne 0.0 quando uma norma for zero
+    return 0.0
+
+
+def retrieve(
+    query_text: str,
+    chunks: list[Chunk],
+    embeddings: dict[str, tuple[float, float]],
+    top_k: int = 2,
+    min_score: float = 0.45,
+):
+    # TODO: vetorize a consulta e os trechos
+    # TODO: mantenha trechos sustentados e ordene por pontuação e citação
+    return []
+
+
+def grounded_answer(query_text: str, retrieved):
+    # TODO: escolha uma frase que exista no melhor trecho recuperado
+    # Nunca invente uma frase ausente do documento
+    return None
+
+
+def main() -> None:
+    embeddings: dict[str, tuple[float, float]] = {}
+    chunks: list[Chunk] = []
+    query_text = ""
+
+    while True:
+        line = input("Registro: ").strip()
+        if line.upper() == "END":
+            break
+        try:
+            kind, payload = line.split("|", 1)
+            kind = kind.upper()
+            if kind == "EMBED":
+                token, x, y = payload.split("|")
+                embeddings[token.strip().lower()] = (float(x), float(y))
+            elif kind == "CHUNK":
+                source, chunk_id, chunk_text = payload.split("|", 2)
+                chunks.append(Chunk(source.strip(), chunk_id.strip(), chunk_text.strip()))
+            elif kind == "QUERY":
+                query_text = payload.strip()
+            else:
+                raise ValueError
+        except (ValueError, TypeError):
+            print("INVALID_RECORD")
+
+    query_vector = average_vector(query_text, embeddings)
+    if query_vector is None:
+        print("ABSTAIN=unknown_query_terms")
+        return
+
+    retrieved = retrieve(query_text, chunks, embeddings)
+    if not retrieved:
+        print("ABSTAIN=no_relevant_evidence")
+        return
+
+    for score, chunk in retrieved:
+        print(f"RETRIEVED={chunk.source}#{chunk.chunk_id}|{score:.2f}")
+
+    answer = grounded_answer(query_text, retrieved)
+    if not answer:
+        print("ABSTAIN=no_relevant_evidence")
+        return
+
+    print(f"ANSWER={answer}")
+    citations = ",".join(f"{chunk.source}#{chunk.chunk_id}" for _, chunk in retrieved)
+    print(f"CITATIONS={citations}")
+
+
+if __name__ == "__main__":
+    main()`,
+    },
+    tests: [
+      {
+        id: 'rag-grounded-answer',
+        title: { en: 'Grounded answer with one strong citation', pt: 'Resposta fundamentada com uma citação forte' },
+        inputs: [
+          'EMBED|water|1|0',
+          'EMBED|damage|0.9|0.1',
+          'EMBED|fire|0|1',
+          'EMBED|smoke|0.1|0.9',
+          'CHUNK|policy.md|1|Water damage is covered after the deductible.',
+          'CHUNK|policy.md|2|Fire and smoke require emergency reporting.',
+          'QUERY|water damage',
+          'END',
+        ],
+        expectedOutput: [
+          'RETRIEVED=policy.md#1|1.00',
+          'ANSWER=Water damage is covered after the deductible.',
+          'CITATIONS=policy.md#1',
+        ],
+      },
+      {
+        id: 'rag-two-citations',
+        title: { en: 'Two relevant chunks remain auditable', pt: 'Dois trechos relevantes permanecem auditáveis' },
+        inputs: [
+          'EMBED|invoice|1|0',
+          'EMBED|payment|0.9|0.1',
+          'EMBED|deadline|0.8|0.2',
+          'EMBED|late|0.7|0.3',
+          'EMBED|service|0.6|0.4',
+          'EMBED|weather|0|1',
+          'CHUNK|billing.md|1|Invoice payment deadline is thirty days.',
+          'CHUNK|billing.md|2|Late payment may pause service.',
+          'CHUNK|weather.md|1|Weather alerts are updated hourly.',
+          'QUERY|payment deadline',
+          'END',
+        ],
+        expectedOutput: [
+          'RETRIEVED=billing.md#1|1.00',
+          'RETRIEVED=billing.md#2|0.98',
+          'ANSWER=Invoice payment deadline is thirty days.',
+          'CITATIONS=billing.md#1,billing.md#2',
+        ],
+      },
+      {
+        id: 'rag-unknown-query',
+        title: { en: 'Unknown query terms cause honest abstention', pt: 'Termos desconhecidos causam abstenção honesta' },
+        inputs: [
+          'EMBED|known|1|0',
+          'CHUNK|notes.md|1|Known facts are local.',
+          'QUERY|missing token',
+          'END',
+        ],
+        expectedOutput: ['ABSTAIN=unknown_query_terms'],
+      },
+      {
+        id: 'rag-no-evidence',
+        title: { en: 'Unrelated evidence is rejected', pt: 'Evidência não relacionada é rejeitada' },
+        inputs: [
+          'EMBED|water|1|0',
+          'EMBED|fire|0|1',
+          'CHUNK|fire.md|1|Fire response starts immediately.',
+          'QUERY|water',
+          'END',
+        ],
+        expectedOutput: ['ABSTAIN=no_relevant_evidence'],
+      },
+    ],
+    requiredNodes: ['ClassDef', 'FunctionDef', 'Try', 'While', 'For', 'If'],
+    requiredImports: ['dataclasses', 'math', 're'],
+    requiredFunctions: ['tokenize', 'average_vector', 'cosine_similarity', 'retrieve', 'grounded_answer', 'main'],
+    requiredCalls: ['math.sqrt', 're.findall'],
+    requireMainGuard: true,
+    refactorOptions: [
+      { en: 'Keep ingestion, vectorization, retrieval and answer construction in separate functions.', pt: 'Mantenha ingestão, vetorização, recuperação e construção da resposta em funções separadas.' },
+      { en: 'Explain the evidence threshold and make it configurable.', pt: 'Explique o limite de evidência e torne-o configurável.' },
+      { en: 'Guarantee that every answer sentence exists in a retrieved chunk.', pt: 'Garanta que toda frase de resposta exista em um trecho recuperado.' },
+      { en: 'Keep citations deterministic when scores are tied.', pt: 'Mantenha citações determinísticas quando houver empate.' },
+      { en: 'Document that the browser project implements the RAG core, while a local model can be attached later.', pt: 'Documente que o projeto no navegador implementa o núcleo RAG e que um modelo local pode ser conectado depois.' },
+      { en: 'Add a fixed evaluation set before changing embeddings, thresholds or ranking rules.', pt: 'Adicione um conjunto fixo de avaliação antes de alterar embeddings, limites ou regras de ranqueamento.' },
+    ],
+    accomplishment: [
+      { en: 'ingest private local document chunks through an explicit contract', pt: 'ingerir trechos de documentos privados por um contrato explícito' },
+      { en: 'vectorize queries and evidence without an external API', pt: 'vetorizar consultas e evidências sem API externa' },
+      { en: 'retrieve and rank evidence with cosine similarity', pt: 'recuperar e ranquear evidências por similaridade de cosseno' },
+      { en: 'produce grounded answers with visible citations', pt: 'produzir respostas fundamentadas com citações visíveis' },
+      { en: 'abstain instead of hallucinating unsupported information', pt: 'abster-se em vez de inventar informação sem suporte' },
+      { en: 'complete a portfolio that spans Python foundations through local AI', pt: 'concluir um portfólio que vai dos fundamentos de Python até IA local' },
+    ],
   }
+
 
 ]
 

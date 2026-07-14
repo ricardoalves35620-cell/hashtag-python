@@ -26,7 +26,8 @@ describe('Sprint 10.1 foundation portfolio', () => {
 
   it('exposes portfolio evidence without bypassing normal progression', () => {
     const portfolio = source('pages/Portfolio.tsx')
-    expect(portfolio).toContain("'foundation-claim-desk'")
+    const portfolioModel = source('lib/portfolio.ts')
+    expect(portfolioModel).toContain("'foundation-claim-desk'")
     expect(portfolio).toContain('progress.find(row => row.phase_id === project.milestonePhaseId)')
     expect(portfolio).toContain('{!examPassed ? (')
     expect(portfolio).toContain('!examPassed && canOpenPhase')
@@ -36,12 +37,12 @@ describe('Sprint 10.1 foundation portfolio', () => {
   })
 
   it('exports a README containing planning, implementation and test evidence', () => {
-    const portfolio = source('pages/Portfolio.tsx')
-    expect(portfolio).toContain('buildReadme')
-    expect(portfolio).toContain('progress.understanding.inputs')
-    expect(portfolio).toContain('progress.pseudocode')
-    expect(portfolio).toContain('progress.code')
-    expect(portfolio).toContain('testEvidence(progress)')
+    const portfolioModel = source('lib/portfolio.ts')
+    expect(portfolioModel).toContain('buildPortfolioReadme')
+    expect(portfolioModel).toContain('progress.understanding.inputs')
+    expect(portfolioModel).toContain('progress.pseudocode')
+    expect(portfolioModel).toContain('progress.code')
+    expect(portfolioModel).toContain('testEvidence(progress)')
   })
 
   it('registers the private portfolio route', () => {

@@ -127,7 +127,8 @@ describe('Sprint 10.5 data and machine learning portfolio', () => {
 
   it('adds the fourth artifact without exposing locked course content', () => {
     const portfolio = source('pages/Portfolio.tsx')
-    expect(portfolio).toContain("'data-ml-risk-pipeline'")
+    const portfolioModel = source('lib/portfolio.ts')
+    expect(portfolioModel).toContain("'data-ml-risk-pipeline'")
     expect(portfolio).toContain('project.milestonePhaseId === 53')
     expect(portfolio).toContain('t.dataMl')
     expect(portfolio).toContain("getPhaseStatus(progress, project.milestonePhaseId) !== 'locked'")

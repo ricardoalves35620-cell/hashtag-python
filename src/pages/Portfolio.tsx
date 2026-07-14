@@ -14,80 +14,12 @@ import {
   type MiniProjectProgress,
 } from '../lib/projectProgress'
 
-const PORTFOLIO_PROJECT_IDS = ['foundation-claim-desk', 'professional-claims-triage', 'engineering-order-service', 'data-ml-risk-pipeline'] as const
-
-function safeFilename(value: string) {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-}
-
-function testEvidence(progress: MiniProjectProgress) {
-  if (!progress.testResults.length) return '- No test evidence recorded.'
-  return progress.testResults
-    .map(result => `- ${result.passed ? 'PASS' : 'FAIL'} — ${result.id}`)
-    .join('\n')
-}
-
-function buildReadme(project: MiniProject, progress: MiniProjectProgress, lang: 'en' | 'pt') {
-  const isPt = lang === 'pt'
-  return `# ${project.title[lang]}
-
-${project.subtitle[lang]}
-
-## ${isPt ? 'Problema' : 'Problem'}
-
-${project.scenario[lang]}
-
-## ${isPt ? 'Contrato que defini' : 'Contract I defined'}
-
-### ${isPt ? 'Entradas' : 'Inputs'}
-${progress.understanding.inputs || project.inputContract[lang]}
-
-### ${isPt ? 'Saída' : 'Output'}
-${progress.understanding.output || project.outputContract[lang]}
-
-### ${isPt ? 'Regras' : 'Rules'}
-${progress.understanding.rules || project.ruleContract[lang]}
-
-### ${isPt ? 'Caso limite' : 'Edge case'}
-${progress.understanding.edgeCase || project.edgeCases[lang]}
-
-## ${isPt ? 'Planejamento em pseudocódigo' : 'Pseudocode plan'}
-
-\`\`\`text
-${progress.pseudocode.trim() || (isPt ? 'Planejamento não registrado neste aparelho.' : 'Plan not recorded on this device.')}
-\`\`\`
-
-## ${isPt ? 'Implementação' : 'Implementation'}
-
-\`\`\`python
-${progress.code.trim()}
-\`\`\`
-
-## ${isPt ? 'Evidências de teste' : 'Test evidence'}
-
-${testEvidence(progress)}
-
-## ${isPt ? 'Habilidades demonstradas' : 'Demonstrated skills'}
-
-${project.accomplishment.map(item => `- ${item[lang]}`).join('\n')}
-
-## ${isPt ? 'Decisões de melhoria' : 'Improvement decisions'}
-
-${progress.selectedRefactors.length
-    ? progress.selectedRefactors.map(index => `- ${project.refactorOptions[index]?.[lang] || index}`).join('\n')
-    : `- ${isPt ? 'Nenhuma decisão registrada neste aparelho.' : 'No decision recorded on this device.'}`}
-
----
-${isPt
-    ? 'Projeto produzido no Hashtag Python como evidência de domínio comprovado.'
-    : 'Project produced in Hashtag Python as evidence of demonstrated mastery.'}
-`
-}
+import {
+  PORTFOLIO_PROJECT_IDS,
+  buildCompletePortfolio,
+  buildPortfolioReadme,
+  safePortfolioFilename,
+} from '../lib/portfolio'
 
 export default function Portfolio() {
   const navigate = useNavigate()
@@ -150,7 +82,8 @@ export default function Portfolio() {
       complete: 'Portfolio artifact ready', inProgress: 'Project in progress', notStarted: 'Not started yet',
       evidence: 'Evidence included', next: 'Future artifacts remain hidden until you reach their normal course milestone.',
       privacy: 'The exported README is created on this device. Review it before publishing because it contains your code and written planning.',
-      foundation: 'Foundation integrator', professional: 'Professional Python integrator', engineering: 'Advanced Python and engineering integrator', dataMl: 'Data and Machine Learning integrator', neural: 'Neural networks and Transformers integrator',
+      foundation: 'Foundation integrator', professional: 'Professional Python integrator', engineering: 'Advanced Python and engineering integrator', dataMl: 'Data and Machine Learning integrator', neural: 'Neural networks and Transformers integrator', finalAi: 'Final local AI capstone',
+      portfolioProgress: 'Portfolio completion', artifactsReady: 'artifacts ready', exportAll: 'Export complete portfolio', exportAllHelp: 'The combined export unlocks after all six artifacts are complete.', collectionReady: 'Complete portfolio ready',
       unavailable: 'Project definition missing.', milestone: 'Milestone phase',
     },
     pt: {
@@ -163,7 +96,8 @@ export default function Portfolio() {
       complete: 'Artefato de portfólio pronto', inProgress: 'Projeto em andamento', notStarted: 'Ainda não iniciado',
       evidence: 'Evidências incluídas', next: 'Artefatos futuros permanecem ocultos até você alcançar o marco normal do curso.',
       privacy: 'O README é criado neste aparelho. Revise antes de publicar, pois ele contém seu código e o planejamento que você escreveu.',
-      foundation: 'Projeto integrador dos fundamentos', professional: 'Projeto integrador de Python profissional', engineering: 'Projeto integrador de Python avançado e engenharia', dataMl: 'Projeto integrador de Dados e Machine Learning', neural: 'Projeto integrador de redes neurais e Transformers',
+      foundation: 'Projeto integrador dos fundamentos', professional: 'Projeto integrador de Python profissional', engineering: 'Projeto integrador de Python avançado e engenharia', dataMl: 'Projeto integrador de Dados e Machine Learning', neural: 'Projeto integrador de redes neurais e Transformers', finalAi: 'Capstone final de IA local',
+      portfolioProgress: 'Conclusão do portfólio', artifactsReady: 'artefatos prontos', exportAll: 'Exportar portfólio completo', exportAllHelp: 'A exportação combinada será liberada quando os seis artefatos estiverem concluídos.', collectionReady: 'Portfólio completo pronto',
       unavailable: 'Definição do projeto ausente.', milestone: 'Fase de marco',
     },
   })[lang], [lang])
@@ -173,12 +107,44 @@ export default function Portfolio() {
   }
 
   const exportReadme = (project: MiniProject, state: MiniProjectProgress) => {
-    const content = buildReadme(project, state, lang)
+    const content = buildPortfolioReadme(project, state, lang)
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `${safeFilename(project.title[lang])}-README.md`
+    link.download = `${safePortfolioFilename(project.title[lang])}-README.md`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }
+
+  const completedEntries = projects
+    .map(project => {
+      const state = projectProgress[project.id]
+        || createMiniProjectProgress(project.id, project.starterCode[lang])
+      const phaseProgress = progress.find(row => row.phase_id === project.milestonePhaseId)
+      return {
+        project,
+        progress: {
+          ...state,
+          completed: Boolean(state.completed || phaseProgress?.project_done),
+        } satisfies MiniProjectProgress,
+      }
+    })
+    .filter(entry => entry.progress.completed)
+
+  const portfolioPercent = Math.round((completedEntries.length / projects.length) * 100)
+  const completePortfolioReady = completedEntries.length === projects.length
+
+  const exportCompletePortfolio = () => {
+    if (!completePortfolioReady) return
+    const content = buildCompletePortfolio(completedEntries, lang)
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = lang === 'pt' ? 'portfolio-completo-hashtag-python.md' : 'complete-hashtag-python-portfolio.md'
     document.body.appendChild(link)
     link.click()
     link.remove()
@@ -193,11 +159,26 @@ export default function Portfolio() {
 
   return (
     <Layout showBack backTo="/career" title={t.title}>
-      <div className="page-shell space-y-4" data-testid="portfolio-sprint-10-6">
+      <div className="page-shell space-y-4" data-testid="portfolio-sprint-10-7">
         <Card padding="lg">
           <Badge variant="primary">{t.eyebrow}</Badge>
           <h1 className="mt-3 text-h2 font-semibold text-ink">{t.heading}</h1>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-ink-secondary">{t.intro}</p>
+          <div className="mt-5 space-y-2" data-testid="portfolio-completion">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+              <span className="font-semibold text-ink">{t.portfolioProgress}</span>
+              <span className="text-ink-secondary">{completedEntries.length}/{projects.length} {t.artifactsReady}</span>
+            </div>
+            <Progress value={portfolioPercent} label={`${portfolioPercent}%`} />
+            {completePortfolioReady ? (
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Badge variant="success">{t.collectionReady}</Badge>
+                <Button onClick={exportCompletePortfolio}>{t.exportAll}</Button>
+              </div>
+            ) : (
+              <p className="m-0 text-xs text-muted">{t.exportAllHelp}</p>
+            )}
+          </div>
         </Card>
 
         {visibleProjects.map(project => {
@@ -218,7 +199,9 @@ export default function Portfolio() {
                 ? t.engineering
                 : project.milestonePhaseId === 60
                   ? t.dataMl
-                  : t.neural
+                  : project.milestonePhaseId === 64
+                    ? t.neural
+                    : t.finalAi
 
           return (
             <Card key={project.id} padding="lg" className="space-y-4" data-project-id={project.id}>

@@ -235,3 +235,12 @@ Detalhes: `docs/RELEASE_NOTES_SPRINT_10.2.md`.
 ## Sprint 10.6
 
 Adds the Phase 64 Transformer Attention portfolio integrator and cross-device synchronization V2 for learning history, journey progress, journals, projects, exam drafts and account preferences. Run `supabase/cross-device-sync-v2.sql` after deployment.
+
+
+## Sprint 10.7 — capstone final de IA local
+
+A Fase 68 agora termina com o **Copiloto Privado de Documentos Locais**. O aluno implementa ingestão de trechos, vetorização local, similaridade de cosseno, recuperação, resposta extrativa fundamentada, citações e abstenção — sem API externa de IA.
+
+A página de portfólio reúne seis marcos, incluindo o projeto de Transformers da Fase 64, e libera uma exportação consolidada somente quando todos os artefatos forem concluídos pela progressão normal.
+
+Detalhes: `docs/RELEASE_NOTES_SPRINT_10.7.md`.

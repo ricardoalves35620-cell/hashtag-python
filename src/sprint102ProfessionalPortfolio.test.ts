@@ -79,7 +79,8 @@ describe('Sprint 10.2 professional portfolio', () => {
 
   it('shows the professional artifact only after normal progression reaches its milestone', () => {
     const portfolio = source('pages/Portfolio.tsx')
-    expect(portfolio).toContain("'professional-claims-triage'")
+    const portfolioModel = source('lib/portfolio.ts')
+    expect(portfolioModel).toContain("'professional-claims-triage'")
     expect(portfolio).toContain("getPhaseStatus(progress, project.milestonePhaseId) !== 'locked'")
     expect(portfolio).toContain("project.milestonePhaseId === 27")
     expect(portfolio).not.toContain('unlockAll')
