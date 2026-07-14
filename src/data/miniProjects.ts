@@ -633,6 +633,276 @@ if __name__ == "__main__":
       { en: 'prove normal, failure and empty-batch behavior', pt: 'comprovar comportamento normal, de falha e de lote vazio' },
       { en: 'produce a second portfolio artifact from your own implementation', pt: 'produzir um segundo artefato de portfólio a partir da própria implementação' },
     ],
+  },
+  {
+    id: 'engineering-order-service',
+    milestonePhaseId: 53,
+    icon: '⚙️',
+    title: { en: 'Order Processing Service Core', pt: 'Núcleo de Serviço de Pedidos' },
+    subtitle: {
+      en: 'Design a production-style core with explicit contracts, replaceable persistence and auditable failures.',
+      pt: 'Projete um núcleo com padrão de produção, contratos explícitos, persistência substituível e falhas auditáveis.',
+    },
+    scenario: {
+      en: 'An operations team receives order lines from an external system. Build a service core that validates each order, calculates tax, prevents duplicates, stores accepted summaries and publishes a stable final report.',
+      pt: 'Uma equipe operacional recebe linhas de pedidos de um sistema externo. Construa um núcleo de serviço que valide cada pedido, calcule imposto, impeça duplicados, armazene resumos aceitos e publique um relatório final estável.',
+    },
+    professionalContext: {
+      en: 'This milestone connects advanced Python to software engineering: a pure calculation core, typed domain values, an explicit repository boundary, safe logging and a CLI adapter that can be replaced later.',
+      pt: 'Este marco conecta Python avançado à engenharia de software: núcleo puro de cálculo, valores de domínio tipados, fronteira explícita de repositório, logging seguro e um adaptador de terminal que poderá ser substituído.',
+    },
+    estimatedMinutes: 180,
+    skills: [
+      { en: 'typed domain modeling', pt: 'modelagem de domínio tipada' },
+      { en: 'pure business-rule functions', pt: 'funções puras de regra de negócio' },
+      { en: 'repository boundaries and protocols', pt: 'fronteiras de repositório e protocols' },
+      { en: 'validation and failure semantics', pt: 'validação e semântica de falhas' },
+      { en: 'logging without sensitive payloads', pt: 'logging sem dados sensíveis' },
+      { en: 'reproducible acceptance tests', pt: 'testes de aceitação reproduzíveis' },
+    ],
+    requirements: {
+      en: [
+        'Represent a validated order with a frozen dataclass',
+        'Define a repository protocol and an in-memory implementation',
+        'Parse order_id|quantity|unit_price|tax_rate safely',
+        'Reject missing IDs, non-positive quantity, negative price and negative tax rate',
+        'Keep calculation separate from input and storage',
+        'Reject duplicate order IDs',
+        'Log invalid and duplicate events without logging the full external line',
+        'Print the exact stable ORDER, INVALID, DUPLICATE, SUMMARY and BYE contracts',
+      ],
+      pt: [
+        'Represente um pedido validado com uma dataclass imutável',
+        'Defina um protocol de repositório e uma implementação em memória',
+        'Interprete order_id|quantity|unit_price|tax_rate com segurança',
+        'Rejeite ID ausente, quantidade não positiva, preço negativo e taxa negativa',
+        'Mantenha cálculo separado de entrada e armazenamento',
+        'Rejeite IDs de pedido duplicados',
+        'Registre eventos inválidos e duplicados sem incluir a linha externa completa',
+        'Imprima os contratos estáveis ORDER, INVALID, DUPLICATE, SUMMARY e BYE',
+      ],
+    },
+    inputContract: {
+      en: 'One order per line as order_id|quantity|unit_price|tax_rate. END finishes the batch.',
+      pt: 'Um pedido por linha no formato order_id|quantity|unit_price|tax_rate. END encerra o lote.',
+    },
+    outputContract: {
+      en: 'Accepted orders use ORDER=<id>|<subtotal>|<tax>|<total>. Failures use INVALID=<id> or DUPLICATE=<id>. Finish with SUMMARY=<count>|<grand_total> and BYE.',
+      pt: 'Pedidos aceitos usam ORDER=<id>|<subtotal>|<imposto>|<total>. Falhas usam INVALID=<id> ou DUPLICATE=<id>. Termine com SUMMARY=<quantidade>|<total_geral> e BYE.',
+    },
+    ruleContract: {
+      en: 'subtotal = quantity × unit_price; tax = subtotal × tax_rate; total = subtotal + tax. Round monetary output to two decimal places. Only accepted orders affect the summary.',
+      pt: 'subtotal = quantidade × preço_unitário; imposto = subtotal × taxa; total = subtotal + imposto. Formate valores monetários com duas casas. Apenas pedidos aceitos entram no resumo.',
+    },
+    edgeCases: {
+      en: 'Prove empty input, duplicate IDs, malformed numbers, non-positive quantities and negative financial values.',
+      pt: 'Comprove lote vazio, IDs duplicados, números malformados, quantidades não positivas e valores financeiros negativos.',
+    },
+    starterCode: {
+      en: `# Portfolio project: Order Processing Service Core
+from dataclasses import dataclass
+import logging
+from typing import Protocol
+
+logger = logging.getLogger("orders")
+
+
+@dataclass(frozen=True)
+class Order:
+    order_id: str
+    quantity: int
+    unit_price: float
+    tax_rate: float
+
+
+class OrderRepository(Protocol):
+    def exists(self, order_id: str) -> bool: ...
+    def save(self, order_id: str, summary: dict[str, float]) -> None: ...
+    def values(self) -> list[dict[str, float]]: ...
+
+
+class InMemoryOrderRepository:
+    def __init__(self) -> None:
+        self._orders: dict[str, dict[str, float]] = {}
+
+    def exists(self, order_id: str) -> bool:
+        # TODO: report whether the ID is already stored
+        return False
+
+    def save(self, order_id: str, summary: dict[str, float]) -> None:
+        # TODO: store a copy of the calculated summary
+        pass
+
+    def values(self) -> list[dict[str, float]]:
+        # TODO: return every stored summary
+        return []
+
+
+def parse_order(line: str) -> Order:
+    # TODO: split order_id|quantity|unit_price|tax_rate
+    # TODO: convert values and raise ValueError for invalid business data
+    raise NotImplementedError
+
+
+def calculate_totals(order: Order) -> dict[str, float]:
+    # TODO: calculate subtotal, tax and total as a pure function
+    return {"subtotal": 0.0, "tax": 0.0, "total": 0.0}
+
+
+def process_line(line: str, repository: OrderRepository) -> None:
+    # TODO: reject duplicates, parse safely, save and print ORDER=...
+    pass
+
+
+def print_summary(repository: OrderRepository) -> None:
+    # TODO: print accepted count and grand total
+    pass
+
+
+def main() -> None:
+    repository = InMemoryOrderRepository()
+
+    while True:
+        line = input("Order: ").strip()
+        if line.upper() == "END":
+            break
+        process_line(line, repository)
+
+    print_summary(repository)
+    print("BYE")
+
+
+if __name__ == "__main__":
+    main()`,
+      pt: `# Projeto de portfólio: Núcleo de Serviço de Pedidos
+from dataclasses import dataclass
+import logging
+from typing import Protocol
+
+logger = logging.getLogger("orders")
+
+
+@dataclass(frozen=True)
+class Order:
+    order_id: str
+    quantity: int
+    unit_price: float
+    tax_rate: float
+
+
+class OrderRepository(Protocol):
+    def exists(self, order_id: str) -> bool: ...
+    def save(self, order_id: str, summary: dict[str, float]) -> None: ...
+    def values(self) -> list[dict[str, float]]: ...
+
+
+class InMemoryOrderRepository:
+    def __init__(self) -> None:
+        self._orders: dict[str, dict[str, float]] = {}
+
+    def exists(self, order_id: str) -> bool:
+        # TODO: informe se o ID já está armazenado
+        return False
+
+    def save(self, order_id: str, summary: dict[str, float]) -> None:
+        # TODO: armazene uma cópia do resumo calculado
+        pass
+
+    def values(self) -> list[dict[str, float]]:
+        # TODO: retorne todos os resumos armazenados
+        return []
+
+
+def parse_order(line: str) -> Order:
+    # TODO: separe order_id|quantity|unit_price|tax_rate
+    # TODO: converta os valores e levante ValueError para dados inválidos
+    raise NotImplementedError
+
+
+def calculate_totals(order: Order) -> dict[str, float]:
+    # TODO: calcule subtotal, imposto e total como função pura
+    return {"subtotal": 0.0, "tax": 0.0, "total": 0.0}
+
+
+def process_line(line: str, repository: OrderRepository) -> None:
+    # TODO: rejeite duplicados, interprete com segurança, salve e imprima ORDER=...
+    pass
+
+
+def print_summary(repository: OrderRepository) -> None:
+    # TODO: mostre quantidade aceita e total geral
+    pass
+
+
+def main() -> None:
+    repository = InMemoryOrderRepository()
+
+    while True:
+        line = input("Pedido: ").strip()
+        if line.upper() == "END":
+            break
+        process_line(line, repository)
+
+    print_summary(repository)
+    print("BYE")
+
+
+if __name__ == "__main__":
+    main()`,
+    },
+    tests: [
+      {
+        id: 'orders-standard',
+        title: { en: 'Two accepted orders', pt: 'Dois pedidos aceitos' },
+        inputs: ['O-101|2|10|0.13', 'O-102|1|5.5|0.10', 'END'],
+        expectedOutput: [
+          'ORDER=O-101|20.00|2.60|22.60',
+          'ORDER=O-102|5.50|0.55|6.05',
+          'SUMMARY=2|28.65',
+          'BYE',
+        ],
+      },
+      {
+        id: 'orders-validation',
+        title: { en: 'Duplicate and invalid orders', pt: 'Pedidos duplicados e inválidos' },
+        inputs: ['O-201|3|2.5|0.10', 'O-201|1|9|0.10', 'O-202|-1|10|0.13', 'O-203|abc|10|0.13', 'END'],
+        expectedOutput: [
+          'ORDER=O-201|7.50|0.75|8.25',
+          'DUPLICATE=O-201',
+          'INVALID=O-202',
+          'INVALID=O-203',
+          'SUMMARY=1|8.25',
+          'BYE',
+        ],
+      },
+      {
+        id: 'orders-empty',
+        title: { en: 'Empty batch', pt: 'Lote vazio' },
+        inputs: ['END'],
+        expectedOutput: ['SUMMARY=0|0.00', 'BYE'],
+      },
+    ],
+    requiredNodes: ['ClassDef', 'Try', 'While', 'AnnAssign', 'Raise'],
+    requiredImports: ['dataclasses', 'logging', 'typing'],
+    requiredFunctions: ['parse_order', 'calculate_totals', 'process_line', 'print_summary', 'main'],
+    requiredCalls: ['logger.warning'],
+    requireMainGuard: true,
+    refactorOptions: [
+      { en: 'Keep parsing, calculation, persistence and presentation in separate boundaries.', pt: 'Mantenha interpretação, cálculo, persistência e apresentação em fronteiras separadas.' },
+      { en: 'Make every validation failure explicit and covered by an acceptance case.', pt: 'Torne toda falha de validação explícita e coberta por um caso de aceitação.' },
+      { en: 'Depend on the repository protocol instead of the concrete in-memory class.', pt: 'Dependa do protocol de repositório, não da classe concreta em memória.' },
+      { en: 'Keep calculation pure so it can be tested without input, storage or logging.', pt: 'Mantenha o cálculo puro para testá-lo sem entrada, armazenamento ou logging.' },
+      { en: 'Log only event type and safe identifiers, never the full external payload.', pt: 'Registre apenas o tipo de evento e identificadores seguros, nunca o payload externo completo.' },
+      { en: 'Explain one architecture trade-off in the exported README.', pt: 'Explique uma decisão arquitetural no README exportado.' },
+    ],
+    accomplishment: [
+      { en: 'model immutable trusted domain data', pt: 'modelar dados de domínio confiáveis e imutáveis' },
+      { en: 'separate a pure business core from external adapters', pt: 'separar núcleo puro de negócio de adaptadores externos' },
+      { en: 'use a protocol to make persistence replaceable', pt: 'usar protocol para tornar a persistência substituível' },
+      { en: 'define stable success and failure contracts', pt: 'definir contratos estáveis de sucesso e falha' },
+      { en: 'prove normal, invalid, duplicate and empty behavior', pt: 'comprovar comportamentos normal, inválido, duplicado e vazio' },
+      { en: 'produce an engineering portfolio artifact you can defend', pt: 'produzir um artefato de engenharia que você consegue defender' },
+    ],
   }
 ]
 

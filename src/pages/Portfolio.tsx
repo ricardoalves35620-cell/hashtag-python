@@ -14,7 +14,7 @@ import {
   type MiniProjectProgress,
 } from '../lib/projectProgress'
 
-const PORTFOLIO_PROJECT_IDS = ['foundation-claim-desk', 'professional-claims-triage'] as const
+const PORTFOLIO_PROJECT_IDS = ['foundation-claim-desk', 'professional-claims-triage', 'engineering-order-service'] as const
 
 function safeFilename(value: string) {
   return value
@@ -150,7 +150,7 @@ export default function Portfolio() {
       complete: 'Portfolio artifact ready', inProgress: 'Project in progress', notStarted: 'Not started yet',
       evidence: 'Evidence included', next: 'Future artifacts remain hidden until you reach their normal course milestone.',
       privacy: 'The exported README is created on this device. Review it before publishing because it contains your code and written planning.',
-      foundation: 'Foundation integrator', professional: 'Professional Python integrator',
+      foundation: 'Foundation integrator', professional: 'Professional Python integrator', engineering: 'Advanced Python and engineering integrator',
       unavailable: 'Project definition missing.', milestone: 'Milestone phase',
     },
     pt: {
@@ -163,7 +163,7 @@ export default function Portfolio() {
       complete: 'Artefato de portfólio pronto', inProgress: 'Projeto em andamento', notStarted: 'Ainda não iniciado',
       evidence: 'Evidências incluídas', next: 'Artefatos futuros permanecem ocultos até você alcançar o marco normal do curso.',
       privacy: 'O README é criado neste aparelho. Revise antes de publicar, pois ele contém seu código e o planejamento que você escreveu.',
-      foundation: 'Projeto integrador dos fundamentos', professional: 'Projeto integrador de Python profissional',
+      foundation: 'Projeto integrador dos fundamentos', professional: 'Projeto integrador de Python profissional', engineering: 'Projeto integrador de Python avançado e engenharia',
       unavailable: 'Definição do projeto ausente.', milestone: 'Fase de marco',
     },
   })[lang], [lang])
@@ -193,7 +193,7 @@ export default function Portfolio() {
 
   return (
     <Layout showBack backTo="/career" title={t.title}>
-      <div className="page-shell space-y-4" data-testid="portfolio-sprint-10-2">
+      <div className="page-shell space-y-4" data-testid="portfolio-sprint-10-4">
         <Card padding="lg">
           <Badge variant="primary">{t.eyebrow}</Badge>
           <h1 className="mt-3 text-h2 font-semibold text-ink">{t.heading}</h1>
@@ -210,7 +210,11 @@ export default function Portfolio() {
           const percent = completed ? 100 : Math.round((state.completedCheckpoints.length / 5) * 100)
           const statusLabel = completed ? t.complete : state.completedCheckpoints.length ? t.inProgress : t.notStarted
           const canOpenPhase = phaseStatus !== 'locked'
-          const stageLabel = project.milestonePhaseId === 27 ? t.foundation : t.professional
+          const stageLabel = project.milestonePhaseId === 27
+            ? t.foundation
+            : project.milestonePhaseId === 39
+              ? t.professional
+              : t.engineering
 
           return (
             <Card key={project.id} padding="lg" className="space-y-4" data-project-id={project.id}>
