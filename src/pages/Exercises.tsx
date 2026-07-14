@@ -5,6 +5,7 @@ import VSCodeEditor from '../components/VSCodeEditor'
 import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
 import ExerciseFeedback from '../components/ExerciseFeedback'
+import ExerciseExpectedOutput from '../components/ExerciseExpectedOutput'
 import LearningBrief from '../components/LearningBrief'
 import { Alert, Badge, Button, Card, Progress } from '../components/ui'
 import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
@@ -19,6 +20,7 @@ import { chooseNewestDraft, fetchRemoteDraft, loadLocalDraft, saveLocalDraft, sa
 import { scrollToTop } from '../lib/scroll'
 import { getExercisePedagogy } from '../lib/pedagogy'
 import { resolveLocalizedCode } from '../lib/localization'
+import { getPrimaryExerciseInputs } from '../lib/exerciseContract'
 
 interface AttemptView {
   id: string
@@ -72,6 +74,7 @@ export default function Exercises() {
   const passedChecks = checks.filter(check => check.passed).length
   const draftKey = `${learnerId || 'anonymous'}:${phase.id}:${exercise.id}`
   const learningBrief = useMemo(() => getExercisePedagogy(phase, exercise, activeEx, lang), [phase, exercise, activeEx, lang])
+  const contractInputs = useMemo(() => getPrimaryExerciseInputs(exercise), [exercise])
 
   useEffect(() => {
     let cancelled = false
@@ -259,7 +262,7 @@ export default function Exercises() {
             <div><h2 className="text-lg font-semibold text-ink">{exercise.title[lang]}</h2><p className="mt-1 text-sm leading-6 text-ink-secondary">{exercise.description[lang]}</p></div>
             <Badge data-testid="draft-status" variant={draftStatus === 'saved' ? 'success' : 'neutral'}>{draftStatus === 'saved' ? `✓ ${t.saved}` : draftStatus === 'local' ? `✓ ${t.local}` : t.ready}</Badge>
           </div>
-          {exercise.sampleOutput && <div className="mt-3 rounded-lg border border-line bg-raised p-3"><div className="mb-1 text-xs text-muted">{t.sampleOutput}</div><pre className="whitespace-pre-wrap font-mono text-sm text-success-text">{exercise.sampleOutput[lang]}</pre></div>}
+          <ExerciseExpectedOutput exercise={exercise} lang={lang} />
         </Card>
 
         {isFirstExercise && <Card padding="md" variant="subtle">
@@ -302,7 +305,7 @@ export default function Exercises() {
               setDraftStatus('local')
             }
             clearResult()
-          }} lang={lang} suggestedInputs={exercise.suggestedInputs} /></div>
+          }} lang={lang} suggestedInputs={contractInputs} /></div>
 
         <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
           <Button data-testid="exercise-run-button" fullWidth size="lg" loading={running || pyodideLoading} disabled={isFirstExercise && !thinkingReady} onClick={handleRun} leftIcon="▶">

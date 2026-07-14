@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 10.10.0 — Learning Engine V2.10: auditoria integral do currículo e gate de qualidade baseado no motor pedagógico atual.**
+**Versão atual: 10.13.0 — Sprint 10.2: projeto integrador de Python profissional e segundo artefato de portfólio.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -118,6 +118,14 @@ A progressão normal continua preservada. Não há desbloqueio de proprietário;
 
 Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.7.md`.
 
+## Learning Engine V2.11
+
+As fases 1–27 agora exigem evidência de comportamento em pelo menos duas práticas. As fases 9–27 incluem um desafio separado de transferência com caso visível e caso oculto diferente. Todos os exames de fundamentos preservam contrato visível, total de 100 pontos e uma verificação oculta adequada ao conhecimento já ensinado.
+
+As primeiras jornadas também foram corrigidas para acompanhar a sequência real: saída com `print()`, operadores, variáveis e entrada do usuário.
+
+Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.11.md`.
+
 ## Requisitos
 
 - Node.js 22.12 ou superior.
@@ -211,3 +219,15 @@ npm run audit:curriculum
 ```
 
 Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.10.md` e `docs/CURRICULUM_AUDIT_STANDARD.md`.
+
+## Sprint 10.1 — projeto integrador e portfólio
+
+A Fase 27 agora termina com o projeto **Central de Sinistros CLI**. O projeto exige planejamento, funções, coleções, loop de comandos, validação, tratamento de exceções, testes normais e testes de falha. Depois de concluído, o aluno pode abrir `/portfolio` e exportar um README criado a partir do próprio planejamento, código e evidências de teste. A progressão normal do curso continua preservada.
+
+## Sprint 10.2 — projeto integrador de Python profissional
+
+A Fase 39 agora termina em um serviço de triagem de sinistros que combina `dataclass`, type hints, logging, validação, exceções, funções focadas, CLI e `if __name__ == "__main__"`. O portfólio passa a reunir dois artefatos gerados a partir do planejamento, código, testes e refatorações do próprio aluno.
+
+O segundo artefato permanece oculto até a Fase 39 ficar disponível pela progressão normal.
+
+Detalhes: `docs/RELEASE_NOTES_SPRINT_10.2.md`.

@@ -45,51 +45,147 @@ const AUTHORED_BLUEPRINTS: Record<number, PhaseBlueprint> = {
     situation: { en: 'You have never programmed before. Your first job is not to memorize commands; it is to understand that a program is a sequence of precise instructions.', pt: 'Você nunca programou antes. Seu primeiro trabalho não é decorar comandos; é entender que um programa é uma sequência de instruções precisas.' },
     humanReasoning: { en: 'When giving directions to another person, vague steps may still work. A computer cannot guess. Every action and value must be explicit.', pt: 'Ao orientar outra pessoa, passos vagos talvez funcionem. Um computador não adivinha. Cada ação e cada valor precisam estar explícitos.' },
     decomposition: { en: 'Choose one tiny result, identify what must happen before it, and order the instructions from first to last.', pt: 'Escolha um resultado pequeno, identifique o que precisa acontecer antes dele e ordene as instruções do primeiro ao último passo.' },
-    flow: { en: 'START → instruction → visible result → END', pt: 'INÍCIO → instrução → resultado visível → FIM' },
-    pseudocode: { en: 'SHOW a message\nEND', pt: 'MOSTRAR uma mensagem\nFIM' },
+    flow: { en: 'Choose the program file → ask Python to run that exact file → Python reads the first instruction → the instruction produces a visible message → compare the message with the planned result → finish or investigate the first difference', pt: 'Escolher o arquivo do programa → pedir ao Python que execute exatamente esse arquivo → o Python lê a primeira instrução → a instrução produz uma mensagem visível → comparar a mensagem com o resultado planejado → terminar ou investigar a primeira diferença' },
+    pseudocode: { en: 'CHOOSE a short message the user must see\nASK the program to SHOW that exact message\nRUN the program file\nCOMPARE the visible output with the planned message\nIF they differ, inspect the instruction before changing anything else\nEND', pt: 'ESCOLHER uma mensagem curta que o usuário precisa ver\nPEDIR ao programa para MOSTRAR exatamente essa mensagem\nEXECUTAR o arquivo do programa\nCOMPARAR a saída visível com a mensagem planejada\nSE forem diferentes, inspecionar a instrução antes de mudar qualquer outra coisa\nFIM' },
     expertLens: { en: 'An experienced developer reduces uncertainty before typing. They ask what the program must do and how they will know it worked.', pt: 'Um desenvolvedor experiente reduz a incerteza antes de digitar. Ele pergunta o que o programa precisa fazer e como saberá que funcionou.' },
     likelyFailure: { en: 'Typing characters without understanding the instruction boundary, then changing several things at once.', pt: 'Digitar caracteres sem entender onde a instrução começa e termina e depois alterar várias coisas ao mesmo tempo.' },
     transferPrompt: { en: 'Describe another daily task that could be written as exact instructions.', pt: 'Descreva outra tarefa diária que poderia ser escrita como instruções exatas.' },
   },
   1: {
-    situation: { en: 'A program must remember information such as a name, quantity, price, or status while it runs.', pt: 'Um programa precisa lembrar informações como nome, quantidade, preço ou status enquanto executa.' },
-    humanReasoning: { en: 'Humans label information mentally. In a program, a variable is the label attached to a value.', pt: 'Pessoas rotulam informações mentalmente. Em um programa, uma variável é o rótulo ligado a um valor.' },
-    decomposition: { en: 'Identify the value, choose a meaningful name, store the value, then use the name instead of repeating the raw value.', pt: 'Identifique o valor, escolha um nome significativo, guarde o valor e use o nome em vez de repetir o valor bruto.' },
-    flow: { en: 'value → named variable → operation or display', pt: 'valor → variável com nome → operação ou exibição' },
-    pseudocode: { en: 'STORE the value using a meaningful name\nUSE the stored value\nSHOW the result', pt: 'GUARDAR o valor usando um nome significativo\nUSAR o valor guardado\nMOSTRAR o resultado' },
-    expertLens: { en: 'A good name explains meaning. It should answer “what does this value represent?” without needing a comment.', pt: 'Um bom nome explica significado. Ele deve responder “o que este valor representa?” sem depender de comentário.' },
-    likelyFailure: { en: 'Using a variable before creating it, or replacing its value when the intention was to update it.', pt: 'Usar uma variável antes de criá-la ou substituir o valor quando a intenção era atualizá-lo.' },
-    transferPrompt: { en: 'Choose information from a real form and decide which variables would store it.', pt: 'Escolha informações de um formulário real e decida quais variáveis as guardariam.' },
+    situation: {
+      en: 'You need to create a morning startup screen that tells an operations team which company and department they are using and shows today’s numbers. The computer starts with a blank screen, so every visible line must be requested explicitly.',
+      pt: 'Você precisa criar uma tela de abertura matinal que informe à equipe de operações qual empresa e departamento estão usando e mostre os números do dia. O computador começa com a tela vazia, então cada linha visível precisa ser solicitada explicitamente.'
+    },
+    humanReasoning: {
+      en: 'Before Python, write the exact messages and values in the order a person should read them. Separate fixed text from calculations. Python’s print() instruction is the final translation of each planned output line.',
+      pt: 'Antes do Python, escreva as mensagens e os valores exatos na ordem em que uma pessoa deve lê-los. Separe texto fixo de cálculos. A instrução print() do Python é a tradução final de cada linha planejada.'
+    },
+    decomposition: {
+      en: 'List the required output lines, identify which parts are text and which are numbers, calculate totals instead of typing the answer, and create one print() responsibility at a time.',
+      pt: 'Liste as linhas de saída obrigatórias, identifique quais partes são texto e quais são números, calcule os totais em vez de digitar a resposta pronta e crie uma responsabilidade de print() por vez.'
+    },
+    flow: {
+      en: 'required message or value → choose text, number, or calculation → print one line → compare with expected output → repeat for the next line',
+      pt: 'mensagem ou valor obrigatório → escolher texto, número ou cálculo → imprimir uma linha → comparar com a saída esperada → repetir para a próxima linha'
+    },
+    pseudocode: {
+      en: 'SHOW the company name\nSHOW the department\nSHOW the open-claim number\nSHOW the new-claim number\nCALCULATE the total\nSHOW the calculated total',
+      pt: 'MOSTRAR o nome da empresa\nMOSTRAR o departamento\nMOSTRAR a quantidade de sinistros abertos\nMOSTRAR os novos sinistros\nCALCULAR o total\nMOSTRAR o total calculado'
+    },
+    expertLens: {
+      en: 'An experienced developer treats output as a contract. They reproduce labels, order, and values intentionally, but keep calculations as calculations so the program explains where a result came from.',
+      pt: 'Um desenvolvedor experiente trata a saída como um contrato. Ele reproduz rótulos, ordem e valores de forma intencional, mas mantém cálculos como cálculos para o programa explicar de onde veio o resultado.'
+    },
+    likelyFailure: {
+      en: 'Forgetting quotes around text, using Print with an uppercase letter, typing a calculated total as a fixed number, or printing the right information with an unclear label.',
+      pt: 'Esquecer aspas em textos, usar Print com letra maiúscula, digitar um total calculado como número fixo ou imprimir a informação correta com um rótulo pouco claro.'
+    },
+    transferPrompt: {
+      en: 'Plan a five-line startup screen for another workplace. Mark which lines are fixed text and which values should be calculated by Python.',
+      pt: 'Planeje uma tela de abertura com cinco linhas para outro ambiente de trabalho. Marque quais linhas são texto fixo e quais valores devem ser calculados pelo Python.'
+    },
   },
   2: {
-    situation: { en: 'A program receives text and numbers from a person and must turn that raw input into useful data.', pt: 'Um programa recebe textos e números de uma pessoa e precisa transformar essa entrada bruta em dados úteis.' },
-    humanReasoning: { en: 'A person understands that “25” may mean a number. Python receives input as text, so the program must decide when conversion is necessary.', pt: 'Uma pessoa entende que “25” pode ser um número. Python recebe input como texto, então o programa precisa decidir quando converter.' },
-    decomposition: { en: 'Ask for one value, inspect what type is needed, convert only when necessary, then use the converted value.', pt: 'Peça um valor, identifique qual tipo é necessário, converta apenas quando preciso e use o valor convertido.' },
-    flow: { en: 'user input → text → optional conversion → calculation → output', pt: 'entrada do usuário → texto → conversão opcional → cálculo → saída' },
-    pseudocode: { en: 'ASK for the value\nCONVERT it to the required type\nUSE it\nSHOW the result', pt: 'PEDIR o valor\nCONVERTER para o tipo necessário\nUSAR o valor\nMOSTRAR o resultado' },
-    expertLens: { en: 'Never convert by habit. Decide the type from the operation the program must perform.', pt: 'Nunca converta por hábito. Decida o tipo a partir da operação que o programa precisa realizar.' },
-    likelyFailure: { en: 'Trying to add text to a number or trusting user input without checking what arrived.', pt: 'Tentar somar texto com número ou confiar na entrada sem verificar o que chegou.' },
-    transferPrompt: { en: 'Describe a form field that should remain text and another that must become a number.', pt: 'Descreva um campo de formulário que deve continuar texto e outro que precisa virar número.' },
+    situation: {
+      en: 'A claim or construction budget is not solved by one number. Several values must be added, subtracted, multiplied, divided, and checked in the correct order to produce a trustworthy result.',
+      pt: 'Um sinistro ou orçamento de obra não é resolvido com um único número. Vários valores precisam ser somados, subtraídos, multiplicados, divididos e conferidos na ordem correta para produzir um resultado confiável.'
+    },
+    humanReasoning: {
+      en: 'Write the business rule in words before choosing symbols. “Remove the deductible, then apply 80% coverage” describes two ordered steps; Python operators merely express those steps precisely.',
+      pt: 'Escreva a regra de negócio em palavras antes de escolher símbolos. “Retire a franquia e depois aplique 80% de cobertura” descreve dois passos ordenados; os operadores Python apenas expressam esses passos com precisão.'
+    },
+    decomposition: {
+      en: 'Identify every value and unit, convert percentages to decimals, calculate one responsibility at a time, store intermediate results when useful, and perform a final reasonableness check.',
+      pt: 'Identifique cada valor e unidade, converta percentuais para decimais, calcule uma responsabilidade por vez, guarde resultados intermediários quando útil e faça uma verificação final de coerência.'
+    },
+    flow: {
+      en: 'raw values → first operation → intermediate result → next operation → final result → sanity check against the original values',
+      pt: 'valores brutos → primeira operação → resultado intermediário → próxima operação → resultado final → verificação de coerência com os valores originais'
+    },
+    pseudocode: {
+      en: 'RECEIVE the amounts\nSUBTRACT the deductible\nMULTIPLY by the coverage rate\nCALCULATE any fee\nSHOW each intermediate and final result\nCHECK that the total is plausible',
+      pt: 'RECEBER os valores\nSUBTRAIR a franquia\nMULTIPLICAR pela taxa de cobertura\nCALCULAR qualquer taxa\nMOSTRAR cada resultado intermediário e final\nVERIFICAR se o total faz sentido'
+    },
+    expertLens: {
+      en: 'Professional calculations make order and units visible. Small named steps are easier to audit than one long expression, and parentheses are used whenever a reader could misunderstand precedence.',
+      pt: 'Cálculos profissionais deixam ordem e unidades visíveis. Pequenos passos nomeados são mais fáceis de auditar que uma expressão longa, e parênteses são usados sempre que a precedência puder gerar dúvida.'
+    },
+    likelyFailure: {
+      en: 'Using x instead of *, applying a percentage before subtracting the deductible, forgetting parentheses in an average, or confusing /, //, and % because their meanings were not tied to the real rule.',
+      pt: 'Usar x em vez de *, aplicar percentual antes de retirar a franquia, esquecer parênteses numa média ou confundir /, // e % porque seus significados não foram ligados à regra real.'
+    },
+    transferPrompt: {
+      en: 'Write a plain-language calculation for a budget with subtotal, tax, discount, and final total. Then identify the exact operator used in each step.',
+      pt: 'Escreva em linguagem comum um cálculo com subtotal, imposto, desconto e total final. Depois identifique o operador exato usado em cada etapa.'
+    },
   },
   3: {
-    situation: { en: 'A program often needs to calculate, compare, or combine values to produce a decision or result.', pt: 'Um programa frequentemente precisa calcular, comparar ou combinar valores para produzir uma decisão ou resultado.' },
-    humanReasoning: { en: 'Operators express relationships: add, subtract, compare, combine conditions, or update an existing value.', pt: 'Operadores expressam relações: somar, subtrair, comparar, combinar condições ou atualizar um valor existente.' },
-    decomposition: { en: 'Write the rule in words, identify the operands, choose the operator that matches the rule, then verify precedence.', pt: 'Escreva a regra em palavras, identifique os operandos, escolha o operador correspondente e verifique a precedência.' },
-    flow: { en: 'values → operator → result → validation', pt: 'valores → operador → resultado → validação' },
-    pseudocode: { en: 'GET the values\nAPPLY the stated rule\nSTORE the result\nCHECK whether it makes sense', pt: 'OBTER os valores\nAPLICAR a regra informada\nGUARDAR o resultado\nVERIFICAR se faz sentido' },
-    expertLens: { en: 'Experienced developers make precedence obvious with small expressions and parentheses when ambiguity is possible.', pt: 'Desenvolvedores experientes deixam a precedência óbvia com expressões pequenas e parênteses quando houver ambiguidade.' },
-    likelyFailure: { en: 'Choosing an operator because it looks familiar instead of matching it to the business rule.', pt: 'Escolher um operador por parecer familiar, em vez de relacioná-lo à regra do problema.' },
-    transferPrompt: { en: 'Turn a discount or deductible rule into a plain-language expression.', pt: 'Transforme uma regra de desconto ou franquia em uma expressão escrita em linguagem comum.' },
+    situation: {
+      en: 'A useful program needs to remember values, reuse them, and update them as work progresses. Repeating raw numbers makes the program hard to understand and easy to break.',
+      pt: 'Um programa útil precisa lembrar valores, reutilizá-los e atualizá-los conforme o trabalho avança. Repetir números brutos deixa o programa difícil de entender e fácil de quebrar.'
+    },
+    humanReasoning: {
+      en: 'Think of a variable as a labeled place in the program’s current state. The label explains meaning; assignment places a value there; a later assignment updates the state for the next step.',
+      pt: 'Pense numa variável como um lugar identificado no estado atual do programa. O nome explica o significado; a atribuição coloca um valor ali; uma atribuição posterior atualiza o estado para o próximo passo.'
+    },
+    decomposition: {
+      en: 'Identify which facts must survive between steps, give each one a meaningful name, choose an initial value, use the name in calculations, and update it only when the underlying fact changes.',
+      pt: 'Identifique quais informações precisam sobreviver entre etapas, dê a cada uma um nome significativo, escolha um valor inicial, use o nome nos cálculos e atualize apenas quando o fato representado mudar.'
+    },
+    flow: {
+      en: 'meaningful name → initial value → read or calculate with the variable → update state → use the new value in the next responsibility',
+      pt: 'nome significativo → valor inicial → ler ou calcular com a variável → atualizar o estado → usar o novo valor na próxima responsabilidade'
+    },
+    pseudocode: {
+      en: 'CREATE a variable for each fact\nASSIGN the initial values\nUSE the variables in the rule\nUPDATE the running value when new data arrives\nSHOW the final state',
+      pt: 'CRIAR uma variável para cada informação\nATRIBUIR os valores iniciais\nUSAR as variáveis na regra\nATUALIZAR o valor acumulado quando novos dados chegarem\nMOSTRAR o estado final'
+    },
+    expertLens: {
+      en: 'A good variable name communicates domain meaning and expected unit. An experienced developer can review total_damage and deductible without decoding anonymous values such as x and y.',
+      pt: 'Um bom nome de variável comunica significado de domínio e unidade esperada. Um desenvolvedor experiente consegue revisar total_damage e deductible sem decifrar valores anônimos como x e y.'
+    },
+    likelyFailure: {
+      en: 'Using a variable before assigning it, overwriting a value that should have been accumulated, mixing unrelated meanings in one variable, or choosing a name that no longer matches the stored data.',
+      pt: 'Usar uma variável antes de atribuí-la, substituir um valor que deveria ser acumulado, misturar significados diferentes numa variável ou escolher um nome que deixou de representar o dado guardado.'
+    },
+    transferPrompt: {
+      en: 'Choose a weekly expense tracker and list the variables needed for one expense, the running total, and the final report. Explain which values change and which stay constant.',
+      pt: 'Escolha um controle semanal de despesas e liste as variáveis necessárias para uma despesa, o total acumulado e o relatório final. Explique quais valores mudam e quais permanecem constantes.'
+    },
   },
   4: {
-    situation: { en: 'The program must choose different actions depending on facts such as age, value, status, or availability.', pt: 'O programa precisa escolher ações diferentes dependendo de fatos como idade, valor, status ou disponibilidade.' },
-    humanReasoning: { en: 'A decision has a question, possible answers, and one action for each relevant answer.', pt: 'Uma decisão tem uma pergunta, respostas possíveis e uma ação para cada resposta relevante.' },
-    decomposition: { en: 'Write the decision as a yes/no question, define the true path, define the false path, then cover boundary values.', pt: 'Escreva a decisão como uma pergunta de sim/não, defina o caminho verdadeiro, o falso e cubra os valores de limite.' },
-    flow: { en: 'condition? → YES: action A | NO: action B → continue', pt: 'condição? → SIM: ação A | NÃO: ação B → continuar' },
-    pseudocode: { en: 'IF the condition is true\n  DO the first action\nOTHERWISE\n  DO the alternative action', pt: 'SE a condição for verdadeira\n  FAZER a primeira ação\nSENÃO\n  FAZER a ação alternativa' },
-    expertLens: { en: 'The hardest part is usually not writing if. It is defining the condition precisely and testing the boundary.', pt: 'A parte mais difícil normalmente não é escrever if. É definir a condição com precisão e testar o limite.' },
-    likelyFailure: { en: 'Using greater-than when the rule includes equality, or leaving a possible path undefined.', pt: 'Usar maior que quando a regra inclui igualdade ou deixar um caminho possível sem definição.' },
-    transferPrompt: { en: 'Create a decision rule with one important boundary value and explain both outcomes.', pt: 'Crie uma regra de decisão com um valor de limite importante e explique os dois resultados.' },
+    situation: {
+      en: 'A program must receive information that was not known when the code was written, such as a client name, damage amount, room size, or deductible. The raw value arrives as text and may need conversion before use.',
+      pt: 'Um programa precisa receber informações que não eram conhecidas quando o código foi escrito, como nome do cliente, valor do dano, tamanho do cômodo ou franquia. O valor bruto chega como texto e pode precisar de conversão antes do uso.'
+    },
+    humanReasoning: {
+      en: 'For each question, decide what the answer means and which operation will use it. Names and phone numbers remain text; counts usually become int; measurements and money with decimals often become float.',
+      pt: 'Para cada pergunta, decida o que a resposta significa e qual operação vai usá-la. Nomes e telefones continuam texto; contagens normalmente viram int; medidas e dinheiro com decimais frequentemente viram float.'
+    },
+    decomposition: {
+      en: 'Ask one clear question, capture the returned text, convert according to the required operation, store the converted value under a meaningful name, and only then calculate or format the result.',
+      pt: 'Faça uma pergunta clara, capture o texto retornado, converta conforme a operação necessária, guarde o valor convertido com um nome significativo e só então calcule ou formate o resultado.'
+    },
+    flow: {
+      en: 'prompt → raw text from input() → chosen conversion or no conversion → validated value → calculation → labeled output',
+      pt: 'pergunta → texto bruto de input() → conversão escolhida ou nenhuma conversão → valor válido → cálculo → saída com rótulo'
+    },
+    pseudocode: {
+      en: 'ASK for the client name and keep it as text\nASK for the damage and CONVERT to a number\nASK for the deductible and CONVERT to a number\nCALCULATE the payout\nSHOW the client and calculated payout',
+      pt: 'PEDIR o nome do cliente e manter como texto\nPEDIR o dano e CONVERTER para número\nPEDIR a franquia e CONVERTER para número\nCALCULAR o pagamento\nMOSTRAR o cliente e o pagamento calculado'
+    },
+    expertLens: {
+      en: 'Conversion belongs near the input boundary. Once data enters the calculation, the rest of the program should already know whether it is working with text, whole numbers, or decimal numbers.',
+      pt: 'A conversão pertence à fronteira de entrada. Quando o dado entra no cálculo, o restante do programa já deve saber se está trabalhando com texto, número inteiro ou decimal.'
+    },
+    likelyFailure: {
+      en: 'Attempting arithmetic with the text returned by input(), converting identifiers such as phone numbers unnecessarily, supplying test entries that do not match the published expected output, or asking questions in an unclear order.',
+      pt: 'Tentar calcular com o texto retornado por input(), converter identificadores como telefone sem necessidade, fornecer entradas de teste que não produzem a saída esperada publicada ou fazer perguntas numa ordem pouco clara.'
+    },
+    transferPrompt: {
+      en: 'Design the inputs for a room-renovation estimate. For every field, state the prompt, resulting Python type, conversion, and later calculation that justifies that type.',
+      pt: 'Projete as entradas para uma estimativa de reforma. Para cada campo, informe a pergunta, o tipo Python resultante, a conversão e o cálculo posterior que justifica esse tipo.'
+    },
   },
   5: {
     situation: { en: 'A program must make a complete two-way decision: one action when a condition is true and another when it is false.', pt: 'Um programa precisa tomar uma decisão completa de dois caminhos: uma ação quando a condição é verdadeira e outra quando é falsa.' },
@@ -145,7 +241,7 @@ const AUTHORED_BLUEPRINTS: Record<number, PhaseBlueprint> = {
     situation: { en: 'A record contains named facts, such as a claim number, customer, status, and amount. Position alone is not enough to explain meaning.', pt: 'Um registro contém fatos nomeados, como número do sinistro, cliente, status e valor. Apenas a posição não explica o significado.' },
     humanReasoning: { en: 'People retrieve a fact by its label: “what is the status?” A dictionary represents that relationship between a key and its value.', pt: 'Pessoas recuperam um fato pelo rótulo: “qual é o status?”. Um dicionário representa essa relação entre uma chave e seu valor.' },
     decomposition: { en: 'Define one entity, list its attributes, choose stable keys, decide which values are required, and define how missing data should be handled.', pt: 'Defina uma entidade, liste seus atributos, escolha chaves estáveis, decida quais valores são obrigatórios e como dados ausentes serão tratados.' },
-    flow: { en: 'record → key → value → read/update decision', pt: 'registro → chave → valor → decisão de leitura/atualização' },
+    flow: { en: 'business record → choose one meaningful field name → store its value under that key → read or update the value through the same key → validate the complete record → produce the required result', pt: 'registro de negócio → escolher o nome significativo de um campo → guardar o valor sob essa chave → ler ou atualizar o valor usando a mesma chave → validar o registro completo → produzir o resultado solicitado' },
     pseudocode: { en: 'CREATE a record with named fields\nREAD a value using its key\nUPDATE the value when the fact changes\nHANDLE a missing key intentionally', pt: 'CRIAR um registro com campos nomeados\nLER um valor usando sua chave\nATUALIZAR quando o fato mudar\nTRATAR intencionalmente uma chave ausente' },
     expertLens: { en: 'Keys are part of the data contract. Use names that remain meaningful to every caller, not abbreviations understood only by the author.', pt: 'As chaves fazem parte do contrato dos dados. Use nomes que continuem significativos para qualquer pessoa, não abreviações entendidas apenas pelo autor.' },
     likelyFailure: { en: 'Requesting a key that does not exist, confusing a key with its value, or using a dictionary when order and duplicate positions are the real requirement.', pt: 'Pedir uma chave inexistente, confundir a chave com seu valor ou usar dicionário quando ordem e posições repetidas são o requisito real.' },

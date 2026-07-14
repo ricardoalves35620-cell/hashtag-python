@@ -10,8 +10,9 @@ function expectedNumbers(projectId: string) {
 }
 
 describe('Learning Engine V2.4 professional mini-projects', () => {
-  it('ships one project at each completed foundation block', () => {
-    expect(MINI_PROJECTS.map(project => project.milestonePhaseId)).toEqual([4, 7, 12])
+  it('keeps the original block projects and allows later integrators', () => {
+    const milestones = MINI_PROJECTS.map(project => project.milestonePhaseId)
+    expect(milestones).toEqual(expect.arrayContaining([4, 7, 12]))
     for (const phaseId of [4, 7, 12]) expect(getMiniProjectForPhase(phaseId)).toBeDefined()
   })
 

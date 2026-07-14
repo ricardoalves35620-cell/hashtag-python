@@ -44,10 +44,15 @@ describe('Learning Engine V2.10 curriculum audit', () => {
     expect(audit.issues.some(item => item.id.includes('short-lesson'))).toBe(false)
   })
 
-  it('keeps real improvement findings visible instead of reporting a false perfect score', () => {
+  it('reports a clean baseline while still detecting a deliberately weakened phase', () => {
     const report = auditCurriculum(ALL_PHASES)
-    expect(report.summary.issueCount).toBeGreaterThan(0)
-    expect(report.summary.averageScore).toBeGreaterThan(60)
-    expect(report.summary.averageScore).toBeLessThan(100)
+    expect(report.summary.issueCount).toBe(0)
+    expect(report.summary.averageScore).toBe(100)
+
+    const weakenedPhase = structuredClone(ALL_PHASES.find(phase => phase.id === 1)!)
+    weakenedPhase.exercises[0].hints = weakenedPhase.exercises[0].hints.slice(0, 1)
+
+    const weakenedAudit = auditPhaseCurriculum(weakenedPhase)
+    expect(weakenedAudit.issues.some(item => item.id.includes('single-hint'))).toBe(true)
   })
 })

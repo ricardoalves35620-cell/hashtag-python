@@ -15,3 +15,7 @@ test-results/
 
 # Local auditor credentials (never commit)
 .env.audit.local
+
+# Generated curriculum reports
+curriculum-audit-report/
+pedagogy-report/

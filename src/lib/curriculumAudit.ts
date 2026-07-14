@@ -5,6 +5,7 @@ import { getSkillsForPhase } from '../data/skills'
 import { getPedagogicalJourney, getPedagogicalBlueprintStatus, type LessonUnitKind } from './pedagogicalJourney'
 import { getExercisePedagogy } from './pedagogy'
 import { getVisibleExamContracts } from './examContract'
+import { getPrimaryExerciseInputs, getVisibleExerciseContracts } from './exerciseContract'
 import { checkText } from './pyodide'
 
 export type CurriculumSeverity = 'blocking' | 'high' | 'medium' | 'low'
@@ -406,6 +407,33 @@ function auditPractice(phase: Phase, issues: CurriculumIssue[], strengths: strin
         `Exercise ${index + 1} needs more progressive hints`,
         `It has ${exercise.hints.length} hint(s).`,
         'Use at least two layers: remind the concept, then point to the next structural step without revealing the final answer.',
+      ))
+    }
+
+
+    const englishContracts = getVisibleExerciseContracts(exercise, 'en')
+    const portugueseContracts = getVisibleExerciseContracts(exercise, 'pt')
+    if (!englishContracts.length || !portugueseContracts.length || englishContracts.some(contract => !contract.expected.trim()) || portugueseContracts.some(contract => !contract.expected.trim())) {
+      issues.push(issue(
+        phase.id,
+        'blocking',
+        'assessment',
+        `exercise-${index}-missing-visible-contract`,
+        `Exercise ${index + 1} does not publish its complete visible contract`,
+        'The learner cannot reliably see the input values and expected result before running the code.',
+        'Publish a bilingual expected result and the visible input values used by the grader.',
+      ))
+    }
+
+    if (/\binput\s*\(/.test(exercise.starterCode) && getPrimaryExerciseInputs(exercise).length === 0) {
+      issues.push(issue(
+        phase.id,
+        'blocking',
+        'assessment',
+        `exercise-${index}-missing-visible-inputs`,
+        `Exercise ${index + 1} calls input() without publishing test values`,
+        'The learner would have to guess which values reproduce the expected result.',
+        'Provide concrete suggested inputs from the same visible test case used by the grader.',
       ))
     }
   })

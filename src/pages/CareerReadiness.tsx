@@ -79,6 +79,17 @@ export default function CareerReadiness() {
           </p>
         </Card>
 
+        <Card padding="md">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-primary">{lang === 'en' ? 'Portfolio workspace' : 'Área de portfólio'}</div>
+              <div className="mt-1 font-semibold text-ink">{lang === 'en' ? 'Build evidence from projects you completed yourself' : 'Construa evidências a partir de projetos concluídos por você'}</div>
+              <p className="mt-1 mb-0 text-sm text-ink-secondary">{lang === 'en' ? 'Locked projects remain hidden until you reach their normal course milestone.' : 'Projetos bloqueados continuam ocultos até você chegar ao marco normal do curso.'}</p>
+            </div>
+            <Button onClick={() => navigate('/portfolio')}>{lang === 'en' ? 'Open portfolio' : 'Abrir portfólio'}</Button>
+          </div>
+        </Card>
+
         {MILESTONES.map(milestone => {
           const relevant = milestone.phaseIds.filter(id => allPhaseIds.has(id))
           const completed = relevant.filter(id => passed.has(id)).length

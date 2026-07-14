@@ -82,7 +82,7 @@ export default function MiniProject() {
       completed: 'Project completed', accomplishment: 'You can now', openPhase: 'Return to phase',
       needUnderstand: 'Complete the input, output, rules, and edge-case fields.', needPlan: 'Write at least three clear pseudocode steps.',
       needBuild: 'Change the starter code and run it without an error.', needTests: 'All project tests must pass.', needRefactor: 'Choose an improvement and rerun all tests after the final code change.',
-      noOutput: 'The program finished without printing output.', testPassed: 'Passed', testFailed: 'Needs work', nodeMissing: 'The required Python structure was not found.',
+      noOutput: 'The program finished without printing output.', testPassed: 'Passed', testFailed: 'Needs work', nodeMissing: 'One or more required Python structures, imports, functions or the main guard were not found.',
     },
     pt: {
       title: 'Mini projeto do bloco', back: 'Fase', workflow: 'Fluxo profissional',
@@ -98,7 +98,7 @@ export default function MiniProject() {
       completed: 'Projeto concluído', accomplishment: 'Agora você consegue', openPhase: 'Voltar para a fase',
       needUnderstand: 'Preencha os campos de entrada, saída, regras e caso limite.', needPlan: 'Escreva pelo menos três passos claros de pseudocódigo.',
       needBuild: 'Altere o código inicial e execute sem erro.', needTests: 'Todos os testes do projeto precisam passar.', needRefactor: 'Escolha uma melhoria e execute todos os testes após a alteração final.',
-      noOutput: 'O programa terminou sem imprimir uma saída.', testPassed: 'Aprovado', testFailed: 'Precisa de ajuste', nodeMissing: 'A estrutura Python obrigatória não foi encontrada.',
+      noOutput: 'O programa terminou sem imprimir uma saída.', testPassed: 'Aprovado', testFailed: 'Precisa de ajuste', nodeMissing: 'Uma ou mais estruturas, importações, funções ou o main guard obrigatórios não foram encontrados.',
     },
   })[lang], [lang])
 
@@ -195,11 +195,23 @@ export default function MiniProject() {
       for (const test of project.tests) {
         const result = await runCode(progress.code, test.inputs)
         const expectedPass = !result.error && test.expectedOutput.every(value => includesExpected(result.output, value))
-        const nodesPass = (project.requiredNodes || []).every(node => (result.analysis?.nodeCounts[node] || 0) > 0)
-        const passed = expectedPass && nodesPass
+        const analysis = result.analysis
+        const nodesPass = (project.requiredNodes || []).every(node => (analysis?.nodeCounts[node] || 0) > 0)
+        const importsPass = (project.requiredImports || []).every(required =>
+          Boolean(analysis?.imports.some(name => name === required || name.startsWith(`${required}.`)))
+        )
+        const functionsPass = (project.requiredFunctions || []).every(required =>
+          Boolean(analysis?.functionNames.includes(required))
+        )
+        const callsPass = (project.requiredCalls || []).every(required =>
+          Boolean(analysis?.calls.some(name => name === required || name.endsWith(`.${required}`)))
+        )
+        const mainGuardPass = !project.requireMainGuard || Boolean(analysis?.hasMainGuard)
+        const structurePass = nodesPass && importsPass && functionsPass && callsPass && mainGuardPass
+        const passed = expectedPass && structurePass
         const details = result.error
           ? result.error
-          : !nodesPass
+          : !structurePass
             ? t.nodeMissing
             : result.output || t.noOutput
         statuses.push({ id: test.id, passed, details })

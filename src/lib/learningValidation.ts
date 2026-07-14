@@ -256,7 +256,7 @@ const EXAM_STRUCTURE_RULES: Record<number, StructureRule> = {
   12: { requirements: [{ kind: 'node', value: 'ListComp' }], message: { en: 'Use a real list comprehension.', pt: 'Use uma compreensão de lista real.' } },
   13: { requirements: [{ kind: 'node', value: 'FunctionDef' }], message: { en: 'Create and call a function instead of printing fixed answers.', pt: 'Crie e chame uma função em vez de imprimir respostas fixas.' } },
   15: { requirements: [{ kind: 'node', value: 'FunctionDef' }], message: { en: 'Create a documented function.', pt: 'Crie uma função documentada.' }, extra: analysis => analysis.docstringFunctions.length > 0 },
-  17: { requirements: [{ kind: 'call', value: 'open' }], message: { en: 'Use Python file handling in this exam.', pt: 'Use manipulação de arquivos Python neste exame.' } },
+  17: { requirements: [{ kind: 'call', value: 'split' }, { kind: 'node', value: 'For' }], message: { en: 'Parse every CSV row with split() inside a loop.', pt: 'Interprete cada linha CSV com split() dentro de um loop.' } },
   18: { requirements: [{ kind: 'call', value: 'open' }], message: { en: 'Use Python file handling in this exam.', pt: 'Use manipulação de arquivos Python neste exame.' } },
   19: { requirements: [{ kind: 'import', value: 'json' }], message: { en: 'Use the json module as required.', pt: 'Use o módulo json como exigido.' } },
   20: { requirements: [{ kind: 'import', value: 'datetime' }], message: { en: 'Use the datetime tools taught in this phase.', pt: 'Use as ferramentas de data e hora ensinadas nesta fase.' } },
@@ -265,6 +265,7 @@ const EXAM_STRUCTURE_RULES: Record<number, StructureRule> = {
   23: { requirements: [{ kind: 'node', value: 'Try' }], message: { en: 'Handle failures with try/except.', pt: 'Trate falhas com try/except.' } },
   24: { requirements: [{ kind: 'node', value: 'FunctionDef' }], message: { en: 'The project must be organized into functions.', pt: 'O projeto precisa estar organizado em funções.' } },
   25: { requirements: [{ kind: 'node', value: 'FunctionDef' }], message: { en: 'Use functions for the CRUD project.', pt: 'Use funções no projeto CRUD.' } },
+  26: { requirements: [{ kind: 'call', value: 'sum' }, { kind: 'call', value: 'min' }, { kind: 'call', value: 'max' }], message: { en: 'Calculate the report from the dataset instead of printing fixed statistics.', pt: 'Calcule o relatório a partir dos dados em vez de imprimir estatísticas fixas.' } },
   27: { requirements: [{ kind: 'node', value: 'FunctionDef' }, { kind: 'node', value: 'Try' }], message: { en: 'The capstone must use functions and error handling.', pt: 'O capstone precisa usar funções e tratamento de erros.' } },
 }
 
