@@ -7,6 +7,7 @@ import VSCodeEditor from '../components/VSCodeEditor'
 import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
 import ExamFeedback from '../components/ExamFeedback'
+import ExamExpectedOutput from '../components/ExamExpectedOutput'
 import { explainError } from '../lib/errorExplainer'
 import type { ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
@@ -296,6 +297,8 @@ export default function Exam() {
             </div>
           </div>
 
+          <ExamExpectedOutput exam={phase.exam} lang={lang} />
+
           <div style={{
             background: 'var(--c-purple-f)', border: '0.5px solid var(--c-purple-dm)',
             borderRadius: 10, padding: 12, marginBottom: 16,
@@ -413,6 +416,8 @@ export default function Exam() {
                 ))}
               </div>
             )}
+
+          <ExamExpectedOutput exam={phase.exam} lang={lang} compact />
 
           {/* VS Code Editor */}
           <VSCodeEditor

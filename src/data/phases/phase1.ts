@@ -274,6 +274,10 @@ print("Total:", ___ + 12)       # fill: 47 again`,
 
   exam: {
     title: { en: 'Phase 1 Exam: System Welcome Screen', pt: 'Exame Fase 1: Tela de Boas-Vindas' },
+    expectedOutput: {
+      en: 'ClaimPro Insurance\nClaims Processing\nOpen claims: 47\nNew claims today: 12\nTotal: 59',
+      pt: 'ClaimPro Insurance\nClaims Processing\nSinistros abertos: 47\nNovos sinistros: 12\nTotal de sinistros: 59',
+    },
     scenario: {
       en: 'First task at ClaimPro Insurance: build the morning startup screen that operations sees every day at 6 AM. It must show company info and today\'s claim numbers.',
       pt: 'Primeira tarefa na ClaimPro Insurance: criar a tela de inicialização matinal que operações vê todo dia às 6h. Deve mostrar informações da empresa e números de sinistros de hoje.'
@@ -297,8 +301,8 @@ print("Total:", ___ + 12)       # fill: 47 again`,
     starterCode: `# Morning startup screen
 # Write your print() lines below:`,
     testCases: [
-      { id: 'tc1_1', description: { en: 'Shows company name', pt: 'Mostra nome da empresa' }, inputs: [], checks: [{ type: 'contains', value: 'ClaimPro' }], points: 20 },
-      { id: 'tc1_2', description: { en: 'Shows department', pt: 'Mostra departamento' }, inputs: [], checks: [{ type: 'contains', value: 'Claims' }], points: 20 },
+      { id: 'tc1_1', description: { en: 'Shows company name', pt: 'Mostra nome da empresa' }, inputs: [], checks: [{ type: 'contains', value: 'ClaimPro Insurance', textMode: 'compact' }], points: 20 },
+      { id: 'tc1_2', description: { en: 'Shows department', pt: 'Mostra departamento' }, inputs: [], checks: [{ type: 'contains', value: 'Claims Processing', textMode: 'compact' }], points: 20 },
       { id: 'tc1_3', description: { en: 'Shows 47', pt: 'Mostra 47' }, inputs: [], checks: [{ type: 'contains', value: '47' }], points: 20 },
       { id: 'tc1_4', description: { en: 'Shows 12', pt: 'Mostra 12' }, inputs: [], checks: [{ type: 'contains', value: '12' }], points: 20 },
       { id: 'tc1_5', description: { en: 'Shows total 59', pt: 'Mostra total 59' }, inputs: [], checks: [{ type: 'contains', value: '59' }], points: 20 }

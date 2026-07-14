@@ -2,7 +2,7 @@ import { spawnSync, type SpawnSyncReturns } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 
-const AUDITOR_VERSION = '8.1.0'
+const AUDITOR_VERSION = '8.2.0'
 
 interface Args {
   cycles: number

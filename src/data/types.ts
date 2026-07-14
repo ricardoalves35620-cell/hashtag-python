@@ -68,7 +68,7 @@ export interface CodeRequirement {
   minCount?: number
 }
 
-export type TextComparisonMode = 'exact' | 'normalized'
+export type TextComparisonMode = 'exact' | 'normalized' | 'compact'
 
 export interface Check {
   type: CheckType
@@ -83,6 +83,8 @@ export interface Check {
 export interface TestCase {
   id: string
   description: Bilingual
+  /** Canonical visible result for this case. Hidden cases must not expose it before grading. */
+  expectedOutput?: Bilingual
   inputs: string[]           // fallback positional inputs
   inputMap?: Record<string, string>  // keyword→value for order-independent matching
   checks: Check[]
@@ -96,6 +98,8 @@ export interface TestCase {
 
 export interface Exam {
   title: Bilingual
+  /** Canonical visible output contract shown before the student submits. */
+  expectedOutput?: Bilingual
   scenario: Bilingual
   requirements: { en: string[]; pt: string[] }
   starterCode: string

@@ -26,7 +26,6 @@ describe('Learning Engine V2.7 professional Python migration', () => {
       expect(isLearningEngineV2Migrated(phaseId)).toBe(true)
     }
 
-    expect(isLearningEngineV2Migrated(40)).toBe(false)
   })
 
   it('gives phases 28–39 concept-specific professional mental models', () => {

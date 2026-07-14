@@ -13,7 +13,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$AuditorVersion = "8.1.0"
+$AuditorVersion = "8.2.0"
 
 Add-Type @"
 using System;

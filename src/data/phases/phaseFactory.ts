@@ -49,6 +49,7 @@ function makeTests(prefix: string, challenge: ChallengeSpec) {
     {
       id: `${prefix}-public`,
       description: { en: 'Works for the visible professional scenario', pt: 'Funciona no cenário profissional visível' },
+      expectedOutput: { en: challenge.publicExpected, pt: challenge.publicExpected },
       inputs: [],
       checks: [{ type: 'contains' as const, value: challenge.publicExpected, target: 'test_output' as const }],
       points: 50,
@@ -59,6 +60,7 @@ function makeTests(prefix: string, challenge: ChallengeSpec) {
     {
       id: `${prefix}-hidden`,
       description: { en: 'Generalizes to a different hidden scenario', pt: 'Generaliza para um cenário oculto diferente' },
+      expectedOutput: { en: challenge.hiddenExpected, pt: challenge.hiddenExpected },
       inputs: [],
       checks: [{ type: 'contains' as const, value: challenge.hiddenExpected, target: 'test_output' as const }],
       points: 50,

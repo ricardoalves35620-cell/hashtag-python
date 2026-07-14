@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 10.7.0 — Learning Engine V2.7: Python profissional com raciocínio específico.**
+**Versão atual: 10.8.0 — Learning Engine V2.8: Python avançado, engenharia e contratos transparentes de exame.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -183,3 +183,9 @@ Use `-DetailedReport` somente quando vídeos e traces forem necessários.
 
 Configuração: `docs/CI_SETUP.md`  
 Critérios de release: `docs/RELEASE_READINESS.md`
+
+## Learning Engine V2.8
+
+As fases 40–53 agora possuem roteiros individuais para Python avançado e engenharia. Todo exame mostra entradas visíveis e saída ou comportamento esperado antes da correção. Casos ocultos continuam protegidos. O contrato publicado é auditado contra os mesmos checks do validador.
+
+Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.8.md`.

@@ -3,6 +3,8 @@ import path from 'node:path'
 import { ALL_PHASES } from '../src/data/phases/index'
 import type { Bilingual, LessonBlock, Phase } from '../src/data/types'
 import { resolveLocalizedCode } from '../src/lib/localization'
+import { getVisibleExamContracts } from '../src/lib/examContract'
+import { checkText } from '../src/lib/pyodide'
 
 type Severity = 'error' | 'warning'
 interface Issue { fingerprint: string; severity: Severity; phaseId: number; location: string; message: string; sample?: string }
@@ -80,6 +82,27 @@ function auditPhase(phase: Phase) {
   })
   auditBilingual(issues, phase, phase.exam.title, 'exam.title')
   auditBilingual(issues, phase, phase.exam.scenario, 'exam.scenario')
+  if (phase.exam.expectedOutput) auditBilingual(issues, phase, phase.exam.expectedOutput, 'exam.expectedOutput')
+  phase.exam.testCases.forEach((testCase, index) => {
+    auditBilingual(issues, phase, testCase.description, `exam.testCases[${index}].description`)
+    if (testCase.expectedOutput) auditBilingual(issues, phase, testCase.expectedOutput, `exam.testCases[${index}].expectedOutput`)
+  })
+  for (const lang of ['en', 'pt'] as const) {
+    const contracts = getVisibleExamContracts(phase.exam, lang)
+    if (contracts.length === 0 || contracts.some(contract => !contract.expected.trim())) {
+      push(issues, { severity: 'error', phaseId: phase.id, location: `exam.contract.${lang}`, message: 'Exam has no visible expected-output contract' })
+    }
+  }
+  phase.exam.testCases.filter(testCase => !testCase.hidden).forEach((testCase, index) => {
+    const canonical = testCase.expectedOutput?.en || phase.exam.expectedOutput?.en
+    if (!canonical) return
+    for (const check of testCase.checks) {
+      if (!checkText(canonical, check)) push(issues, {
+        severity: 'error', phaseId: phase.id, location: `exam.testCases[${index}].checks`,
+        message: 'Published expected output does not satisfy the grader check', sample: `${check.type}: ${String(check.value ?? '')}`,
+      })
+    }
+  })
   return issues
 }
 

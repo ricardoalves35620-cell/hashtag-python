@@ -172,6 +172,7 @@ export async function runCode(
 export function normalizeAssessmentText(value: string, options?: {
   caseSensitive?: boolean
   preserveAccents?: boolean
+  compact?: boolean
 }): string {
   let normalized = value
     .replace(/\r/g, '')
@@ -185,20 +186,27 @@ export function normalizeAssessmentText(value: string, options?: {
       .replace(/[\u0300-\u036f]/g, '')
   }
 
+  if (options?.compact) {
+    normalized = normalized.replace(/[^a-zA-Z0-9]+/g, '')
+  }
+
   return options?.caseSensitive ? normalized : normalized.toLocaleLowerCase('pt-BR')
 }
 
 export function checkText(value: string, check: Check): boolean {
   const exact = check.textMode === 'exact'
+  const compact = check.textMode === 'compact'
   const raw = value.replace(/\r/g, '').trim()
   const candidate = normalizeAssessmentText(raw, {
     caseSensitive: check.caseSensitive,
     preserveAccents: exact,
+    compact,
   })
   const expected = Array.isArray(check.value) ? check.value.map(String) : [String(check.value ?? '')]
   const values = expected.map(item => normalizeAssessmentText(item, {
     caseSensitive: check.caseSensitive,
     preserveAccents: exact,
+    compact,
   }))
 
   switch (check.type) {
