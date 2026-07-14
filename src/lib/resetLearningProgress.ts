@@ -1,7 +1,7 @@
 import { getSupabase } from './supabase'
 
-const CLOUD_TABLES = ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack', 'learning_project_progress'] as const
-const OPTIONAL_CLOUD_TABLES = new Set<string>(['learning_project_progress'])
+const CLOUD_TABLES = ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack', 'learning_project_progress', 'learning_journey_progress', 'learning_journal_entries', 'learning_reflections'] as const
+const OPTIONAL_CLOUD_TABLES = new Set<string>(['learning_project_progress', 'learning_journey_progress', 'learning_journal_entries', 'learning_reflections'])
 
 const PRESERVED_LOCAL_KEYS = new Set([
   'hp_lang', 'hp_theme', 'hp_editor_height', 'hp_editor_wrap', 'hp_editor_font_size',

@@ -44,3 +44,25 @@ create policy "Users delete own mini projects"
 on public.learning_project_progress for delete
 to authenticated
 using (auth.uid() = user_id);
+
+
+alter table if exists public.learning_journey_progress enable row level security;
+drop policy if exists "Users delete own journey progress" on public.learning_journey_progress;
+create policy "Users delete own journey progress"
+on public.learning_journey_progress for delete
+to authenticated
+using (auth.uid() = user_id);
+
+alter table if exists public.learning_journal_entries enable row level security;
+drop policy if exists "Learners delete own journal" on public.learning_journal_entries;
+create policy "Learners delete own journal"
+on public.learning_journal_entries for delete
+to authenticated
+using (auth.uid() = user_id);
+
+alter table if exists public.learning_reflections enable row level security;
+drop policy if exists "Learners delete own reflections" on public.learning_reflections;
+create policy "Learners delete own reflections"
+on public.learning_reflections for delete
+to authenticated
+using (auth.uid() = user_id);

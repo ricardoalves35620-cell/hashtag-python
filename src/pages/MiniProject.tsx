@@ -15,6 +15,7 @@ import {
   loadLocalProjectProgress,
   mergeProjectProgress,
   saveLocalProjectProgress,
+  scheduleProjectProgressSync,
   syncProjectProgress,
   type MiniProjectProgress,
   type ProjectTestStatus,
@@ -22,6 +23,7 @@ import {
 import { normalizeAssessmentText, preparePythonEngine, runCode } from '../lib/pyodide'
 import { scrollToTop } from '../lib/scroll'
 import { markProjectDone } from '../lib/progress'
+import { getSupabase } from '../lib/supabase'
 
 const CHECKPOINTS: Array<{ id: ProjectCheckpointId; icon: string; en: string; pt: string }> = [
   { id: 'understand', icon: '🎯', en: 'Understand', pt: 'Entender' },
@@ -62,7 +64,30 @@ export default function MiniProject() {
       const merged = mergeProjectProgress(local, remote)
       setProgress(merged)
       saveLocalProjectProgress(learnerId, merged)
+      if (learnerId !== 'guest') scheduleProjectProgressSync(learnerId, merged)
     })
+
+    if (learnerId === 'guest') return
+    const channel = getSupabase()
+      .channel(`project-progress-${learnerId}-${project.id}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'learning_project_progress',
+        filter: `user_id=eq.${learnerId}`,
+      }, payload => {
+        const row = payload.new as { project_id?: string; state?: MiniProjectProgress; updated_at?: string }
+        if (row.project_id !== project.id || !row.state) return
+        setProgress(current => {
+          const remote = { ...row.state!, updatedAt: row.updated_at || row.state!.updatedAt }
+          const merged = mergeProjectProgress(current, remote)
+          saveLocalProjectProgress(learnerId, merged)
+          return merged
+        })
+      })
+      .subscribe()
+
+    return () => { void getSupabase().removeChannel(channel) }
   }, [learnerId, project, starterCode])
 
   useEffect(() => { scrollToTop() }, [projectId])
@@ -116,7 +141,10 @@ export default function MiniProject() {
   const persist = (patch: Partial<MiniProjectProgress>, sync = false) => {
     setProgress(current => {
       const next = saveLocalProjectProgress(learnerId || 'guest', { ...current, ...patch, updatedAt: new Date().toISOString() })
-      if (sync && learnerId) void syncProjectProgress(learnerId, next)
+      if (learnerId && learnerId !== 'guest') {
+        if (sync) void syncProjectProgress(learnerId, next)
+        else scheduleProjectProgressSync(learnerId, next)
+      }
       return next
     })
   }

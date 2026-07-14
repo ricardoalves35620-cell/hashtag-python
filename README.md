@@ -231,3 +231,7 @@ A Fase 39 agora termina em um serviço de triagem de sinistros que combina `data
 O segundo artefato permanece oculto até a Fase 39 ficar disponível pela progressão normal.
 
 Detalhes: `docs/RELEASE_NOTES_SPRINT_10.2.md`.
+
+## Sprint 10.6
+
+Adds the Phase 64 Transformer Attention portfolio integrator and cross-device synchronization V2 for learning history, journey progress, journals, projects, exam drafts and account preferences. Run `supabase/cross-device-sync-v2.sql` after deployment.

@@ -15,7 +15,7 @@ import {
   loadLessonReflection,
   saveLessonReflection,
 } from '../lib/pedagogicalJourney'
-import { loadJournalPreferences, loadJourneyProgress, markJourneyUnitVisited, saveJournalEntry } from '../lib/learningJournal'
+import { fetchJournalEntry, hydrateJourneyProgress, loadJournalPreferences, loadJourneyProgress, markJourneyUnitVisited, saveJournalEntry } from '../lib/learningJournal'
 import { scrollToTop } from '../lib/scroll'
 
 export default function Lesson() {
@@ -29,6 +29,7 @@ export default function Lesson() {
   const [visitedUnits, setVisitedUnits] = useState<string[]>([])
   const [journalVisible, setJournalVisible] = useState(() => loadJournalPreferences().showJournal)
   const titleRef = useRef<HTMLHeadingElement>(null)
+  const journalSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const journey = useMemo(() => phase ? getPedagogicalJourney(phase) : [], [phase])
   const unitIndex = Math.min(Math.max(Number.isFinite(requestedUnit) ? requestedUnit : 0, 0), Math.max(journey.length - 1, 0))
@@ -39,11 +40,21 @@ export default function Lesson() {
       setReflection('')
       return
     }
-    setReflection(loadLessonReflection(learnerId, phase.id, unit.id))
+    const localReflection = loadLessonReflection(learnerId, phase.id, unit.id)
+    setReflection(localReflection)
     const stored = loadJourneyProgress(learnerId, phase.id)
     const visited = markJourneyUnitVisited(learnerId, phase.id, unit.id)
     setVisitedUnits(Array.from(new Set([...stored, ...visited])))
     setJournalVisible(loadJournalPreferences().showJournal)
+
+    if (learnerId !== 'guest') {
+      void hydrateJourneyProgress(learnerId, phase.id).then(setVisitedUnits)
+      void fetchJournalEntry(learnerId, phase.id, unit.id).then(remote => {
+        if (!remote.trim() || localReflection.trim()) return
+        saveLessonReflection(learnerId, phase.id, unit.id, remote)
+        setReflection(remote)
+      })
+    }
   }, [learnerId, phase, unit])
 
   if (!phase || !unit) return null
@@ -59,7 +70,20 @@ export default function Lesson() {
 
   const persistReflection = (value: string) => {
     setReflection(value)
-    if (learnerId) saveLessonReflection(learnerId, phase.id, unit.id, value)
+    if (!learnerId) return
+    saveLessonReflection(learnerId, phase.id, unit.id, value)
+    if (journalSyncTimer.current) clearTimeout(journalSyncTimer.current)
+    if (!value.trim() || learnerId === 'guest') return
+    journalSyncTimer.current = setTimeout(() => {
+      void saveJournalEntry({
+        userId: learnerId,
+        phaseId: phase.id,
+        unitId: unit.id,
+        prompt: unit.checkpoint[lang],
+        response: value,
+        language: lang,
+      })
+    }, 900)
   }
 
   const syncOptionalReflection = () => {

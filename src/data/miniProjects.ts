@@ -1211,6 +1211,295 @@ if __name__ == "__main__":
       { en: 'calculate accuracy, precision and recall safely', pt: 'calcular acurácia, precisão e recall com segurança' },
       { en: 'produce a data and ML portfolio artifact you can explain', pt: 'produzir um artefato de dados e ML que você consegue explicar' },
     ],
+  },
+  {
+    id: 'transformer-attention-inspector',
+    milestonePhaseId: 64,
+    icon: '🧠',
+    title: { en: 'Transformer Attention Inspector', pt: 'Inspetor de Atenção de Transformers' },
+    subtitle: {
+      en: 'Implement token embeddings, stable softmax attention and evidence-based document ranking.',
+      pt: 'Implemente embeddings de tokens, atenção softmax estável e ranqueamento de documentos baseado em evidências.',
+    },
+    scenario: {
+      en: 'A local document assistant must explain which token received the most attention and which short document best matches a query. Build the attention core without using an external AI API.',
+      pt: 'Um assistente local de documentos precisa explicar qual token recebeu mais atenção e qual documento curto combina melhor com uma consulta. Construa o núcleo de atenção sem usar API externa de IA.',
+    },
+    professionalContext: {
+      en: 'Transformers are built from explicit numerical operations. This project makes embeddings, dot-product scores, stable softmax, weighted context and ranking visible enough to audit.',
+      pt: 'Transformers são construídos com operações numéricas explícitas. Este projeto torna embeddings, produtos escalares, softmax estável, contexto ponderado e ranqueamento visíveis para auditoria.',
+    },
+    estimatedMinutes: 210,
+    skills: [
+      { en: 'tokenization contracts', pt: 'contratos de tokenização' },
+      { en: 'embedding vectors', pt: 'vetores de embedding' },
+      { en: 'dot-product attention', pt: 'atenção por produto escalar' },
+      { en: 'numerically stable softmax', pt: 'softmax numericamente estável' },
+      { en: 'weighted context vectors', pt: 'vetores de contexto ponderados' },
+      { en: 'transparent ranking', pt: 'ranqueamento transparente' },
+    ],
+    requirements: {
+      en: [
+        'Represent each document with a dataclass',
+        'Parse EMBED|token|x|y, QUERY|token and DOC|id|space separated tokens',
+        'Reject malformed embeddings and documents with no known tokens',
+        'Calculate query-token dot products',
+        'Implement stable softmax by subtracting the largest score before exp',
+        'Calculate a weighted context vector for each document',
+        'Print the highest-attention token, its weight and document relevance',
+        'Print the document with the highest relevance',
+        'Report MODEL_ERROR=unknown_query when the query token has no embedding',
+      ],
+      pt: [
+        'Represente cada documento com uma dataclass',
+        'Interprete EMBED|token|x|y, QUERY|token e DOC|id|tokens separados por espaço',
+        'Rejeite embeddings malformados e documentos sem tokens conhecidos',
+        'Calcule produtos escalares entre consulta e tokens',
+        'Implemente softmax estável subtraindo a maior pontuação antes de exp',
+        'Calcule um vetor de contexto ponderado para cada documento',
+        'Mostre o token com maior atenção, seu peso e a relevância do documento',
+        'Mostre o documento com maior relevância',
+        'Informe MODEL_ERROR=unknown_query quando a consulta não possuir embedding',
+      ],
+    },
+    inputContract: {
+      en: 'First define embeddings with EMBED|token|x|y, then one QUERY|token, then DOC|id|token token. END finishes the batch.',
+      pt: 'Primeiro defina embeddings com EMBED|token|x|y, depois uma QUERY|token e então DOC|id|token token. END encerra o lote.',
+    },
+    outputContract: {
+      en: 'Each valid document prints ATTN=<id>|<top_token>|<weight>|<relevance>. Invalid documents print INVALID_DOC=<id>. The best valid document prints BEST=<id>.',
+      pt: 'Cada documento válido imprime ATTN=<id>|<token_principal>|<peso>|<relevância>. Documentos inválidos imprimem INVALID_DOC=<id>. O melhor documento válido imprime BEST=<id>.',
+    },
+    ruleContract: {
+      en: 'Score each known token with dot(query, token). Apply stable softmax to the scores. The context is the weighted sum of token embeddings. Relevance is dot(query, context). Ties keep the first token and then the lexicographically smallest document id.',
+      pt: 'Pontue cada token conhecido com dot(consulta, token). Aplique softmax estável. O contexto é a soma ponderada dos embeddings. A relevância é dot(consulta, contexto). Empates mantêm o primeiro token e depois o menor ID de documento em ordem alfabética.',
+    },
+    edgeCases: {
+      en: 'Test unknown document tokens, a query token without an embedding, repeated tokens and equal relevance scores.',
+      pt: 'Teste tokens desconhecidos no documento, consulta sem embedding, tokens repetidos e relevâncias empatadas.',
+    },
+    starterCode: {
+      en: `# Portfolio project: Transformer Attention Inspector
+from dataclasses import dataclass
+import math
+
+
+@dataclass(frozen=True)
+class Document:
+    doc_id: str
+    tokens: list[str]
+
+
+def dot(left: tuple[float, float], right: tuple[float, float]) -> float:
+    # TODO: return the vector dot product
+    return 0.0
+
+
+def softmax(scores: list[float]) -> list[float]:
+    # TODO: subtract max(scores) before math.exp for numerical stability
+    return []
+
+
+def attend(document: Document, query: tuple[float, float], embeddings: dict[str, tuple[float, float]]):
+    # TODO: keep only known tokens
+    # TODO: score, normalize, build context and relevance
+    # Return (top_token, top_weight, relevance) or None
+    return None
+
+
+def main() -> None:
+    embeddings: dict[str, tuple[float, float]] = {}
+    query_token = ""
+    documents: list[Document] = []
+
+    while True:
+        line = input("Record: ").strip()
+        if line.upper() == "END":
+            break
+        try:
+            kind, payload = line.split("|", 1)
+            kind = kind.upper()
+            if kind == "EMBED":
+                token, x, y = payload.split("|")
+                embeddings[token.strip()] = (float(x), float(y))
+            elif kind == "QUERY":
+                query_token = payload.strip()
+            elif kind == "DOC":
+                doc_id, text = payload.split("|", 1)
+                documents.append(Document(doc_id.strip(), text.split()))
+            else:
+                raise ValueError
+        except (ValueError, TypeError):
+            print("INVALID_RECORD")
+
+    if query_token not in embeddings:
+        print("MODEL_ERROR=unknown_query")
+        return
+
+    query = embeddings[query_token]
+    ranked: list[tuple[float, str]] = []
+    for document in documents:
+        result = attend(document, query, embeddings)
+        if result is None:
+            print(f"INVALID_DOC={document.doc_id}")
+            continue
+        top_token, top_weight, relevance = result
+        print(f"ATTN={document.doc_id}|{top_token}|{top_weight:.2f}|{relevance:.2f}")
+        ranked.append((relevance, document.doc_id))
+
+    if ranked:
+        best_id = sorted(ranked, key=lambda item: (-item[0], item[1]))[0][1]
+        print(f"BEST={best_id}")
+
+
+if __name__ == "__main__":
+    main()`,
+      pt: `# Projeto de portfólio: Inspetor de Atenção de Transformers
+from dataclasses import dataclass
+import math
+
+
+@dataclass(frozen=True)
+class Document:
+    doc_id: str
+    tokens: list[str]
+
+
+def dot(left: tuple[float, float], right: tuple[float, float]) -> float:
+    # TODO: retorne o produto escalar dos vetores
+    return 0.0
+
+
+def softmax(scores: list[float]) -> list[float]:
+    # TODO: subtraia max(scores) antes de math.exp para estabilidade numérica
+    return []
+
+
+def attend(document: Document, query: tuple[float, float], embeddings: dict[str, tuple[float, float]]):
+    # TODO: mantenha somente tokens conhecidos
+    # TODO: pontue, normalize, construa contexto e relevância
+    # Retorne (top_token, top_weight, relevance) ou None
+    return None
+
+
+def main() -> None:
+    embeddings: dict[str, tuple[float, float]] = {}
+    query_token = ""
+    documents: list[Document] = []
+
+    while True:
+        line = input("Registro: ").strip()
+        if line.upper() == "END":
+            break
+        try:
+            kind, payload = line.split("|", 1)
+            kind = kind.upper()
+            if kind == "EMBED":
+                token, x, y = payload.split("|")
+                embeddings[token.strip()] = (float(x), float(y))
+            elif kind == "QUERY":
+                query_token = payload.strip()
+            elif kind == "DOC":
+                doc_id, text = payload.split("|", 1)
+                documents.append(Document(doc_id.strip(), text.split()))
+            else:
+                raise ValueError
+        except (ValueError, TypeError):
+            print("INVALID_RECORD")
+
+    if query_token not in embeddings:
+        print("MODEL_ERROR=unknown_query")
+        return
+
+    query = embeddings[query_token]
+    ranked: list[tuple[float, str]] = []
+    for document in documents:
+        result = attend(document, query, embeddings)
+        if result is None:
+            print(f"INVALID_DOC={document.doc_id}")
+            continue
+        top_token, top_weight, relevance = result
+        print(f"ATTN={document.doc_id}|{top_token}|{top_weight:.2f}|{relevance:.2f}")
+        ranked.append((relevance, document.doc_id))
+
+    if ranked:
+        best_id = sorted(ranked, key=lambda item: (-item[0], item[1]))[0][1]
+        print(f"BEST={best_id}")
+
+
+if __name__ == "__main__":
+    main()`,
+    },
+    tests: [
+      {
+        id: 'attention-ranking',
+        title: { en: 'Attention separates relevant documents', pt: 'A atenção separa documentos relevantes' },
+        inputs: [
+          'EMBED|urgent|1|0',
+          'EMBED|payment|0.8|0.2',
+          'EMBED|routine|0|1',
+          'EMBED|note|0.2|0.8',
+          'QUERY|urgent',
+          'DOC|D1|urgent payment',
+          'DOC|D2|routine note',
+          'END',
+        ],
+        expectedOutput: [
+          'ATTN=D1|urgent|0.55|0.91',
+          'ATTN=D2|note|0.55|0.11',
+          'BEST=D1',
+        ],
+      },
+      {
+        id: 'attention-unknown-document-token',
+        title: { en: 'Unknown document tokens are handled', pt: 'Tokens desconhecidos no documento são tratados' },
+        inputs: [
+          'EMBED|a|1|0',
+          'EMBED|b|0|1',
+          'QUERY|a',
+          'DOC|D1|missing unknown',
+          'DOC|D2|a a',
+          'END',
+        ],
+        expectedOutput: [
+          'INVALID_DOC=D1',
+          'ATTN=D2|a|0.50|1.00',
+          'BEST=D2',
+        ],
+      },
+      {
+        id: 'attention-unknown-query',
+        title: { en: 'Unknown query stops the model honestly', pt: 'Consulta desconhecida interrompe o modelo com honestidade' },
+        inputs: [
+          'EMBED|known|1|0',
+          'QUERY|missing',
+          'DOC|D1|known',
+          'END',
+        ],
+        expectedOutput: ['MODEL_ERROR=unknown_query'],
+      },
+    ],
+    requiredNodes: ['ClassDef', 'FunctionDef', 'Try', 'While', 'For'],
+    requiredImports: ['dataclasses', 'math'],
+    requiredFunctions: ['dot', 'softmax', 'attend', 'main'],
+    requiredCalls: ['math.exp'],
+    requireMainGuard: true,
+    refactorOptions: [
+      { en: 'Keep parsing separate from numerical attention calculations.', pt: 'Mantenha interpretação separada dos cálculos numéricos de atenção.' },
+      { en: 'Give dot, softmax and attention one testable responsibility each.', pt: 'Dê a dot, softmax e atenção uma responsabilidade testável para cada.' },
+      { en: 'Explain why subtracting the maximum score protects softmax.', pt: 'Explique por que subtrair a maior pontuação protege o softmax.' },
+      { en: 'Make unknown-token behavior explicit instead of silently inventing vectors.', pt: 'Torne explícito o comportamento de tokens desconhecidos em vez de inventar vetores silenciosamente.' },
+      { en: 'Document that this is one attention head with tiny authored embeddings, not a complete language model.', pt: 'Documente que isto é uma cabeça de atenção com embeddings pequenos, não um modelo de linguagem completo.' },
+      { en: 'Explain how the printed evidence makes the ranking auditable.', pt: 'Explique como as evidências impressas tornam o ranqueamento auditável.' },
+    ],
+    accomplishment: [
+      { en: 'turn tokens into vectors using an explicit embedding table', pt: 'transformar tokens em vetores usando uma tabela explícita de embeddings' },
+      { en: 'calculate dot-product attention and stable softmax', pt: 'calcular atenção por produto escalar e softmax estável' },
+      { en: 'build a weighted context vector', pt: 'construir um vetor de contexto ponderado' },
+      { en: 'rank documents with visible numerical evidence', pt: 'ranquear documentos com evidência numérica visível' },
+      { en: 'handle unknown tokens without hallucinating data', pt: 'tratar tokens desconhecidos sem inventar dados' },
+      { en: 'produce a neural-NLP portfolio artifact you can explain line by line', pt: 'produzir um artefato de NLP neural que você consegue explicar linha por linha' },
+    ],
   }
 
 ]

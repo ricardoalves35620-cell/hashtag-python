@@ -30,16 +30,103 @@ export function saveJournalPreferences(value: JournalPreferences) {
   localStorage.setItem(PREF_KEY, JSON.stringify(value))
 }
 
+function journeyKey(learnerId: string, phaseId: number) {
+  return `${PROGRESS_PREFIX}${learnerId}_${phaseId}`
+}
+
 export function loadJourneyProgress(learnerId: string, phaseId: number): string[] {
-  try { return JSON.parse(localStorage.getItem(`${PROGRESS_PREFIX}${learnerId}_${phaseId}`) || '[]') }
-  catch { return [] }
+  try {
+    const parsed = JSON.parse(localStorage.getItem(journeyKey(learnerId, phaseId)) || '[]')
+    return Array.isArray(parsed) ? parsed.filter(value => typeof value === 'string') : []
+  } catch { return [] }
+}
+
+function saveJourneyProgressLocal(learnerId: string, phaseId: number, units: string[]) {
+  const unique = [...new Set(units)]
+  localStorage.setItem(journeyKey(learnerId, phaseId), JSON.stringify(unique))
+  window.dispatchEvent(new CustomEvent('hp:journey-progress', { detail: { learnerId, phaseId, units: unique } }))
+  return unique
+}
+
+export async function hydrateJourneyProgress(userId: string, phaseId: number): Promise<string[]> {
+  const local = loadJourneyProgress(userId, phaseId)
+  if (userId === 'guest') return local
+  try {
+    const { data, error } = await getSupabase()
+      .from('learning_journey_progress')
+      .select('visited_units')
+      .eq('user_id', userId)
+      .eq('phase_id', phaseId)
+      .maybeSingle()
+    if (error) throw error
+    const remote = Array.isArray(data?.visited_units) ? data.visited_units.filter((value: unknown) => typeof value === 'string') : []
+    const merged = saveJourneyProgressLocal(userId, phaseId, [...local, ...remote])
+    if (merged.length !== remote.length || merged.some(unit => !remote.includes(unit))) {
+      await getSupabase().from('learning_journey_progress').upsert({
+        user_id: userId,
+        phase_id: phaseId,
+        visited_units: merged,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id,phase_id' })
+    }
+    return merged
+  } catch {
+    return local
+  }
+}
+
+const journeyTimers = new Map<string, ReturnType<typeof setTimeout>>()
+
+function scheduleJourneySync(userId: string, phaseId: number, units: string[]) {
+  if (userId === 'guest') return
+  const timerKey = `${userId}:${phaseId}`
+  const current = journeyTimers.get(timerKey)
+  if (current) clearTimeout(current)
+  journeyTimers.set(timerKey, setTimeout(async () => {
+    journeyTimers.delete(timerKey)
+    try {
+      const { data } = await getSupabase()
+        .from('learning_journey_progress')
+        .select('visited_units')
+        .eq('user_id', userId)
+        .eq('phase_id', phaseId)
+        .maybeSingle()
+      const remote = Array.isArray(data?.visited_units) ? data.visited_units : []
+      const merged = saveJourneyProgressLocal(userId, phaseId, [...units, ...remote])
+      await getSupabase().from('learning_journey_progress').upsert({
+        user_id: userId,
+        phase_id: phaseId,
+        visited_units: merged,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id,phase_id' })
+    } catch {
+      // Local state remains the source until the next focus/online retry.
+    }
+  }, 500))
 }
 
 export function markJourneyUnitVisited(learnerId: string, phaseId: number, unitId: string): string[] {
   const current = loadJourneyProgress(learnerId, phaseId)
-  const next = current.includes(unitId) ? current : [...current, unitId]
-  localStorage.setItem(`${PROGRESS_PREFIX}${learnerId}_${phaseId}`, JSON.stringify(next))
+  const next = saveJourneyProgressLocal(learnerId, phaseId, [...current, unitId])
+  scheduleJourneySync(learnerId, phaseId, next)
   return next
+}
+
+export async function fetchJournalEntry(userId: string, phaseId: number, unitId: string): Promise<string> {
+  if (userId === 'guest') return ''
+  try {
+    const { data, error } = await getSupabase()
+      .from('learning_journal_entries')
+      .select('response')
+      .eq('user_id', userId)
+      .eq('phase_id', phaseId)
+      .eq('unit_id', unitId)
+      .maybeSingle()
+    if (error) throw error
+    return typeof data?.response === 'string' ? data.response : ''
+  } catch {
+    return ''
+  }
 }
 
 export async function saveJournalEntry(input: {

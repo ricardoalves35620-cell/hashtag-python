@@ -10,7 +10,7 @@ import {
   mergeLearningStates, type LearningAttemptInput, type LearningState,
 } from '../lib/learningEngine'
 import { migrateGuestBaseZeroState } from '../lib/baseZero'
-import { chooseNewestLearningState, fetchRemoteLearningState, scheduleLearningStateSync } from '../lib/learningSync'
+import { chooseNewestLearningState, fetchRemoteLearningState, scheduleLearningStateSync, syncLearningStateNow } from '../lib/learningSync'
 import { initialSyncState, SYNC_EVENT, type SyncSnapshot } from '../lib/syncStatus'
 
 export type Theme = 'dark' | 'light' | 'system'
@@ -95,8 +95,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const learnerId = user?.id || (isGuest ? GUEST_ID : null)
   const displayName = isGuest ? (lang === 'pt' ? 'Aluno visitante' : 'Guest student') : accountDisplayName
 
-  const setLang = (value: Lang) => { setLangState(value); localStorage.setItem('hp_lang', value) }
-  const setTheme = (value: Theme) => { setThemeState(value); localStorage.setItem('hp_theme', value); applyTheme(value) }
+  const setLang = (value: Lang) => {
+    setLangState(value)
+    localStorage.setItem('hp_lang', value)
+    if (user) void getSupabase().auth.updateUser({ data: { preferred_language: value } })
+  }
+  const setTheme = (value: Theme) => {
+    setThemeState(value)
+    localStorage.setItem('hp_theme', value)
+    applyTheme(value)
+    if (user) void getSupabase().auth.updateUser({ data: { preferred_theme: value } })
+  }
 
   const persistEditorPreference = useCallback((key: 'editor_height' | 'editor_wrap' | 'editor_font_size', value: string | number) => {
     if (!user) return
@@ -127,6 +136,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setUser(nextUser)
     setAvatarUrl(nextUser?.user_metadata?.avatar_url || null)
     setAccountDisplayName(getDisplayName(nextUser))
+
+    const remoteLanguage = nextUser?.user_metadata?.preferred_language
+    if (remoteLanguage === 'en' || remoteLanguage === 'pt') {
+      setLangState(remoteLanguage)
+      localStorage.setItem('hp_lang', remoteLanguage)
+    }
+
+    const remoteTheme = nextUser?.user_metadata?.preferred_theme
+    if (remoteTheme === 'dark' || remoteTheme === 'light' || remoteTheme === 'system') {
+      setThemeState(remoteTheme)
+      localStorage.setItem('hp_theme', remoteTheme)
+      applyTheme(remoteTheme)
+    }
 
     const remoteHeight = nextUser?.user_metadata?.editor_height
     if (remoteHeight === 'auto' || remoteHeight === 'compact') {
@@ -264,16 +286,60 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const local = loadLearningState(learnerId)
     setLearningState(local)
     if (user) {
-      fetchRemoteLearningState(user.id).then(remote => {
-        const chosen = chooseNewestLearningState(local, remote)
-        setLearningState(chosen)
-        saveLearningState(user.id, chosen)
-        if (chosen === local && (!remote || local.updatedAt > remote.updatedAt)) scheduleLearningStateSync(user.id, local)
+      void fetchRemoteLearningState(user.id).then(remote => {
+        const merged = chooseNewestLearningState(local, remote)
+        setLearningState(merged)
+        saveLearningState(user.id, merged)
+        scheduleLearningStateSync(user.id, merged)
       })
     }
   }, [learnerId, user])
 
   useEffect(() => { refreshLearningState() }, [refreshLearningState])
+
+  // Adaptive learning evidence powers the Learning Progress page. Keep it live
+  // across tabs and devices instead of hydrating only once at sign-in.
+  useEffect(() => {
+    if (!user) return
+
+    const applyIncoming = (incoming: LearningState | null) => {
+      if (!incoming || incoming.version !== 1) return
+      setLearningState(current => {
+        const merged = mergeLearningStates(current, incoming)
+        saveLearningState(user.id, merged)
+        return merged
+      })
+    }
+
+    const handleSynced = (event: Event) => applyIncoming((event as CustomEvent<LearningState>).detail)
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== `hp_learning_v1_${user.id}` || !event.newValue) return
+      try { applyIncoming(JSON.parse(event.newValue) as LearningState) } catch { /* ignore invalid cache */ }
+    }
+    window.addEventListener('hp:learning-state-synced', handleSynced)
+    window.addEventListener('storage', handleStorage)
+
+    const channel = getSupabase()
+      .channel(`learning-state-${user.id}`)
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'learning_states', filter: `user_id=eq.${user.id}`,
+      }, payload => {
+        const row = payload.new as { state?: LearningState }
+        applyIncoming(row.state || null)
+      })
+      .subscribe()
+
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === 'visible' && navigator.onLine) refreshLearningState()
+    }, 30000)
+
+    return () => {
+      window.removeEventListener('hp:learning-state-synced', handleSynced)
+      window.removeEventListener('storage', handleStorage)
+      window.clearInterval(interval)
+      void getSupabase().removeChannel(channel)
+    }
+  }, [user, refreshLearningState])
 
   const persistLearningState = useCallback((updater: (state: LearningState) => LearningState) => {
     if (!learnerId) return
@@ -293,11 +359,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       await refreshProgress()
       const local = loadLearningState(user.id)
-      const remote = await fetchRemoteLearningState(user.id)
-      const chosen = chooseNewestLearningState(local, remote)
-      saveLearningState(user.id, chosen)
-      setLearningState(chosen)
-      scheduleLearningStateSync(user.id, chosen)
+      const merged = await syncLearningStateNow(user.id, local)
+      saveLearningState(user.id, merged)
+      setLearningState(merged)
     } catch (error) {
       setSyncSnapshot(current => ({ ...current, state: 'error', message: error instanceof Error ? error.message : 'Sync failed' }))
     }
