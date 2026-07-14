@@ -1,6 +1,6 @@
 # Hashtag Python
 
-**Versão atual: 10.8.0 — Learning Engine V2.8: Python avançado, engenharia e contratos transparentes de exame.**
+**Versão atual: 10.9.0 — Learning Engine V2.9: dados, Machine Learning, redes neurais e IA local com jornadas específicas.**
 
 Aplicação bilíngue para ensinar Python desde conhecimento zero de computador até autonomia avançada em engenharia de software. O foco principal é Python. A construção de IA local é uma especialização opcional, liberada depois da formação principal.
 
@@ -183,6 +183,15 @@ Use `-DetailedReport` somente quando vídeos e traces forem necessários.
 
 Configuração: `docs/CI_SETUP.md`  
 Critérios de release: `docs/RELEASE_READINESS.md`
+
+
+## Learning Engine V2.9
+
+As fases 54–68 agora possuem jornadas individuais para matemática de IA, NumPy, Pandas, estatística, fluxo de Machine Learning, regressão, classificação, redes neurais, PyTorch, tokenização, Transformers, modelos locais, ferramentas seguras, RAG e o capstone de copiloto privado.
+
+A trilha de IA mantém a filosofia do projeto: primeiro compreender os dados, contratos, riscos e evidências; depois usar bibliotecas ou modelos. O capstone continua sem depender de uma API externa de modelo.
+
+Detalhes: `docs/RELEASE_NOTES_LEARNING_ENGINE_V2.9.md`.
 
 ## Learning Engine V2.8
 

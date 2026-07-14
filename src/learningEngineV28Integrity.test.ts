@@ -14,9 +14,8 @@ function journeyText(phaseId: number, lang: 'en' | 'pt' = 'pt') {
 }
 
 describe('Learning Engine V2.8 advanced Python and transparent exam contracts', () => {
-  it('ships a dedicated reasoning blueprint for every phase through engineering', () => {
+  it('preserves the dedicated reasoning blueprints delivered through engineering', () => {
     for (let phaseId = 0; phaseId <= 53; phaseId += 1) expect(isLearningEngineV2Migrated(phaseId)).toBe(true)
-    expect(isLearningEngineV2Migrated(54)).toBe(false)
   })
 
   it('gives phases 40–53 concept-specific mental models instead of generic migration copy', () => {
