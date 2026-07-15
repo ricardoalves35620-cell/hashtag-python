@@ -3,8 +3,8 @@ import { phase0 } from './phase0'
 import { phase1 } from './phase1'
 import { phase2, phase3, phase4, phase5, phase6, phase7, phase8 } from './phases_2_to_8'
 import { phase9, phase10, phase11, phase12 } from './phases_9_to_12_v11'
+import { phase13, phase14, phase15, phase16 } from './phases_13_to_16_v11'
 import {
-  phase13, phase14, phase15, phase16,
   phase17, phase18, phase19, phase20,
   phase21, phase22, phase23,
   phase24, phase25, phase26, phase27
