@@ -65,6 +65,8 @@ def _hp_analyze(tree):
     imports = []
     assigned_names = []
     literal_print_calls = 0
+    literal_print_values = []
+    function_details = []
     docstring_functions = []
 
     for node in ast.walk(tree):
@@ -74,6 +76,35 @@ def _hp_analyze(tree):
             functions.append(node.name)
             if ast.get_docstring(node):
                 docstring_functions.append(node.name)
+
+            arguments = [arg.arg for arg in [*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs]]
+            if node.args.vararg:
+                arguments.append(node.args.vararg.arg)
+            if node.args.kwarg:
+                arguments.append(node.args.kwarg.arg)
+
+            loaded_names = []
+            return_literals = []
+            stack = list(ast.iter_child_nodes(node))
+            while stack:
+                child = stack.pop()
+                if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)):
+                    continue
+                if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Load):
+                    loaded_names.append(child.id)
+                if isinstance(child, ast.Return) and child.value is not None:
+                    try:
+                        return_literals.append(str(ast.literal_eval(child.value)))
+                    except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError):
+                        pass
+                stack.extend(ast.iter_child_nodes(child))
+
+            function_details.append({
+                'name': node.name,
+                'arguments': sorted(set(arguments)),
+                'loadedNames': sorted(set(loaded_names)),
+                'returnLiterals': sorted(set(return_literals)),
+            })
         elif isinstance(node, (ast.Import, ast.ImportFrom)):
             if isinstance(node, ast.Import):
                 imports.extend(alias.name for alias in node.names)
@@ -85,6 +116,7 @@ def _hp_analyze(tree):
                 calls.append(call_name)
             if call_name == 'print' and node.args and all(isinstance(arg, ast.Constant) for arg in node.args):
                 literal_print_calls += 1
+                literal_print_values.append(' '.join(str(arg.value) for arg in node.args))
         elif isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store):
             assigned_names.append(node.id)
 
@@ -103,6 +135,8 @@ def _hp_analyze(tree):
         'imports': sorted(set(imports)),
         'assignedNames': sorted(set(assigned_names)),
         'literalPrintCalls': literal_print_calls,
+        'literalPrintValues': sorted(set(literal_print_values)),
+        'functionDetails': sorted(function_details, key=lambda item: item['name']),
         'docstringFunctions': sorted(set(docstring_functions)),
         'hasMainGuard': has_main_guard,
     }

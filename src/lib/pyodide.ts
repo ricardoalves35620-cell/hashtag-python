@@ -1,5 +1,12 @@
 import type { Check, CodeRequirement, TestCase } from '../data/types'
 
+export interface PythonFunctionAnalysis {
+  name: string
+  arguments: string[]
+  loadedNames: string[]
+  returnLiterals: string[]
+}
+
 export interface PythonAnalysis {
   nodeCounts: Record<string, number>
   calls: string[]
@@ -7,6 +14,8 @@ export interface PythonAnalysis {
   imports: string[]
   assignedNames: string[]
   literalPrintCalls: number
+  literalPrintValues: string[]
+  functionDetails: PythonFunctionAnalysis[]
   docstringFunctions: string[]
   hasMainGuard: boolean
 }
@@ -212,6 +221,7 @@ export function checkText(value: string, check: Check): boolean {
   switch (check.type) {
     case 'contains': return candidate.includes(values[0])
     case 'contains_any': return values.some(item => candidate.includes(item))
+    case 'equals_any': return values.some(item => candidate === item)
     case 'not_contains': return !candidate.includes(values[0])
     case 'equals': return candidate === values[0]
     case 'matches': return new RegExp(String(check.value), check.caseSensitive ? '' : 'i').test(raw)
@@ -238,6 +248,63 @@ export function meetsCodeRequirement(analysis: PythonAnalysis | null, requiremen
     case 'main_guard': return analysis.hasMainGuard
     default: return false
   }
+}
+
+
+export interface HardcodedAnswerFinding {
+  kind: 'literal_print' | 'constant_function'
+  expected: string
+  requiredName: string
+}
+
+function expectedValuesForAntiFraud(testCase: TestCase): string[] {
+  return testCase.checks
+    .filter(check => ['equals', 'equals_any', 'contains', 'contains_any', 'numeric_equals'].includes(check.type))
+    .flatMap(check => Array.isArray(check.value) ? check.value.map(String) : check.value === undefined ? [] : [String(check.value)])
+    .map(value => value.trim())
+    .filter(Boolean)
+}
+
+function assessmentValueMatches(actual: string, expected: string): boolean {
+  const actualNumber = Number(actual)
+  const expectedNumber = Number(expected)
+  if (Number.isFinite(actualNumber) && Number.isFinite(expectedNumber)) {
+    return Math.abs(actualNumber - expectedNumber) <= 0.000001
+  }
+  return normalizeAssessmentText(actual) === normalizeAssessmentText(expected)
+}
+
+/**
+ * Detects two common answer-copying patterns without rejecting legitimate
+ * solutions that merely contain the same words as the expected output.
+ */
+export function detectHardcodedAnswer(
+  analysis: PythonAnalysis | null,
+  testCase: TestCase,
+): HardcodedAnswerFinding | null {
+  if (!analysis) return null
+  const expectedValues = expectedValuesForAntiFraud(testCase)
+  if (!expectedValues.length) return null
+
+  const requiredCalls = (testCase.codeRequirements || []).filter(requirement => requirement.kind === 'call')
+  for (const requirement of requiredCalls) {
+    const wasCalled = analysis.calls.some(call => call === requirement.value || call.endsWith(`.${requirement.value}`))
+    if (wasCalled) continue
+    const literal = analysis.literalPrintValues.find(value => expectedValues.some(expected => assessmentValueMatches(value, expected)))
+    if (literal) return { kind: 'literal_print', expected: literal, requiredName: requirement.value }
+  }
+
+  const requiredFunctions = (testCase.codeRequirements || []).filter(requirement => requirement.kind === 'function')
+  for (const requirement of requiredFunctions) {
+    const detail = analysis.functionDetails.find(item => item.name === requirement.value)
+    if (!detail || detail.arguments.length === 0) continue
+    const usesAnArgument = detail.arguments.some(argument => detail.loadedNames.includes(argument))
+    if (usesAnArgument) continue
+    const literal = detail.returnLiterals.find(value => expectedValues.some(expected => assessmentValueMatches(value, expected)))
+    if (literal) return { kind: 'constant_function', expected: literal, requiredName: requirement.value }
+  }
+
+  return null
 }
 
 export interface TestFeedbackText {
@@ -281,8 +348,9 @@ function buildFeedback(args: {
   run: RunResult
   failedCheck: Check | null
   failedRequirement: CodeRequirement | null
+  hardcodedAnswer: HardcodedAnswerFinding | null
 }): TestFeedback {
-  const { passed, hidden, run, failedCheck, failedRequirement } = args
+  const { passed, hidden, run, failedCheck, failedRequirement, hardcodedAnswer } = args
   const actual = (failedCheck?.target === 'test_output' ? run.testOutput : run.output).replace(/\r/g, '').trim()
   const expected = expectedFromCheck(failedCheck)
 
@@ -346,6 +414,32 @@ function buildFeedback(args: {
     }
   }
 
+  if (hardcodedAnswer) {
+    const target = hardcodedAnswer.kind === 'constant_function'
+      ? `function ${hardcodedAnswer.requiredName}`
+      : `call ${hardcodedAnswer.requiredName}`
+    return {
+      en: {
+        summary: 'The evaluator detected a copied answer instead of a calculation.',
+        whatWorked: ['Your code is valid Python and was executed'],
+        issue: `The expected value “${hardcodedAnswer.expected}” appears as a fixed literal while the required ${target} is not using the provided data.`,
+        why: 'A fixed answer can pass one example but fails as soon as the input changes.',
+        fix: 'Use the function arguments or required call to calculate the result. Then test with a different value before submitting again.',
+        expected: hidden ? undefined : hardcodedAnswer.expected,
+        concept: 'Generalization and anti-hardcoding',
+      },
+      pt: {
+        summary: 'O avaliador detectou uma resposta copiada em vez de um cálculo.',
+        whatWorked: ['Seu código é Python válido e foi executado'],
+        issue: `O valor esperado “${hardcodedAnswer.expected}” aparece como literal fixo enquanto ${target} não usa os dados fornecidos.`,
+        why: 'Uma resposta fixa pode passar em um exemplo, mas falha assim que a entrada muda.',
+        fix: 'Use os argumentos da função ou a chamada obrigatória para calcular o resultado. Depois teste com outro valor antes de enviar novamente.',
+        expected: hidden ? undefined : hardcodedAnswer.expected,
+        concept: 'Generalização e antifraude',
+      },
+    }
+  }
+
   if (failedRequirement) {
     const label = `${failedRequirement.kind}: ${failedRequirement.value}`
     return {
@@ -393,6 +487,10 @@ function buildFeedback(args: {
   const expectedText = expected
   const type = failedCheck?.type
   const details: Record<string, { en: [string, string, string]; pt: [string, string, string] }> = {
+    equals_any: {
+      en: ['The final output differs from every accepted exact form.', 'The result is close, but it does not match any complete accepted answer.', 'Compare the complete output, including line order and required values, then run again.'],
+      pt: ['A saída final difere de todas as formas exatas aceitas.', 'O resultado está próximo, mas não corresponde a nenhuma resposta completa aceita.', 'Compare a saída completa, incluindo a ordem das linhas e os valores obrigatórios, e execute novamente.'],
+    },
     contains: {
       en: ['The expected information was not found in the output.', 'The program printed something, but omitted a required value or text.', 'Print the calculated variable/result instead of unrelated or fixed content.'],
       pt: ['A informação esperada não apareceu na saída.', 'O programa imprimiu algo, mas deixou de mostrar um valor ou texto obrigatório.', 'Imprima a variável ou resultado calculado, em vez de conteúdo não relacionado ou fixo.'],
@@ -457,6 +555,8 @@ export async function runExam(
     let passed = !run.error && !run.testError
     let failedRequirement: CodeRequirement | null = null
     let failedCheck: Check | null = null
+    const hardcodedAnswer = passed ? detectHardcodedAnswer(run.analysis, testCase) : null
+    if (hardcodedAnswer) passed = false
 
     if (passed && testCase.codeRequirements) {
       failedRequirement = testCase.codeRequirements.find(requirement => !meetsCodeRequirement(run.analysis, requirement)) || null
@@ -476,7 +576,7 @@ export async function runExam(
     }
 
     const isHidden = testCase.hidden ?? testIndex > 0
-    const feedback = buildFeedback({ passed, hidden: isHidden, run, failedCheck, failedRequirement })
+    const feedback = buildFeedback({ passed, hidden: isHidden, run, failedCheck, failedRequirement, hardcodedAnswer })
 
     results.push({
       id: testCase.id,

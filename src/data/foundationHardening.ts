@@ -53,21 +53,13 @@ function meaningfulLines(value: string) {
 }
 
 function exerciseChecks(output: Bilingual): Check[] {
-  const numbers = unique([...output.en.matchAll(/-?\d+(?:[.,]\d+)?/g), ...output.pt.matchAll(/-?\d+(?:[.,]\d+)?/g)]
-    .map(match => match[0]))
-    .slice(-3)
-  const enLines = meaningfulLines(output.en)
-  const ptLines = meaningfulLines(output.pt)
-  const firstCandidates = unique([enLines[0], ptLines[0]].filter((value): value is string => Boolean(value)))
-  const lastCandidates = unique([enLines.at(-1), ptLines.at(-1)].filter((value): value is string => Boolean(value)))
-  const checks: Check[] = [{ type: 'no_error' }]
-
-  for (const number of numbers) checks.push({ type: 'contains', value: number })
-  if (firstCandidates.length) checks.push({ type: 'contains_any', value: firstCandidates })
-  if (lastCandidates.length && lastCandidates.join('|') !== firstCandidates.join('|')) {
-    checks.push({ type: 'contains_any', value: lastCandidates })
-  }
-  return checks
+  const accepted = unique([output.en.trim(), output.pt.trim()].filter(Boolean))
+  return [
+    { type: 'no_error' },
+    accepted.length === 1
+      ? { type: 'equals', value: accepted[0], textMode: 'normalized' }
+      : { type: 'equals_any', value: accepted, textMode: 'normalized' },
+  ]
 }
 
 function ensureProgressiveHints(exercise: Exercise, phase: Phase, index: number) {
@@ -449,7 +441,7 @@ function transferExercise(phaseId: number, spec: TransferChallengeSpec): Exercis
       : { en: 'Generalizes to a different or edge scenario', pt: 'Generaliza para um cenário diferente ou limite' },
     expectedOutput: { en: kind === 'public' ? spec.publicExpected : spec.hiddenExpected, pt: kind === 'public' ? spec.publicExpected : spec.hiddenExpected },
     inputs: [],
-    checks: [{ type: 'contains', value: kind === 'public' ? spec.publicExpected : spec.hiddenExpected, target: 'test_output', textMode: 'normalized' }],
+    checks: [{ type: 'equals', value: kind === 'public' ? spec.publicExpected : spec.hiddenExpected, target: 'test_output', textMode: 'normalized' }],
     points: 50,
     setupCode: spec.setupCode,
     afterCode: kind === 'public' ? spec.publicAfterCode : spec.hiddenAfterCode,

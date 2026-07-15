@@ -10,6 +10,8 @@ const analysis = (overrides: Partial<PythonAnalysis> = {}): PythonAnalysis => ({
   imports: [],
   assignedNames: [],
   literalPrintCalls: 0,
+  literalPrintValues: [],
+  functionDetails: [],
   docstringFunctions: [],
   hasMainGuard: false,
   ...overrides,

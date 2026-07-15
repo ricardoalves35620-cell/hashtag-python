@@ -16,6 +16,11 @@ describe('human-facing text comparison', () => {
     })).toBe(true)
   })
 
+  it('accepts only a complete match when one of several exact forms is allowed', () => {
+    expect(checkText('450.0', { type: 'equals_any', value: ['450', '450.0'] })).toBe(true)
+    expect(checkText('Payout: 450.0', { type: 'equals_any', value: ['450', '450.0'] })).toBe(false)
+  })
+
   it('keeps strict accent comparison when exact mode is requested', () => {
     expect(checkText('voce', {
       type: 'equals',

@@ -5,6 +5,8 @@ import type { Bilingual, LessonBlock, Phase } from '../src/data/types'
 import { resolveLocalizedCode } from '../src/lib/localization'
 import { getVisibleExamContracts } from '../src/lib/examContract'
 import { checkText } from '../src/lib/pyodide'
+import { V11_FULL_CURRICULUM_MIGRATED_PHASES, V11_GRADING_MIGRATED_PHASES } from '../src/data/v11Migration'
+import { allPhaseTestCases, measurePhaseV11, requiredExerciseCount } from '../src/lib/v11Quality'
 
 type Severity = 'error' | 'warning'
 interface Issue { fingerprint: string; severity: Severity; phaseId: number; location: string; message: string; sample?: string }
@@ -60,8 +62,85 @@ function auditCode(issues: Issue[], phase: Phase, block: LessonBlock, index: num
   }
 }
 
+
+const MIN_V11_LESSON_BYTES = 14_000
+
+function lessonText(phase: Phase) {
+  return phase.lesson.blocks.map(block => [block.content?.en, block.content?.pt].filter(Boolean).join('\n')).join('\n')
+}
+
+function auditV11Standards(issues: Issue[], phase: Phase) {
+  const metrics = measurePhaseV11(phase)
+  const fullMigration = V11_FULL_CURRICULUM_MIGRATED_PHASES.includes(phase.id)
+  const gradingMigration = V11_GRADING_MIGRATED_PHASES.includes(phase.id)
+  const severity: Severity = fullMigration ? 'error' : 'warning'
+
+  if (phase.id >= 9 && metrics.lessonBytes < MIN_V11_LESSON_BYTES) {
+    push(issues, {
+      severity,
+      phaseId: phase.id,
+      location: 'lesson',
+      message: `V11 lesson density is ${metrics.lessonBytes} bytes; target is ${MIN_V11_LESSON_BYTES}.`,
+    })
+  }
+
+  const requiredExercises = requiredExerciseCount(phase.id)
+  if (metrics.exercises < requiredExercises) {
+    push(issues, {
+      severity,
+      phaseId: phase.id,
+      location: 'exercises',
+      message: `V11 exercise volume is ${metrics.exercises}; target is ${requiredExercises}.`,
+    })
+  }
+
+  for (const [testIndex, testCase] of allPhaseTestCases(phase).entries()) {
+    for (const [checkIndex, check] of testCase.checks.entries()) {
+      if (check.type !== 'contains' && check.type !== 'contains_any') continue
+      const hasJustification = Boolean(check.justification?.en?.trim() && check.justification?.pt?.trim())
+      push(issues, {
+        severity: gradingMigration || !hasJustification ? (gradingMigration ? 'error' : 'warning') : 'warning',
+        phaseId: phase.id,
+        location: `grading.tests[${testIndex}].checks[${checkIndex}]`,
+        message: gradingMigration
+          ? 'V11 grading-migrated phase still uses a partial contains check.'
+          : hasJustification
+            ? 'Partial contains check is justified but remains migration debt.'
+            : 'Partial contains check has no bilingual justification.',
+        sample: `${check.type}: ${String(check.value ?? '')}`,
+      })
+    }
+  }
+
+  if (!fullMigration) return
+  const text = lessonText(phase)
+  const codeBlocks = phase.lesson.blocks.filter(block => block.type === 'code').length
+  const warningBlocks = phase.lesson.blocks.filter(block => block.type === 'warning').length
+  const tipBlocks = phase.lesson.blocks.filter(block => block.type === 'tip').length
+  const requiredSignals = [
+    ['world-hook', /🌍|world.?real|mundo real/i.test(text)],
+    ['analogy', /🧩|analogy|analogia|modelo mental/i.test(text)],
+    ['progressive-code', codeBlocks >= 3],
+    ['real-scenario-1', /cen[aá]rio real 1|real scenario 1/i.test(text)],
+    ['real-scenario-2', /cen[aá]rio real 2|real scenario 2/i.test(text)],
+    ['common-errors', warningBlocks >= 1],
+    ['pro-tip', tipBlocks >= 1],
+    ['recap-and-bridge', /recap|resumo|pr[oó]xima fase|next phase/i.test(text)],
+  ] as const
+
+  for (const [signal, present] of requiredSignals) {
+    if (!present) push(issues, {
+      severity: 'error',
+      phaseId: phase.id,
+      location: 'lesson.blocks',
+      message: `V11 fully migrated lesson is missing required block signal: ${signal}.`,
+    })
+  }
+}
+
 function auditPhase(phase: Phase) {
   const issues: Issue[] = []
+  auditV11Standards(issues, phase)
   auditBilingual(issues, phase, phase.title, 'title')
   auditBilingual(issues, phase, phase.description, 'description')
   auditBilingual(issues, phase, phase.lesson.title, 'lesson.title')

@@ -26,6 +26,11 @@ function describeCheck(check: Check, lang: Lang): { text: string; kind: Exercise
         text: lang === 'pt' ? `Deve incluir uma destas formas: ${values.join(' OU ')}` : `Must include one of these forms: ${values.join(' OR ')}`,
         kind: 'alternatives',
       } : null
+    case 'equals_any':
+      return values.length ? {
+        text: values.join(lang === 'pt' ? ' OU ' : ' OR '),
+        kind: 'alternatives',
+      } : null
     case 'equals':
     case 'numeric_equals':
       return values[0] ? { text: values[0], kind: 'exact' } : null

@@ -14,6 +14,13 @@ Elevar a formação de Python a um padrão empregável sem destruir o motor de e
 6. O Desktop Bridge não receberá um segredo HMAC reutilizável exposto ao aluno. A prova usará desafio de curta duração emitido pelo servidor, identidade do dispositivo e validação no backend.
 7. Publicação no PyPI, integração GitHub e páginas públicas exigem revisão de segurança, RLS e privacidade antes da ativação em produção.
 
+## Estado da migração
+
+- Fundação do auditor inteligente: concluída na versão 10.19.0.
+- Grading exato, antifraude AST e quality gate: concluídos na versão 10.20.0.
+- Fases com grading v11 protegido: 28–68 (41 fases).
+- Próximo lote autoral: fases 9–12.
+
 ## Ordem de entrega
 
 ### Fundação v11

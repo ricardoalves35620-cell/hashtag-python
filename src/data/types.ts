@@ -53,6 +53,7 @@ export interface QuizQuestion {
 export type CheckType =
   | 'contains'
   | 'contains_any'
+  | 'equals_any'
   | 'not_contains'
   | 'no_error'
   | 'equals'
@@ -78,6 +79,8 @@ export interface Check {
   tolerance?: number
   /** Defaults to normalized for human-facing text checks; exact preserves accents and spacing. */
   textMode?: TextComparisonMode
+  /** Required when a partial contains check is intentionally used in v11-authored content. */
+  justification?: Bilingual
 }
 
 export interface TestCase {
