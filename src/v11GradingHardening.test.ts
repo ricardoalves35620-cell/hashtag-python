@@ -13,7 +13,7 @@ describe('Hashtag Python v11 grading hardening', () => {
 
   it('keeps every grading-migrated phase free from partial contains checks', () => {
     const phases = ALL_PHASES.filter(phase => V11_GRADING_MIGRATED_PHASES.includes(phase.id))
-    expect(phases).toHaveLength(41)
+    expect(phases).toHaveLength(V11_GRADING_MIGRATED_PHASES.length)
     for (const phase of phases) expect(evaluateMigratedGrading(phase)).toEqual([])
   })
 

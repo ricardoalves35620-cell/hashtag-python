@@ -30,7 +30,12 @@ function countCodeRequirements(phase: Phase) {
 }
 
 function hiddenClassSignals(testCase: TestCase) {
-  const values = [...testCase.inputs, ...Object.values(testCase.inputMap || {})]
+  const values = [
+    ...testCase.inputs,
+    ...Object.values(testCase.inputMap || {}),
+    testCase.setupCode || '',
+    testCase.afterCode || '',
+  ]
   return {
     empty: values.some(value => value === '' || value === '[]' || value === '{}'),
     negative: values.some(value => /^-\d/.test(value.trim())),
@@ -47,7 +52,7 @@ function phaseReadiness(phase: Phase) {
   const hiddenTests = tests.filter(testCase => testCase.hidden)
   const checks = allChecks(phase)
   const containsChecks = checks.filter(check => check.type === 'contains' || check.type === 'contains_any')
-  const exactChecks = checks.filter(check => check.type === 'equals')
+  const exactChecks = checks.filter(check => ['equals', 'equals_any', 'numeric_equals', 'matches'].includes(check.type))
   const codeBlocks = phase.lesson.blocks.filter(block => block.type === 'code').length
   const warnings = phase.lesson.blocks.filter(block => block.type === 'warning').length
   const tips = phase.lesson.blocks.filter(block => block.type === 'tip').length
