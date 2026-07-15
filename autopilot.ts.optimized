@@ -1,0 +1,568 @@
+import { spawn, type SpawnSyncReturns } from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
+
+const AUDITOR_VERSION = '8.2.0-optimized'
+
+interface Args {
+  cycles: number
+  minutes: number
+  batch: number
+  start: number
+  url: string
+  fresh: boolean
+  environmentOffset: number
+}
+
+interface AggregatedIssue {
+  fingerprint: string
+  source: string
+  cycle: number
+  firstSeen: string
+  lastSeen: string
+  occurrences: number
+  details: unknown
+}
+
+interface CommandResult {
+  status: number
+  signal: NodeJS.Signals | null
+  error?: string
+  startedAt: string
+  finishedAt: string
+  durationMs: number
+}
+
+const AUDIT_ENVIRONMENTS = [
+  { device: 'iphone-chromium', lang: 'pt', theme: 'dark' },
+  { device: 'desktop-chromium', lang: 'en', theme: 'dark' },
+  { device: 'tablet-chromium', lang: 'pt', theme: 'light' },
+  { device: 'iphone-chromium', lang: 'en', theme: 'light' },
+  { device: 'desktop-chromium', lang: 'pt', theme: 'light' },
+  { device: 'tablet-chromium', lang: 'en', theme: 'dark' },
+  { device: 'iphone-chromium', lang: 'pt', theme: 'light' },
+  { device: 'desktop-chromium', lang: 'en', theme: 'light' },
+  { device: 'tablet-chromium', lang: 'pt', theme: 'dark' },
+  { device: 'iphone-chromium', lang: 'en', theme: 'dark' },
+  { device: 'desktop-chromium', lang: 'pt', theme: 'dark' },
+  { device: 'tablet-chromium', lang: 'en', theme: 'light' },
+] as const
+
+function parseArgs(): Args {
+  const argv = process.argv.slice(2)
+  const value = (name: string, fallback: number) => {
+    const inline = argv.find(arg => arg.startsWith(`--${name}=`))
+    if (inline) return Number(inline.split('=')[1])
+    const index = argv.indexOf(`--${name}`)
+    return index >= 0 ? Number(argv[index + 1]) : fallback
+  }
+  const stringValue = (name: string, fallback = '') => {
+    const inline = argv.find(arg => arg.startsWith(`--${name}=`))
+    if (inline) return inline.slice(name.length + 3)
+    const index = argv.indexOf(`--${name}`)
+    return index >= 0 ? String(argv[index + 1] || fallback) : fallback
+  }
+
+  return {
+    cycles: value('cycles', 40),
+    minutes: value('minutes', 240),
+    batch: value('batch', 4), // ⚡ OPTIMIZED: Changed default from 2 to 4
+    start: value('start', 0),
+    url: stringValue('url', process.env.HP_AUDIT_BASE_URL || ''),
+    fresh: argv.includes('--fresh'),
+    environmentOffset: Math.max(0, value('environment-offset', Number(process.env.HP_AUDIT_ENVIRONMENT_OFFSET || 0))),
+  }
+}
+
+// ⚡ OPTIMIZED: Added runAsync for parallel execution
+function runAsync(command: string, args: string[], env: NodeJS.ProcessEnv): Promise<CommandResult> {
+  return new Promise((resolve) => {
+    const startedAtMs = Date.now()
+    const startedAt = new Date(startedAtMs).toISOString()
+    
+    const process = spawn(command, args, {
+      stdio: 'inherit',
+      shell: false,
+      env,
+    })
+
+    process.on('close', (status) => {
+      const finishedAtMs = Date.now()
+      resolve({
+        status: status ?? 1,
+        signal: null,
+        error: undefined,
+        startedAt,
+        finishedAt: new Date(finishedAtMs).toISOString(),
+        durationMs: finishedAtMs - startedAtMs,
+      })
+    })
+
+    process.on('error', (error) => {
+      const finishedAtMs = Date.now()
+      resolve({
+        status: 1,
+        signal: null,
+        error: error.message,
+        startedAt,
+        finishedAt: new Date(finishedAtMs).toISOString(),
+        durationMs: finishedAtMs - startedAtMs,
+      })
+    })
+  })
+}
+
+function readJson(file: string): any {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+function hash(value: string) {
+  let h = 2166136261
+  for (let i = 0; i < value.length; i += 1) {
+    h ^= value.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return (h >>> 0).toString(16)
+}
+
+function stripAnsi(value: string) {
+  return value.replace(/\u001b\[[0-9;]*m/g, '')
+}
+
+function normalizeFailureSignature(title: string, message: string) {
+  const normalizedTitle = title.replace(/phase\s+\d+/gi, 'phase #')
+  const normalizedMessage = stripAnsi(message)
+    .replace(/[A-Z]:\\[^\n]+?app\.audit\.spec\.ts/gi, '<audit-file>')
+    .replace(/phase\s+\d+/gi, 'phase #')
+    .replace(/\b\d+ms\b/g, '<duration>')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  return `${normalizedTitle}|${normalizedMessage}`
+}
+
+function extractAffectedPhases(message: string) {
+  return Array.from(
+    new Set(
+      Array.from(message.matchAll(/phase\s+(\d+)/gi), match => Number(match[1]))
+        .filter(value => Number.isInteger(value)),
+    ),
+  ).sort((a, b) => a - b)
+}
+
+function playwrightIssues(payload: any, cycle: number): AggregatedIssue[] {
+  const issues: AggregatedIssue[] = []
+  const suites = payload?.suites || []
+
+  const walk = (nodes: any[], trail: string[]) => {
+    for (const node of nodes) {
+      const nextTrail = node.title ? [...trail, node.title] : trail
+
+      for (const spec of node.specs || []) {
+        for (const test of spec.tests || []) {
+          const result = (test.results || []).at(-1)
+          if (!result || result.status === 'passed' || result.status === 'skipped') continue
+
+          const message = result.error?.message || result.status
+          const signature = normalizeFailureSignature(spec.title, message)
+          const now = new Date().toISOString()
+
+          issues.push({
+            fingerprint: `visual-${hash(signature)}`,
+            source: 'playwright',
+            cycle,
+            firstSeen: now,
+            lastSeen: now,
+            occurrences: 1,
+            details: {
+              title: spec.title,
+              affectedTests: [spec.title],
+              affectedPhases: extractAffectedPhases(stripAnsi(message)),
+              trail: nextTrail,
+              status: result.status,
+              attempts: test.results?.length || 1,
+              message: stripAnsi(message),
+            },
+          })
+        }
+      }
+
+      walk(node.suites || [], nextTrail)
+    }
+  }
+
+  walk(suites, [])
+  return issues
+}
+
+function contentIssues(payload: any, cycle: number): AggregatedIssue[] {
+  const now = new Date().toISOString()
+
+  return (payload?.issues || []).map((issue: any) => ({
+    fingerprint: `content-${issue.fingerprint}`,
+    source: 'content',
+    cycle,
+    firstSeen: now,
+    lastSeen: now,
+    occurrences: 1,
+    details: issue,
+  }))
+}
+
+function runnerIssue(
+  cycle: number,
+  source: string,
+  title: string,
+  message: string,
+  metadata: Record<string, unknown>,
+): AggregatedIssue {
+  const signature = `${source}|${title}|${message}`
+  const now = new Date().toISOString()
+
+  return {
+    fingerprint: `runner-${hash(signature)}`,
+    source,
+    cycle,
+    firstSeen: now,
+    lastSeen: now,
+    occurrences: 1,
+    details: {
+      title,
+      message,
+      ...metadata,
+    },
+  }
+}
+
+function fileIsFresh(file: string, startedAtIso: string) {
+  if (!fs.existsSync(file)) return false
+
+  const startedAt = Date.parse(startedAtIso)
+  const modifiedAt = fs.statSync(file).mtimeMs
+  return Number.isFinite(startedAt) && modifiedAt >= startedAt - 1_000
+}
+
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  }
+  return text.replace(/[&<>"']/g, m => map[m])
+}
+
+function writeHtml(file: string, data: any) {
+  const rows = Object.values(data.issues as Record<string, AggregatedIssue>)
+    .map(
+      (issue: any) =>
+        `<tr><td>${escapeHtml(issue.source)}</td><td>${issue.cycle}</td><td>${issue.occurrences}</td><td><code>${escapeHtml(issue.fingerprint)}</code></td><td><pre>${escapeHtml(JSON.stringify(issue.details, null, 2))}</pre></td></tr>`,
+    )
+    .join('')
+
+  const cycles = data.cycles
+    .map(
+      (cycle: any) =>
+        `<tr><td>${cycle.number}</td><td>${cycle.phaseStart}-${cycle.phaseEnd}</td><td>${cycle.lang}</td><td>${cycle.theme}</td><td>${escapeHtml(cycle.device)}</td><td>${cycle.contentExitCode}</td><td>${cycle.visualExitCode}</td><td>${cycle.visualResultsFresh ? 'yes' : 'no'}</td><td>${cycle.newIssues}</td><td>${cycle.knownIssues}</td><td>${cycle.durationSeconds}s</td></tr>`,
+    )
+    .join('')
+
+  fs.writeFileSync(
+    file,
+    `<!DOCTYPE html>
+<html>
+<head>
+  <title>Auditor Report</title>
+  <style>
+    body { font-family: monospace; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f5f5f5; }
+    pre { max-height: 200px; overflow: auto; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <h1>Auditor Report v${data.auditorVersion}</h1>
+  <p>Run ID: ${escapeHtml(data.runId)}</p>
+  <p>Target: ${escapeHtml(data.target)}</p>
+  <p>Started: ${data.startedAt}</p>
+  <p>Updated: ${data.updatedAt}</p>
+  
+  <h2>Cycles (${data.cycles.length})</h2>
+  <table>
+    <tr><th>Cycle</th><th>Phases</th><th>Lang</th><th>Theme</th><th>Device</th><th>Content Code</th><th>Visual Code</th><th>Results Fresh</th><th>New Issues</th><th>Known Issues</th><th>Duration</th></tr>
+    ${cycles}
+  </table>
+  
+  <h2>Issues (${Object.keys(data.issues).length})</h2>
+  <table>
+    <tr><th>Source</th><th>Cycle</th><th>Occurrences</th><th>Fingerprint</th><th>Details</th></tr>
+    ${rows}
+  </table>
+</body>
+</html>`,
+  )
+}
+
+const args = parseArgs()
+const reportDir = 'auditor-report'
+const stateFile = path.join(reportDir, 'state.json')
+const runId = Math.random().toString(36).slice(2)
+
+if (!fs.existsSync(reportDir)) fs.mkdirSync(reportDir, { recursive: true })
+
+const state =
+  readJson(stateFile) || {
+    auditorVersion: AUDITOR_VERSION,
+    runId,
+    target: args.url,
+    startedAt: new Date().toISOString(),
+    updatedAt: '',
+    cursor: args.start,
+    environmentOffset: args.environmentOffset,
+    cycles: [],
+    issues: {},
+  }
+
+state.auditorVersion = AUDITOR_VERSION
+state.runId = args.fresh ? runId : state.runId || runId
+state.target = args.url
+state.environmentOffset = args.environmentOffset
+
+const started = Date.now()
+const deadline =
+  args.minutes > 0
+    ? started + args.minutes * 60_000
+    : Number.POSITIVE_INFINITY
+
+// ⚡ OPTIMIZED: Async execution loop to support parallel runs
+;(async () => {
+  for (
+    let iteration = 1;
+    iteration <= args.cycles && Date.now() < deadline;
+    iteration += 1
+  ) {
+    const cycle = state.cycles.length + 1
+    const cycleStart = Date.now()
+    const phaseStart = state.cursor % 69
+    const phaseCount = Math.min(args.batch, 69 - phaseStart)
+
+    const curriculumPass = Math.floor((cycle - 1) / 69)
+    const environmentIndex = (args.environmentOffset + curriculumPass) % AUDIT_ENVIRONMENTS.length
+    const environment = AUDIT_ENVIRONMENTS[environmentIndex]
+    const { lang, theme, device } = environment
+
+    if (fs.existsSync(path.resolve('.autopilot-stop-after-cycle'))) {
+      console.log('Graceful stop requested. Ending before the next cycle.')
+      fs.rmSync(path.resolve('.autopilot-stop-after-cycle'), { force: true })
+      break
+    }
+
+    const cycleDir = path.join(
+      reportDir,
+      'cycles',
+      `cycle-${String(cycle).padStart(3, '0')}`,
+    )
+    fs.rmSync(cycleDir, { recursive: true, force: true })
+    fs.mkdirSync(cycleDir, { recursive: true })
+
+    const contentOutput = path.join(cycleDir, 'content.json')
+    const visualOutput = path.join(cycleDir, 'results.json')
+    const htmlOutput = path.join(cycleDir, 'html')
+    const artifactsOutput = path.join(cycleDir, 'artifacts')
+
+    const env = {
+      ...process.env,
+      ...(args.url ? { HP_AUDIT_BASE_URL: args.url } : {}),
+      HP_AUDIT_PHASE_START: String(phaseStart),
+      HP_AUDIT_PHASE_COUNT: String(phaseCount),
+      HP_AUDIT_LANG: lang,
+      HP_AUDIT_THEME: theme,
+      HP_AUDIT_CONTENT_OUTPUT: contentOutput,
+      HP_AUDIT_RESULTS_OUTPUT: visualOutput,
+      HP_AUDIT_HTML_OUTPUT: htmlOutput,
+      HP_AUDIT_ARTIFACTS_OUTPUT: artifactsOutput,
+      HP_AUDIT_REQUIRE_LOGIN: 'true',
+      HP_AUDIT_CYCLE: String(cycle),
+      HP_AUDIT_LIVE_STATUS: path.join(reportDir, 'live-status.txt'),
+      HP_AUDIT_HEADED: process.env.HP_AUDIT_HEADED || 'false',
+      HP_AUDIT_SLOW_MO: process.env.HP_AUDIT_SLOW_MO || '0',
+      HP_AUDIT_RETRIES: process.env.HP_AUDIT_RETRIES || '1',
+      HP_AUDIT_DETAILED: process.env.HP_AUDIT_DETAILED || 'false',
+      HP_AUDIT_EXPECT_VERSION: process.env.HP_AUDIT_EXPECT_VERSION || process.env.npm_package_version || '',
+    }
+
+    console.log(
+      `\n=== Cycle ${cycle}: phases ${phaseStart}-${phaseStart + phaseCount - 1}, ${lang}, ${theme}, ${device} ===`,
+    )
+
+    // ⚡ OPTIMIZED: Run content audit and playwright in parallel instead of sequentially
+    const playwrightCli = path.resolve(
+      'node_modules/@playwright/test/cli.js',
+    )
+    
+    const [contentRun, visualRun] = await Promise.all([
+      runAsync(process.execPath, ['--import', 'tsx', 'audit/content-audit.ts'], env),
+      runAsync(process.execPath, [playwrightCli, 'test', '--project', device], env),
+    ])
+
+    const found: AggregatedIssue[] = []
+
+    const contentPayload = readJson(contentOutput)
+    if (contentPayload) {
+      found.push(...contentIssues(contentPayload, cycle))
+    } else {
+      found.push(
+        runnerIssue(
+          cycle,
+          'content-runner',
+          'Content audit did not produce a result file',
+          contentRun.error || `Process exited with code ${contentRun.status}`,
+          {
+            exitCode: contentRun.status,
+            startedAt: contentRun.startedAt,
+            finishedAt: contentRun.finishedAt,
+            outputFile: contentOutput,
+          },
+        ),
+      )
+    }
+
+    const visualPayload = readJson(visualOutput)
+    const visualResultsFresh = fileIsFresh(
+      visualOutput,
+      visualRun.startedAt,
+    )
+
+    if (visualPayload && visualResultsFresh) {
+      found.push(...playwrightIssues(visualPayload, cycle))
+    } else {
+      found.push(
+        runnerIssue(
+          cycle,
+          'playwright-runner',
+          visualPayload
+            ? 'Playwright result file was stale'
+            : 'Playwright did not produce a result file',
+          visualRun.error || `Process exited with code ${visualRun.status}`,
+          {
+            exitCode: visualRun.status,
+            signal: visualRun.signal,
+            startedAt: visualRun.startedAt,
+            finishedAt: visualRun.finishedAt,
+            outputFile: visualOutput,
+            outputFileExists: fs.existsSync(visualOutput),
+            outputFileFresh: visualResultsFresh,
+            target: args.url,
+            device,
+          },
+        ),
+      )
+    }
+
+    let newIssues = 0
+    let knownIssues = 0
+
+    for (const issue of found) {
+      const existing = state.issues[
+        issue.fingerprint
+      ] as AggregatedIssue | undefined
+
+      if (existing) {
+        existing.lastSeen = new Date().toISOString()
+        existing.occurrences += 1
+
+        const currentDetails = existing.details as {
+          affectedTests?: string[]
+          affectedPhases?: number[]
+          message?: string
+          latestMessage?: string
+        }
+        const incomingDetails = issue.details as {
+          title?: string
+          affectedPhases?: number[]
+          message?: string
+        }
+
+        if (incomingDetails.title) {
+          currentDetails.affectedTests ||= []
+          if (!currentDetails.affectedTests.includes(incomingDetails.title)) {
+            currentDetails.affectedTests.push(incomingDetails.title)
+          }
+        }
+
+        currentDetails.affectedPhases = Array.from(new Set([
+          ...(currentDetails.affectedPhases || []),
+          ...(incomingDetails.affectedPhases || []),
+        ])).sort((a, b) => a - b)
+
+        if (incomingDetails.message && incomingDetails.message !== currentDetails.message) {
+          currentDetails.latestMessage = incomingDetails.message
+        }
+
+        knownIssues += 1
+      } else {
+        state.issues[issue.fingerprint] = issue
+        newIssues += 1
+      }
+    }
+
+    state.cycles.push({
+      number: state.cycles.length + 1,
+      phaseStart,
+      phaseEnd: phaseStart + phaseCount - 1,
+      lang,
+      theme,
+      device,
+      environmentIndex,
+      newIssues,
+      knownIssues,
+      contentExitCode: contentRun.status,
+      visualExitCode: visualRun.status,
+      visualResultsFresh,
+      contentDurationMs: contentRun.durationMs,
+      visualDurationMs: visualRun.durationMs,
+      durationSeconds: Math.max(
+        1,
+        Math.round((Date.now() - cycleStart) / 1000),
+      ),
+      cycleDir,
+    })
+
+    state.cursor = (phaseStart + phaseCount) % 69
+    state.updatedAt = new Date().toISOString()
+
+    fs.writeFileSync(stateFile, JSON.stringify(state, null, 2))
+    
+    // ⚡ OPTIMIZED: Lazy HTML writes - only every 10 cycles or final cycle
+    if (cycle % 10 === 0 || iteration === args.cycles) {
+      writeHtml(path.join(reportDir, 'index.html'), state)
+    }
+
+    const completedThisRun = iteration
+    const elapsedMs = Date.now() - started
+    const averageMs = elapsedMs / completedThisRun
+    const remainingCycles = Math.max(0, args.cycles - completedThisRun)
+    const etaMs = averageMs * remainingCycles
+    const etaMinutes = Math.max(0, Math.round(etaMs / 60_000))
+
+    console.log(
+      `Cycle complete. New issues: ${newIssues}; already known and ignored for stopping: ${knownIssues}.`,
+    )
+    console.log(
+      `Progress: ${completedThisRun}/${args.cycles} cycle(s) in this run · average ${Math.max(1, Math.round(averageMs / 1000))}s/cycle · estimated ${etaMinutes} min remaining.`,
+    )
+  }
+
+  // Final HTML write
+  writeHtml(path.join(reportDir, 'index.html'), state)
+
+  console.log(
+    `\nAutopilot v${AUDITOR_VERSION} finished. Environment offset: ${args.environmentOffset}. Report: ${path.join(reportDir, 'index.html')}`,
+  )
+})()

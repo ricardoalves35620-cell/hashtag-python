@@ -80,13 +80,17 @@ export default function VSCodeEditor({
   useEffect(() => {
     if (!containerRef.current) return
 
+    const container = containerRef.current
     const extensions = [
       basicSetup,
       python(),
       oneDark,
       keymap.of([indentWithTab]),
       EditorView.updateListener.of(update => {
-        if (update.docChanged) onChangeRef.current(update.state.doc.toString())
+        if (!update.docChanged) return
+        const nextValue = update.state.doc.toString()
+        container.dataset.editorValue = nextValue
+        onChangeRef.current(nextValue)
       }),
       EditorView.editable.of(!readOnly),
       EditorView.theme({
@@ -135,7 +139,6 @@ export default function VSCodeEditor({
     if (editorWrapMode === 'wrap') extensions.push(EditorView.lineWrapping)
 
     const state = EditorState.create({ doc: value, extensions })
-    const container = containerRef.current
     const view = new EditorView({ state, parent: container })
     viewRef.current = view
 
@@ -149,11 +152,13 @@ export default function VSCodeEditor({
     }
 
     container.dataset.editorReady = 'true'
+    container.dataset.editorValue = value
     container.addEventListener('hp:set-code', handleProgrammaticCode)
 
     return () => {
       container.removeEventListener('hp:set-code', handleProgrammaticCode)
       delete container.dataset.editorReady
+      delete container.dataset.editorValue
       view.destroy()
       viewRef.current = null
     }
@@ -284,6 +289,7 @@ export default function VSCodeEditor({
       <div
         ref={containerRef}
         data-testid="python-editor-surface"
+        data-editor-value={value}
         className={`hp-code-editor__surface ${autoHeight ? 'hp-code-editor__surface--auto' : 'hp-code-editor__surface--compact'} ${editorWrapMode === 'wrap' ? 'hp-code-editor__surface--wrap' : 'hp-code-editor__surface--scroll'}`}
         style={autoHeight ? undefined : { height }}
       />

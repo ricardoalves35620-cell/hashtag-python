@@ -1,7 +1,7 @@
 {
   "name": "hashtag-python",
   "private": true,
-  "version": "10.18.0",
+  "version": "10.19.0",
   "type": "module",
   "engines": {
     "node": ">=22.12.0",
@@ -14,7 +14,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "check": "npm run typecheck && npm run test && npm run build",
-    "audit:install": "playwright install chromium",
+    "audit:install": "playwright install chromium webkit",
     "audit:content": "tsx audit/content-audit.ts",
     "audit:visual": "playwright test",
     "audit": "npm run audit:content && npm run audit:visual",
@@ -23,7 +23,11 @@
     "audit:state": "node scripts/audit/check-audit-state.mjs",
     "audit:slim": "node scripts/audit/create-slim-report.mjs",
     "audit:pedagogy": "tsx audit/curriculum-audit.ts",
-    "audit:curriculum": "tsx audit/curriculum-audit.ts"
+    "audit:curriculum": "tsx audit/curriculum-audit.ts",
+    "audit:smart": "tsx audit/autopilot.ts --mode smart --cycles 0 --batch 3",
+    "audit:smoke": "tsx audit/autopilot.ts --mode smoke --cycles 0 --batch 5",
+    "audit:night": "powershell -ExecutionPolicy Bypass -File ./run-auditor-night.ps1 -Hours 8",
+    "audit:v11": "tsx audit/v11-readiness.ts"
   },
   "dependencies": {
     "@codemirror/commands": "^6.3.3",

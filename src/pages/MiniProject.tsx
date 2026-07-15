@@ -102,7 +102,16 @@ export default function MiniProject() {
       planTitle: 'Write the solution as ordered steps', planHelp: 'Do not write Python yet. Your pseudocode should be precise enough that each line can later become a small piece of code.',
       buildTitle: 'Implement one responsibility at a time', buildHelp: 'Use the suggested input below. First make the program run without errors; correctness is proven in the next checkpoint.',
       suggested: 'Suggested run inputs', expected: 'Expected output evidence', run: 'Run project', running: 'Running', outputLabel: 'Console output',
-      testTitle: 'Prove behavior with multiple tests', testHelp: 'A single example is not proof. The app will execute the same program with every listed input set.', runTests: 'Run all tests',
+      testTitle: 'Prove behavior with multiple tests', testHelp: 'A single example is not proof. Here you will run the same program with different inputs and compare every result with the expected output.', runTests: 'Run all tests',
+      testGoal: 'Goal: confirm that your program works in the normal case, in a different valid case and at the important limit defined for this project.',
+      testStep1: 'Review each scenario below. The listed values will be entered into input() in exactly that order.',
+      testStep2: 'Read the expected output before running. Predict which scenarios should pass and which may reveal a problem.',
+      testStep3: 'Select Run all tests. The app will run a fresh copy of the same code for every scenario.',
+      testStep4: 'A green Passed badge means the visible result and required Python structure matched. Needs work shows what the program actually returned.',
+      testWhy: 'Why multiple tests matter: code that works for one prepared example may still fail with another valid value or a boundary case.',
+      testDone: 'This checkpoint is complete when every scenario is green. Then use Complete checkpoint and continue below.',
+      inputOrder: 'Values entered into input(), in order', expectedResult: 'What must appear in the output',
+      testsNotRun: 'The scenarios have not been executed with this version of the code yet.', testsAllPassed: 'All scenarios passed with the current code.', testsNeedWork: 'Some scenarios need adjustment. Read the result, return to Implement, change one cause and run all tests again.', backToBuild: 'Return to Implement and fix the code',
       refactorTitle: 'Improve without changing behavior', refactorHelp: 'Choose at least one improvement, apply it, and run the tests again. Refactoring is complete only when behavior still passes.',
       completed: 'Project completed', accomplishment: 'You can now', openPhase: 'Return to phase',
       needUnderstand: 'Complete the input, output, rules, and edge-case fields.', needPlan: 'Write at least three clear pseudocode steps.',
@@ -118,7 +127,16 @@ export default function MiniProject() {
       planTitle: 'Escreva a solução como passos ordenados', planHelp: 'Ainda não escreva Python. O pseudocódigo deve ser preciso o bastante para que cada linha depois vire uma pequena parte do código.',
       buildTitle: 'Implemente uma responsabilidade por vez', buildHelp: 'Use a entrada sugerida abaixo. Primeiro faça o programa executar sem erros; a correção será comprovada no próximo checkpoint.',
       suggested: 'Entradas sugeridas para executar', expected: 'Evidências de saída esperadas', run: 'Executar projeto', running: 'Executando', outputLabel: 'Saída do console',
-      testTitle: 'Comprove o comportamento com vários testes', testHelp: 'Um único exemplo não é prova. O app executará o mesmo programa com todos os conjuntos de entrada listados.', runTests: 'Executar todos os testes',
+      testTitle: 'Comprove o comportamento com vários testes', testHelp: 'Um único exemplo não é prova. Aqui você executará o mesmo programa com entradas diferentes e comparará cada resultado com a saída esperada.', runTests: 'Executar todos os testes',
+      testGoal: 'Objetivo: confirmar que o programa funciona no caso normal, em outro caso válido e no limite importante definido para este projeto.',
+      testStep1: 'Leia cada cenário abaixo. Os valores listados serão digitados no input() exatamente nessa ordem.',
+      testStep2: 'Leia a saída esperada antes de executar. Preveja quais cenários devem passar e quais podem revelar um problema.',
+      testStep3: 'Selecione Executar todos os testes. O app executará uma cópia nova do mesmo código para cada cenário.',
+      testStep4: 'O selo verde Aprovado significa que o resultado visível e a estrutura Python obrigatória conferiram. Precisa de ajuste mostra o que o programa realmente devolveu.',
+      testWhy: 'Por que vários testes importam: um código que funciona para um exemplo preparado ainda pode falhar com outro valor válido ou com um caso limite.',
+      testDone: 'Este checkpoint termina quando todos os cenários estiverem verdes. Depois use Concluir checkpoint e continuar logo abaixo.',
+      inputOrder: 'Valores digitados no input(), na ordem', expectedResult: 'O que precisa aparecer na saída',
+      testsNotRun: 'Os cenários ainda não foram executados com esta versão do código.', testsAllPassed: 'Todos os cenários passaram com o código atual.', testsNeedWork: 'Alguns cenários precisam de ajuste. Leia o resultado, volte para Implementar, altere uma causa e execute todos os testes novamente.', backToBuild: 'Voltar para Implementar e corrigir o código',
       refactorTitle: 'Melhore sem alterar o comportamento', refactorHelp: 'Escolha pelo menos uma melhoria, aplique-a e execute os testes novamente. A refatoração só termina quando o comportamento continua aprovado.',
       completed: 'Projeto concluído', accomplishment: 'Agora você consegue', openPhase: 'Voltar para a fase',
       needUnderstand: 'Preencha os campos de entrada, saída, regras e caso limite.', needPlan: 'Escreva pelo menos três passos claros de pseudocódigo.',
@@ -367,26 +385,47 @@ export default function MiniProject() {
           {progress.output && <Card padding="md"><div className="text-xs uppercase" style={{ color: 'var(--c-muted)' }}>{t.outputLabel}</div><pre className="mt-2 text-xs whitespace-pre-wrap overflow-x-auto" style={{ color: progress.output.startsWith('ERROR:') ? '#fca5a5' : 'var(--c-text2)' }}>{progress.output}</pre></Card>}
         </div>}
 
-        {progress.currentCheckpoint === 'test' && <div className="space-y-4">
+        {progress.currentCheckpoint === 'test' && <div className="space-y-4" data-testid="project-test-checkpoint">
           <Card padding="lg">
             <h2 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{t.testTitle}</h2>
             <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.testHelp}</p>
+            <Alert variant="info" className="mt-4">{t.testGoal}</Alert>
+            <ol className="mt-4 space-y-3 text-sm leading-relaxed" style={{ color: 'var(--c-text2)' }}>
+              {[t.testStep1, t.testStep2, t.testStep3, t.testStep4].map((step, index) => <li key={step} className="flex gap-3"><strong className="shrink-0" style={{ color: 'var(--c-purple)' }}>{index + 1}.</strong><span>{step}</span></li>)}
+            </ol>
+            <div className="mt-4 rounded-xl p-3 text-sm" style={{ background: 'var(--c-purple-f)', color: 'var(--c-text2)', border: '1px solid var(--c-purple-dm)' }}>
+              <strong style={{ color: 'var(--c-text)' }}>{t.testWhy}</strong>
+              <div className="mt-2">{t.testDone}</div>
+            </div>
           </Card>
-          {project.tests.map(test => {
+
+          {progress.testResults.length === 0
+            ? <Alert variant="info">{t.testsNotRun}</Alert>
+            : allTestsPassed
+              ? <Alert variant="success">{t.testsAllPassed}</Alert>
+              : <Alert variant="warning">{t.testsNeedWork}</Alert>}
+
+          {project.tests.map((test, index) => {
             const status = progress.testResults.find(result => result.id === test.id)
-            return <Card key={test.id} variant={status?.passed ? 'success' : status ? 'warning' : 'subtle'} padding="md">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>{test.title[lang]}</div>
-                  <div className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>{t.suggested}: {test.inputs.length ? test.inputs.join(' · ') : '—'}</div>
-                  <div className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>{lang === 'pt' ? 'Evidências esperadas' : 'Expected evidence'}: {test.expectedOutput.join(' · ')}</div>
+            return <Card key={test.id} variant={status?.passed ? 'success' : status ? 'warning' : 'subtle'} padding="md" data-testid={`project-test-scenario-${index + 1}`}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge>{lang === 'pt' ? `Cenário ${index + 1}` : `Scenario ${index + 1}`}</Badge>
+                    <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>{test.title[lang]}</div>
+                  </div>
+                  <div className="mt-3 text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>{t.inputOrder}</div>
+                  <pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded-lg p-3 text-xs" style={{ background: 'var(--c-code-bg)', color: 'var(--c-text2)' }}>{test.inputs.length ? test.inputs.map((value, inputIndex) => `${inputIndex + 1}. ${value}`).join('\n') : '—'}</pre>
+                  <div className="mt-3 text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>{t.expectedResult}</div>
+                  <pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded-lg p-3 text-xs" style={{ background: 'var(--c-code-bg)', color: 'var(--c-text2)' }}>{test.expectedOutput.length ? test.expectedOutput.join('\n') : '—'}</pre>
                 </div>
                 {status && <Badge variant={status.passed ? 'success' : 'warning'}>{status.passed ? t.testPassed : t.testFailed}</Badge>}
               </div>
-              {status && !status.passed && <pre className="text-xs mt-3 whitespace-pre-wrap" style={{ color: 'var(--c-text2)' }}>{status.details}</pre>}
+              {status && !status.passed && <div className="mt-3 rounded-lg border border-line p-3"><div className="text-xs font-semibold" style={{ color: 'var(--c-text)' }}>{lang === 'pt' ? 'Resultado encontrado' : 'Observed result'}</div><pre className="mt-2 whitespace-pre-wrap text-xs" style={{ color: 'var(--c-text2)' }}>{status.details}</pre></div>}
             </Card>
           })}
-          <Button onClick={runTests} loading={running} fullWidth>{t.runTests}</Button>
+          <Button data-testid="project-run-all-tests" onClick={runTests} loading={running} fullWidth>{t.runTests}</Button>
+          {progress.testResults.length > 0 && !allTestsPassed && <Button variant="secondary" onClick={() => openCheckpoint('build')} fullWidth>← {t.backToBuild}</Button>}
         </div>}
 
         {progress.currentCheckpoint === 'refactor' && <div className="space-y-4">

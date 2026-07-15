@@ -18,6 +18,42 @@ import {
 import { fetchJournalEntry, hydrateJourneyProgress, loadJournalPreferences, loadJourneyProgress, markJourneyUnitVisited, saveJournalEntry } from '../lib/learningJournal'
 import { scrollToTop } from '../lib/scroll'
 
+function professionalHabit(stage: string | undefined, lang: 'en' | 'pt') {
+  const habits = {
+    base: {
+      en: 'Predict the visible result before running. Change one thing, compare the new result, and use the first useful traceback line when something breaks.',
+      pt: 'Preveja o resultado visível antes de executar. Mude uma coisa, compare o novo resultado e use a primeira linha útil do traceback quando algo quebrar.',
+    },
+    professional: {
+      en: 'Write the input, output and failure contract before implementation. Keep each function focused and make every business rule testable.',
+      pt: 'Escreva o contrato de entrada, saída e falhas antes da implementação. Mantenha cada função focada e torne cada regra de negócio testável.',
+    },
+    advanced: {
+      en: 'State the trade-off you are making. Measure complexity, memory or failure behavior instead of assuming the more sophisticated solution is better.',
+      pt: 'Declare o trade-off que está fazendo. Meça complexidade, memória ou comportamento de falha em vez de assumir que a solução mais sofisticada é melhor.',
+    },
+    engineering: {
+      en: 'Treat interfaces, logs, tests and deployment behavior as part of the feature. Design recovery and observability before production needs them.',
+      pt: 'Trate interfaces, logs, testes e comportamento de deploy como parte da funcionalidade. Planeje recuperação e observabilidade antes que a produção exija.',
+    },
+    'ai-data': {
+      en: 'Inspect data shape, leakage, missing values and evaluation splits before training. A model cannot repair an undefined data contract.',
+      pt: 'Inspecione formato dos dados, vazamento, valores ausentes e divisões de avaliação antes do treino. Um modelo não corrige um contrato de dados indefinido.',
+    },
+    'ai-deep': {
+      en: 'Track tensor shapes, numerical stability, compute cost and evaluation evidence. A lower training loss alone does not prove a useful model.',
+      pt: 'Acompanhe formatos dos tensores, estabilidade numérica, custo computacional e evidências de avaliação. Uma loss menor sozinha não comprova um modelo útil.',
+    },
+    'ai-local': {
+      en: 'Protect private data, verify model and dataset licenses, measure local hardware limits, and make uncertainty and tool permissions explicit.',
+      pt: 'Proteja dados privados, verifique licenças de modelos e dados, meça limites do hardware local e torne explícitas a incerteza e as permissões de ferramentas.',
+    },
+  } as const
+
+  return (habits[stage as keyof typeof habits] || habits.base)[lang]
+}
+
+
 export default function Lesson() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -117,7 +153,7 @@ export default function Lesson() {
       complete: 'Complete journey and practice →', lesson: 'learning step', lessons: 'learning steps',
       optional: 'Programmer Journal', skip: 'Hide for now', completed: 'of the journey explored',
       progress: 'Journey progress', journalBadge: 'Optional', journalHelp: 'Use this space when writing helps you organize your reasoning. Leaving it empty never blocks your progress.',
-      currentGoal: 'Your goal in this step', professionalHabit: 'Professional habit', professionalText: 'Do not rush to the final code. First make the problem, data and decision visible. Experienced developers reduce uncertainty before they type.',
+      currentGoal: 'Your goal in this step', professionalHabit: 'Professional habit',
       visited: 'visited', openGlossary: 'Open glossary', navigation: 'Journey map',
     },
     pt: {
@@ -125,7 +161,7 @@ export default function Lesson() {
       complete: 'Concluir jornada e praticar →', lesson: 'etapa de aprendizagem', lessons: 'etapas de aprendizagem',
       optional: 'Diário do Programador', skip: 'Ocultar por agora', completed: 'da jornada explorada',
       progress: 'Progresso da jornada', journalBadge: 'Opcional', journalHelp: 'Use este espaço quando escrever ajudar a organizar seu raciocínio. Deixar vazio nunca bloqueia seu progresso.',
-      currentGoal: 'Seu objetivo nesta etapa', professionalHabit: 'Hábito profissional', professionalText: 'Não corra para o código final. Primeiro torne visíveis o problema, os dados e a decisão. Desenvolvedores experientes reduzem a incerteza antes de digitar.',
+      currentGoal: 'Seu objetivo nesta etapa', professionalHabit: 'Hábito profissional',
       visited: 'visitadas', openGlossary: 'Abrir glossário', navigation: 'Mapa da jornada',
     },
   }[lang]
@@ -192,7 +228,7 @@ export default function Lesson() {
               </article>
 
               <LearningCallout variant="professional" title={t.professionalHabit}>
-                {t.professionalText}
+                {professionalHabit(phase.stage, lang)}
               </LearningCallout>
 
               {journalVisible && (
