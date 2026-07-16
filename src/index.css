@@ -1765,3 +1765,225 @@ input, textarea, select { font-size: 16px !important; }
 @media (prefers-reduced-motion: reduce) {
   .learning-stage-rail__item { transition: none; }
 }
+
+/* Mini-project workspace V11 — wide editor, real inputs and non-overlapping actions */
+.hp-main,
+.hp-main__content {
+  min-width: 0;
+  overflow-x: clip;
+}
+
+.mini-project-workspace {
+  width: min(100%, 1280px);
+  max-width: 100%;
+  overflow-x: clip;
+  padding-bottom: calc(var(--space-8) + max(var(--safe-bottom), var(--space-2)));
+}
+
+.mini-project-workspace,
+.mini-project-workspace__grid,
+.mini-project-main,
+.mini-project-main > *,
+.mini-project-main .hp-ui-card,
+.mini-project-main .hp-code-editor {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mini-project-main {
+  width: 100%;
+  max-width: 920px;
+}
+
+.mini-project-main .hp-code-editor {
+  contain: inline-size;
+  overflow: hidden;
+}
+
+.mini-project-main .hp-code-editor__surface {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mini-project-main .cm-editor,
+.mini-project-main .cm-scroller {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.mini-project-main .cm-scroller {
+  overflow-x: auto !important;
+}
+
+.mini-project-input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: var(--space-3);
+}
+
+.mini-project-input-field {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.mini-project-input-field > span {
+  overflow-wrap: anywhere;
+  color: var(--color-text-muted);
+  font-size: var(--text-caption);
+  font-weight: 750;
+}
+
+.mini-project-input-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
+  background: var(--color-bg-canvas);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+}
+
+.mini-project-input-field input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.mini-project-final-step {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.mini-project-final-step section {
+  min-width: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  background: var(--color-bg-subtle);
+}
+
+.mini-project-final-step h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+  font-weight: 800;
+}
+
+.mini-project-final-step p {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-small);
+  line-height: 1.65;
+}
+
+.mini-project-final-step ol {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mini-project-final-step li {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--text-small);
+  line-height: 1.55;
+}
+
+.mini-project-final-step li strong {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-text);
+  font-size: var(--text-caption);
+}
+
+.mini-project-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.mini-project-proof-grid > div {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  line-height: 1.45;
+}
+
+.mini-project-proof-grid > div.is-done {
+  border-color: var(--color-success-border);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.mini-project-workspace .sticky-learning-actions,
+.mini-project-workspace .sticky-learning-actions__buttons,
+.mini-project-workspace .sticky-learning-actions__buttons > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mini-project-workspace .sticky-learning-actions .hp-button__label {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+@media (min-width: 960px) {
+  .mini-project-workspace .learning-workspace__grid {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .mini-project-workspace .learning-workspace__aside {
+    min-width: 0;
+  }
+}
+
+/* Tablets and phones already have a fixed app navigation. Keep project actions
+   in normal document flow so they never cover the editor or the last field. */
+/* Mini-project checkpoints are long and editor-heavy. Keep their action bar in
+   normal flow at every width so it can never cover code, inputs, or evidence. */
+.mini-project-workspace .sticky-learning-actions {
+  position: static;
+  margin-inline: 0;
+  backdrop-filter: none;
+}
+
+@media (max-width: 640px) {
+  .mini-project-workspace {
+    padding-inline: var(--space-2);
+  }
+
+  .mini-project-proof-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-project-workspace .sticky-learning-actions__buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-project-final-step section,
+  .mini-project-instructions.hp-ui-card--pad-lg {
+    padding: var(--space-3);
+  }
+}

@@ -31,6 +31,8 @@ export interface MiniProject {
   requiredFunctions?: string[]
   requiredCalls?: string[]
   requireMainGuard?: boolean
+  refactorGoal: Bilingual
+  refactorEvidence: Bilingual
   refactorOptions: Bilingual[]
   accomplishment: Bilingual[]
 }
@@ -39,12 +41,12 @@ export const MINI_PROJECTS: MiniProject[] = [
   {
     id: 'damage-estimate',
     milestonePhaseId: 4,
-    icon: '🧾',
-    title: { en: 'Damage Estimate', pt: 'Estimativa de Danos' },
+    icon: '🎟️',
+    title: { en: 'Event Budget Balance', pt: 'Saldo do Orçamento de Evento' },
     subtitle: { en: 'Turn raw input into a reliable calculation.', pt: 'Transforme entradas brutas em um cálculo confiável.' },
     scenario: {
-      en: 'A field adjuster enters a damage estimate and a deductible. Build a small program that calculates and displays the estimated payout.',
-      pt: 'Um regulador informa a estimativa do dano e a franquia. Construa um pequeno programa que calcule e mostre o pagamento estimado.',
+      en: 'An event organizer enters the available budget and the expenses already committed. Build a small program that calculates and displays the remaining balance.',
+      pt: 'Uma pessoa organizando um evento informa o orçamento disponível e as despesas já comprometidas. Construa um pequeno programa que calcule e mostre o saldo restante.',
     },
     professionalContext: {
       en: 'This is the smallest version of a business rule: receive data, transform it, and present a result that another person can verify.',
@@ -58,21 +60,30 @@ export const MINI_PROJECTS: MiniProject[] = [
       { en: 'formatted output', pt: 'saída formatada' },
     ],
     requirements: {
-      en: ['Ask for damage', 'Ask for deductible', 'Calculate damage minus deductible', 'Print Payout with two decimal places'],
-      pt: ['Peça o valor do dano', 'Peça a franquia', 'Calcule dano menos franquia', 'Mostre Pagamento com duas casas decimais'],
+      en: ['Ask for the event budget', 'Ask for committed expenses', 'Calculate budget minus expenses', 'Print Remaining with two decimal places'],
+      pt: ['Peça o orçamento do evento', 'Peça as despesas comprometidas', 'Calcule orçamento menos despesas', 'Mostre Saldo com duas casas decimais'],
     },
-    inputContract: { en: 'Two numbers: damage and deductible.', pt: 'Dois números: dano e franquia.' },
-    outputContract: { en: 'A line containing Payout and the calculated amount.', pt: 'Uma linha contendo Pagamento e o valor calculado.' },
-    ruleContract: { en: 'payout = damage - deductible', pt: 'pagamento = dano - franquia' },
+    inputContract: { en: 'Two numbers: available budget and committed expenses.', pt: 'Dois números: orçamento disponível e despesas comprometidas.' },
+    outputContract: { en: 'A line containing Remaining and the calculated balance.', pt: 'Uma linha contendo Saldo e o valor calculado.' },
+    ruleContract: { en: 'remaining = budget - expenses', pt: 'saldo = orçamento - despesas' },
     edgeCases: { en: 'Use decimal values and verify that conversion happens before subtraction.', pt: 'Use valores decimais e confirme que a conversão acontece antes da subtração.' },
     starterCode: {
-      en: `# Project: Damage Estimate\n# Build each step from the contract above.\n\ndamage = float(input("Damage: "))\ndeductible = float(input("Deductible: "))\n\n# TODO: calculate payout\npayout = 0\n\n# TODO: display the result with two decimal places\nprint(f"Payout: {payout:.2f}")`,
-      pt: `# Projeto: Estimativa de Danos\n# Construa cada passo usando o contrato acima.\n\ndamage = float(input("Dano: "))\ndeductible = float(input("Franquia: "))\n\n# TODO: calcule o pagamento\npayout = 0\n\n# TODO: mostre o resultado com duas casas decimais\nprint(f"Pagamento: {payout:.2f}")`,
+      en: `# Project: Event Budget Balance\n# Build each step from the contract above.\n\nbudget = float(input("Budget: "))\nexpenses = float(input("Committed expenses: "))\n\n# TODO: calculate the remaining balance\nremaining = 0\n\n# TODO: display the result with two decimal places\nprint(f"Remaining: {remaining:.2f}")`,
+      pt: `# Projeto: Saldo do Orçamento de Evento\n# Construa cada passo usando o contrato acima.\n\nbudget = float(input("Orçamento: "))\nexpenses = float(input("Despesas comprometidas: "))\n\n# TODO: calcule o saldo restante\nremaining = 0\n\n# TODO: mostre o resultado com duas casas decimais\nprint(f"Saldo: {remaining:.2f}")`,
     },
     tests: [
-      { id: 'estimate-standard', title: { en: 'Standard estimate', pt: 'Estimativa padrão' }, inputs: ['5000', '500'], expectedOutput: ['4500.00'] },
-      { id: 'estimate-decimal', title: { en: 'Decimal estimate', pt: 'Estimativa decimal' }, inputs: ['2750.50', '200.25'], expectedOutput: ['2550.25'] },
+      { id: 'estimate-standard', title: { en: 'Standard event budget', pt: 'Orçamento padrão de evento' }, inputs: ['5000', '500'], expectedOutput: ['4500.00'] },
+      { id: 'estimate-decimal', title: { en: 'Decimal expenses', pt: 'Despesas decimais' }, inputs: ['2750.50', '200.25'], expectedOutput: ['2550.25'] },
+      { id: 'estimate-equal-values', title: { en: 'Equal values boundary', pt: 'Limite com valores iguais' }, inputs: ['500', '500'], expectedOutput: ['0.00'] },
     ],
+    refactorGoal: {
+      en: 'Improve the calculation program without changing its verified results. Prefer clearer business names, visible input/calculation/output sections, or removal of a comment that only repeats the code.',
+      pt: 'Melhore o programa de cálculo sem alterar os resultados já comprovados. Prefira nomes de negócio mais claros, seções visíveis de entrada/cálculo/saída ou remova um comentário que apenas repete o código.',
+    },
+    refactorEvidence: {
+      en: 'Your final code must differ from the tested version, your note must explain the reason, and every budget scenario must still pass.',
+      pt: 'O código final precisa ser diferente da versão testada, sua nota deve explicar o motivo e todos os cenários de orçamento precisam continuar aprovados.',
+    },
     refactorOptions: [
       { en: 'Use names that explain the business meaning.', pt: 'Use nomes que expliquem o significado de negócio.' },
       { en: 'Keep input, calculation, and output in visible sections.', pt: 'Mantenha entrada, cálculo e saída em seções visíveis.' },
@@ -88,12 +99,12 @@ export const MINI_PROJECTS: MiniProject[] = [
   {
     id: 'claim-queue',
     milestonePhaseId: 7,
-    icon: '🔁',
-    title: { en: 'Claim Queue Processor', pt: 'Processador de Fila de Sinistros' },
+    icon: '📦',
+    title: { en: 'Shipment Queue Processor', pt: 'Processador de Fila de Remessas' },
     subtitle: { en: 'Control repetition with explicit state and a stopping condition.', pt: 'Controle repetição com estado explícito e condição de parada.' },
     scenario: {
-      en: 'A team receives a known number of claim estimates. Process every amount, then report how many were processed, the total, and the average.',
-      pt: 'Uma equipe recebe uma quantidade conhecida de estimativas de sinistro. Processe cada valor e informe quantidade processada, total e média.',
+      en: 'A distribution center receives a known number of shipment values. Process every shipment, then report how many were processed, the total declared value, and the average.',
+      pt: 'Um centro de distribuição recebe uma quantidade conhecida de valores de remessas. Processe cada remessa e informe quantidade processada, valor total declarado e média.',
     },
     professionalContext: {
       en: 'Batch processing appears in imports, billing, claims, reports, queues, and background jobs. The loop must change state and must finish.',
@@ -107,22 +118,31 @@ export const MINI_PROJECTS: MiniProject[] = [
       { en: 'average calculation', pt: 'cálculo de média' },
     ],
     requirements: {
-      en: ['Ask how many claims will be processed', 'Use while', 'Read one amount per repetition', 'Update count and total', 'Print count, total, and average'],
-      pt: ['Pergunte quantos sinistros serão processados', 'Use while', 'Leia um valor por repetição', 'Atualize quantidade e total', 'Mostre quantidade, total e média'],
+      en: ['Ask how many shipments will be processed', 'Use while', 'Read one shipment value per repetition', 'Update count and total', 'Print count, total, and average'],
+      pt: ['Pergunte quantas remessas serão processadas', 'Use while', 'Leia um valor de remessa por repetição', 'Atualize quantidade e total', 'Mostre quantidade, total e média'],
     },
-    inputContract: { en: 'First the number of claims, followed by one amount for each claim.', pt: 'Primeiro a quantidade de sinistros, seguida de um valor para cada sinistro.' },
+    inputContract: { en: 'First the number of shipments, followed by one declared value for each shipment.', pt: 'Primeiro a quantidade de remessas, seguida de um valor declarado para cada remessa.' },
     outputContract: { en: 'Processed, Total, and Average.', pt: 'Processados, Total e Média.' },
     ruleContract: { en: 'Repeat exactly the requested number of times and update the counter every time.', pt: 'Repita exatamente a quantidade solicitada e atualize o contador em toda repetição.' },
     edgeCases: { en: 'Avoid division by zero when the requested quantity is zero.', pt: 'Evite divisão por zero quando a quantidade solicitada for zero.' },
     starterCode: {
-      en: `# Project: Claim Queue Processor\nquantity = int(input("How many claims? "))\nprocessed = 0\ntotal = 0.0\n\n# TODO: repeat until every claim has been processed\nwhile False:\n    amount = float(input("Claim amount: "))\n    # TODO: update total and processed\n\n# TODO: protect the average when quantity is zero\naverage = 0.0\n\nprint("Processed:", processed)\nprint(f"Total: {total:.2f}")\nprint(f"Average: {average:.2f}")`,
-      pt: `# Projeto: Processador de Fila de Sinistros\nquantity = int(input("Quantos sinistros? "))\nprocessed = 0\ntotal = 0.0\n\n# TODO: repita até processar todos os sinistros\nwhile False:\n    amount = float(input("Valor do sinistro: "))\n    # TODO: atualize total e processados\n\n# TODO: proteja a média quando a quantidade for zero\naverage = 0.0\n\nprint("Processados:", processed)\nprint(f"Total: {total:.2f}")\nprint(f"Média: {average:.2f}")`,
+      en: `# Project: Shipment Queue Processor\nquantity = int(input("How many shipments? "))\nprocessed = 0\ntotal = 0.0\n\n# TODO: repeat until every shipment has been processed\nwhile False:\n    amount = float(input("Shipment value: "))\n    # TODO: update total and processed\n\n# TODO: protect the average when quantity is zero\naverage = 0.0\n\nprint("Processed:", processed)\nprint(f"Total: {total:.2f}")\nprint(f"Average: {average:.2f}")`,
+      pt: `# Projeto: Processador de Fila de Remessas\nquantity = int(input("Quantas remessas? "))\nprocessed = 0\ntotal = 0.0\n\n# TODO: repita até processar todas as remessas\nwhile False:\n    amount = float(input("Valor da remessa: "))\n    # TODO: atualize total e processados\n\n# TODO: proteja a média quando a quantidade for zero\naverage = 0.0\n\nprint("Processados:", processed)\nprint(f"Total: {total:.2f}")\nprint(f"Média: {average:.2f}")`,
     },
     tests: [
-      { id: 'queue-three', title: { en: 'Three claims', pt: 'Três sinistros' }, inputs: ['3', '1200', '800', '2000'], expectedOutput: ['3', '4000.00', '1333.33'] },
+      { id: 'queue-three', title: { en: 'Three shipments', pt: 'Três remessas' }, inputs: ['3', '1200', '800', '2000'], expectedOutput: ['3', '4000.00', '1333.33'] },
+      { id: 'queue-single', title: { en: 'Single-item queue', pt: 'Fila com um item' }, inputs: ['1', '375.50'], expectedOutput: ['1', '375.50', '375.50'] },
       { id: 'queue-zero', title: { en: 'Empty queue', pt: 'Fila vazia' }, inputs: ['0'], expectedOutput: ['0', '0.00'] },
     ],
     requiredNodes: ['While'],
+    refactorGoal: {
+      en: 'Make the loop easier to trust. Improve the stopping condition, keep the counter and accumulator together, or make the empty-queue rule explicit.',
+      pt: 'Torne o loop mais fácil de confiar. Melhore a condição de parada, mantenha contador e acumulador juntos ou deixe explícita a regra da fila vazia.',
+    },
+    refactorEvidence: {
+      en: 'The revised code must visibly change, the explanation must name the loop risk reduced, and normal, single-item, and empty queues must all pass.',
+      pt: 'O código revisado precisa mudar de forma visível, a explicação deve citar o risco reduzido no loop e as filas normal, com um item e vazia precisam passar.',
+    },
     refactorOptions: [
       { en: 'Make the stopping condition readable without mental calculation.', pt: 'Deixe a condição de parada legível sem cálculo mental.' },
       { en: 'Keep the state update together inside the loop.', pt: 'Mantenha a atualização do estado reunida dentro do loop.' },
@@ -138,109 +158,121 @@ export const MINI_PROJECTS: MiniProject[] = [
   {
     id: 'portfolio-report',
     milestonePhaseId: 12,
-    icon: '📊',
-    title: { en: 'Claims Portfolio Report', pt: 'Relatório de Carteira de Sinistros' },
-    subtitle: { en: 'Transform structured data into a useful report.', pt: 'Transforme dados estruturados em um relatório útil.' },
+    icon: '🛒',
+    title: { en: 'E-commerce Order Report', pt: 'Relatório de Pedidos do E-commerce' },
+    subtitle: { en: 'Transform structured records into a useful report.', pt: 'Transforme registros estruturados em um relatório útil.' },
     scenario: {
-      en: 'A manager needs a report containing only approved claims, their client names, and the total approved amount.',
-      pt: 'Um gestor precisa de um relatório contendo apenas sinistros aprovados, os nomes dos clientes e o valor total aprovado.',
+      en: 'An online store receives a small batch of orders. Build a report containing only approved orders, their customer names, and the approved revenue.',
+      pt: 'Uma loja online recebe um pequeno lote de pedidos. Construa um relatório contendo apenas pedidos aprovados, os nomes dos clientes e a receita aprovada.',
     },
     professionalContext: {
-      en: 'Real applications receive collections of records. Professional code first understands one record, then applies the same rule to the whole collection.',
-      pt: 'Aplicações reais recebem coleções de registros. Código profissional primeiro entende um registro e depois aplica a mesma regra à coleção inteira.',
+      en: 'Real applications receive collections of records. Professional code understands one record contract, applies the same rule to the whole collection, and also behaves correctly when the result is empty.',
+      pt: 'Aplicações reais recebem coleções de registros. Código profissional entende o contrato de um registro, aplica a mesma regra à coleção inteira e também funciona quando o resultado fica vazio.',
     },
-    estimatedMinutes: 70,
+    estimatedMinutes: 75,
     skills: [
       { en: 'list of dictionaries', pt: 'lista de dicionários' },
-      { en: 'filtering', pt: 'filtragem' },
+      { en: 'input-driven records', pt: 'registros recebidos por entrada' },
       { en: 'list comprehension', pt: 'compreensão de listas' },
-      { en: 'aggregation', pt: 'agregação' },
+      { en: 'filtering and aggregation', pt: 'filtragem e agregação' },
     ],
     requirements: {
-      en: ['Keep the provided records', 'Create approved_claims with a list comprehension', 'Create client_names', 'Calculate approved_total', 'Print count, clients, and total', 'Repeat the same rule for the provided no-approved edge dataset'],
-      pt: ['Mantenha os registros fornecidos', 'Crie approved_claims com compreensão de lista', 'Crie client_names', 'Calcule approved_total', 'Mostre quantidade, clientes e total', 'Repita a mesma regra para o conjunto limite sem aprovados'],
+      en: ['Read the number of orders', 'Read customer|amount|status for every order', 'Store every order as a dictionary', 'Create approved_orders with a list comprehension', 'Create customer_names', 'Calculate approved_total', 'Print approved count, customers, and total'],
+      pt: ['Leia a quantidade de pedidos', 'Leia cliente|valor|status para cada pedido', 'Guarde cada pedido como dicionário', 'Crie approved_orders com compreensão de lista', 'Crie customer_names', 'Calcule approved_total', 'Mostre quantidade aprovada, clientes e total'],
     },
-    inputContract: { en: 'A list where each dictionary follows the same record contract.', pt: 'Uma lista em que cada dicionário segue o mesmo contrato de registro.' },
-    outputContract: { en: 'Approved count, client names, and approved total.', pt: 'Quantidade aprovada, nomes dos clientes e total aprovado.' },
-    ruleContract: { en: 'Include only records whose status equals approved.', pt: 'Inclua somente registros cujo status seja approved.' },
-    edgeCases: { en: 'The supplied edge dataset contains no approved record. It must produce count 0 and total 0 without special hard-coded output.', pt: 'O conjunto limite fornecido não contém registro aprovado. Ele deve produzir quantidade 0 e total 0 sem saída fixa especial.' },
+    inputContract: { en: 'First an integer quantity, then one customer|amount|status line for each order.', pt: 'Primeiro uma quantidade inteira e depois uma linha cliente|valor|status para cada pedido.' },
+    outputContract: { en: 'Approved count, customer names, and approved total.', pt: 'Quantidade aprovada, nomes dos clientes e total aprovado.' },
+    ruleContract: { en: 'Include only records whose status equals approved. The same code must handle any valid batch.', pt: 'Inclua somente registros cujo status seja approved. O mesmo código precisa tratar qualquer lote válido.' },
+    edgeCases: { en: 'Prove a batch with no approved order and a batch with accented names and decimal amounts.', pt: 'Comprove um lote sem pedido aprovado e outro com nomes acentuados e valores decimais.' },
     starterCode: {
-      en: `# Project: Claims Portfolio Report
-claims = [
-    {"client": "Ana", "amount": 3200, "status": "approved"},
-    {"client": "Bruno", "amount": 1800, "status": "pending"},
-    {"client": "Carla", "amount": 5100, "status": "approved"},
-    {"client": "Diego", "amount": 900, "status": "rejected"},
-]
+      en: `# Project: E-commerce Order Report
+quantity = int(input("How many orders? "))
+orders = []
+
+for _ in range(quantity):
+    customer, amount_text, status = input("Order: ").strip().split("|")
+    orders.append({
+        "customer": customer,
+        "amount": float(amount_text),
+        "status": status,
+    })
 
 # TODO: filter approved records with a list comprehension
-approved_claims = []
+approved_orders = []
 
-# TODO: derive the client-name list
-client_names = []
+# TODO: derive the approved customer-name list
+customer_names = []
 
-# TODO: calculate the total approved amount
+# TODO: calculate approved revenue
 approved_total = 0
 
-print("Approved:", len(approved_claims))
-print("Clients:", ", ".join(client_names))
-print("Total:", approved_total)
+print("Approved:", len(approved_orders))
+print("Customers:", ", ".join(customer_names))
+print("Total:", approved_total)`,
+      pt: `# Projeto: Relatório de Pedidos do E-commerce
+quantity = int(input("Quantos pedidos? "))
+orders = []
 
-# Edge evidence: apply the same rule when nothing is approved.
-edge_claims = [
-    {"client": "Eva", "amount": 1200, "status": "pending"},
-    {"client": "Felipe", "amount": 900, "status": "rejected"},
-]
-edge_approved = []  # TODO: use the same list-comprehension rule
-edge_total = 0      # TODO: aggregate the approved edge records
-print(f"EDGE_APPROVED={len(edge_approved)}")
-print(f"EDGE_TOTAL={edge_total}")`,
-      pt: `# Projeto: Relatório de Carteira de Sinistros
-claims = [
-    {"client": "Ana", "amount": 3200, "status": "approved"},
-    {"client": "Bruno", "amount": 1800, "status": "pending"},
-    {"client": "Carla", "amount": 5100, "status": "approved"},
-    {"client": "Diego", "amount": 900, "status": "rejected"},
-]
+for _ in range(quantity):
+    customer, amount_text, status = input("Pedido: ").strip().split("|")
+    orders.append({
+        "customer": customer,
+        "amount": float(amount_text),
+        "status": status,
+    })
 
 # TODO: filtre registros aprovados com compreensão de lista
-approved_claims = []
+approved_orders = []
 
-# TODO: derive a lista de nomes dos clientes
-client_names = []
+# TODO: derive a lista de clientes aprovados
+customer_names = []
 
-# TODO: calcule o valor total aprovado
+# TODO: calcule a receita aprovada
 approved_total = 0
 
-print("Aprovados:", len(approved_claims))
-print("Clientes:", ", ".join(client_names))
-print("Total:", approved_total)
-
-# Evidência limite: aplique a mesma regra quando não houver aprovados.
-edge_claims = [
-    {"client": "Eva", "amount": 1200, "status": "pending"},
-    {"client": "Felipe", "amount": 900, "status": "rejected"},
-]
-edge_approved = []  # TODO: use a mesma regra de compreensão de lista
-edge_total = 0      # TODO: agregue os registros aprovados do caso limite
-print(f"EDGE_APPROVED={len(edge_approved)}")
-print(f"EDGE_TOTAL={edge_total}")`,
+print("Aprovados:", len(approved_orders))
+print("Clientes:", ", ".join(customer_names))
+print("Total:", approved_total)`,
     },
     tests: [
-      { id: 'portfolio-authored', title: { en: 'Provided portfolio', pt: 'Carteira fornecida' }, inputs: [], expectedOutput: ['2', 'Ana', 'Carla', '8300'] },
-      { id: 'portfolio-empty', title: { en: 'No-approved edge dataset', pt: 'Conjunto limite sem aprovados' }, inputs: [], expectedOutput: ['EDGE_APPROVED=0', 'EDGE_TOTAL=0'] },
+      {
+        id: 'portfolio-standard',
+        title: { en: 'Mixed order batch', pt: 'Lote misto de pedidos' },
+        inputs: ['4', 'Ana|3200|approved', 'Bruno|1800|pending', 'Carla|5100|approved', 'Diego|900|rejected'],
+        expectedOutput: ['2', 'Ana', 'Carla', '8300'],
+      },
+      {
+        id: 'portfolio-empty',
+        title: { en: 'No approved orders', pt: 'Nenhum pedido aprovado' },
+        inputs: ['2', 'Eva|1200|pending', 'Felipe|900|rejected'],
+        expectedOutput: ['0', 'Total: 0'],
+      },
+      {
+        id: 'portfolio-accents-decimals',
+        title: { en: 'Accented names and decimal amounts', pt: 'Nomes acentuados e valores decimais' },
+        inputs: ['3', 'João|120.50|approved', 'Lívia|230|approved', 'Mário|50|pending'],
+        expectedOutput: ['2', 'João', 'Lívia', '350.5'],
+      },
     ],
-    requiredNodes: ['ListComp'],
+    requiredNodes: ['ListComp', 'For'],
+    refactorGoal: {
+      en: 'Reduce duplication between filtering, name extraction, and aggregation while keeping the report contract readable.',
+      pt: 'Reduza repetição entre filtragem, extração de nomes e agregação, mantendo o contrato do relatório legível.',
+    },
+    refactorEvidence: {
+      en: 'The improvement must be visible in the code, explained in your own words, and all datasets—including no approved records—must still pass.',
+      pt: 'A melhoria precisa aparecer no código, ser explicada com suas palavras e todos os conjuntos — inclusive sem registros aprovados — devem continuar aprovados.',
+    },
     refactorOptions: [
       { en: 'Use the record keys consistently.', pt: 'Use as chaves do registro de forma consistente.' },
-      { en: 'Separate filtering, transformation, and aggregation.', pt: 'Separe filtragem, transformação e agregação.' },
-      { en: 'Avoid repeating the same filter rule.', pt: 'Evite repetir a mesma regra de filtragem.' },
+      { en: 'Separate input, filtering, transformation, and aggregation.', pt: 'Separe entrada, filtragem, transformação e agregação.' },
+      { en: 'Avoid repeating the approved-status rule.', pt: 'Evite repetir a regra de status aprovado.' },
       { en: 'Keep the final report readable.', pt: 'Mantenha o relatório final legível.' },
     ],
     accomplishment: [
-      { en: 'read a collection of structured records', pt: 'ler uma coleção de registros estruturados' },
+      { en: 'read structured records from real input', pt: 'ler registros estruturados de entradas reais' },
       { en: 'filter and transform data intentionally', pt: 'filtrar e transformar dados intencionalmente' },
-      { en: 'produce a report from business rules', pt: 'produzir um relatório a partir de regras de negócio' },
+      { en: 'prove behavior with normal, empty, and accented datasets', pt: 'comprovar comportamento com conjuntos normal, vazio e acentuado' },
     ],
   },
   {
@@ -407,8 +439,22 @@ while True:
         inputs: ['add', 'C-201', 'Carla', 'oops', 'add', 'C-201', 'Carla', '500', 'add', 'C-201', 'Duplicado', '700', 'total', 'exit'],
         expectedOutput: ['INVALID_AMOUNT', 'ADDED=C-201', 'DUPLICATE_ID', 'TOTAL=500.00', 'BYE'],
       },
+      {
+        id: 'claim-desk-empty',
+        title: { en: 'Empty registry', pt: 'Cadastro vazio' },
+        inputs: ['list', 'total', 'exit'],
+        expectedOutput: ['TOTAL=0.00', 'BYE'],
+      },
     ],
     requiredNodes: ['FunctionDef', 'While', 'Try'],
+    refactorGoal: {
+      en: 'Improve one boundary of the command-line application: lookup, validation, command handling, or reporting. Do not change the public output labels.',
+      pt: 'Melhore uma fronteira do aplicativo de terminal: busca, validação, tratamento de comandos ou relatório. Não altere os rótulos públicos de saída.',
+    },
+    refactorEvidence: {
+      en: 'Your code and explanation must show the chosen boundary became clearer, and normal, invalid, duplicate, and empty-registry behavior must remain green.',
+      pt: 'O código e a explicação precisam mostrar que a fronteira escolhida ficou mais clara, e os comportamentos normal, inválido, duplicado e cadastro vazio devem permanecer verdes.',
+    },
     refactorOptions: [
       { en: 'Give every function one clear responsibility.', pt: 'Dê a cada função uma responsabilidade clara.' },
       { en: 'Use names that reveal the business meaning.', pt: 'Use nomes que revelem o significado de negócio.' },
@@ -619,6 +665,14 @@ if __name__ == "__main__":
     requiredFunctions: ['classify_priority', 'parse_claim', 'process_line', 'print_summary', 'main'],
     requiredCalls: ['logger.warning'],
     requireMainGuard: true,
+    refactorGoal: {
+      en: 'Improve one professional boundary—parsing, domain classification, logging, storage, or orchestration—without changing the public service contract.',
+      pt: 'Melhore uma fronteira profissional — interpretação, classificação de domínio, logging, armazenamento ou orquestração — sem alterar o contrato público do serviço.',
+    },
+    refactorEvidence: {
+      en: 'The final code must differ from the verified baseline, the note must defend the trade-off, and normal, invalid, duplicate, and empty batches must still pass.',
+      pt: 'O código final precisa diferir da base verificada, a nota deve defender a decisão e os lotes normal, inválido, duplicado e vazio devem continuar passando.',
+    },
     refactorOptions: [
       { en: 'Keep parsing, domain rules, storage and presentation in separate functions.', pt: 'Mantenha interpretação, regras de domínio, armazenamento e apresentação em funções separadas.' },
       { en: 'Use precise type hints at every public boundary.', pt: 'Use type hints precisos em toda fronteira pública.' },
@@ -887,6 +941,14 @@ if __name__ == "__main__":
     requiredFunctions: ['parse_order', 'calculate_totals', 'process_line', 'print_summary', 'main'],
     requiredCalls: ['logger.warning'],
     requireMainGuard: true,
+    refactorGoal: {
+      en: 'Improve one engineering boundary such as the pure calculation, repository protocol, validation mapping, or safe logging while preserving replaceability.',
+      pt: 'Melhore uma fronteira de engenharia, como cálculo puro, protocol de repositório, mapeamento de validação ou logging seguro, preservando a substituição dos componentes.',
+    },
+    refactorEvidence: {
+      en: 'Explain the design improvement, change the code, and prove accepted, duplicate, invalid, and empty order batches still satisfy the same contract.',
+      pt: 'Explique a melhoria de design, altere o código e comprove que lotes aceitos, duplicados, inválidos e vazios continuam obedecendo ao mesmo contrato.',
+    },
     refactorOptions: [
       { en: 'Keep parsing, calculation, persistence and presentation in separate boundaries.', pt: 'Mantenha interpretação, cálculo, persistência e apresentação em fronteiras separadas.' },
       { en: 'Make every validation failure explicit and covered by an acceptance case.', pt: 'Torne toda falha de validação explícita e coberta por um caso de aceitação.' },
@@ -1195,6 +1257,14 @@ if __name__ == "__main__":
     requiredImports: ['dataclasses', 'math'],
     requiredFunctions: ['parse_record', 'fit_scaler', 'transform', 'fit_centroids', 'predict', 'evaluate', 'main'],
     requireMainGuard: true,
+    refactorGoal: {
+      en: 'Improve reproducibility or auditability without introducing data leakage. Focus on validation, training-only preprocessing, metric calculation, or naming of model state.',
+      pt: 'Melhore reprodutibilidade ou auditabilidade sem introduzir vazamento de dados. Foque validação, pré-processamento apenas no treino, cálculo de métricas ou nomes do estado do modelo.',
+    },
+    refactorEvidence: {
+      en: 'The code must change, the note must state how leakage or metric confusion was reduced, and every evaluation scenario must still pass.',
+      pt: 'O código precisa mudar, a nota deve dizer como reduziu vazamento ou confusão de métricas e todos os cenários de avaliação devem continuar passando.',
+    },
     refactorOptions: [
       { en: 'Keep parsing, preprocessing, model fitting, prediction and evaluation in separate functions.', pt: 'Mantenha interpretação, pré-processamento, ajuste, previsão e avaliação em funções separadas.' },
       { en: 'Make the training-only fit boundary impossible to confuse with evaluation.', pt: 'Deixe impossível confundir o ajuste feito no treino com a avaliação.' },
@@ -1484,6 +1554,14 @@ if __name__ == "__main__":
     requiredFunctions: ['dot', 'softmax', 'attend', 'main'],
     requiredCalls: ['math.exp'],
     requireMainGuard: true,
+    refactorGoal: {
+      en: 'Improve the separation between token handling, tensor construction, attention calculation, and ranking without hiding the math.',
+      pt: 'Melhore a separação entre tratamento de tokens, construção de tensores, cálculo de atenção e ranking sem esconder a matemática.',
+    },
+    refactorEvidence: {
+      en: 'The refactor must be explained, the code must differ from the baseline, and ranking, unknown-token, and unknown-query scenarios must remain correct.',
+      pt: 'A refatoração precisa ser explicada, o código deve diferir da base e os cenários de ranking, token desconhecido e consulta desconhecida devem continuar corretos.',
+    },
     refactorOptions: [
       { en: 'Keep parsing separate from numerical attention calculations.', pt: 'Mantenha interpretação separada dos cálculos numéricos de atenção.' },
       { en: 'Give dot, softmax and attention one testable responsibility each.', pt: 'Dê a dot, softmax e atenção uma responsabilidade testável para cada.' },
@@ -1842,6 +1920,14 @@ if __name__ == "__main__":
     requiredFunctions: ['tokenize', 'average_vector', 'cosine_similarity', 'retrieve', 'grounded_answer', 'main'],
     requiredCalls: ['math.sqrt', 're.findall'],
     requireMainGuard: true,
+    refactorGoal: {
+      en: 'Improve one trustworthy-RAG boundary: chunk validation, retrieval scoring, citation formatting, abstention, or orchestration.',
+      pt: 'Melhore uma fronteira de RAG confiável: validação de trechos, pontuação de busca, formatação de citações, abstenção ou orquestração.',
+    },
+    refactorEvidence: {
+      en: 'Describe why the change makes answers easier to audit, modify the code, and keep grounded, multi-citation, unknown-query, and no-evidence scenarios green.',
+      pt: 'Descreva por que a mudança deixa as respostas mais auditáveis, altere o código e mantenha verdes os cenários fundamentado, múltiplas citações, consulta desconhecida e ausência de evidência.',
+    },
     refactorOptions: [
       { en: 'Keep ingestion, vectorization, retrieval and answer construction in separate functions.', pt: 'Mantenha ingestão, vetorização, recuperação e construção da resposta em funções separadas.' },
       { en: 'Explain the evidence threshold and make it configurable.', pt: 'Explique o limite de evidência e torne-o configurável.' },

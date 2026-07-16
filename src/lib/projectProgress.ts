@@ -21,10 +21,13 @@ export interface MiniProjectProgress {
   }
   pseudocode: string
   code: string
+  buildInputs: string[]
   output: string
   testResults: ProjectTestStatus[]
   testedCode: string
   selectedRefactors: number[]
+  refactorBaselineCode: string
+  refactorNote: string
   completed: boolean
   updatedAt: string
 }
@@ -36,7 +39,7 @@ function storageKey(userId: string, projectId: string) {
   return `${STORAGE_PREFIX}${userId}_${projectId}`
 }
 
-export function createMiniProjectProgress(projectId: string, starterCode: string): MiniProjectProgress {
+export function createMiniProjectProgress(projectId: string, starterCode: string, initialInputs: string[] = []): MiniProjectProgress {
   return {
     version: 1,
     projectId,
@@ -45,36 +48,46 @@ export function createMiniProjectProgress(projectId: string, starterCode: string
     understanding: { inputs: '', output: '', rules: '', edgeCase: '' },
     pseudocode: '',
     code: starterCode,
+    buildInputs: [...initialInputs],
     output: '',
     testResults: [],
     testedCode: '',
     selectedRefactors: [],
+    refactorBaselineCode: '',
+    refactorNote: '',
     completed: false,
     updatedAt: new Date().toISOString(),
   }
 }
 
-export function loadLocalProjectProgress(userId: string, projectId: string, starterCode: string) {
-  if (typeof localStorage === 'undefined') return createMiniProjectProgress(projectId, starterCode)
+export function loadLocalProjectProgress(userId: string, projectId: string, starterCode: string, initialInputs: string[] = []) {
+  if (typeof localStorage === 'undefined') return createMiniProjectProgress(projectId, starterCode, initialInputs)
   try {
     const raw = localStorage.getItem(storageKey(userId, projectId))
-    if (!raw) return createMiniProjectProgress(projectId, starterCode)
+    if (!raw) return createMiniProjectProgress(projectId, starterCode, initialInputs)
     const parsed = JSON.parse(raw) as Partial<MiniProjectProgress>
-    if (parsed.version !== 1 || parsed.projectId !== projectId) return createMiniProjectProgress(projectId, starterCode)
+    if (parsed.version !== 1 || parsed.projectId !== projectId) return createMiniProjectProgress(projectId, starterCode, initialInputs)
     return {
-      ...createMiniProjectProgress(projectId, starterCode),
+      ...createMiniProjectProgress(projectId, starterCode, initialInputs),
       ...parsed,
       understanding: {
-        ...createMiniProjectProgress(projectId, starterCode).understanding,
+        ...createMiniProjectProgress(projectId, starterCode, initialInputs).understanding,
         ...(parsed.understanding || {}),
       },
       completedCheckpoints: Array.isArray(parsed.completedCheckpoints) ? parsed.completedCheckpoints : [],
       selectedRefactors: Array.isArray(parsed.selectedRefactors) ? parsed.selectedRefactors : [],
+      buildInputs: Array.isArray(parsed.buildInputs) ? parsed.buildInputs : [...initialInputs],
+      refactorBaselineCode: typeof parsed.refactorBaselineCode === 'string' && parsed.refactorBaselineCode.trim().length > 0
+        ? parsed.refactorBaselineCode
+        : parsed.currentCheckpoint === 'refactor' && typeof parsed.testedCode === 'string'
+          ? parsed.testedCode
+          : '',
+      refactorNote: typeof parsed.refactorNote === 'string' ? parsed.refactorNote : '',
       testResults: Array.isArray(parsed.testResults) ? parsed.testResults : [],
       code: typeof parsed.code === 'string' ? parsed.code : starterCode,
     } as MiniProjectProgress
   } catch {
-    return createMiniProjectProgress(projectId, starterCode)
+    return createMiniProjectProgress(projectId, starterCode, initialInputs)
   }
 }
 
@@ -116,7 +129,10 @@ export function mergeProjectProgress(local: MiniProjectProgress, remote: MiniPro
     output: newestText(local, remote, 'output'),
     testedCode: newestText(local, remote, 'testedCode'),
     testResults: newest.testResults,
-    selectedRefactors: [...new Set([...local.selectedRefactors, ...remote.selectedRefactors])],
+    buildInputs: Array.isArray(newest.buildInputs) ? newest.buildInputs : local.buildInputs,
+    selectedRefactors: Array.isArray(newest.selectedRefactors) ? newest.selectedRefactors.slice(0, 1) : [],
+    refactorBaselineCode: newest.refactorBaselineCode || local.refactorBaselineCode || '',
+    refactorNote: newest.refactorNote || local.refactorNote || '',
     completed: local.completed || remote.completed,
     currentCheckpoint: newest.currentCheckpoint,
     updatedAt: new Date(Math.max(localTime, remoteTime)).toISOString(),

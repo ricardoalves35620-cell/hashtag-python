@@ -42,8 +42,10 @@ describe('Learning Engine V2.4 professional mini-projects', () => {
       expect(project.starterCode.en).toContain('TODO')
       expect(project.starterCode.pt).toContain('TODO')
     }
-    expect(MINI_PROJECTS.find(project => project.id === 'damage-estimate')?.tests).toHaveLength(2)
-    expect(MINI_PROJECTS.find(project => project.id === 'claim-queue')?.tests).toHaveLength(2)
+    expect(MINI_PROJECTS.find(project => project.id === 'damage-estimate')?.tests.length).toBeGreaterThanOrEqual(3)
+    expect(MINI_PROJECTS.find(project => project.id === 'claim-queue')?.tests.length).toBeGreaterThanOrEqual(3)
+    expect(MINI_PROJECTS.find(project => project.id === 'portfolio-report')?.tests.length).toBeGreaterThanOrEqual(3)
+    expect(MINI_PROJECTS.find(project => project.id === 'foundation-claim-desk')?.tests.length).toBeGreaterThanOrEqual(3)
   })
 
   it('wires the project route, five checkpoints, persistence and reset', () => {

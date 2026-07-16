@@ -13,7 +13,7 @@ describe('Sprint 10.1 foundation portfolio', () => {
   it('adds a real integrator at the end of the foundation path', () => {
     const project = getMiniProjectForPhase(27)
     expect(project?.id).toBe('foundation-claim-desk')
-    expect(project?.tests).toHaveLength(2)
+    expect(project?.tests.length).toBeGreaterThanOrEqual(3)
     expect(project?.requiredNodes).toEqual(expect.arrayContaining(['FunctionDef', 'While', 'Try']))
     expect(project?.tests[0].expectedOutput).toContain('TOTAL=2000.00')
     expect(project?.tests[1].expectedOutput).toEqual(expect.arrayContaining(['INVALID_AMOUNT', 'DUPLICATE_ID']))
