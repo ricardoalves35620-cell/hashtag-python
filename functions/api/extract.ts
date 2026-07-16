@@ -171,8 +171,28 @@ function extractFieldsFromOCRText(text: string): Record<string, unknown> {
   const emailMatch = t.match(/\b([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\b/);
   if (emailMatch) result.insured_email = emailMatch[1];
 
+  // ── GPS coordinates from Google Maps URL ────────────────────────────────
+  // TD emails contain a Google Maps link with the loss property coordinates.
+  // Extracting these directly is more accurate than geocoding the address.
+  const coordUrl =
+    t.match(/maps\.google\.com[^\s"'<>]*[?&]q=([-\d.]{4,}),([-\d.]{4,})/i) ??
+    t.match(/google\.com\/maps[^\s"'<>]*query=([-\d.]{4,}),([-\d.]{4,})/i) ??
+    t.match(/google\.com\/maps[^\s"'<>]*@([-\d.]{4,}),([-\d.]{4,})/i);
+  if (coordUrl) {
+    result.latitude = parseFloat(coordUrl[1]);
+    result.longitude = parseFloat(coordUrl[2]);
+  } else {
+    // Bare coordinate pair near address block
+    const coordBare = t.match(/\b(4[0-7]\.\d{3,}),\s*([-]?[7-9]\d\.\d{3,})\b/);
+    if (coordBare) {
+      result.latitude = parseFloat(coordBare[1]);
+      result.longitude = parseFloat(coordBare[2]);
+    }
+  }
+}
   return result;
 }
+
 // ── Anthropic extraction — TD Insurance specific prompt ──────────────────────
 async function extractWithAnthropic(items: ExtractItem[], apiKey: string): Promise<Response> {
   const userContent: unknown[] = [{

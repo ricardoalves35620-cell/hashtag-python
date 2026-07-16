@@ -257,6 +257,27 @@ export function parseTdEmail(text: string): ParsedClaim | null {
   const catMatch = t.match(/(?:CAT\s*(?:Code|Name|#)?|Event\s*Code|Code\s*CAT)[:\s]+([A-Za-z0-9\-]{2,15})/i);
   if (catMatch) result.cat_code = catMatch[1].trim();
 
+  // ── Coordinates from Google Maps URL ─────────────────────────────────────
+  // TD emails embed a Google Maps link with coordinates, e.g.:
+  //   https://maps.google.com/?q=43.8574,-78.9352
+  //   https://www.google.com/maps/search/?api=1&query=43.857,-78.935
+  //   (Google Maps) 43.857,-78.935   ← coordinates on next line after link
+  const coordFromUrl =
+    t.match(/maps\.google\.com[^\s"'<>]*[?&]q=([-\d.]{4,}),([-\d.]{4,})/i) ??
+    t.match(/google\.com\/maps[^\s"'<>]*query=([-\d.]{4,}),([-\d.]{4,})/i) ??
+    t.match(/google\.com\/maps[^\s"'<>]*@([-\d.]{4,}),([-\d.]{4,})/i);
+  if (coordFromUrl) {
+    result.latitude = coordFromUrl[1];
+    result.longitude = coordFromUrl[2];
+  } else {
+    // Coordinates as bare numbers near the address block (43.xxxx, -78.xxxx)
+    const coordBare = t.match(/\b(4[0-7]\.\d{3,}),\s*([-\-]?[7-9]\d\.\d{3,})\b/);
+    if (coordBare) {
+      result.latitude = coordBare[1];
+      result.longitude = coordBare[2];
+    }
+  }
+
   // Deductible
   const dedMatch = t.match(/(?:Deductible|Franchise)[:\s$]*\$?([\d,]+)/i);
   if (dedMatch) result.deductible = dedMatch[1].replace(/,/g, "");
