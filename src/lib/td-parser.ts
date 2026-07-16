@@ -261,7 +261,6 @@ export function parseTdEmail(text: string): ParsedClaim | null {
 
   return result;
 }
-}
 
 // ── Backup JSON / CSV / TSV report parser ──────────────────────────────────
 export function parseClaimNavigatorReport(text: string, filename: string): ParsedClaim[] {
