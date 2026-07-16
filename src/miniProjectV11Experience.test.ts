@@ -29,6 +29,7 @@ describe('V11 mini-project experience', () => {
   it('uses editable input fields and requires real evidence in the final checkpoint', () => {
     const page = read('./pages/MiniProject.tsx')
     const progress = read('./lib/projectProgress.ts')
+    const guidePanels = read('./components/learning/MiniProjectGuidePanels.tsx')
 
     expect(page).toContain('project-build-inputs')
     expect(page).toContain('buildInputs')
@@ -37,7 +38,7 @@ describe('V11 mini-project experience', () => {
     expect(page).toContain('project-refactor-note')
     expect(page).toContain('project-verify-improvement')
     expect(page).toContain('refactorReady')
-    expect(page).toContain('type="radio"')
+    expect(`${page}\n${guidePanels}`).toContain('type="radio"')
     expect(progress).toContain('refactorBaselineCode')
     expect(progress).toContain('refactorNote')
   })

@@ -26,8 +26,8 @@ describe('Sprint 10.3 audit and learning-flow stabilization', () => {
     const project = read('./pages/MiniProject.tsx')
     expect(project).toContain('project-test-checkpoint')
     expect(project).toContain('Valores digitados no input(), na ordem')
-    expect(project).toContain('Why multiple tests matter')
-    expect(project).toContain('Por que vários testes importam')
+    expect(project).toContain('Why try more than one example?')
+    expect(project).toContain('Por que tentar mais de um exemplo?')
     expect(project).toContain("openCheckpoint('build')")
   })
 

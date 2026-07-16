@@ -9,6 +9,8 @@ import LearningStageRail from '../components/learning/LearningStageRail'
 import StickyLearningActions from '../components/learning/StickyLearningActions'
 import { useApp } from '../contexts/AppContext'
 import { getMiniProject, type ProjectCheckpointId } from '../data/miniProjects'
+import { getMiniProjectGuide } from '../data/miniProjectGuides'
+import { MiniProjectBuildGuide, MiniProjectGuidedPlan, MiniProjectImprovementGuide, MiniProjectMissionBrief, MiniProjectTestPurpose } from '../components/learning/MiniProjectGuidePanels'
 import {
   createMiniProjectProgress,
   fetchRemoteProjectProgress,
@@ -26,11 +28,11 @@ import { markProjectDone } from '../lib/progress'
 import { getSupabase } from '../lib/supabase'
 
 const CHECKPOINTS: Array<{ id: ProjectCheckpointId; icon: string; en: string; pt: string }> = [
-  { id: 'understand', icon: '🎯', en: 'Understand', pt: 'Entender' },
-  { id: 'plan', icon: '🧩', en: 'Plan', pt: 'Planejar' },
-  { id: 'build', icon: '🐍', en: 'Implement', pt: 'Implementar' },
-  { id: 'test', icon: '🧪', en: 'Test', pt: 'Testar' },
-  { id: 'refactor', icon: '✨', en: 'Improve & prove', pt: 'Melhorar e comprovar' },
+  { id: 'understand', icon: '🎯', en: 'Understand the mission', pt: 'Entender a missão' },
+  { id: 'plan', icon: '🧩', en: 'Make a recipe', pt: 'Fazer uma receita' },
+  { id: 'build', icon: '🐍', en: 'Finish the code', pt: 'Montar o programa' },
+  { id: 'test', icon: '🧪', en: 'Try examples', pt: 'Testar exemplos' },
+  { id: 'refactor', icon: '✨', en: 'Make it clearer', pt: 'Deixar mais claro' },
 ]
 
 function checkpointIndex(id: ProjectCheckpointId) {
@@ -62,6 +64,7 @@ export default function MiniProject() {
   const navigate = useNavigate()
   const { lang, learnerId, refreshProgress } = useApp()
   const project = getMiniProject(projectId)
+  const guide = getMiniProjectGuide(projectId)
   const starterCode = project?.starterCode[lang] || ''
   const initialInputs = project?.tests[0]?.inputs || []
   const [progress, setProgress] = useState<MiniProjectProgress>(() => project
@@ -111,58 +114,58 @@ export default function MiniProject() {
 
   const t = useMemo(() => ({
     en: {
-      title: 'Block mini-project', back: 'Phase', workflow: 'Professional workflow',
-      saved: 'Saved on this device', synced: 'Checkpoint saved', next: 'Complete checkpoint and continue',
-      finish: 'Complete project', required: 'Required project artifact', optional: 'Optional note',
-      understandTitle: 'Define the contract before coding', understandHelp: 'These fields are part of the project plan, not a personal journal. A developer must be able to state what enters, what leaves, and which rule is being implemented.',
-      inputs: 'What enters the program?', output: 'What must the program produce?', rules: 'Which rules transform input into output?', edge: 'Which edge case will you test?',
-      planTitle: 'Write the solution as ordered steps', planHelp: 'Do not write Python yet. Your pseudocode should be precise enough that each line can later become a small piece of code.',
-      buildTitle: 'Implement one responsibility at a time', buildHelp: 'Edit the code, then run it with the real input fields below. The app sends those values to input() in the displayed order. This checkpoint only proves that the program runs; behavior is verified next.',
+      title: 'Mini-project', back: 'Phase', workflow: '5 simple steps',
+      saved: 'Step saved on this device', synced: 'Step saved', next: 'Finish this step and continue',
+      finish: 'Finish project', required: 'Fill in this box', optional: 'You may leave this blank',
+      understandTitle: 'Step 1: understand the mission', understandHelp: 'Do not code yet. First, read the story and make sure you know what someone will type, what the program will do, and what must appear on the screen.',
+      inputs: 'What will the person type?', output: 'What must appear on the screen?', rules: 'What must the program do with the values?', edge: 'What unusual case must still work?',
+      planTitle: 'Step 2: turn the mission into a recipe', planHelp: 'Pseudocode is a recipe written with normal words. Each line says one small action. It is not Python yet.',
+      buildTitle: 'Step 3: finish the program', buildHelp: 'Follow the build order below. Change one TODO at a time. Then run the program with the example values. The app sends values to input() from top to bottom.',
       suggested: 'Inputs for this run', expected: 'Expected visible result for the guided run', run: 'Run with these inputs', running: 'Running', outputLabel: 'Console output', resetInputs: 'Restore suggested values', inputField: 'Input', buildDone: 'You are done here when you changed the starter code and this run finishes without a Python error.',
-      testTitle: 'Prove behavior with multiple tests', testHelp: 'A single example is not proof. Here you will run the same program with different inputs and compare every result with the expected output.', runTests: 'Run all tests',
-      testGoal: 'Goal: confirm that your program works in the normal case, in a different valid case and at the important limit defined for this project.',
-      testStep1: 'Review each scenario below. The listed values will be entered into input() in exactly that order.',
-      testStep2: 'Read the expected output before running. Predict which scenarios should pass and which may reveal a problem.',
-      testStep3: 'Select Run all tests on this page. You do not need to type the values manually: the app sends each listed value to input() in order and starts a fresh copy of the code for every scenario.',
-      testStep4: 'A green Passed badge means the visible result and required Python structure matched. Needs work shows what the program actually returned.',
-      testWhy: 'Why multiple tests matter: code that works for one prepared example may still fail with another valid value or a boundary case.',
-      testDone: 'This checkpoint is complete when every scenario is green. Then use Complete checkpoint and continue below.',
+      testTitle: 'Step 4: try different examples', testHelp: 'The app will run the same program several times. Each scenario checks a different promise from the mission.', runTests: 'Run all tests',
+      testGoal: 'Goal: see whether the same program works with easy values, different values and the trickiest case in this project.',
+      testStep1: 'Read one example at a time. The numbered values will enter input() from number 1 to the last number.',
+      testStep2: 'Before clicking the button, read what should appear. Try to guess whether your code will get that result.',
+      testStep3: 'Click Run all examples. The app types the values for you and starts the program again for each example.',
+      testStep4: 'Green means that example worked. Needs work shows what your program produced so you know what to fix.',
+      testWhy: 'Why try more than one example? A program may work once by luck and still break with another value.',
+      testDone: 'You are done when every example is green. Then click Finish this step and continue.',
       inputOrder: 'Values entered into input(), in order', expectedResult: 'What must appear in the output',
-      testsNotRun: 'The scenarios have not been executed with this version of the code yet.', testsAllPassed: 'All scenarios passed with the current code.', testsNeedWork: 'Some scenarios need adjustment. Read the result, return to Implement, change one cause and run all tests again.', backToBuild: 'Return to Implement and fix the code',
-      refactorTitle: 'Make one improvement and prove it is safe', refactorHelp: 'This is not another coding puzzle. Choose one concrete improvement, change the code, explain why the change helps, and rerun every scenario. A checkbox records your plan; it is not proof by itself.',
+      testsNotRun: 'The scenarios have not been executed with this version of the code yet.', testsAllPassed: 'All scenarios passed with the current code.', testsNeedWork: 'One or more examples did not work. Read the found result, return to Finish the code, change one thing and try all examples again.', backToBuild: 'Return to Finish the code',
+      refactorTitle: 'Step 5: make one small improvement', refactorHelp: 'The program already works. Do not add a new feature. Choose one small change, make it, explain it, and run every scenario again.',
       completed: 'Project completed', accomplishment: 'You can now', openPhase: 'Return to phase',
       needUnderstand: 'Complete the input, output, rules, and edge-case fields.', needPlan: 'Write at least three clear pseudocode steps.',
-      needBuild: 'Change the starter code and run it without an error.', needTests: 'All project tests must pass.', needRefactor: 'Choose an improvement, actually change the verified code, explain the reason in at least 20 characters, and rerun all tests successfully.',
-      noOutput: 'The program finished without printing output.', testPassed: 'Passed', testFailed: 'Needs work', nodeMissing: 'One or more required Python structures, imports, functions or the main guard were not found.', doNow: 'What to do now', whyItMatters: 'Why this matters', finishWhen: 'How to know you are done', refactorStep1: 'Choose one improvement below.', refactorStep2: 'Apply that improvement in the editor. The code must really change.', refactorStep3: 'Write a short note explaining what you changed and why it is better.', refactorStep4: 'Run the complete verification again. Finish only when every scenario is green.', refactorNote: 'What did you improve and why?', refactorNotePlaceholder: 'I changed... This is better because...', verifyImprovement: 'Verify improvement with all tests', selectedCheck: 'Improvement selected', codeChangedCheck: 'Code changed after the verified version', noteCheck: 'Reason explained', testsCheck: 'All scenarios rerun and green', readyToFinish: 'The improvement is proven. You can complete the project.', notReadyToFinish: 'Complete every item below before finishing the project.',
+      needBuild: 'Change the starter code and run it without an error.', needTests: 'All project tests must pass.', needRefactor: 'Choose one improvement, change the code, explain why you changed it and make every example green again.',
+      noOutput: 'The program finished without printing output.', testPassed: 'Passed', testFailed: 'Needs work', nodeMissing: 'Your code is still missing one or more Python pieces requested by the project. Check the build guide and the TODO comments.', doNow: 'What to do now', whyItMatters: 'Why this matters', finishWhen: 'How to know you are done', refactorStep1: 'Choose one improvement below.', refactorStep2: 'Apply that improvement in the editor. The code must really change.', refactorStep3: 'Write a short note explaining what you changed and why it is better.', refactorStep4: 'Run the complete verification again. Finish only when every scenario is green.', refactorNote: 'What did you improve and why?', refactorNotePlaceholder: 'I changed... This is better because...', verifyImprovement: 'Verify improvement with all tests', selectedCheck: 'Improvement selected', codeChangedCheck: 'Code changed after the verified version', noteCheck: 'Reason explained', testsCheck: 'All scenarios rerun and green', readyToFinish: 'The improvement is proven. You can complete the project.', notReadyToFinish: 'Complete every item below before finishing the project.',
     },
     pt: {
-      title: 'Mini projeto do bloco', back: 'Fase', workflow: 'Fluxo profissional',
-      saved: 'Salvo neste aparelho', synced: 'Checkpoint salvo', next: 'Concluir checkpoint e continuar',
-      finish: 'Concluir projeto', required: 'Artefato obrigatório do projeto', optional: 'Anotação opcional',
-      understandTitle: 'Defina o contrato antes de programar', understandHelp: 'Esses campos fazem parte do planejamento do projeto, não são diário pessoal. Um desenvolvedor precisa declarar o que entra, o que sai e qual regra será implementada.',
-      inputs: 'O que entra no programa?', output: 'O que o programa precisa produzir?', rules: 'Quais regras transformam entrada em saída?', edge: 'Qual caso limite você vai testar?',
-      planTitle: 'Escreva a solução como passos ordenados', planHelp: 'Ainda não escreva Python. O pseudocódigo deve ser preciso o bastante para que cada linha depois vire uma pequena parte do código.',
-      buildTitle: 'Implemente uma responsabilidade por vez', buildHelp: 'Edite o código e depois execute usando os campos reais abaixo. O app envia esses valores ao input() na ordem mostrada. Este checkpoint comprova apenas que o programa executa; o comportamento será verificado no próximo.',
+      title: 'Mini projeto', back: 'Fase', workflow: '5 passos simples',
+      saved: 'Passo salvo neste aparelho', synced: 'Passo salvo', next: 'Terminar este passo e continuar',
+      finish: 'Terminar projeto', required: 'Preencha esta caixa', optional: 'Você pode deixar em branco',
+      understandTitle: 'Passo 1: entender a missão', understandHelp: 'Ainda não programe. Primeiro, leia a história e entenda o que a pessoa vai digitar, o que o programa fará e o que precisa aparecer na tela.',
+      inputs: 'O que a pessoa vai digitar?', output: 'O que precisa aparecer na tela?', rules: 'O que o programa deve fazer com os valores?', edge: 'Qual caso diferente também precisa funcionar?',
+      planTitle: 'Passo 2: transformar a missão em uma receita', planHelp: 'Pseudocódigo é uma receita escrita com palavras normais. Cada linha diz uma ação pequena. Ainda não é código Python.',
+      buildTitle: 'Passo 3: terminar o programa', buildHelp: 'Siga a ordem de montagem abaixo. Resolva um TODO por vez. Depois execute com os valores do exemplo. O app envia os valores ao input() de cima para baixo.',
       suggested: 'Entradas desta execução', expected: 'Resultado visível esperado na execução guiada', run: 'Executar com estas entradas', running: 'Executando', outputLabel: 'Saída do console', resetInputs: 'Restaurar valores sugeridos', inputField: 'Entrada', buildDone: 'Você termina aqui quando altera o código inicial e esta execução termina sem erro de Python.',
-      testTitle: 'Comprove o comportamento com vários testes', testHelp: 'Um único exemplo não é prova. Aqui você executará o mesmo programa com entradas diferentes e comparará cada resultado com a saída esperada.', runTests: 'Executar todos os testes',
-      testGoal: 'Objetivo: confirmar que o programa funciona no caso normal, em outro caso válido e no limite importante definido para este projeto.',
-      testStep1: 'Leia cada cenário abaixo. Os valores listados serão digitados no input() exatamente nessa ordem.',
-      testStep2: 'Leia a saída esperada antes de executar. Preveja quais cenários devem passar e quais podem revelar um problema.',
-      testStep3: 'Selecione Executar todos os testes nesta página. Você não precisa digitar os valores manualmente: o app envia cada valor listado ao input() na ordem e inicia uma cópia nova do código para cada cenário.',
-      testStep4: 'O selo verde Aprovado significa que o resultado visível e a estrutura Python obrigatória conferiram. Precisa de ajuste mostra o que o programa realmente devolveu.',
-      testWhy: 'Por que vários testes importam: um código que funciona para um exemplo preparado ainda pode falhar com outro valor válido ou com um caso limite.',
-      testDone: 'Este checkpoint termina quando todos os cenários estiverem verdes. Depois use Concluir checkpoint e continuar logo abaixo.',
+      testTitle: 'Passo 4: tentar exemplos diferentes', testHelp: 'O app executará o mesmo programa várias vezes. Cada cenário confere uma promessa diferente da missão.', runTests: 'Testar todos os exemplos',
+      testGoal: 'Objetivo: ver se o mesmo programa funciona com valores fáceis, valores diferentes e o caso mais difícil deste projeto.',
+      testStep1: 'Leia um exemplo por vez. Os valores numerados entrarão no input() do número 1 até o último.',
+      testStep2: 'Antes de clicar no botão, leia o que deve aparecer. Tente adivinhar se o seu código chegará nesse resultado.',
+      testStep3: 'Clique em Testar todos os exemplos. O app digita os valores para você e começa o programa de novo em cada exemplo.',
+      testStep4: 'Verde significa que o exemplo funcionou. Precisa de ajuste mostra o que o seu programa produziu para você saber o que corrigir.',
+      testWhy: 'Por que tentar mais de um exemplo? Um programa pode funcionar uma vez por sorte e ainda quebrar com outro valor.',
+      testDone: 'Você termina quando todos os exemplos estiverem verdes. Depois clique em Terminar este passo e continuar.',
       inputOrder: 'Valores digitados no input(), na ordem', expectedResult: 'O que precisa aparecer na saída',
-      testsNotRun: 'Os cenários ainda não foram executados com esta versão do código.', testsAllPassed: 'Todos os cenários passaram com o código atual.', testsNeedWork: 'Alguns cenários precisam de ajuste. Leia o resultado, volte para Implementar, altere uma causa e execute todos os testes novamente.', backToBuild: 'Voltar para Implementar e corrigir o código',
-      refactorTitle: 'Faça uma melhoria e comprove que ela é segura', refactorHelp: 'Isto não é outro desafio de código. Escolha uma melhoria concreta, altere o código, explique por que a mudança ajuda e execute todos os cenários novamente. Marcar uma caixa registra seu plano; sozinho, isso não é prova.',
+      testsNotRun: 'Os cenários ainda não foram executados com esta versão do código.', testsAllPassed: 'Todos os cenários passaram com o código atual.', testsNeedWork: 'Um ou mais exemplos não funcionaram. Leia o resultado encontrado, volte para Montar o programa, mude uma coisa e teste todos os exemplos de novo.', backToBuild: 'Voltar para Montar o programa',
+      refactorTitle: 'Passo 5: fazer uma pequena melhoria', refactorHelp: 'O programa já funciona. Não crie uma função nova. Escolha uma pequena mudança, faça, explique e execute todos os cenários novamente.',
       completed: 'Projeto concluído', accomplishment: 'Agora você consegue', openPhase: 'Voltar para a fase',
       needUnderstand: 'Preencha os campos de entrada, saída, regras e caso limite.', needPlan: 'Escreva pelo menos três passos claros de pseudocódigo.',
-      needBuild: 'Altere o código inicial e execute sem erro.', needTests: 'Todos os testes do projeto precisam passar.', needRefactor: 'Escolha uma melhoria, altere de verdade o código verificado, explique o motivo com pelo menos 20 caracteres e execute todos os testes com sucesso.',
-      noOutput: 'O programa terminou sem imprimir uma saída.', testPassed: 'Aprovado', testFailed: 'Precisa de ajuste', nodeMissing: 'Uma ou mais estruturas, importações, funções ou o main guard obrigatórios não foram encontrados.', doNow: 'O que fazer agora', whyItMatters: 'Por que isso importa', finishWhen: 'Como saber que terminou', refactorStep1: 'Escolha uma melhoria abaixo.', refactorStep2: 'Aplique essa melhoria no editor. O código precisa mudar de verdade.', refactorStep3: 'Escreva uma nota curta explicando o que mudou e por que ficou melhor.', refactorStep4: 'Execute a verificação completa novamente. Só finalize quando todos os cenários estiverem verdes.', refactorNote: 'O que você melhorou e por quê?', refactorNotePlaceholder: 'Eu alterei... Isso ficou melhor porque...', verifyImprovement: 'Comprovar melhoria com todos os testes', selectedCheck: 'Melhoria escolhida', codeChangedCheck: 'Código alterado depois da versão verificada', noteCheck: 'Motivo explicado', testsCheck: 'Todos os cenários executados novamente e verdes', readyToFinish: 'A melhoria foi comprovada. Você pode concluir o projeto.', notReadyToFinish: 'Conclua todos os itens abaixo antes de finalizar o projeto.',
+      needBuild: 'Altere o código inicial e execute sem erro.', needTests: 'Todos os testes do projeto precisam passar.', needRefactor: 'Escolha uma melhoria, mude o código, explique por que mudou e deixe todos os exemplos verdes novamente.',
+      noOutput: 'O programa terminou sem imprimir uma saída.', testPassed: 'Aprovado', testFailed: 'Precisa de ajuste', nodeMissing: 'Ainda falta uma ou mais peças de Python pedidas pelo projeto. Confira o guia de montagem e os comentários TODO.', doNow: 'O que fazer agora', whyItMatters: 'Por que isso importa', finishWhen: 'Como saber que terminou', refactorStep1: 'Escolha uma melhoria abaixo.', refactorStep2: 'Aplique essa melhoria no editor. O código precisa mudar de verdade.', refactorStep3: 'Escreva uma nota curta explicando o que mudou e por que ficou melhor.', refactorStep4: 'Execute a verificação completa novamente. Só finalize quando todos os cenários estiverem verdes.', refactorNote: 'O que você melhorou e por quê?', refactorNotePlaceholder: 'Eu alterei... Isso ficou melhor porque...', verifyImprovement: 'Comprovar melhoria com todos os testes', selectedCheck: 'Melhoria escolhida', codeChangedCheck: 'Código alterado depois da versão verificada', noteCheck: 'Motivo explicado', testsCheck: 'Todos os cenários executados novamente e verdes', readyToFinish: 'A melhoria foi comprovada. Você pode concluir o projeto.', notReadyToFinish: 'Conclua todos os itens abaixo antes de finalizar o projeto.',
     },
   })[lang], [lang])
 
-  if (!project) {
+  if (!project || !guide) {
     return <Layout showBack backTo="/" title={lang === 'pt' ? 'Projeto não encontrado' : 'Project not found'}><div className="p-4"><Alert variant="warning">{lang === 'pt' ? 'Este mini projeto não existe.' : 'This mini-project does not exist.'}</Alert></div></Layout>
   }
 
@@ -193,6 +196,21 @@ export default function MiniProject() {
 
   const patchUnderstanding = (key: keyof MiniProjectProgress['understanding'], value: string) => {
     persist({ understanding: { ...progress.understanding, [key]: value } })
+  }
+
+  const fillGuidedUnderstanding = () => {
+    persist({
+      understanding: {
+        inputs: guide.understandAnswers.inputs[lang],
+        output: guide.understandAnswers.output[lang],
+        rules: guide.understandAnswers.rules[lang],
+        edgeCase: guide.understandAnswers.edgeCase[lang],
+      },
+    })
+  }
+
+  const fillGuidedPlan = () => {
+    persist({ pseudocode: guide.planSteps.map(step => step[lang]).join('\n') })
   }
 
   const validateCurrent = () => {
@@ -308,11 +326,11 @@ export default function MiniProject() {
     icon: checkpoint.icon,
     title: checkpoint[lang],
     description: ({
-      understand: lang === 'pt' ? 'Defina o contrato do problema.' : 'Define the problem contract.',
-      plan: lang === 'pt' ? 'Transforme o problema em passos.' : 'Turn the problem into steps.',
-      build: lang === 'pt' ? 'Implemente uma responsabilidade por vez.' : 'Implement one responsibility at a time.',
-      test: lang === 'pt' ? 'Comprove o comportamento.' : 'Prove the behavior.',
-      refactor: lang === 'pt' ? 'Altere, explique e teste novamente.' : 'Change, explain, and test again.',
+      understand: lang === 'pt' ? 'Descubra entrada, regra e saída.' : 'Find the input, rule and output.',
+      plan: lang === 'pt' ? 'Escreva uma receita simples.' : 'Write a simple recipe.',
+      build: lang === 'pt' ? 'Resolva um TODO por vez.' : 'Solve one TODO at a time.',
+      test: lang === 'pt' ? 'Tente exemplos diferentes.' : 'Try different examples.',
+      refactor: lang === 'pt' ? 'Faça uma mudança pequena e clara.' : 'Make one small clear change.',
     } as Record<ProjectCheckpointId, string>)[checkpoint.id],
     active: progress.currentCheckpoint === checkpoint.id,
     done: progress.completedCheckpoints.includes(checkpoint.id),
@@ -333,7 +351,7 @@ export default function MiniProject() {
               items={stageItems}
               currentId={progress.currentCheckpoint}
               onSelect={id => openCheckpoint(id as ProjectCheckpointId)}
-              label={lang === 'pt' ? 'Ciclo profissional do projeto' : 'Professional project cycle'}
+              label={lang === 'pt' ? '5 passos do projeto' : '5 project steps'}
               compactLabel={t.workflow}
             />
           </aside>
@@ -341,7 +359,7 @@ export default function MiniProject() {
             <LearningHero
               eyebrow={`${t.title} · ${t.workflow}`}
               title={project.title[lang]}
-              description={project.subtitle[lang]}
+              description={guide.mission[lang]}
               icon={project.icon}
               current={currentIndex + 1}
               total={CHECKPOINTS.length}
@@ -351,20 +369,21 @@ export default function MiniProject() {
               action={<Badge>{t.workflow}</Badge>}
             />
 
-            <LearningCallout variant="professional" title={lang === 'pt' ? 'O problema real' : 'The real problem'}>
-              <p className="m-0">{project.scenario[lang]}</p>
-              <p className="mt-2 mb-0 text-xs">{project.professionalContext[lang]}</p>
+            <LearningCallout variant="professional" title={lang === 'pt' ? 'Leia isto antes de digitar' : 'Read this before typing'}>
+              <p className="m-0 text-sm leading-relaxed">{guide.story[lang]}</p>
+              <p className="mt-3 mb-0 text-sm font-semibold" style={{ color: 'var(--c-text)' }}>{guide.result[lang]}</p>
             </LearningCallout>
 
         {progress.currentCheckpoint === 'understand' && <Card padding="lg">
           <h2 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{t.understandTitle}</h2>
           <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.understandHelp}</p>
+          <MiniProjectMissionBrief guide={guide} lang={lang} onUseAnswers={fillGuidedUnderstanding} />
           <div className="grid sm:grid-cols-2 gap-3 mt-4">
             {([
-              ['inputs', t.inputs, project.inputContract[lang]],
-              ['output', t.output, project.outputContract[lang]],
-              ['rules', t.rules, project.ruleContract[lang]],
-              ['edgeCase', t.edge, project.edgeCases[lang]],
+              ['inputs', t.inputs, guide.understandAnswers.inputs[lang]],
+              ['output', t.output, guide.understandAnswers.output[lang]],
+              ['rules', t.rules, guide.understandAnswers.rules[lang]],
+              ['edgeCase', t.edge, guide.understandAnswers.edgeCase[lang]],
             ] as const).map(([key, label, placeholder]) => <label key={key} className="block">
               <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>{label} · {t.required}</span>
               <textarea
@@ -382,16 +401,14 @@ export default function MiniProject() {
         {progress.currentCheckpoint === 'plan' && <Card padding="lg">
           <h2 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{t.planTitle}</h2>
           <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.planHelp}</p>
-          <div className="rounded-xl p-3 mt-4 text-sm" style={{ background: 'var(--c-purple-f)', color: 'var(--c-text2)', border: '1px solid var(--c-purple-dm)' }}>
-            {project.requirements[lang].map((item, index) => <div key={item}>{index + 1}. {item}</div>)}
-          </div>
+          <MiniProjectGuidedPlan guide={guide} lang={lang} onUsePlan={fillGuidedPlan} />
           <label className="block mt-4">
             <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>Pseudocódigo · {t.required}</span>
             <textarea
               rows={10}
               value={progress.pseudocode}
               onChange={event => persist({ pseudocode: event.target.value })}
-              placeholder={lang === 'pt' ? 'RECEBER...\nGUARDAR...\nAPLICAR...\nTESTAR...\nMOSTRAR...' : 'RECEIVE...\nSTORE...\nAPPLY...\nTEST...\nSHOW...'}
+              placeholder={guide.planSteps.map(step => step[lang]).join('\n')}
               className="w-full rounded-xl p-3 text-sm mt-1 font-mono resize-y"
               style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}
             />
@@ -402,6 +419,7 @@ export default function MiniProject() {
           <Card padding="lg" className="mini-project-instructions">
             <h2 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{t.buildTitle}</h2>
             <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.buildHelp}</p>
+            <MiniProjectBuildGuide guide={guide} lang={lang} />
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
               <div className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>{t.suggested}</div>
               <Button
@@ -470,6 +488,7 @@ export default function MiniProject() {
                     <Badge>{lang === 'pt' ? `Cenário ${index + 1}` : `Scenario ${index + 1}`}</Badge>
                     <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>{test.title[lang]}</div>
                   </div>
+                  <MiniProjectTestPurpose guide={guide} testId={test.id} lang={lang} />
                   <div className="mt-3 text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>{t.inputOrder}</div>
                   <pre className="mt-1 overflow-x-auto whitespace-pre-wrap rounded-lg p-3 text-xs" style={{ background: 'var(--c-code-bg)', color: 'var(--c-text2)' }}>{test.inputs.length ? test.inputs.map((value, inputIndex) => `${inputIndex + 1}. ${value}`).join('\n') : '—'}</pre>
                   <div className="mt-3 text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-muted)' }}>{t.expectedResult}</div>
@@ -488,38 +507,12 @@ export default function MiniProject() {
             <h2 className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{t.refactorTitle}</h2>
             <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{t.refactorHelp}</p>
 
-            <div className="mini-project-final-step mt-4">
-              <section>
-                <h3>{t.doNow}</h3>
-                <ol>
-                  {[t.refactorStep1, t.refactorStep2, t.refactorStep3, t.refactorStep4].map((step, index) => <li key={step}><strong>{index + 1}</strong><span>{step}</span></li>)}
-                </ol>
-              </section>
-              <section>
-                <h3>{t.whyItMatters}</h3>
-                <p>{project.refactorGoal[lang]}</p>
-              </section>
-              <section>
-                <h3>{t.finishWhen}</h3>
-                <p>{project.refactorEvidence[lang]}</p>
-              </section>
-            </div>
-
-            <div className="space-y-2 mt-4">
-              {project.refactorOptions.map((option, index) => {
-                const checked = progress.selectedRefactors.includes(index)
-                return <label key={index} className="flex gap-3 items-start rounded-xl p-3 cursor-pointer" style={{ background: checked ? 'var(--c-purple-f)' : 'var(--c-bg)', border: '1px solid var(--c-border)' }}>
-                  <input
-                    type="radio"
-                    name="project-improvement"
-                    checked={checked}
-                    onChange={() => persist({ selectedRefactors: [index], testResults: [], testedCode: '' })}
-                    className="mt-1"
-                  />
-                  <span className="text-sm" style={{ color: 'var(--c-text2)' }}>{option[lang]}</span>
-                </label>
-              })}
-            </div>
+            <MiniProjectImprovementGuide
+              guide={guide}
+              lang={lang}
+              selectedIndex={progress.selectedRefactors[0]}
+              onSelect={index => persist({ selectedRefactors: [index], testResults: [], testedCode: '' })}
+            />
 
             <label className="block mt-4">
               <span className="text-xs font-semibold" style={{ color: 'var(--c-muted)' }}>{t.refactorNote} · {t.required}</span>
@@ -527,7 +520,7 @@ export default function MiniProject() {
                 rows={4}
                 value={progress.refactorNote}
                 onChange={event => persist({ refactorNote: event.target.value })}
-                placeholder={t.refactorNotePlaceholder}
+                placeholder={guide.improveNoteExample[lang]}
                 data-testid="project-refactor-note"
                 className="w-full rounded-xl p-3 text-sm mt-1 resize-y"
                 style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}
@@ -567,7 +560,7 @@ export default function MiniProject() {
           status={`${currentIndex + 1}/${CHECKPOINTS.length} · ${t.saved}`}
           previous={(
             <Button variant="secondary" disabled={currentIndex === 0} onClick={() => openCheckpoint(CHECKPOINTS[currentIndex - 1].id)}>
-              ← {lang === 'pt' ? 'Checkpoint anterior' : 'Previous checkpoint'}
+              ← {lang === 'pt' ? 'Passo anterior' : 'Previous step'}
             </Button>
           )}
           next={!progress.completed
