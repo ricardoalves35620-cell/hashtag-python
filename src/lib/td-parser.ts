@@ -139,160 +139,128 @@ function normalizeRow(row: Record<string, unknown>): ParsedClaim {
 
 // ── TD/Meloche-style assignment text parser ────────────────────────────────
 export function parseTdEmail(text: string): ParsedClaim | null {
-  const t = text.replace(/\r\n/g, "\n");
-  const result: ParsedClaim = {};
+  // Normalize line endings
+  const t = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
-  // Insured name — catch all TD/Meloche bilingual label variations
-  const namePatterns = [
-    /(?:Insured\s*name|Nom\s*de\s*l['']assuré(?:e)?|Assuré(?:e)?|Claimant|Insured|Client|Policyholder)[:\s]+([^\n(]+)/i,
-    /(?:Name\s*\/\s*Nom)[:\s]+([^\n(]+)/i,
-  ];
-  for (const p of namePatterns) {
-    const m = t.match(p);
-    if (m?.[1]?.trim().length > 1) {
-      result.insured_name = m[1].trim().replace(/\s*\([A-Z]{2,4}\)\s*$/, "").replace(/[,.]$/, "").trim();
-      break;
+  // ── Tab-field extractor ──────────────────────────────────────────────────
+  // XactAnalysis emails use: "Label: \t Value\t " format.
+  // Values may be followed by trailing tabs, spaces, dashes, or suffixes.
+  function field(...labels: string[]): string | null {
+    for (const label of labels) {
+      const esc = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp(`${esc}\\s*:\\s*\\t?\\s*([^\\t\\n]+?)\\s*(?:\\t|\\s*$)`, "im");
+      const m = t.match(re);
+      const v = m?.[1]?.trim();
+      if (v && v.length > 0) return v;
+    }
+    return null;
+  }
+
+  // ── Insured name ─────────────────────────────────────────────────────────
+  // Format: "Name: \t Melody Tiedeman (GEN)\t "
+  // Strip classification codes: (GEN), (SEN), (COM), etc.
+  const rawName = field("Name", "Insured name", "Insured / Assuré", "Claimant", "Assuré", "Client");
+  if (!rawName) return null; // not a claim email
+  const result: ParsedClaim = {
+    insured_name: rawName.replace(/\s*\([A-Z]{2,4}\)\s*$/, "").replace(/[,.]$/, "").trim(),
+  };
+
+  // ── Phone ─────────────────────────────────────────────────────────────────
+  // Format: "Mobile Phone: \t (780) 916-8685 - Primary\t "
+  // Multiple phone fields; prefer the one labeled "- Primary"
+  const phoneLabels = ["Mobile Phone", "Home Phone", "Business Phone", "Other Phone", "Phone"];
+  let primaryPhone: string | null = null;
+  for (const label of phoneLabels) {
+    const raw = field(label);
+    if (!raw) continue;
+    // Strip "- Primary" suffix and other qualifiers
+    const digits = raw.replace(/\s*-\s*(?:Primary|Home|Cell|Mobile|Business|Autre|Domicile)[^(]*/gi, "").replace(/\D/g, "");
+    if (digits.length === 10) {
+      const formatted = `+1${digits}`;
+      if (!primaryPhone || raw.toLowerCase().includes("primary")) primaryPhone = formatted;
     }
   }
-  if (!result.insured_name) return null;
+  if (primaryPhone) result.insured_phone = primaryPhone;
 
-  // Phone — any labeled phone number, then any phone
-  const phonePatterns = [
-    /(?:Mobile|Cell|Primary|Home|Principal|Maison|Cellulaire)[^\n]{0,25}?(\(?\d{3}\)?[\s.\-]\d{3}[\s.\-]\d{4})/i,
-    /(?:Phone|Telephone|Téléphone|Tel)[:\s]+(\(?\d{3}\)?[\s.\-]\d{3}[\s.\-]\d{4})/i,
-    /(\(?\d{3}\)?[\s.\-]\d{3}[\s.\-]\d{4})/,
-  ];
-  for (const p of phonePatterns) {
-    const m = t.match(p);
+  // ── Address ──────────────────────────────────────────────────────────────
+  // "Address: \t 11843 92 ST NW Edmonton, AB T5G 1A4 Canada\t "
+  // Also appears on the continuation line (tab-indented)
+  const addrRaw = field("Address", "Loss Address", "Search address", "Property address") ??
+    // Fall back to first tab-indented line that contains a postal code
+    (t.match(/^\s+\t\s+([A-Za-z0-9 ,]+,\s*[A-Z]{2}\s+[A-Z]\d[A-Z]\s*\d[A-Z]\d[^<\t\n]*)/m)?.[1]?.trim());
+  if (addrRaw) {
+    const cleaned = addrRaw
+      .replace(/\s*https?:\/\/\S+/gi, "")
+      .replace(/\s*Google Maps\s*/gi, "")
+      .replace(/\s*MapQuest\s*/gi, "")
+      .replace(/\s*<[^>]+>/g, "")
+      .replace(/\s*\|.*$/, "")
+      .replace(/\s+Canada\s*$/i, "")
+      .trim();
+    if (cleaned) result.formatted_address = cleaned;
+
+    // Parse city, province, postal code from address
+    const provPostal = cleaned.match(/([A-Z]{2})\s+([A-Z]\d[A-Z]\s*\d[A-Z]\d)/i);
+    if (provPostal) {
+      result.province = provPostal[1].toUpperCase();
+      result.postal_code = provPostal[2].toUpperCase().replace(/(.{3})(.{3})/, "$1 $2");
+    }
+    const cityMatch = cleaned.match(/,\s*([^,]+?),?\s+[A-Z]{2}\s+[A-Z]\d/i);
+    if (cityMatch) result.city = cityMatch[1].trim();
+    const streetMatch = cleaned.match(/^([^,]+)/);
+    if (streetMatch) result.street = streetMatch[1].trim();
+  }
+
+  // ── Claim, policy, deductible, CAT code, XA ID ───────────────────────────
+  result.claim_number = field("Claim #", "Claim Number", "Numéro de dossier") ?? undefined;
+  result.policy_number = field("Policy #", "Policy Number") ?? undefined;
+  const dedRaw = field("Deductible", "Franchise");
+  if (dedRaw) result.deductible = dedRaw.replace(/[$,\s]/g, "");
+  result.cat_code = field("CAT Code", "CAT", "Event Code") ?? undefined;
+  result.xa_id = field("XA Id", "XA ID", "Xactanalysis ID") ?? undefined;
+
+  // ── Carrier — prefer Contractor over "TDI - Staff" ───────────────────────
+  const contractor = field("Contractor");
+  const carrier = field("Carrier");
+  result.carrier = contractor ?? carrier ?? "TD Insurance";
+
+  // ── Date of Loss — MM/DD/YYYY → YYYY-MM-DD ───────────────────────────────
+  const dolRaw = field("Date of Loss", "Date du sinistre", "D.O.L", "DOL");
+  if (dolRaw) {
+    const m = dolRaw.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
     if (m) {
-      const d = m[1].replace(/\D/g, "");
-      if (d.length === 10) { result.insured_phone = `+1${d}`; break; }
+      const yr = m[3].length === 2 ? `20${m[3]}` : m[3];
+      result.loss_date = `${yr}-${m[1].padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+    } else if (/\d{4}-\d{2}-\d{2}/.test(dolRaw)) {
+      result.loss_date = dolRaw.match(/\d{4}-\d{2}-\d{2}/)![0];
     }
   }
 
-  // Email
-  const emailMatch = t.match(/[\w.+\-]+@[\w\-]+\.[\w.\-]+/);
-  if (emailMatch) result.insured_email = emailMatch[0];
+  // ── Type of Loss ──────────────────────────────────────────────────────────
+  const lossTypeRaw = field("Type of Loss", "Type de sinistre", "Cause of Loss", "Cause", "Peril");
+  if (lossTypeRaw) result.loss_type = lossTypeRaw.toLowerCase().trim();
 
-  // Claim number — TD uses 8+ digits or "01-P1234567" format
-  const claimPatterns = [
-    /(?:Claim\s*(?:Number|#|No\.?)|File\s*Number|Numéro\s*(?:de\s*)?dossier|Dossier)[:\s#]+([A-Z0-9\-]{6,})/i,
-    /\b(0[12]-[A-Z]\d{6,})\b/,
-    /\b(\d{9,})\b/, // long digit sequence
-  ];
-  for (const p of claimPatterns) {
-    const m = t.match(p);
-    if (m) { result.claim_number = m[1].trim(); break; }
+  // ── Description of Loss and/or Instructions → notes ──────────────────────
+  const descMatch = t.match(/Description of Loss[^\n]*:\s*\n+([\s\S]+?)(?:\n\s*\n(?:Coverage|View detailed|Policy Inception)|$)/i);
+  if (descMatch?.[1]?.trim()) {
+    result.notes = descMatch[1].trim().slice(0, 2000);
   }
 
-  // Policy number
-  const policyMatch = t.match(/(?:Policy\s*(?:Number|#|No\.?)|Numéro\s*de\s*police|Police)[:\s]+([A-Za-z0-9\-]{5,})/i);
-  if (policyMatch) result.policy_number = policyMatch[1].trim();
-
-  // Carrier / Insurance company
-  const carrierMatch = t.match(/(?:Carrier|Company|Insurer|Compagnie|Assureur)[:\s]+([^\n]+)/i);
-  if (carrierMatch) result.carrier = carrierMatch[1].trim();
-
-  // Loss type (bilingual)
-  const lossMatch = t.match(/(?:Type\s*of\s*[Ll]oss|Loss\s*type|Cause\s*(?:of\s*[Ll]oss)?|Peril|Type\s*de\s*sinistre|Nature)[:\s]+([^\n]+)/i);
-  if (lossMatch) result.loss_type = lossMatch[1].trim();
-
-  // Date of loss (multiple date formats: YYYY-MM-DD, MM/DD/YYYY, DD/MM/YYYY, Month DD YYYY)
-  const dolPatterns = [
-    /(?:Date\s*of\s*[Ll]oss|D\.O\.L|DOL|Date\s*du\s*sinistre)[:\s]+(\d{4}-\d{2}-\d{2})/i,
-    /(?:Date\s*of\s*[Ll]oss|D\.O\.L|DOL|Date\s*du\s*sinistre)[:\s]+(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i,
-    /(?:Date\s*of\s*[Ll]oss|D\.O\.L|DOL|Date\s*du\s*sinistre)[:\s]+([A-Z][a-z]+\s+\d{1,2},?\s*\d{4})/i,
-  ];
-  for (const p of dolPatterns) {
-    const m = t.match(p);
-    if (m) {
-      const raw = m[1];
-      if (/\d{4}-\d{2}-\d{2}/.test(raw)) { result.loss_date = raw; break; }
-      const parts = raw.split(/[\/\-]/);
-      if (parts.length === 3) {
-        const y = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
-        result.loss_date = `${y}-${parts[0].padStart(2,"0")}-${parts[1].padStart(2,"0")}`;
-      }
-      break;
-    }
-  }
-
-  // Dates: contacted, inspected
-  const contactedMatch = t.match(/(?:Date\s*contacted|Date\s*contacté)[:\s]+(\d{4}-\d{2}-\d{2})/i);
-  if (contactedMatch) result.date_contacted = contactedMatch[1];
-  const inspectedMatch = t.match(/(?:Date\s*inspected|Date\s*inspectée?)[:\s]+(\d{4}-\d{2}-\d{2})/i);
-  if (inspectedMatch) result.date_inspected = inspectedMatch[1];
-
-  // Search/Loss/Property address
-  const addrPatterns = [
-    /(?:Search\s*address|Loss\s*address|Property\s*address|Adresse\s*(?:du\s*sinistre|de\s*la\s*propriété|de\s*perte)?)[:\s]+([^\n]+)/i,
-    /(?:Loss\s*location|Emplacement\s*du\s*sinistre)[:\s]+([^\n]+)/i,
-  ];
-  for (const p of addrPatterns) {
-    const m = t.match(p);
-    if (m) {
-      let addr = m[1].trim()
-        .replace(/\s*https?:\/\/\S+/gi, "")
-        .replace(/\s*\(Google Maps[^)]*\)/gi, "")
-        .replace(/\s*\(MapQuest[^)]*\)/gi, "")
-        .replace(/\s*\(Bing Maps[^)]*\)/gi, "")
-        .replace(/\s*\|.*$/, "")
-        .trim();
-      if (addr) { result.formatted_address = addr; break; }
-    }
-  }
-
-  // Individual address fields
-  const streetMatch = t.match(/^Street[:\s]+([^\n]+)/im);
-  if (streetMatch) result.street = streetMatch[1].trim();
-  const cityMatch = t.match(/^City[:\s]+([^\n]+)/im);
-  if (cityMatch) result.city = cityMatch[1].trim();
-  const provinceMatch = t.match(/^Province[:\s]+([^\n]+)/im);
-  if (provinceMatch) result.province = provinceMatch[1].trim();
-  const postalMatch = t.match(/(?:Postal\s*[Cc]ode|Code\s*postal)[:\s]+([A-Za-z]\d[A-Za-z]\s?\d[A-Za-z]\d)/i)
-    ?? t.match(/\b([A-Z]\d[A-Z]\s?\d[A-Z]\d)\b/i);
-  if (postalMatch) result.postal_code = postalMatch[1].toUpperCase().replace(/(.{3})(.{3})/, "$1 $2");
-
-  // CAT / event codes
-  const catMatch = t.match(/(?:CAT\s*(?:Code|Name|#)?|Event\s*Code|Code\s*CAT)[:\s]+([A-Za-z0-9\-]{2,15})/i);
-  if (catMatch) result.cat_code = catMatch[1].trim();
-
-  // ── Coordinates from Google Maps URL ─────────────────────────────────────
-  // TD emails embed a Google Maps link with coordinates, e.g.:
-  //   https://maps.google.com/?q=43.8574,-78.9352
-  //   https://www.google.com/maps/search/?api=1&query=43.857,-78.935
-  //   (Google Maps) 43.857,-78.935   ← coordinates on next line after link
-  const coordFromUrl =
-    t.match(/maps\.google\.com[^\s"'<>]*[?&]q=([-\d.]{4,}),([-\d.]{4,})/i) ??
-    t.match(/google\.com\/maps[^\s"'<>]*query=([-\d.]{4,}),([-\d.]{4,})/i) ??
-    t.match(/google\.com\/maps[^\s"'<>]*@([-\d.]{4,}),([-\d.]{4,})/i);
-  if (coordFromUrl) {
-    result.latitude = coordFromUrl[1];
-    result.longitude = coordFromUrl[2];
+  // ── DMS coordinates — best effort ────────────────────────────────────────
+  // Format: "53º 34.29678' N, 113º 28.92942' W" but leading degree may be
+  // on a different line. Try full DMS first, then partial.
+  const dmsMatch = t.match(/(\d{1,3})º\s+(\d{1,2}\.?\d*)['']?\s*N[,\s]+(\d{1,3})º\s+(\d{1,2}\.?\d*)['']?\s*W/i);
+  if (dmsMatch) {
+    result.latitude = String(parseInt(dmsMatch[1]) + parseFloat(dmsMatch[2]) / 60);
+    result.longitude = String(-(parseInt(dmsMatch[3]) + parseFloat(dmsMatch[4]) / 60));
   } else {
-    // Coordinates as bare numbers near the address block (43.xxxx, -78.xxxx)
-    const coordBare = t.match(/\b(4[0-7]\.\d{3,}),\s*([-\-]?[7-9]\d\.\d{3,})\b/);
-    if (coordBare) {
-      result.latitude = coordBare[1];
-      result.longitude = coordBare[2];
-    }
+    // Only longitude available in decimal: ", 113.482157º W"
+    const lngMatch = t.match(/[,\t\s](1[01]\d\.\d{3,})º\s*W/i);
+    if (lngMatch) result.longitude = String(-parseFloat(lngMatch[1]));
   }
-
-  // Deductible
-  const dedMatch = t.match(/(?:Deductible|Franchise)[:\s$]*\$?([\d,]+)/i);
-  if (dedMatch) result.deductible = dedMatch[1].replace(/,/g, "");
-
-  // XA / Xactanalysis ID
-  const xaMatch = t.match(/(?:XA\s*Id|Xact(?:analysis)?\s*ID?|XA)[:\s]+([A-Za-z0-9\-]+)/i);
-  if (xaMatch) result.xa_id = xaMatch[1].trim();
-
-  const statusMatch = t.match(/(?:Current\s*status|Statut)[:\s]+([^\n]+)/i);
-  if (statusMatch) result.status = statusMatch[1].trim();
-
-  const notesMatch = t.match(/NOTES[^\n]*\n([\s\S]+?)(?:\n\s*\n[A-Z][a-z]+ Information:|$)/i);
-  if (notesMatch) result.notes = notesMatch[1].trim().slice(0, 2000);
 
   return result;
+}
 }
 
 // ── Backup JSON / CSV / TSV report parser ──────────────────────────────────

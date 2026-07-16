@@ -96,6 +96,30 @@ function mimeFor(name: string): string {
   return map[ext] ?? "application/octet-stream";
 }
 
+/** Extract readable text from a binary .msg (Compound File Binary) blob. */
+function extractPrintableFromMsgBytes(bytes: Uint8Array): string {
+  const runs: string[] = [];
+  let current = "";
+  for (let i = 0; i < bytes.length; i++) {
+    const b = bytes[i];
+    if ((b >= 0x20 && b <= 0x7e) || b === 0x09 || b === 0x0a || b === 0x0d || (b >= 0x80 && b <= 0xff)) {
+      current += String.fromCharCode(b);
+    } else {
+      if (current.length >= 6) runs.push(current.trim());
+      current = "";
+    }
+  }
+  if (current.length >= 6) runs.push(current.trim());
+  return runs
+    .filter(r => {
+      const alphaNum = (r.match(/[a-zA-Z0-9 ]/g) ?? []).length;
+      return alphaNum / r.length > 0.4;
+    })
+    .join(" ")
+    .replace(/\s{3,}/g, "  ")
+    .slice(0, 12000);
+}
+
 async function fileToItems(file: File): Promise<ExtractItem[]> {
   const name = file.name;
   const lower = name.toLowerCase();
@@ -134,7 +158,10 @@ async function fileToItems(file: File): Promise<ExtractItem[]> {
     return [{ kind: "text", text: await file.text(), filename: name }];
   }
   if (lower.endsWith(".msg")) {
-    throw new Error("Outlook .msg files aren't supported — export as .eml or PDF, or drop a screenshot.");
+    // Outlook MSG (Compound File Binary Format) — extract printable text
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const text = extractPrintableFromMsgBytes(bytes);
+    return [{ kind: "text", text, filename: name }];
   }
   throw new Error(`Unsupported file: ${name}`);
 }
@@ -578,7 +605,7 @@ function NewClaim() {
       <div className="flex items-start justify-between gap-2">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">New claim</h1>
-          <p className="text-sm text-muted-foreground">Snap a photo, drop a PDF / .eml, or upload a zip of attachments — we'll fill in the rest.</p>
+          <p className="text-sm text-muted-foreground">Snap a photo, drop a <strong>.msg</strong> / .eml / PDF, or upload a zip — we'll fill in the rest.</p>
         </div>
         <Button type="button" variant="ghost" size="sm" className="shrink-0 h-11" onClick={() => { clearDraft(); navigate({ to: "/claims" }); }}>
           Cancel
@@ -705,7 +732,7 @@ function NewClaim() {
         <input
           ref={fileRef}
           type="file"
-          accept="image/*,application/pdf,.pdf,.eml,.txt,.html,.htm,.zip,application/zip,message/rfc822"
+          accept="image/*,application/pdf,.pdf,.eml,.msg,.txt,.html,.htm,.zip,application/zip,message/rfc822"
           multiple
           className="hidden"
           onChange={onPickFiles}
