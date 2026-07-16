@@ -37,7 +37,7 @@
     "@codemirror/state": "^6.4.1",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.26.0",
-    "@supabase/supabase-js": "^2.43.0",
+    "@supabase/supabase-js": "^2.110.7",
     "codemirror": "^6.0.1",
     "leaflet": "^1.9.4",
     "react": "^18.3.1",
