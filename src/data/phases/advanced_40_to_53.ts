@@ -465,12 +465,12 @@ const specs: ConceptPhaseSpec[] = [
       "pt": "o modelo de dados do Python"
     },
     "why": {
-      "en": "Operators, len, iteration and representation call protocols on objects. Implementing the right dunder methods creates natural behavior without special-case utility code.",
-      "pt": "Operadores, len, iteração e representação chamam protocolos. Implementar dunders certos cria comportamento natural sem utilitários especiais."
+      "en": "Operators, len, iteration and repr look for specific method names on your objects. Implementing those methods makes your object work naturally with Python's built-in syntax — no special-case utility code needed.",
+      "pt": "Operadores, len, iteração e repr procuram nomes de métodos específicos no seu objeto. Implementar esses métodos faz o objeto funcionar naturalmente com a sintaxe do Python — sem utilitários especiais."
     },
     "mentalModel": {
-      "en": "Python syntax delegates to methods: a + b calls __add__, repr calls __repr__, equality calls __eq__. The object must preserve its domain invariants.",
-      "pt": "Sintaxe delega a métodos: a + b chama __add__, repr chama __repr__, igualdade chama __eq__. O objeto deve preservar invariantes."
+      "en": "Python syntax delegates to methods: a + b calls __add__, repr calls __repr__, equality calls __eq__. The object should keep itself in a valid, consistent state — for example, a Money object should never mix currencies when adding.",
+      "pt": "Sintaxe delega a métodos: a + b chama __add__, repr chama __repr__, igualdade chama __eq__. O objeto deve se manter em um estado válido e consistente — por exemplo, um objeto Money não deve misturar moedas ao somar."
     },
     "workflow": {
       "en": "Implement only meaningful protocols, return NotImplemented for unsupported peers and keep repr unambiguous enough for debugging.",
@@ -1017,19 +1017,19 @@ const specs: ConceptPhaseSpec[] = [
       "pt": "Banco relacional impõe estrutura durável, relações e atualizações atômicas que JSON não fornece com concorrência."
     },
     "mentalModel": {
-      "en": "Tables model entities, keys identify rows, constraints protect invariants and a transaction makes a group of changes succeed or fail together.",
-      "pt": "Tabelas modelam entidades, chaves identificam linhas, constraints protegem invariantes e transação agrupa sucesso ou falha."
+      "en": "Tables store groups of related rows, keys identify each row, constraints make sure data stays valid (like requiring a non-empty title), and a transaction makes a group of changes succeed or fail together.",
+      "pt": "Tabelas armazenam grupos de linhas relacionadas, chaves identificam cada linha, constraints garantem que os dados fiquem válidos (como exigir título não vazio), e uma transação faz um grupo de mudanças ter sucesso ou falhar junto."
     },
     "workflow": {
-      "en": "Design schema from invariants, use placeholders for values, wrap related writes in a transaction and add indexes only for measured query patterns.",
-      "pt": "Projete schema pelos invariantes, use placeholders, agrupe escritas em transação e adicione índices por consultas medidas."
+      "en": "Design schema from your data rules (what fields are required, what values are valid), use placeholders for values, wrap related writes in a transaction and add indexes only for measured query patterns.",
+      "pt": "Projete schema pelas regras dos dados (quais campos são obrigatórios, quais valores são válidos), use placeholders, agrupe escritas em transação e adicione índices por consultas medidas."
     },
-    "exampleCode": "def build_claim_query(status, limit):\n    sql = \"SELECT id, amount FROM claims WHERE status = ? ORDER BY id LIMIT ?\"\n    return sql, (status, limit)\n\nprint(build_claim_query(\"open\", 10))",
+    "exampleCode": "def build_claim_query(status, limit):\n    sql = \"SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?\"\n    return sql, (status, limit)\n\nprint(build_claim_query(\"open\", 10))",
     "exampleOutput": {
-      "en": "('SELECT id, amount FROM claims WHERE status = ? ORDER BY id LIMIT ?', ('open', 10))",
-      "pt": "('SELECT id, amount FROM claims WHERE status = ? ORDER BY id LIMIT ?', ('open', 10))"
+      "en": "('SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?', ('open', 10))",
+      "pt": "('SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?', ('open', 10))"
     },
-    "professionalCode": "import sqlite3\n\nwith sqlite3.connect(\":memory:\") as connection:\n    connection.execute(\"CREATE TABLE claims(id INTEGER PRIMARY KEY, status TEXT NOT NULL)\")\n    connection.execute(\"INSERT INTO claims(status) VALUES (?)\", (\"open\",))\n    rows = connection.execute(\"SELECT id, status FROM claims\").fetchall()\n    print(rows)",
+    "professionalCode": "import sqlite3\n\nwith sqlite3.connect(\":memory:\") as connection:\n    connection.execute(\"CREATE TABLE tasks(id INTEGER PRIMARY KEY, status TEXT NOT NULL)\")\n    connection.execute(\"INSERT INTO tasks(status) VALUES (?)\", (\"open\",))\n    rows = connection.execute(\"SELECT id, status FROM tasks\").fetchall()\n    print(rows)",
     "commonMistake": {
       "en": "Building SQL with f-strings from user input enables injection. Committing each related write separately leaves partial data after failure.",
       "pt": "Construir SQL com f-string de entrada permite injection. Commitar cada escrita relacionada deixa dados parciais após falha."
@@ -1129,7 +1129,7 @@ const specs: ConceptPhaseSpec[] = [
       "en": "{'ok': True, 'data': {'id': 7}, 'error': None}",
       "pt": "{'ok': True, 'data': {'id': 7}, 'error': None}"
     },
-    "professionalCode": "import json\nfrom urllib.request import Request\n\nbody = json.dumps({\"amount\": 100}).encode()\nrequest = Request(\"https://example.invalid/claims\", data=body, method=\"POST\", headers={\"Content-Type\": \"application/json\"})",
+    "professionalCode": "import json\nfrom urllib.request import Request\n\nbody = json.dumps({\"title\": \"buy groceries\"}).encode()\nrequest = Request(\"https://example.invalid/tasks\", data=body, method=\"POST\", headers={\"Content-Type\": \"application/json\"})",
     "commonMistake": {
       "en": "Retrying every failure can duplicate non-idempotent writes. Trusting response shape without validation moves network errors deep into business logic.",
       "pt": "Repetir toda falha pode duplicar escritas. Confiar no payload sem validar move erro de rede para regras internas."
@@ -1233,7 +1233,7 @@ const specs: ConceptPhaseSpec[] = [
       "en": "{'name': 'Ana', 'token': '***'}",
       "pt": "{'name': 'Ana', 'token': '***'}"
     },
-    "professionalCode": "def process_claim(claim, repository):\n    if claim[\"amount\"] < 0:\n        raise ValueError(\"amount\")\n    saved_id = repository.save({\"amount\": claim[\"amount\"], \"status\": \"open\"})\n    return {\"id\": saved_id, \"status\": \"open\"}",
+    "professionalCode": "def process_order(order, repository):\n    if order[\"quantity\"] < 0:\n        raise ValueError(\"quantity\")\n    saved_id = repository.save({\"quantity\": order[\"quantity\"], \"status\": \"open\"})\n    return {\"id\": saved_id, \"status\": \"open\"}",
     "commonMistake": {
       "en": "Passing framework request objects through every layer couples policy to infrastructure. Redaction after logging is too late.",
       "pt": "Passar request do framework por todas camadas acopla política à infraestrutura. Redação depois do log é tarde."

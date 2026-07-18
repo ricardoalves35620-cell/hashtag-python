@@ -23,8 +23,8 @@ const specs: ConceptPhaseSpec[] = [
       "pt": "estrutura de projetos"
     },
     "why": {
-      "en": "Project structure reduces accidental coupling. A new developer should be able to find the entry point, business rules, tests and documentation without reading every file.",
-      "pt": "A estrutura reduz acoplamento acidental. Uma pessoa nova deve encontrar entrada, regras, testes e documentação sem ler todos os arquivos."
+      "en": "When all your code lives in one file, finding things and changing them safely gets harder as the project grows. A clear folder structure means anyone can open the project and know immediately where to look — the entry point, business rules, tests and documentation each have a predictable home.",
+      "pt": "Quando todo o código fica em um arquivo, encontrar e alterar coisas com segurança fica mais difícil conforme o projeto cresce. Uma estrutura de pastas clara significa que qualquer pessoa pode abrir o projeto e saber imediatamente onde procurar — entrada, regras, testes e documentação têm cada um um lugar previsível."
     },
     "mentalModel": {
       "en": "Think of a project as a workshop: src contains the product, tests inspect it, README explains it, and configuration controls the tools.",
@@ -39,7 +39,7 @@ const specs: ConceptPhaseSpec[] = [
       "en": "src/app.py\nsrc/service.py\ntests/test_service.py",
       "pt": "src/app.py\nsrc/service.py\ntests/test_service.py"
     },
-    "professionalCode": "from pathlib import PurePosixPath\n\ndef build_paths(package, modules):\n    root = PurePosixPath(\"src\") / package\n    return [str(root / \"__init__.py\"), *[str(root / f\"{name}.py\") for name in modules]]\n\nprint(build_paths(\"claims\", [\"models\", \"service\"]))",
+    "professionalCode": "from pathlib import PurePosixPath\n\ndef build_paths(package, modules):\n    root = PurePosixPath(\"src\") / package\n    return [str(root / \"__init__.py\"), *[str(root / f\"{name}.py\") for name in modules]]\n\nprint(build_paths(\"library\", [\"models\", \"service\"]))",
     "commonMistake": {
       "en": "Putting every responsibility in app.py creates a file that is difficult to test, review and change safely.",
       "pt": "Colocar tudo em app.py cria um arquivo difícil de testar, revisar e alterar com segurança."
@@ -63,10 +63,10 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "project_manifest",
       "starterCode": "def project_manifest(package, modules):\n    \"\"\"Return the essential project paths.\"\"\"\n    pass",
-      "publicAfterCode": "print(project_manifest(\"claims\", [\"models\", \"service\"]))",
-      "publicExpected": "src/claims/__init__.py",
-      "hiddenAfterCode": "print(project_manifest(\"billing\", [\"invoice\"]))",
-      "hiddenExpected": "tests/test_billing.py",
+      "publicAfterCode": "print(project_manifest(\"library\", [\"models\", \"service\"]))",
+      "publicExpected": "src/library/__init__.py",
+      "hiddenAfterCode": "print(project_manifest(\"catalog\", [\"items\"]))",
+      "hiddenExpected": "tests/test_catalog.py",
       "requirements": [
         {
           "kind": "function",
@@ -77,9 +77,9 @@ const specs: ConceptPhaseSpec[] = [
     "exam": {
       "functionName": "project_manifest",
       "starterCode": "def project_manifest(package, modules):\n    \"\"\"Return src package files, one test file per module and README.md.\"\"\"\n    pass",
-      "publicAfterCode": "print(project_manifest(\"claims\", [\"models\", \"service\"]))",
+      "publicAfterCode": "print(project_manifest(\"library\", [\"models\", \"service\"]))",
       "publicExpected": "tests/test_service.py",
-      "hiddenAfterCode": "print(project_manifest(\"audit\", []))",
+      "hiddenAfterCode": "print(project_manifest(\"events\", []))",
       "hiddenExpected": "README.md",
       "requirements": [
         {
@@ -211,8 +211,8 @@ const specs: ConceptPhaseSpec[] = [
       "pt": "módulos e imports"
     },
     "why": {
-      "en": "Modules create boundaries. They let tests import business logic without running the user interface and let teams change one area with less risk.",
-      "pt": "Módulos criam fronteiras. Testes importam regras sem executar interface e equipes alteram uma área com menos risco."
+      "en": "Modules let you split code into separate files, each with one clear job. Tests can import just the business logic they need without starting the whole application, and different people can work on different modules without breaking each other's code.",
+      "pt": "Módulos permitem dividir o código em arquivos separados, cada um com uma responsabilidade clara. Testes podem importar apenas as regras de que precisam, sem iniciar o app inteiro, e pessoas diferentes podem trabalhar em módulos diferentes sem interferir umas nas outras."
     },
     "mentalModel": {
       "en": "Importing is connecting named components. A module should expose a small public surface and avoid doing expensive work merely because it was imported.",
@@ -227,7 +227,7 @@ const specs: ConceptPhaseSpec[] = [
       "en": "3",
       "pt": "3"
     },
-    "professionalCode": "def public_api(module, names):\n    clean = sorted({name for name in names if not name.startswith(\"_\")})\n    return [f\"from {module} import {name}\" for name in clean]\n\nprint(public_api(\"billing.service\", [\"total\", \"_cache\", \"invoice\"]))",
+    "professionalCode": "def public_api(module, names):\n    clean = sorted({name for name in names if not name.startswith(\"_\")})\n    return [f\"from {module} import {name}\" for name in clean]\n\nprint(public_api(\"library.service\", [\"search\", \"_cache\", \"album\"]))",
     "commonMistake": {
       "en": "Using from module import * hides where names came from and increases collisions. Circular imports usually reveal confused responsibility boundaries.",
       "pt": "Usar import * esconde a origem dos nomes e aumenta colisões. Imports circulares normalmente revelam responsabilidades confusas."
@@ -251,18 +251,18 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "public_api",
       "starterCode": "def public_api(module, names):\n    \"\"\"Return explicit import statements for public unique names.\"\"\"\n    pass",
-      "publicAfterCode": "print(public_api(\"billing.service\", [\"total\", \"_cache\", \"invoice\"]))",
-      "publicExpected": "from billing.service import invoice",
-      "hiddenAfterCode": "print(public_api(\"claims\", [\"open_claim\", \"open_claim\", \"_debug\"]))",
-      "hiddenExpected": "from claims import open_claim"
+      "publicAfterCode": "print(public_api(\"library.service\", [\"search\", \"_cache\", \"album\"]))",
+      "publicExpected": "from library.service import album",
+      "hiddenAfterCode": "print(public_api(\"music\", [\"play_track\", \"play_track\", \"_debug\"]))",
+      "hiddenExpected": "from music import play_track"
     },
     "exam": {
       "functionName": "public_api",
       "starterCode": "def public_api(module, names):\n    \"\"\"Ignore private names, deduplicate, sort, and build imports.\"\"\"\n    pass",
-      "publicAfterCode": "print(public_api(\"billing\", [\"total\", \"invoice\"]))",
-      "publicExpected": "from billing import total",
-      "hiddenAfterCode": "print(public_api(\"audit.events\", [\"record\", \"_buffer\"]))",
-      "hiddenExpected": "from audit.events import record"
+      "publicAfterCode": "print(public_api(\"library\", [\"search\", \"album\"]))",
+      "publicExpected": "from library import album",
+      "hiddenAfterCode": "print(public_api(\"events.tracker\", [\"save\", \"_buffer\"]))",
+      "hiddenExpected": "from events.tracker import save"
     },
     "quizPurpose": {
       "en": "Create explicit, one-directional boundaries between files.",
@@ -299,8 +299,8 @@ const specs: ConceptPhaseSpec[] = [
       "pt": "pacotes e layout src"
     },
     "why": {
-      "en": "Packages express ownership and provide stable import paths. A src layout exposes missing installation steps instead of silently importing the wrong local file.",
-      "pt": "Pacotes expressam propriedade e fornecem caminhos estáveis. O layout src revela falta de instalação em vez de importar arquivo local errado."
+      "en": "Packages group related modules under a shared name and give them stable import paths. A src layout also catches a common mistake: without it, Python might silently import a local file instead of your installed package.",
+      "pt": "Pacotes agrupam módulos relacionados sob um nome compartilhado e dão a eles caminhos de importação estáveis. O layout src também evita um erro comum: sem ele, Python pode importar silenciosamente um arquivo local em vez do pacote instalado."
     },
     "mentalModel": {
       "en": "A package is a named neighborhood of modules. __init__.py marks the boundary and can expose a deliberate public API.",
@@ -310,10 +310,10 @@ const specs: ConceptPhaseSpec[] = [
       "en": "Group by domain, keep __init__ lightweight, use absolute imports across domains and relative imports only inside a cohesive package.",
       "pt": "Agrupe por domínio, mantenha __init__ leve, use imports absolutos entre domínios e relativos dentro de pacote coeso."
     },
-    "exampleCode": "def package_paths(name, modules):\n    base = f\"src/{name}\"\n    return [f\"{base}/__init__.py\"] + [f\"{base}/{m}.py\" for m in modules]\n\nprint(package_paths(\"claims\", [\"models\", \"service\"]))",
+    "exampleCode": "def package_paths(name, modules):\n    base = f\"src/{name}\"\n    return [f\"{base}/__init__.py\"] + [f\"{base}/{m}.py\" for m in modules]\n\nprint(package_paths(\"notes\", [\"models\", \"service\"]))",
     "exampleOutput": {
-      "en": "['src/claims/__init__.py', 'src/claims/models.py', 'src/claims/service.py']",
-      "pt": "['src/claims/__init__.py', 'src/claims/models.py', 'src/claims/service.py']"
+      "en": "['src/notes/__init__.py', 'src/notes/models.py', 'src/notes/service.py']",
+      "pt": "['src/notes/__init__.py', 'src/notes/models.py', 'src/notes/service.py']"
     },
     "professionalCode": "def package_tree(name, modules):\n    module_paths = [f\"src/{name}/{module}.py\" for module in sorted(set(modules))]\n    test_paths = [f\"tests/test_{module}.py\" for module in sorted(set(modules))]\n    return [f\"src/{name}/__init__.py\", *module_paths, *test_paths]",
     "commonMistake": {
@@ -339,18 +339,18 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "package_tree",
       "starterCode": "def package_tree(name, modules):\n    \"\"\"Create package and matching test paths.\"\"\"\n    pass",
-      "publicAfterCode": "print(package_tree(\"claims\", [\"service\", \"models\"]))",
-      "publicExpected": "src/claims/__init__.py",
-      "hiddenAfterCode": "print(package_tree(\"billing\", [\"invoice\"]))",
-      "hiddenExpected": "tests/test_invoice.py"
+      "publicAfterCode": "print(package_tree(\"notes\", [\"service\", \"models\"]))",
+      "publicExpected": "src/notes/__init__.py",
+      "hiddenAfterCode": "print(package_tree(\"tasks\", [\"item\"]))",
+      "hiddenExpected": "tests/test_item.py"
     },
     "exam": {
       "functionName": "package_tree",
       "starterCode": "def package_tree(name, modules):\n    \"\"\"Return deterministic package and test paths without duplicates.\"\"\"\n    pass",
-      "publicAfterCode": "print(package_tree(\"claims\", [\"service\", \"service\"]))",
+      "publicAfterCode": "print(package_tree(\"notes\", [\"service\", \"service\"]))",
       "publicExpected": "tests/test_service.py",
-      "hiddenAfterCode": "print(package_tree(\"audit\", []))",
-      "hiddenExpected": "src/audit/__init__.py"
+      "hiddenAfterCode": "print(package_tree(\"events\", []))",
+      "hiddenExpected": "src/events/__init__.py"
     },
     "quizPurpose": {
       "en": "Create stable import paths around cohesive domains.",
@@ -770,10 +770,10 @@ const specs: ConceptPhaseSpec[] = [
       "en": "Choose levels consistently, include identifiers rather than personal data, load configuration once, validate it and never log secrets.",
       "pt": "Escolha níveis consistentemente, inclua identificadores em vez de dados pessoais, carregue configuração uma vez, valide e nunca registre segredos."
     },
-    "exampleCode": "def log_event(level, message, context=None):\n    context = context or {}\n    fields = \" \".join(f\"{key}={context[key]}\" for key in sorted(context))\n    return f\"{level.upper()} | {message}\" + (f\" | {fields}\" if fields else \"\")\n\nprint(log_event(\"info\", \"claim saved\", {\"claim_id\": 42}))",
+    "exampleCode": "def log_event(level, message, context=None):\n    context = context or {}\n    fields = \" \".join(f\"{key}={context[key]}\" for key in sorted(context))\n    return f\"{level.upper()} | {message}\" + (f\" | {fields}\" if fields else \"\")\n\nprint(log_event(\"info\", \"photo uploaded\", {\"photo_id\": 42}))",
     "exampleOutput": {
-      "en": "INFO | claim saved | claim_id=42",
-      "pt": "INFO | claim saved | claim_id=42"
+      "en": "INFO | photo uploaded | photo_id=42",
+      "pt": "INFO | photo uploaded | photo_id=42"
     },
     "professionalCode": "import os\n\ndef load_settings(env):\n    mode = env.get(\"APP_ENV\", \"development\")\n    debug = env.get(\"DEBUG\", \"false\").lower() == \"true\"\n    return {\"mode\": mode, \"debug\": debug}\n\nprint(load_settings({\"APP_ENV\": \"test\", \"DEBUG\": \"true\"}))",
     "commonMistake": {
@@ -963,8 +963,8 @@ const specs: ConceptPhaseSpec[] = [
       "pt": "design orientado a objetos"
     },
     "why": {
-      "en": "Objects are useful when data and behavior must protect an invariant over time. Composition lets small objects collaborate without inheriting unrelated behavior.",
-      "pt": "Objetos são úteis quando dados e comportamento protegem invariantes ao longo do tempo. Composição permite colaboração sem herdar comportamento não relacionado."
+      "en": "Objects are useful when data and behavior must stay consistent together over time — for example, a balance that should never go negative. Composition lets small objects work together without one inheriting all the unrelated details of another.",
+      "pt": "Objetos são úteis quando dados e comportamento precisam se manter consistentes juntos ao longo do tempo — por exemplo, um saldo que nunca deve ficar negativo. Composição permite que objetos pequenos trabalhem juntos sem um herdar todos os detalhes não relacionados do outro."
     },
     "mentalModel": {
       "en": "A class is a factory and contract for instances. Encapsulation keeps valid state together; composition says one object uses another.",
@@ -979,7 +979,7 @@ const specs: ConceptPhaseSpec[] = [
       "en": "15",
       "pt": "15"
     },
-    "professionalCode": "class Policy:\n    def __init__(self, number, premium):\n        if premium < 0:\n            raise ValueError(\"premium\")\n        self.number = number\n        self.premium = premium\n\ndef portfolio_total(policies):\n    return sum(policy.premium for policy in policies)",
+    "professionalCode": "class Product:\n    def __init__(self, name, price):\n        if price < 0:\n            raise ValueError(\"price\")\n        self.name = name\n        self.price = price\n\ndef catalog_total(products):\n    return sum(product.price for product in products)",
     "commonMistake": {
       "en": "Creating a class for every noun produces ceremony. Deep inheritance makes behavior depend on distant parent classes and becomes hard to reason about.",
       "pt": "Criar classe para todo substantivo produz cerimônia. Herança profunda faz comportamento depender de pais distantes."
@@ -1001,11 +1001,11 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "functionName": "portfolio_total",
-      "starterCode": "class Policy:\n    def __init__(self, number, premium):\n        self.number = number\n        self.premium = premium\n\ndef portfolio_total(policies):\n    \"\"\"Return the sum of all policy premiums.\"\"\"\n    pass",
-      "publicAfterCode": "print(portfolio_total([Policy(\"A\", 100), Policy(\"B\", 50)]))",
+      "functionName": "catalog_total",
+      "starterCode": "class Product:\n    def __init__(self, name, price):\n        self.name = name\n        self.price = price\n\ndef catalog_total(products):\n    \"\"\"Return the sum of all product prices.\"\"\"\n    pass",
+      "publicAfterCode": "print(catalog_total([Product(\"keyboard\", 100), Product(\"mouse\", 50)]))",
       "publicExpected": "150",
-      "hiddenAfterCode": "print(portfolio_total([]))",
+      "hiddenAfterCode": "print(catalog_total([]))",
       "hiddenExpected": "0",
       "requirements": [
         {
@@ -1014,17 +1014,17 @@ const specs: ConceptPhaseSpec[] = [
         },
         {
           "kind": "function",
-          "value": "portfolio_total"
+          "value": "catalog_total"
         }
       ]
     },
     "exam": {
-      "functionName": "portfolio_total",
-      "starterCode": "class Policy:\n    def __init__(self, number, premium):\n        if premium < 0:\n            raise ValueError(\"premium cannot be negative\")\n        self.number = number\n        self.premium = premium\n\ndef portfolio_total(policies):\n    pass",
-      "publicAfterCode": "print(portfolio_total([Policy(\"A\", 125.5), Policy(\"B\", 24.5)]))",
+      "functionName": "catalog_total",
+      "starterCode": "class Product:\n    def __init__(self, name, price):\n        if price < 0:\n            raise ValueError(\"price cannot be negative\")\n        self.name = name\n        self.price = price\n\ndef catalog_total(products):\n    pass",
+      "publicAfterCode": "print(catalog_total([Product(\"tablet\", 125.5), Product(\"case\", 24.5)]))",
       "publicExpected": "150.0",
-      "hiddenAfterCode": "\ntry:\n    Policy(\"X\", -1)\nexcept ValueError:\n    print(\"invalid-premium\")",
-      "hiddenExpected": "invalid-premium",
+      "hiddenAfterCode": "\ntry:\n    Product(\"item\", -1)\nexcept ValueError:\n    print(\"invalid-price\")",
+      "hiddenExpected": "invalid-price",
       "requirements": [
         {
           "kind": "node",
@@ -1032,7 +1032,7 @@ const specs: ConceptPhaseSpec[] = [
         },
         {
           "kind": "function",
-          "value": "portfolio_total"
+          "value": "catalog_total"
         }
       ]
     },

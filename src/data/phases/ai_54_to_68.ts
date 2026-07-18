@@ -1315,7 +1315,7 @@ const specs: ConceptPhaseSpec[] = [
       "en": "['llama-server', '-m', 'models/assistant.gguf', '-c', '8192', '--host', '127.0.0.1']",
       "pt": "['llama-server', '-m', 'models/assistant.gguf', '-c', '8192', '--host', '127.0.0.1']"
     },
-    "professionalCode": "# The model never executes arbitrary Python directly.\n# It can request: {\"tool\": \"search_documents\", \"arguments\": {\"query\": \"...\"}}\n# Application code validates tool name, argument schema, user permission and audit logging.",
+    "professionalCode": "# The model never executes arbitrary Python directly.\n# It can request: {\"tool\": \"search_documents\", \"arguments\": {\"query\": \"...\"}}\n# Application code validates tool name, argument schema, user permission and activity logging.",
     "commonMistake": {
       "en": "Binding a local model server to all network interfaces can expose private prompts. Executing model-generated shell code turns text prediction into arbitrary code execution.",
       "pt": "Expor servidor em todas interfaces pode revelar prompts privados. Executar shell gerado transforma previsão em execução arbitrária."
@@ -1523,17 +1523,17 @@ const specs: ConceptPhaseSpec[] = [
       "pt": "O capstone comprova Python, dados, ML e modelo local juntos. Sucesso é utilidade fundamentada, privacidade e repetibilidade, não aparência de chatbot."
     },
     "mentalModel": {
-      "en": "The product has deterministic ingestion, versioned index, local inference, cited answers, evaluation cases, audit events and explicit boundaries for tools and personal data.",
-      "pt": "Produto tem ingestão determinística, índice versionado, inferência local, respostas citadas, casos de avaliação, auditoria e fronteiras de ferramentas e dados."
+      "en": "The product has deterministic ingestion, versioned index, local inference, cited answers, evaluation cases, activity logs and explicit boundaries for tools and personal data.",
+      "pt": "Produto tem ingestão determinística, índice versionado, inferência local, respostas citadas, casos de avaliação, registro de eventos e fronteiras de ferramentas e dados."
     },
     "workflow": {
       "en": "Build a baseline without fine-tuning, create a fixed evaluation set, improve retrieval, then consider LoRA only for a measured behavioral gap that prompting and RAG cannot solve.",
       "pt": "Construa baseline sem fine-tuning, crie avaliação fixa, melhore retrieval e considere LoRA só para lacuna medida não resolvida por prompt e RAG."
     },
-    "exampleCode": "def answer_with_sources(question, passages):\n    terms = set(question.lower().split())\n    ranked = sorted(passages, key=lambda p: len(terms & set(p[\"text\"].lower().split())), reverse=True)\n    evidence = [item for item in ranked if terms & set(item[\"text\"].lower().split())][:2]\n    if not evidence:\n        return {\"answer\": \"insufficient evidence\", \"sources\": []}\n    return {\"answer\": \" | \".join(item[\"text\"] for item in evidence), \"sources\": [item[\"source\"] for item in evidence]}\n\nprint(answer_with_sources(\"policy limit\", [{\"text\": \"policy limit is 5000\", \"source\": \"p1\"}]))",
+    "exampleCode": "def answer_with_sources(question, passages):\n    terms = set(question.lower().split())\n    ranked = sorted(passages, key=lambda p: len(terms & set(p[\"text\"].lower().split())), reverse=True)\n    evidence = [item for item in ranked if terms & set(item[\"text\"].lower().split())][:2]\n    if not evidence:\n        return {\"answer\": \"insufficient evidence\", \"sources\": []}\n    return {\"answer\": \" | \".join(item[\"text\"] for item in evidence), \"sources\": [item[\"source\"] for item in evidence]}\n\nprint(answer_with_sources(\"song title\", [{\"text\": \"song title is Bohemian Rhapsody\", \"source\": \"p1\"}]))",
     "exampleOutput": {
-      "en": "{'answer': 'policy limit is 5000', 'sources': ['p1']}",
-      "pt": "{'answer': 'policy limit is 5000', 'sources': ['p1']}"
+      "en": "{'answer': 'song title is Bohemian Rhapsody', 'sources': ['p1']}",
+      "pt": "{'answer': 'song title is Bohemian Rhapsody', 'sources': ['p1']}"
     },
     "professionalCode": "# Capstone acceptance evidence:\n# 1. Works after model and index are downloaded, with network disconnected.\n# 2. Every factual answer carries source IDs.\n# 3. Insufficient evidence produces uncertainty, not invention.\n# 4. Evaluation dataset tracks retrieval recall and answer faithfulness.\n# 5. Tool calls are allowlisted and destructive actions require confirmation.\n# 6. LoRA adapter, if used, is versioned separately from the base model.",
     "commonMistake": {
@@ -1559,9 +1559,9 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "answer_with_sources",
       "starterCode": "def answer_with_sources(question, passages):\n    \"\"\"Return up to two overlapping passages and their source IDs, or insufficient evidence.\"\"\"\n    pass",
-      "publicAfterCode": "print(answer_with_sources(\"policy limit\", [{\"text\": \"policy limit is 5000\", \"source\": \"p1\"}]))",
+      "publicAfterCode": "print(answer_with_sources(\"song title\", [{\"text\": \"song title is Bohemian Rhapsody\", \"source\": \"p1\"}]))",
       "publicExpected": "'sources': ['p1']",
-      "hiddenAfterCode": "print(answer_with_sources(\"unrelated\", [{\"text\": \"policy limit\", \"source\": \"p1\"}]))",
+      "hiddenAfterCode": "print(answer_with_sources(\"unrelated\", [{\"text\": \"song title\", \"source\": \"p1\"}]))",
       "hiddenExpected": "'sources': []",
       "requirements": [
         {
@@ -1573,7 +1573,7 @@ const specs: ConceptPhaseSpec[] = [
     "exam": {
       "functionName": "answer_with_sources",
       "starterCode": "def answer_with_sources(question, passages):\n    \"\"\"Rank by token overlap, preserve source IDs and refuse without evidence.\"\"\"\n    pass",
-      "publicAfterCode": "items=[{\"text\":\"claim status open\", \"source\":\"a\"},{\"text\":\"claim amount 50\", \"source\":\"b\"}]\nprint(answer_with_sources(\"claim amount\", items))",
+      "publicAfterCode": "items=[{\"text\":\"album release date 2020\", \"source\":\"a\"},{\"text\":\"album genre pop\", \"source\":\"b\"}]\nprint(answer_with_sources(\"album genre\", items))",
       "publicExpected": "'b'",
       "hiddenAfterCode": "print(answer_with_sources(\"missing fact\", []))",
       "hiddenExpected": "insufficient evidence",
