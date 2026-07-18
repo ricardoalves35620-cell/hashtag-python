@@ -159,8 +159,8 @@ print(5 * 3)           # 15`
       id: 'ex2_guided',
       title: { en: '🟢 Guided: Explore the Operators', pt: '🟢 Guiado: Explore os Operadores' },
       description: {
-        en: 'Run this code and study the output.\nThen: change 17 to 20 and predict each result BEFORE running again.',
-        pt: 'Execute este código e estude a saída.\nDepois: mude 17 para 20 e preveja cada resultado ANTES de rodar de novo.'
+        en: 'The code is already written — run it, observe all 7 operators, then change one number and predict the results before running again.\n\nStep by step:\n\n1. Read the code. Notice: n = 17 is at the top. Every calculation below uses n.\n2. Click ▶ Run. You will see 7 lines of output.\n3. Study each line:\n   • n + 5: adds 5 to 17 → 22\n   • n - 5: subtracts 5 → 12\n   • n * 2: multiplies by 2 → 34\n   • n / 5: divides — result is 3.4, a decimal! Even though 17 is a whole number, / always returns decimal.\n   • n // 5: floor division — drops the decimal → 3\n   • n % 5: remainder — 17 ÷ 5 = 3 groups of 5, leftover is 2\n   • n ** 2: 17 to the power of 2 = 17 × 17 → 289\n4. Find the line n = 17 and change 17 to 20.\n   Before clicking Run, write down your predictions:\n   20 + 5 = ?   20 - 5 = ?   20 * 2 = ?   20 / 5 = ?   20 // 5 = ?   20 % 5 = ?   20 ** 2 = ?\n5. Click ▶ Run and check your predictions. Any surprises? Reread that operator in the lesson.',
+        pt: 'O código já está escrito — execute, observe os 7 operadores, depois mude um número e preveja os resultados antes de rodar de novo.\n\nPasso a passo:\n\n1. Leia o código. Note: n = 17 está no topo. Todos os cálculos abaixo usam n.\n2. Clique em ▶ Executar. Você verá 7 linhas de saída.\n3. Estude cada linha:\n   • n + 5: soma 5 a 17 → 22\n   • n - 5: subtrai 5 → 12\n   • n * 2: multiplica por 2 → 34\n   • n / 5: divide — resultado é 3.4, um decimal! Mesmo sendo 17 inteiro, / sempre retorna decimal.\n   • n // 5: divisão inteira — descarta o decimal → 3\n   • n % 5: resto — 17 ÷ 5 = 3 grupos de 5, sobra 2\n   • n ** 2: 17 elevado à potência 2 = 17 × 17 → 289\n4. Encontre a linha n = 17 e troque 17 por 20.\n   Antes de clicar em Executar, anote suas previsões:\n   20 + 5 = ?   20 - 5 = ?   20 * 2 = ?   20 / 5 = ?   20 // 5 = ?   20 % 5 = ?   20 ** 2 = ?\n5. Clique em ▶ Executar e confira suas previsões. Alguma surpresa? Releia aquele operador na lição.'
       },
       starterCode: `n = 17
 print(n, "+ 5 =", n + 5)
@@ -171,17 +171,16 @@ print(n, "// 5 =", n // 5)
 print(n, "% 5 =", n % 5)
 print(n, "** 2 =", n ** 2)`,
       hints: [
-        { en: '17 // 5 = 3 because 5 fits 3 whole times in 17', pt: '17 // 5 = 3 porque 5 cabe 3 vezes inteiras em 17' },
-        { en: '17 % 5 = 2 because 17 = 5×3 + 2', pt: '17 % 5 = 2 porque 17 = 5×3 + 2' }
-      ],
-      sampleOutput: { en: '17 + 5 = 22\n17 - 5 = 12\n17 * 2 = 34\n17 / 5 = 3.4\n17 // 5 = 3\n17 % 5 = 2\n17 ** 2 = 289', pt: '17 + 5 = 22\n17 - 5 = 12\n17 * 2 = 34\n17 / 5 = 3.4\n17 // 5 = 3\n17 % 5 = 2\n17 ** 2 = 289' }
+        { en: '// always drops the decimal: 17 // 5 = 3 because 5 fits into 17 exactly 3 whole times (3 × 5 = 15, leaving 2 over).', pt: '// sempre descarta o decimal: 17 // 5 = 3 porque 5 cabe em 17 exatamente 3 vezes inteiras (3 × 5 = 15, sobra 2).' },
+        { en: '% gives only the leftover: 17 % 5 = 2 because 17 = 5×3 + 2. Think of it as the remainder after dividing.', pt: '% dá apenas o resto: 17 % 5 = 2 porque 17 = 5×3 + 2. Pense como o restante após a divisão.' }
+      ]
     },
     {
       id: 'ex2_fill',
       title: { en: '🟡 Fill the Gap: Payout Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
       description: {
-        en: 'Complete the 3-step payout calculation:\ndeductible → coverage → final value.',
-        pt: 'Complete o cálculo de pagamento em 3 passos:\nfranquia → cobertura → valor final.'
+        en: 'Before you begin: A 2-step insurance payout calculation is almost done. Two operators are missing, replaced by ___. Fill in each blank with the correct operator symbol.\n\nBlank 1 — after_ded = damage ___ deductible\n  → You are subtracting the deductible from the damage amount.\n  → The operator for subtraction is: -\n  → Replace ___ with -\n  → Full line: after_ded = damage - deductible\n  → Check: 8000 - 300 = 7700 ✓\n\nBlank 2 — payout = after_ded ___ 0.75\n  → You are applying 75% coverage to the remainder.\n  → 75% of a number = multiply by 0.75\n  → The operator for multiplication is: *\n  → Replace ___ with *\n  → Full line: payout = after_ded * 0.75\n  → Check: 7700 × 0.75 = 5775.0 ✓\n\nAfter filling both blanks, click ▶ Run.\nExpected output:\nAfter deductible: 7700\nFinal payout: 5775.0',
+        pt: 'Antes de começar: Um cálculo de pagamento em 2 etapas está quase pronto. Dois operadores estão faltando, substituídos por ___. Preencha cada lacuna com o símbolo correto.\n\nLacuna 1 — after_ded = damage ___ deductible\n  → Você está subtraindo a franquia do valor do dano.\n  → O operador de subtração é: -\n  → Substitua ___ por -\n  → Linha completa: after_ded = damage - deductible\n  → Verificação: 8000 - 300 = 7700 ✓\n\nLacuna 2 — payout = after_ded ___ 0.75\n  → Você está aplicando 75% de cobertura ao restante.\n  → 75% de um número = multiplicar por 0.75\n  → O operador de multiplicação é: *\n  → Substitua ___ por *\n  → Linha completa: payout = after_ded * 0.75\n  → Verificação: 7700 × 0.75 = 5775.0 ✓\n\nApós preencher as duas lacunas, clique em ▶ Executar.\nSaída esperada:\nAfter deductible: 7700\nFinal payout: 5775.0'
       },
       starterCode: `damage = 8000
 deductible = 300
@@ -192,26 +191,26 @@ payout = after_ded ___ 0.75           # fill: apply 75% coverage
 print("After deductible:", after_ded)
 print("Final payout:", payout)`,
       hints: [
-        { en: 'Subtraction: damage - deductible', pt: 'Subtração: damage - deductible' },
-        { en: '75% coverage = multiply by 0.75', pt: '75% de cobertura = multiplicar por 0.75' }
+        { en: 'Blank 1: you need to take the deductible away from the damage. The symbol for "take away" is minus: -', pt: 'Lacuna 1: você precisa tirar a franquia do valor do dano. O símbolo de "tirar" é menos: -' },
+        { en: 'Blank 2: 75% of a value means you multiply it by 0.75. The multiplication symbol in Python is: *', pt: 'Lacuna 2: 75% de um valor significa multiplicar por 0.75. O símbolo de multiplicação em Python é: *' }
       ],
       sampleOutput: { en: 'After deductible: 7700\nFinal payout: 5775.0', pt: 'After deductible: 7700\nFinal payout: 5775.0' }
     },
     {
       id: 'ex2_zero',
-      title: { en: '🔴 From Scratch: Full Budget', pt: '🔴 Do Zero: Orçamento Completo' },
+      title: { en: '🔴 From Scratch: Music School Budget', pt: '🔴 Do Zero: Orçamento Escola de Música' },
       description: {
-        en: 'A $240,000 project budget. Calculate and print:\n• Materials: 45%\n• Labor: 30%\n• Equipment: 15%\n• Admin: 10%\n• A check line proving they sum to 240000',
-        pt: 'Um orçamento de R$240.000. Calcule e imprima:\n• Materiais: 45%\n• Mão de obra: 30%\n• Equipamento: 15%\n• Admin: 10%\n• Uma linha de verificação provando que somam 240000'
+        en: 'A music school has a yearly budget of $48,000. Your job: split it into 4 categories and verify the math.\n\n📋 What to build (10 lines):\nLine 1: budget = 48000\nLine 2: materials = budget * 0.30   → 30% of 48000 = 14400.0\nLine 3: teachers  = budget * 0.45   → 45% of 48000 = 21600.0\nLine 4: equipment = budget * 0.15   → 15% of 48000 = 7200.0\nLine 5: admin     = budget * 0.10   → 10% of 48000 = 4800.0\nLine 6: print("Materials:", materials)\nLine 7: print("Teachers:", teachers)\nLine 8: print("Equipment:", equipment)\nLine 9: print("Admin:", admin)\nLine 10: print("Total check:", materials + teachers + equipment + admin)\n\n✅ Line 10 must print 48000.0. If it doesn\'t, find the category with the wrong percentage.',
+        pt: 'Uma escola de música tem um orçamento anual de R$48.000. Sua tarefa: dividir em 4 categorias e verificar a matemática.\n\n📋 O que construir (10 linhas):\nLinha 1: budget = 48000\nLinha 2: materials = budget * 0.30   → 30% de 48000 = 14400.0\nLinha 3: teachers  = budget * 0.45   → 45% de 48000 = 21600.0\nLinha 4: equipment = budget * 0.15   → 15% de 48000 = 7200.0\nLinha 5: admin     = budget * 0.10   → 10% de 48000 = 4800.0\nLinha 6: print("Materials:", materials)\nLinha 7: print("Teachers:", teachers)\nLinha 8: print("Equipment:", equipment)\nLinha 9: print("Admin:", admin)\nLinha 10: print("Total check:", materials + teachers + equipment + admin)\n\n✅ A linha 10 deve imprimir 48000.0. Se não imprimir, encontre a categoria com porcentagem errada.'
       },
-      starterCode: `budget = 240000
+      starterCode: `budget = 48000
 
-# Calculate each category and print all 5 lines:`,
+# Split into 4 categories and print all 5 lines:`,
       hints: [
-        { en: '45% = budget * 0.45', pt: '45% = budget * 0.45' },
-        { en: 'Check line: print all four added together', pt: 'Linha de verificação: imprima os quatro somados' }
+        { en: '30% in Python: budget * 0.30  (move the decimal two places left: 30 → 0.30)', pt: '30% em Python: budget * 0.30  (mova o ponto dois lugares à esquerda: 30 → 0.30)' },
+        { en: 'Total check: print("Total check:", materials + teachers + equipment + admin)', pt: 'Verificação: print("Total check:", materials + teachers + equipment + admin)' }
       ],
-      sampleOutput: { en: 'Materials: 108000.0\nLabor: 72000.0\nEquipment: 36000.0\nAdmin: 24000.0\nCheck: 240000.0', pt: 'Materials: 108000.0\nLabor: 72000.0\nEquipment: 36000.0\nAdmin: 24000.0\nCheck: 240000.0' }
+      sampleOutput: { en: 'Materials: 14400.0\nTeachers: 21600.0\nEquipment: 7200.0\nAdmin: 4800.0\nTotal check: 48000.0', pt: 'Materials: 14400.0\nTeachers: 21600.0\nEquipment: 7200.0\nAdmin: 4800.0\nTotal check: 48000.0' }
     }
   ],
 
@@ -444,8 +443,8 @@ print(x == 5)   # x é igual a 5? → True`
       id: 'ex3_guided',
       title: { en: '🟢 Guided: Watch Variables Change', pt: '🟢 Guiado: Veja Variáveis Mudarem' },
       description: {
-        en: 'Run this and follow the accumulator step by step.\nThen add a 4th purchase of 500 and verify the new total.',
-        pt: 'Execute e acompanhe o acumulador passo a passo.\nDepois adicione uma 4ª compra de 500 e verifique o novo total.'
+        en: 'Step 1: Click Run. You will see 4 lines — a starting value and 3 updates.\n\nStep 2: "After cement: 960" — find the line total += 960. It added 960 to the starting 0.\n\nStep 3: "After steel: 2235" — the line total += 1275 added 1275 to 960. Check: 960 + 1275 = 2235. ✓\n\nStep 4: "After paint: 3035" — the line total += 800 added 800 to 2235. Check: 2235 + 800 = 3035. ✓\n\nStep 5: Add a 4th purchase. AFTER the last print line, add these two new lines:\n    total += 500\n    print("After tiles:", total)\n\nPredict the new total BEFORE running: 3035 + 500 = ___. Click Run to confirm.',
+        pt: 'Passo 1: Clique em Executar. Você verá 4 linhas — um valor inicial e 3 atualizações.\n\nPasso 2: "After cement: 960" — encontre a linha total += 960. Ela adicionou 960 ao 0 inicial.\n\nPasso 3: "After steel: 2235" — a linha total += 1275 adicionou 1275 a 960. Confira: 960 + 1275 = 2235. ✓\n\nPasso 4: "After paint: 3035" — a linha total += 800 adicionou 800 a 2235. Confira: 2235 + 800 = 3035. ✓\n\nPasso 5: Adicione uma 4ª compra. APÓS a última linha print, adicione estas duas linhas:\n    total += 500\n    print("After tiles:", total)\n\nPreveja o novo total ANTES de executar: 3035 + 500 = ___. Clique em Executar para confirmar.'
       },
       starterCode: `total = 0
 print("Start:", total)
@@ -459,17 +458,16 @@ print("After steel:", total)
 total += 800
 print("After paint:", total)`,
       hints: [
-        { en: 'Add: total += 500 then another print', pt: 'Adicione: total += 500 e mais um print' },
-        { en: 'New total should be 3535', pt: 'Novo total deve ser 3535' }
-      ],
-      sampleOutput: { en: 'Start: 0\nAfter cement: 960\nAfter steel: 2235\nAfter paint: 3035', pt: 'Start: 0\nAfter cement: 960\nAfter steel: 2235\nAfter paint: 3035' }
+        { en: 'Add after the last print: total += 500 then print("After tiles:", total)', pt: 'Adicione após o último print: total += 500 e depois print("After tiles:", total)' },
+        { en: 'New total: 3035 + 500 = 3535', pt: 'Novo total: 3035 + 500 = 3535' }
+      ]
     },
     {
       id: 'ex3_fill',
       title: { en: '🟡 Fill the Gap: Client File', pt: '🟡 Preencha: Ficha de Cliente' },
       description: {
-        en: 'Complete the client file: fill the values with correct types and calculate the annual premium.',
-        pt: 'Complete a ficha: preencha os valores com tipos corretos e calcule o prêmio anual.'
+        en: 'Before you begin: you are setting up a new insurance client file. Three values and one operator are missing.\n\nBlank 1 — client_name: Type any name between quotes. Example: "Maria"  Text always needs quotes.\n\nBlank 2 — client_age: Type any whole number. Example: 35  No quotes — it is a number, not text.\n\nBlank 3 — policy_active: Type True or False (capital first letter, no quotes). Insurance is active → type: True\n\nBlank 4 — the operator between monthly_premium and 12: Annual means 12 months. "Monthly multiplied by 12" uses: *\n\nExpected output with the example values (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True',
+        pt: 'Antes de começar: você está criando uma ficha de novo cliente de seguro. Três valores e um operador estão faltando.\n\nBlank 1 — client_name: Digite qualquer nome entre aspas. Exemplo: "Maria"  Texto sempre precisa de aspas.\n\nBlank 2 — client_age: Digite qualquer número inteiro. Exemplo: 35  Sem aspas — é um número, não texto.\n\nBlank 3 — policy_active: Digite True ou False (inicial maiúscula, sem aspas). Seguro está ativo → digite: True\n\nBlank 4 — o operador entre monthly_premium e 12: Anual significa 12 meses. "Mensal multiplicado por 12" usa: *\n\nSaída esperada com os valores de exemplo (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True'
       },
       starterCode: `client_name     = ___          # any name — text needs quotes!
 client_age      = ___          # any age — number, no quotes
@@ -489,17 +487,17 @@ print(f"Active: {policy_active}")`,
     },
     {
       id: 'ex3_zero',
-      title: { en: '🔴 From Scratch: Weekly Cost Tracker', pt: '🔴 Do Zero: Rastreador Semanal' },
+      title: { en: '🔴 From Scratch: Courier Weekly Earnings', pt: '🔴 Do Zero: Ganhos Semanais do Motoboy' },
       description: {
-        en: 'Build an accumulator that tracks 3 material purchases:\n• Start total at 0\n• Add: 1200 (wood), 850 (tiles), 430 (paint)\n• Print the total after EACH purchase\n• Print a final f-string: "Week total: $X"',
-        pt: 'Construa um acumulador que rastreia 3 compras:\n• Comece total em 0\n• Adicione: 1200 (madeira), 850 (azulejos), 430 (tinta)\n• Imprima o total após CADA compra\n• Imprima f-string final: "Total da semana: $X"'
+        en: 'A delivery courier records earnings each day. Build an accumulator to track 3 days and show a running total.\n\n📋 What to build (8 lines):\nLine 1: total = 0                         ← start the counter at zero\nLine 2: total += 120                       ← Monday: earned $120\nLine 3: print("After Monday:", total)      ← prints 120\nLine 4: total += 95                        ← Tuesday: earned $95\nLine 5: print("After Tuesday:", total)     ← prints 215\nLine 6: total += 140                       ← Wednesday: earned $140\nLine 7: print("After Wednesday:", total)   ← prints 355\nLine 8: print(f"3-day total: ${total}")    ← prints: 3-day total: $355\n\n✅ The pattern: update the total FIRST, then print it. That way each print shows the new running total.',
+        pt: 'Um motoboy anota seus ganhos a cada dia. Construa um acumulador para rastrear 3 dias e mostrar o total corrente.\n\n📋 O que construir (8 linhas):\nLinha 1: total = 0                            ← comece o contador em zero\nLinha 2: total += 120                          ← segunda: ganhou R$120\nLinha 3: print("Após segunda:", total)         ← imprime 120\nLinha 4: total += 95                           ← terça: ganhou R$95\nLinha 5: print("Após terça:", total)           ← imprime 215\nLinha 6: total += 140                          ← quarta: ganhou R$140\nLinha 7: print("Após quarta:", total)          ← imprime 355\nLinha 8: print(f"Total 3 dias: R${total}")     ← imprime: Total 3 dias: R$355\n\n✅ O padrão: atualize o total PRIMEIRO, depois imprima. Assim cada print mostra o total atualizado.'
       },
-      starterCode: `# Build your accumulator:`,
+      starterCode: `# Courier earnings accumulator:`,
       hints: [
-        { en: 'total = 0, then total += 1200, print, repeat', pt: 'total = 0, depois total += 1200, print, repita' },
-        { en: 'Final: print(f"Week total: {total}")', pt: 'Final: print(f"Total da semana: {total}")' }
+        { en: 'total = 0 first, then total += 120, then print("After Monday:", total)', pt: 'total = 0 primeiro, depois total += 120, depois print("Após segunda:", total)' },
+        { en: 'Final f-string: print(f"3-day total: ${total}")', pt: 'f-string final: print(f"Total 3 dias: R${total}")' }
       ],
-      sampleOutput: { en: '1200\n2050\n2480\nWeek total: 2480', pt: '1200\n2050\n2480\nTotal da semana: 2480' }
+      sampleOutput: { en: 'After Monday: 120\nAfter Tuesday: 215\nAfter Wednesday: 355\n3-day total: $355', pt: 'Após segunda: 120\nApós terça: 215\nApós quarta: 355\nTotal 3 dias: R$355' }
     }
   ],
 
@@ -694,8 +692,8 @@ n = float(input("Height: "))
       id: 'ex4_guided',
       title: { en: '🟢 Guided: See the Type Problem', pt: '🟢 Guiado: Veja o Problema do Tipo' },
       description: {
-        en: 'Run this code, enter 25 when asked, and watch the type() outputs.\nNotice how the SAME typed value becomes different types.',
-        pt: 'Execute, digite 25 quando pedido, e observe as saídas do type().\nNote como o MESMO valor digitado vira tipos diferentes.'
+        en: 'Step 1: Click Run. A prompt appears asking "Type a number:". Type 25 and press Enter.\n\nStep 2: Read each output line:\n  "Raw value: 25" — your number is stored as text "25"\n  "Raw type: <class \'str\'>" — type() confirms it is a STRING, not a number!\n  "Converted: 25" — looks identical, but now it is a real integer\n  "New type: <class \'int\'>" — now it is an int: math works on it\n  "Math now works: 50" — 25 × 2 = 50 ✓\n\nStep 3: Run again. Type 40 this time. Check: "Math now works:" should show 80.\n\nStep 4: Change the last line from converted * 2 to converted * 3. Run with 10. Predict the result before pressing Enter: 10 × 3 = ___.',
+        pt: 'Passo 1: Clique em Executar. Aparece um prompt pedindo "Type a number:". Digite 25 e pressione Enter.\n\nPasso 2: Leia cada linha de saída:\n  "Raw value: 25" — seu número está guardado como TEXTO "25"\n  "Raw type: <class \'str\'>" — type() confirma que é STRING, não número!\n  "Converted: 25" — parece igual, mas agora é um inteiro de verdade\n  "New type: <class \'int\'>" — agora é int: matemática funciona nele\n  "Math now works: 50" — 25 × 2 = 50 ✓\n\nPasso 3: Execute novamente. Digite 40. Confira: "Math now works:" deve mostrar 80.\n\nPasso 4: Mude a última linha de converted * 2 para converted * 3. Execute com 10. Preveja o resultado antes de pressionar Enter: 10 × 3 = ___.'
       },
       starterCode: `raw = input("Type a number: ")
 print("Raw value:", raw)
@@ -707,16 +705,15 @@ print("New type:", type(converted))
 
 print("Math now works:", converted * 2)`,
       hints: [
-        { en: 'The raw type is str even though you typed digits', pt: 'O tipo bruto é str mesmo você digitando dígitos' }
-      ],
-      sampleOutput: { en: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>\nMath now works: 50', pt: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>\nMath now works: 50' }
+        { en: 'The raw type is str even though you typed digits — input() always returns text', pt: 'O tipo bruto é str mesmo digitando dígitos — input() sempre retorna texto' }
+      ]
     },
     {
       id: 'ex4_fill',
       title: { en: '🟡 Fill the Gap: Convert Correctly', pt: '🟡 Preencha: Converta Corretamente' },
       description: {
-        en: 'Fill in the RIGHT conversion for each input.\nThink: math or no math? Decimals or whole?',
-        pt: 'Preencha a conversão CERTA para cada input.\nPense: matemática ou não? Decimais ou inteiro?'
+        en: 'Before you begin: four inputs are collected. You decide which TYPE each one needs by answering: "Will I do math with this? Does it have decimals?"\n\nBlank 1 — name: A name is TEXT — you will NOT do math with it. No conversion needed. Replace ___ with nothing (just write: name = input("Name: ")). Or use str() which changes nothing: str(input("Name: ")).\n\nBlank 2 — age: Age is a WHOLE number (the code does age + 1). Use: int. Full line: age = int(input("Age: "))\n\nBlank 3 — height: Height has DECIMALS (e.g. 1.68 metres). Use: float. Full line: height = float(input("Height (m): "))\n\nphone has NO blank — it is already correct. Phones have dashes that would crash int().\n\nExpected output when you type Maria, 35, 1.68, 555-1234:\nMaria, 35 years, 1.68m\nNext year: 36\nPhone: 555-1234',
+        pt: 'Antes de começar: quatro entradas são coletadas. Você decide que TIPO cada uma precisa respondendo: "Vou fazer matemática com isso? Tem decimais?"\n\nBlank 1 — name: Um nome é TEXTO — você NÃO fará matemática com ele. Sem conversão. Substitua ___ por nada (escreva: name = input("Name: ")). Ou use str() que não muda nada: str(input("Name: ")).\n\nBlank 2 — age: Idade é número INTEIRO (o código faz age + 1). Use: int. Linha completa: age = int(input("Age: "))\n\nBlank 3 — height: Altura tem DECIMAIS (ex: 1,68 metros). Use: float. Linha completa: height = float(input("Height (m): "))\n\nphone não tem blank — já está correto. Telefones têm hífens que quebrariam int().\n\nSaída esperada ao digitar Maria, 35, 1.68, 555-1234:\nMaria, 35 years, 1.68m\nNext year: 36\nPhone: 555-1234'
       },
       starterCode: `name   = ___(input("Name: "))          # no conversion needed — remove ___ and parens or use str
 age    = ___(input("Age: "))            # whole number math
@@ -734,17 +731,17 @@ print(f"Phone: {phone}")`,
     },
     {
       id: 'ex4_zero',
-      title: { en: '🔴 From Scratch: Estimate Calculator', pt: '🔴 Do Zero: Calculadora de Orçamento' },
+      title: { en: '🔴 From Scratch: Gym Membership Calculator', pt: '🔴 Do Zero: Calculadora de Plano de Academia' },
       description: {
-        en: 'Build the renovation estimator:\n1. Ask room name (text)\n2. Ask width and length in meters (decimals)\n3. Ask cost per m² (decimal)\n4. Calculate area and total cost\n5. Print a summary with f-strings',
-        pt: 'Construa o orçamentador de reforma:\n1. Pergunte nome do cômodo (texto)\n2. Pergunte largura e comprimento em metros (decimais)\n3. Pergunte custo por m² (decimal)\n4. Calcule área e custo total\n5. Imprima resumo com f-strings'
+        en: 'Build a gym membership calculator. The program asks 3 questions and calculates the price with a 10% discount.\n\n📋 What to build (10 lines):\nLine 1: name    = input("Your name: ")              ← text, no conversion\nLine 2: monthly = float(input("Monthly fee: $"))    ← may have decimals → float\nLine 3: months  = int(input("Months to pay: "))     ← whole number → int\nLine 4: total    = monthly * months                 ← full price\nLine 5: discount = total * 0.10                     ← 10% off for paying ahead\nLine 6: final    = total - discount                 ← price after discount\nLine 7: print(f"Member: {name}")\nLine 8: print(f"Full price: {total}")\nLine 9: print(f"10% off saves: {discount}")\nLine 10: print(f"You pay: {final}")\n\nTest with: name = Alex, monthly = 80.0, months = 6\nExpected: Full price: 480.0  |  10% off saves: 48.0  |  You pay: 432.0',
+        pt: 'Construa uma calculadora de plano de academia. O programa faz 3 perguntas e calcula o preço com 10% de desconto.\n\n📋 O que construir (10 linhas):\nLinha 1: name    = input("Seu nome: ")                 ← texto, sem conversão\nLinha 2: monthly = float(input("Mensalidade: R$"))     ← pode ter decimais → float\nLinha 3: months  = int(input("Meses a pagar: "))       ← número inteiro → int\nLinha 4: total    = monthly * months                   ← preço cheio\nLinha 5: discount = total * 0.10                       ← 10% de desconto\nLinha 6: final    = total - discount                   ← preço com desconto\nLinha 7: print(f"Aluno: {name}")\nLinha 8: print(f"Preço cheio: {total}")\nLinha 9: print(f"10% off economiza: {discount}")\nLinha 10: print(f"Você paga: {final}")\n\nTeste com: nome = Alex, mensalidade = 80.0, meses = 6\nEsperado: Preço cheio: 480.0  |  10% off economiza: 48.0  |  Você paga: 432.0'
       },
-      starterCode: `# Renovation estimator:`,
+      starterCode: `# Gym membership calculator:`,
       hints: [
-        { en: 'width = float(input("Width (m): "))', pt: 'largura = float(input("Largura (m): "))' },
-        { en: 'area = width * length, cost = area * rate', pt: 'area = largura * comprimento, custo = area * taxa' }
+        { en: 'monthly = float(input("Monthly fee: $"))  ← float for values like 80.50', pt: 'monthly = float(input("Mensalidade: R$"))  ← float para valores como 80,50' },
+        { en: 'discount = total * 0.10  then  final = total - discount', pt: 'discount = total * 0.10  depois  final = total - discount' }
       ],
-      sampleOutput: { en: 'Room: Kitchen\nArea: 12.0 m²\nTotal: 1800.0', pt: 'Cômodo: Cozinha\nÁrea: 12.0 m²\nTotal: 1800.0' }
+      sampleOutput: { en: 'Member: Alex\nFull price: 480.0\n10% off saves: 48.0\nYou pay: 432.0', pt: 'Aluno: Alex\nPreço cheio: 480.0\n10% off economiza: 48.0\nVocê paga: 432.0' }
     }
   ],
 
@@ -1036,8 +1033,8 @@ if int(palpite) == 10:
       id: 'ex5_guided',
       title: { en: '🟢 Guided: Trace the Decision', pt: '🟢 Guiado: Rastreie a Decisão' },
       description: {
-        en: 'Run with damage 8000 → see the HIGH path.\nRun again with 2000 → see the standard path.\nNotice: only ONE branch ever prints.',
-        pt: 'Execute com dano 8000 → veja o caminho ALTO.\nExecute de novo com 2000 → veja o caminho padrão.\nNote: apenas UM ramo imprime.'
+        en: 'Step 1: Click Run. When it asks "Damage: $" type 8000 and press Enter.\n\nStep 2: Read the output:\n  🔴 HIGH PRIORITY\n  Expert adjuster assigned\n  --- check complete ---\n\nStep 3: Trace the code with damage = 8000:\n  "if damage > 5000:" → is 8000 > 5000? YES → the if-block runs\n  The else-block is SKIPPED completely\n  The last print runs because it is OUTSIDE the if/else — it always runs.\n\nStep 4: Run again. Type 2000 this time.\n  "if damage > 5000:" → is 2000 > 5000? NO → if-block is SKIPPED\n  The else-block runs: "🟢 Standard processing"\n  "--- check complete ---" still prints (outside the if/else)\n\nStep 5: What happens exactly at the boundary? Try 5000. Then try 5001. Which one triggers HIGH PRIORITY?',
+        pt: 'Passo 1: Clique em Executar. Quando pedir "Damage: $" digite 8000 e pressione Enter.\n\nPasso 2: Leia a saída:\n  🔴 HIGH PRIORITY\n  Expert adjuster assigned\n  --- check complete ---\n\nPasso 3: Rastreie o código com damage = 8000:\n  "if damage > 5000:" → 8000 > 5000? SIM → bloco if executa\n  O bloco else é PULADO completamente\n  O último print executa porque está FORA do if/else — ele sempre executa.\n\nPasso 4: Execute de novo. Digite 2000.\n  "if damage > 5000:" → 2000 > 5000? NÃO → bloco if é PULADO\n  O bloco else executa: "🟢 Standard processing"\n  "--- check complete ---" ainda imprime (fora do if/else)\n\nPasso 5: O que acontece na fronteira exata? Tente 5000. Depois tente 5001. Qual dispara HIGH PRIORITY?'
       },
       starterCode: `damage = int(input("Damage: $"))
 
@@ -1050,16 +1047,15 @@ else:
 
 print("--- check complete ---")`,
       hints: [
-        { en: 'The last print always runs — it\'s outside the if', pt: 'O último print sempre roda — está fora do if' }
-      ],
-      sampleOutput: { en: '🔴 HIGH PRIORITY\nExpert adjuster assigned\n--- check complete ---', pt: '🔴 HIGH PRIORITY\nExpert adjuster assigned\n--- check complete ---' }
+        { en: 'The last print always runs — it is OUTSIDE the if/else block (no indentation)', pt: 'O último print sempre executa — está FORA do bloco if/else (sem indentação)' }
+      ]
     },
     {
       id: 'ex5_fill',
       title: { en: '🟡 Fill the Gap: Fraud Gate', pt: '🟡 Preencha: Portão de Fraude' },
       description: {
-        en: 'Complete the fraud detection: large claim AND recent policy = flag.',
-        pt: 'Complete a detecção de fraude: sinistro grande E apólice recente = sinalizar.'
+        en: 'Before you begin: this code flags suspicious insurance claims. One if-condition has 3 blanks on the same line.\n\nThe rule: flag a claim if the damage is MORE THAN $5,000 AND the policy started LESS THAN 30 days ago.\n\nBlank 1 — after damage: "greater than 5000". The operator is: >\n\nBlank 2 — between the two conditions: BOTH must be true at the same time. The keyword is: and\n\nBlank 3 — after days: "fewer than 30". The operator is: <\n\nFull line: if damage > 5000 and days < 30:\n\nTest 1: damage = 8000, days = 10  → both true → 🚨 FLAGGED\nTest 2: damage = 8000, days = 60  → days is NOT < 30 → ✅ Passed\nTest 3: damage = 3000, days = 5   → damage is NOT > 5000 → ✅ Passed',
+        pt: 'Antes de começar: este código sinaliza sinistros suspeitos. Uma condição if tem 3 espaços em branco na mesma linha.\n\nA regra: sinalize se o dano for MAIOR QUE R$5.000 E a apólice tiver começado HÁ MENOS DE 30 dias.\n\nBlank 1 — após damage: "maior que 5000". O operador é: >\n\nBlank 2 — entre as duas condições: AMBAS devem ser verdadeiras ao mesmo tempo. A palavra-chave é: and\n\nBlank 3 — após days: "menos de 30". O operador é: <\n\nLinha completa: if damage > 5000 and days < 30:\n\nTeste 1: damage = 8000, days = 10  → ambas verdadeiras → 🚨 SINALIZADO\nTeste 2: damage = 8000, days = 60  → days NÃO é < 30 → ✅ Passou\nTeste 3: damage = 3000, days = 5   → damage NÃO é > 5000 → ✅ Passou'
       },
       starterCode: `damage = int(input("Damage: $"))
 days = int(input("Days since policy start: "))
@@ -1069,24 +1065,24 @@ if damage ___ 5000 ___ days ___ 30:    # fill: >, and, <
 else:
     print("✅ Passed fraud check")`,
       hints: [
-        { en: 'Large: damage > 5000 | Recent: days < 30', pt: 'Grande: damage > 5000 | Recente: days < 30' },
-        { en: 'Both must be true → and', pt: 'Ambos devem ser verdadeiros → and' }
+        { en: 'Large: damage > 5000  |  Recent: days < 30  |  Both: and between them', pt: 'Grande: damage > 5000  |  Recente: days < 30  |  Ambos: and entre eles' },
+        { en: 'Full line: if damage > 5000 and days < 30:', pt: 'Linha completa: if damage > 5000 and days < 30:' }
       ],
       sampleOutput: { en: '🚨 FLAGGED for investigation', pt: '🚨 FLAGGED for investigation' }
     },
     {
       id: 'ex5_zero',
-      title: { en: '🔴 From Scratch: Safety Gate', pt: '🔴 Do Zero: Portão de Segurança' },
+      title: { en: '🔴 From Scratch: Cinema Age Gate', pt: '🔴 Do Zero: Controle de Idade do Cinema' },
       description: {
-        en: 'Build the crane safety check:\n1. Ask wind speed (float)\n2. If wind > 40 → print "STOP OPERATIONS"\n3. Else → print "Safe to operate"\n4. Bonus: also ask hour (int); if wind > 40 OR hour > 18 → stop',
-        pt: 'Construa a verificação de segurança do guindaste:\n1. Pergunte velocidade do vento (float)\n2. Se vento > 40 → imprima "PARAR OPERAÇÕES"\n3. Senão → imprima "Seguro operar"\n4. Bônus: pergunte também a hora (int); se vento > 40 OU hora > 18 → parar'
+        en: 'Build a cinema ticket age checker. The minimum age is 16.\n\n📋 What to build (5 lines):\nLine 1: age = int(input("Your age: "))   ← whole number → int\nLine 2: if age >= 16:                     ← colon at the end, no parentheses!\nLine 3:     print("🎬 Enjoy the movie!") ← 4 spaces of indentation\nLine 4: else:                             ← catches everyone under 16\nLine 5:     print("⛔ Sorry, you must be 16 or older.")  ← also 4 spaces\n\nTest 1: type 20  → 🎬 Enjoy the movie!\nTest 2: type 15  → ⛔ Sorry, you must be 16 or older.\nTest 3: type 16  → 🎬 Enjoy the movie!  (16 IS >= 16, so it passes)\n\n⚠️ Common mistake: writing age > 16 instead of age >= 16. That would block 16-year-olds — they need to be included!',
+        pt: 'Construa um verificador de idade para cinema. A idade mínima é 16 anos.\n\n📋 O que construir (5 linhas):\nLinha 1: age = int(input("Sua idade: "))      ← número inteiro → int\nLinha 2: if age >= 16:                         ← dois pontos no final, sem parênteses!\nLinha 3:     print("🎬 Aproveite o filme!")   ← 4 espaços de indentação\nLinha 4: else:                                 ← captura todos abaixo de 16\nLinha 5:     print("⛔ Desculpe, precisa ter 16 anos ou mais.")  ← também 4 espaços\n\nTeste 1: digite 20  → 🎬 Aproveite o filme!\nTeste 2: digite 15  → ⛔ Desculpe, precisa ter 16 anos ou mais.\nTeste 3: digite 16  → 🎬 Aproveite o filme!  (16 É >= 16, passa)\n\n⚠️ Erro comum: escrever age > 16 em vez de age >= 16. Isso bloquearia quem tem exatamente 16 anos!'
       },
-      starterCode: `# Crane safety gate:`,
+      starterCode: `# Cinema age gate:`,
       hints: [
-        { en: 'wind = float(input("Wind: "))', pt: 'vento = float(input("Vento: "))' },
-        { en: 'Bonus: if wind > 40 or hour > 18:', pt: 'Bônus: if vento > 40 or hora > 18:' }
+        { en: 'age = int(input("Your age: "))  ← int because you will compare numbers', pt: 'age = int(input("Sua idade: "))  ← int porque você vai comparar números' },
+        { en: 'if age >= 16:  (>= means "greater than OR equal to" — don\'t forget the colon!)', pt: 'if age >= 16:  (>= significa "maior ou igual" — não esqueça os dois pontos!)' }
       ],
-      sampleOutput: { en: 'STOP OPERATIONS', pt: 'PARAR OPERAÇÕES' }
+      sampleOutput: { en: '🎬 Enjoy the movie!', pt: '🎬 Aproveite o filme!' }
     }
   ],
 
@@ -1315,8 +1311,8 @@ if dano > 1000:
       id: 'ex6_guided',
       title: { en: '🟢 Guided: Watch the Waterfall', pt: '🟢 Guiado: Veja a Cachoeira' },
       description: {
-        en: 'Run 3 times with: 12000, 7000, 500.\nTrace which branch catches each value. Notice only ONE prints each time.',
-        pt: 'Execute 3 vezes com: 12000, 7000, 500.\nRastreie qual ramo captura cada valor. Note que só UM imprime a cada vez.'
+        en: 'Step 1: Click Run. Type 12000. Read the output: "🔴 CRITICAL — 2h SLA"\n\nStep 2: Trace the code with damage = 12000:\n  "if damage > 10000:" → is 12000 > 10000? YES → prints CRITICAL, STOPS. The elif and else are never checked.\n\nStep 3: Run again. Type 7000.\n  "if damage > 10000:" → is 7000 > 10000? NO → skipped\n  "elif damage > 5000:" → is 7000 > 5000? YES → prints URGENT, STOPS.\n\nStep 4: Run again. Type 500.\n  "if damage > 10000:" → NO → skipped\n  "elif damage > 5000:" → NO → skipped\n  "elif damage >= 1000:" → is 500 >= 1000? NO → skipped\n  "else:" → catches everything left → prints LOW\n\nStep 5: What value sits exactly on a border? Try 5000. Does it print URGENT or NORMAL? (Hint: 5000 > 5000 is False. 5000 >= 1000 is True. Which branch catches it?)',
+        pt: 'Passo 1: Clique em Executar. Digite 12000. Leia a saída: "🔴 CRITICAL — 2h SLA"\n\nPasso 2: Rastreie o código com damage = 12000:\n  "if damage > 10000:" → 12000 > 10000? SIM → imprime CRITICAL, PARA. Os elif e else nunca são verificados.\n\nPasso 3: Execute de novo. Digite 7000.\n  "if damage > 10000:" → 7000 > 10000? NÃO → pulado\n  "elif damage > 5000:" → 7000 > 5000? SIM → imprime URGENT, PARA.\n\nPasso 4: Execute de novo. Digite 500.\n  "if damage > 10000:" → NÃO → pulado\n  "elif damage > 5000:" → NÃO → pulado\n  "elif damage >= 1000:" → 500 >= 1000? NÃO → pulado\n  "else:" → captura tudo que restou → imprime LOW\n\nPasso 5: Que valor fica exatamente na fronteira? Tente 5000. Imprime URGENT ou NORMAL? (Dica: 5000 > 5000 é False. 5000 >= 1000 é True. Qual ramo captura?)'
       },
       starterCode: `damage = int(input("Damage: $"))
 
@@ -1329,16 +1325,15 @@ elif damage >= 1000:
 else:
     print("🟢 LOW — 72h SLA")`,
       hints: [
-        { en: '12000 stops at the first check; 7000 passes it and stops at the second', pt: '12000 para na primeira verificação; 7000 passa e para na segunda' }
-      ],
-      sampleOutput: { en: '🔴 CRITICAL — 2h SLA', pt: '🔴 CRITICAL — 2h SLA' }
+        { en: '12000 stops at the first check; 7000 passes it and stops at the second; 500 falls all the way to else', pt: '12000 para na primeira verificação; 7000 passa e para na segunda; 500 cai até o else' }
+      ]
     },
     {
       id: 'ex6_fill',
       title: { en: '🟡 Fill: Premium Brackets', pt: '🟡 Preencha: Faixas de Prêmio' },
       description: {
-        en: 'Complete the age bracket conditions. Remember: order matters!',
-        pt: 'Complete as condições de faixa etária. Lembre: a ordem importa!'
+        en: 'Before you begin: this code calculates a car insurance premium based on the driver\'s age. Three blanks to fill.\n\nBlank 1 — after "age" in the first if: the youngest bracket is "under 21 years". The operator is: <\nFull line: if age < 21:\n\nBlank 2 — after "age <" in the first elif: the next bracket covers ages "under 26". Fill the number: 26\nFull line: elif age < 26:\n\nBlank 3 — the last branch catches everyone not matched above (age 60 and older). This is the catch-all keyword: else\nFull line: else:\n\nTest with age = 25  → should print "Premium: 1600.0" (1000 × 1.6)\nTest with age = 30  → should print "Premium: 1000.0" (1000 × 1.0)\nTest with age = 70  → should print "Premium: 1500.0" (1000 × 1.5)',
+        pt: 'Antes de começar: este código calcula um prêmio de seguro de carro baseado na idade do motorista. Três espaços para preencher.\n\nBlank 1 — após "age" no primeiro if: o menor bracket é "abaixo de 21 anos". O operador é: <\nLinha completa: if age < 21:\n\nBlank 2 — após "age <" no primeiro elif: o próximo bracket cobre "abaixo de 26". Preencha o número: 26\nLinha completa: elif age < 26:\n\nBlank 3 — o último ramo captura todos não capturados acima (60 anos ou mais). A palavra-chave é: else\nLinha completa: else:\n\nTeste com age = 25  → deve imprimir "Premium: 1600.0" (1000 × 1,6)\nTeste com age = 30  → deve imprimir "Premium: 1000.0" (1000 × 1,0)\nTeste com age = 70  → deve imprimir "Premium: 1500.0" (1000 × 1,5)'
       },
       starterCode: `age = int(input("Age: "))
 base = 1000
@@ -1361,17 +1356,17 @@ print("Premium:", premium)`,
     },
     {
       id: 'ex6_zero',
-      title: { en: '🔴 From Scratch: Concrete QC', pt: '🔴 Do Zero: QC de Concreto' },
+      title: { en: '🔴 From Scratch: Movie Rating System', pt: '🔴 Do Zero: Sistema de Avaliação de Filmes' },
       description: {
-        en: 'Build the concrete grading system:\n• Ask strength in MPa (float)\n• >= 40 → "C40 structural"\n• >= 30 → "C30 beams"\n• >= 20 → "C20 foundations"\n• below → "REJECTED"',
-        pt: 'Construa o sistema de classificação de concreto:\n• Pergunte resistência em MPa (float)\n• >= 40 → "C40 estrutural"\n• >= 30 → "C30 vigas"\n• >= 20 → "C20 fundações"\n• abaixo → "REJEITADO"'
+        en: 'Build a movie review classifier. A critic enters a score from 0 to 100 and the program prints the rating label.\n\n📋 The 4 labels and their score ranges:\n90–100 → "🌟 Masterpiece"\n75–89  → "👍 Highly Recommended"\n60–74  → "✅ Worth Watching"\nbelow 60 → "👎 Skip It"\n\n📋 What to build (9 lines):\nLine 1: score = int(input("Movie score (0-100): "))\nLine 2: if score >= 90:   ← start from the HIGHEST (waterfall rule!)\nLine 3:     print("🌟 Masterpiece")\nLine 4: elif score >= 75:\nLine 5:     print("👍 Highly Recommended")\nLine 6: elif score >= 60:\nLine 7:     print("✅ Worth Watching")\nLine 8: else:\nLine 9:     print("👎 Skip It")\n\nTest: 95 → Masterpiece  |  80 → Highly Recommended  |  65 → Worth Watching  |  40 → Skip It\n\n⚠️ Remember the waterfall rule: always start from the HIGHEST condition (>= 90). If you write >= 60 first, scores of 80 and 95 would all land there incorrectly.',
+        pt: 'Construa um classificador de críticas de filmes. O crítico digita uma pontuação de 0 a 100 e o programa imprime o rótulo.\n\n📋 Os 4 rótulos e suas faixas de pontuação:\n90–100 → "🌟 Obra-prima"\n75–89  → "👍 Muito Recomendado"\n60–74  → "✅ Vale Assistir"\nabaixo de 60 → "👎 Pule"\n\n📋 O que construir (9 linhas):\nLinha 1: score = int(input("Pontuação do filme (0-100): "))\nLinha 2: if score >= 90:   ← comece do MAIS ALTO (regra da cachoeira!)\nLinha 3:     print("🌟 Obra-prima")\nLinha 4: elif score >= 75:\nLinha 5:     print("👍 Muito Recomendado")\nLinha 6: elif score >= 60:\nLinha 7:     print("✅ Vale Assistir")\nLinha 8: else:\nLinha 9:     print("👎 Pule")\n\nTeste: 95 → Obra-prima  |  80 → Muito Recomendado  |  65 → Vale Assistir  |  40 → Pule\n\n⚠️ Lembre a regra da cachoeira: comece sempre pelo MAIOR (>= 90). Se escrever >= 60 primeiro, pontuações de 80 e 95 cairiam ali incorretamente.'
       },
-      starterCode: `# Concrete quality control:`,
+      starterCode: `# Movie rating classifier:`,
       hints: [
-        { en: 'Start from the HIGHEST: if strength >= 40:', pt: 'Comece do MAIS ALTO: if strength >= 40:' },
-        { en: '3 branches + else', pt: '3 ramos + else' }
+        { en: 'score = int(input(...))  ← whole number, no decimals in scores', pt: 'score = int(input(...))  ← número inteiro, pontuações não têm decimais' },
+        { en: 'Waterfall order (highest first): if >= 90, elif >= 75, elif >= 60, else', pt: 'Ordem cachoeira (maior primeiro): if >= 90, elif >= 75, elif >= 60, else' }
       ],
-      sampleOutput: { en: 'C30 beams', pt: 'C30 vigas' }
+      sampleOutput: { en: '👍 Highly Recommended', pt: '👍 Muito Recomendado' }
     }
   ],
 
@@ -1627,8 +1622,8 @@ while contador <= 5:        # 10 <= 5 é False, então o loop nunca executa
       id: 'ex7_guided',
       title: { en: '🟢 Guided: Trace the Counter', pt: '🟢 Guiado: Rastreie o Contador' },
       description: {
-        en: 'Run and follow count changing: 1→2→3→4→5→6 (exits at 6).\nThen change <= 5 to <= 3 and predict the output before running.',
-        pt: 'Execute e acompanhe count mudando: 1→2→3→4→5→6 (sai no 6).\nDepois mude <= 5 para <= 3 e preveja a saída antes de rodar.'
+        en: 'Step 1: Click Run. You will see 5 "processed" lines plus one final line.\n\nStep 2: Trace how count changes each turn:\n  Start: count = 1\n  Turn 1: 1 <= 5? YES → prints "Claim # 1 processed" → count becomes 2\n  Turn 2: 2 <= 5? YES → prints "Claim # 2 processed" → count becomes 3\n  ... (same for 3, 4, 5)\n  Turn 6: 6 <= 5? NO → loop ends\n  After loop: count is 6 — the first value that FAILED the check.\n\nStep 3: Change ONE number: find "while count <= 5:" and change 5 to 3.\n\nStep 4: Before running, predict:\n  How many "processed" lines will print? ___\n  What will the final count value be? ___\n  (Hint: the loop stops when count first FAILS the condition)\n\nStep 5: Click Run to confirm your prediction.',
+        pt: 'Passo 1: Clique em Executar. Você verá 5 linhas "processed" e uma linha final.\n\nPasso 2: Rastreie como count muda em cada volta:\n  Início: count = 1\n  Volta 1: 1 <= 5? SIM → imprime "Claim # 1 processed" → count vira 2\n  Volta 2: 2 <= 5? SIM → imprime "Claim # 2 processed" → count vira 3\n  ... (igual para 3, 4, 5)\n  Volta 6: 6 <= 5? NÃO → loop termina\n  Após loop: count é 6 — o primeiro valor que FALHOU na verificação.\n\nPasso 3: Mude UM número: encontre "while count <= 5:" e mude 5 para 3.\n\nPasso 4: Antes de rodar, preveja:\n  Quantas linhas "processed" serão impressas? ___\n  Qual será o valor final de count? ___\n  (Dica: o loop para quando count FALHA na condição pela primeira vez)\n\nPasso 5: Clique em Executar para confirmar sua previsão.'
       },
       starterCode: `count = 1
 while count <= 5:
@@ -1637,38 +1632,37 @@ while count <= 5:
 
 print("Final count value:", count)`,
       hints: [
-        { en: 'After the loop, count is 6 — the first value that failed the condition', pt: 'Após o loop, count é 6 — o primeiro valor que falhou na condição' }
-      ],
-      sampleOutput: { en: 'Claim # 1 processed\nClaim # 2 processed\nClaim # 3 processed\nClaim # 4 processed\nClaim # 5 processed\nFinal count value: 6', pt: 'Claim # 1 processed\n...\nFinal count value: 6' }
+        { en: 'After the loop, count = 6 — it is the first value that made the condition False', pt: 'Após o loop, count = 6 — é o primeiro valor que tornou a condição False' }
+      ]
     },
     {
       id: 'ex7_fill',
-      title: { en: '🟡 Fill: Stock Countdown', pt: '🟡 Preencha: Contagem de Estoque' },
+      title: { en: '🟡 Fill: Coffee Shop Stock Countdown', pt: '🟡 Preencha: Contagem de Copos da Cafeteria' },
       description: {
-        en: 'Complete the warehouse countdown: consume 10 bags/day while stock lasts.',
-        pt: 'Complete a contagem do almoxarifado: consuma 10 sacos/dia enquanto o estoque durar.'
+        en: 'Before you begin: a coffee shop starts the day with 60 disposable cups. Each order uses 15 cups. The loop runs while there are enough cups for at least one more order.\n\nBlank 1 — condition after "while stock": keep running while stock is AT LEAST 15. The operator is: >=\nFull line: while stock >= 15:\n\nBlank 2 — consuming cups: each order takes 15 cups away from stock. Use: -= 15\nFull line: stock -= 15\n\nBlank 3 — advancing the order counter: each pass through the loop = one order. Use: += 1\nFull line: order += 1\n\nExpected output:\nOrder 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!\n\n💡 Why does the loop run 4 times? 60→45→30→15→0. When stock = 0, the condition 0 >= 15 is False → loop stops.',
+        pt: 'Antes de começar: uma cafeteria começa o dia com 60 copos descartáveis. Cada pedido usa 15 copos. O loop roda enquanto houver copos para pelo menos mais um pedido.\n\nBlank 1 — condição após "while stock": continue enquanto o estoque for PELO MENOS 15. O operador é: >=\nLinha completa: while stock >= 15:\n\nBlank 2 — consumindo copos: cada pedido retira 15 copos do estoque. Use: -= 15\nLinha completa: stock -= 15\n\nBlank 3 — avançando o contador de pedidos: cada passagem pelo loop = um pedido. Use: += 1\nLinha completa: order += 1\n\nSaída esperada:\nOrder 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!\n\n💡 Por que o loop roda 4 vezes? 60→45→30→15→0. Quando stock = 0, a condição 0 >= 15 é False → loop para.'
       },
-      starterCode: `stock = 45
-day = 1
+      starterCode: `stock = 60
+order = 1
 
-while stock ___ 10:          # fill: keep going while stock is at least 10
-    stock ___ 10             # fill: consume 10
-    print(f"Day {day}: {stock} bags left")
-    day ___ 1                # fill: next day
+while stock ___ 15:          # fill: keep going while stock >= 15
+    stock ___ 15             # fill: consume 15 cups
+    print(f"Order {order}: {stock} cups left")
+    order ___ 1              # fill: next order
 
-print("Reorder needed!")`,
+print("Restock needed!")`,
       hints: [
-        { en: 'Condition: stock >= 10', pt: 'Condição: stock >= 10' },
-        { en: 'Consume: stock -= 10 | Next day: day += 1', pt: 'Consumir: stock -= 10 | Próximo dia: day += 1' }
+        { en: 'Condition: stock >= 15  |  Consume: stock -= 15  |  Next order: order += 1', pt: 'Condição: stock >= 15  |  Consumir: stock -= 15  |  Próximo pedido: order += 1' },
+        { en: 'The loop runs 4 times: 60 → 45 → 30 → 15 → 0. At 0, 0 >= 15 is False → stops.', pt: 'O loop roda 4 vezes: 60 → 45 → 30 → 15 → 0. Em 0, 0 >= 15 é False → para.' }
       ],
-      sampleOutput: { en: 'Day 1: 35 bags left\nDay 2: 25 bags left\nDay 3: 15 bags left\nDay 4: 5 bags left\nReorder needed!', pt: 'Day 1: 35 bags left\n...\nReorder needed!' }
+      sampleOutput: { en: 'Order 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!', pt: 'Order 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!' }
     },
     {
       id: 'ex7_zero',
       title: { en: '🔴 From Scratch: Batch + Average', pt: '🔴 Do Zero: Lote + Média' },
       description: {
-        en: 'Build the batch processor:\n• Loop exactly 4 times\n• Ask damage each time, subtract $200 deductible\n• Accumulate total payout\n• After the loop: print total AND average',
-        pt: 'Construa o processador em lote:\n• Loop exatamente 4 vezes\n• Pergunte o dano, subtraia R$200 de franquia\n• Acumule o pagamento total\n• Após o loop: imprima total E média'
+        en: 'Build a batch processor that handles exactly 4 insurance claims.\n\n📋 What to build:\nLine 1: total = 0         ← accumulator starts at zero\nLine 2: count = 1         ← loop counter\nLine 3: while count <= 4:  ← run exactly 4 times (colon at the end!)\nLine 4:     damage = int(input("Damage: $"))  ← ask for each claim (4 spaces indent)\nLine 5:     payout = damage - 200             ← subtract $200 deductible\nLine 6:     total += payout                   ← add this claim\'s payout to total\nLine 7:     count += 1                        ← CRITICAL: without this the loop never ends!\nLine 8: print("Total:", total)    ← OUTSIDE the loop (no indentation)\nLine 9: print("Average:", total / 4)\n\nTest: enter 2750 four times → Total: 10200  |  Average: 2550.0\n\n⚠️ The most common mistake: forgetting count += 1 inside the loop. Without it, count stays at 1 forever.',
+        pt: 'Construa um processador em lote que processa exatamente 4 sinistros.\n\n📋 O que construir:\nLinha 1: total = 0          ← acumulador começa em zero\nLinha 2: count = 1          ← contador do loop\nLinha 3: while count <= 4:  ← rodar exatamente 4 vezes (dois pontos no final!)\nLinha 4:     damage = int(input("Damage: $"))  ← perguntar para cada sinistro (4 espaços de indentação)\nLinha 5:     payout = damage - 200             ← subtrair R$200 de franquia\nLinha 6:     total += payout                   ← adicionar ao total\nLinha 7:     count += 1                        ← CRÍTICO: sem isso o loop nunca termina!\nLinha 8: print("Total:", total)    ← FORA do loop (sem indentação)\nLinha 9: print("Average:", total / 4)\n\nTeste: digite 2750 quatro vezes → Total: 10200  |  Average: 2550.0\n\n⚠️ O erro mais comum: esquecer count += 1 dentro do loop. Sem isso count fica em 1 para sempre.'
       },
       starterCode: `# Batch processor (4 claims):`,
       suggestedInputs: ['2750', '2750', '2750', '2750'],
@@ -1946,8 +1940,8 @@ print(total)              # 60 ✅
       id: 'ex8_guided',
       title: { en: '🟢 Guided: One Item Per Turn', pt: '🟢 Guiado: Um Item Por Vez' },
       description: {
-        en: 'Run and watch the loop variable take each value.\nThen add "Eva" to the list with append and run again — the loop adapts automatically!',
-        pt: 'Execute e veja a variável do loop assumir cada valor.\nDepois adicione "Eva" à lista com append e rode de novo — o loop se adapta sozinho!'
+        en: 'Step 1: Click Run. Read the output:\n  Queue size: 3\n  Processing: Alice\n  Processing: Bob\n  Processing: Carlos\n  Queue complete!\n\nStep 2: Trace the loop:\n  "for name in clients:" → turn 1: name = "Alice" → prints "Processing: Alice"\n  Turn 2: name = "Bob"    → prints "Processing: Bob"\n  Turn 3: name = "Carlos" → prints "Processing: Carlos"\n  List is empty → loop ends. No counter needed — for handles it!\n\nStep 3: Now add a 4th person. Find the line "clients = [...]" and BEFORE the "for name in clients:" line, add:\n  clients.append("Eva")\n\nStep 4: Predict before running:\n  Will "Queue size:" show 3 or 4? ___\n  Will Eva be processed? ___\n\nStep 5: Click Run to confirm. The loop adapted to the new list size with NO other code change!',
+        pt: 'Passo 1: Clique em Executar. Leia a saída:\n  Queue size: 3\n  Processing: Alice\n  Processing: Bob\n  Processing: Carlos\n  Queue complete!\n\nPasso 2: Rastreie o loop:\n  "for name in clients:" → volta 1: name = "Alice" → imprime "Processing: Alice"\n  Volta 2: name = "Bob"    → imprime "Processing: Bob"\n  Volta 3: name = "Carlos" → imprime "Processing: Carlos"\n  Lista vazia → loop termina. Sem contador — o for cuida de tudo!\n\nPasso 3: Adicione uma 4ª pessoa. Encontre a linha "clients = [...]" e ANTES da linha "for name in clients:", adicione:\n  clients.append("Eva")\n\nPasso 4: Preveja antes de rodar:\n  "Queue size:" mostrará 3 ou 4? ___\n  Eva será processada? ___\n\nPasso 5: Clique em Executar para confirmar. O loop se adaptou ao novo tamanho da lista sem nenhuma outra mudança no código!'
       },
       starterCode: `clients = ["Alice", "Bob", "Carlos"]
 print("Queue size:", len(clients))
@@ -1957,16 +1951,15 @@ for name in clients:
 
 print("Queue complete!")`,
       hints: [
-        { en: 'Add before the loop: clients.append("Eva")', pt: 'Adicione antes do loop: clients.append("Eva")' }
-      ],
-      sampleOutput: { en: 'Queue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!', pt: 'Queue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!' }
+        { en: 'Add this line BEFORE the for loop: clients.append("Eva")', pt: 'Adicione esta linha ANTES do for loop: clients.append("Eva")' }
+      ]
     },
     {
       id: 'ex8_fill',
       title: { en: '🟡 Fill: Filter + Accumulate', pt: '🟡 Preencha: Filtrar + Acumular' },
       description: {
-        en: 'Complete the dashboard: accumulate payouts and count big claims.',
-        pt: 'Complete o dashboard: acumule pagamentos e conte sinistros grandes.'
+        en: 'Before you begin: this dashboard loops over 4 insurance claims and filters the big ones. Three blanks to fill.\n\nBlank 1 — total = ___: The accumulator must start at zero before the loop adds anything. Fill with: 0\n\nBlank 2 — total ___ payout: Each loop turn calculates a payout. Add it to the running total. Use: +=\nFull line: total += payout\n\nBlank 3 — if damage ___ 3000: You want to flag claims that are BIGGER THAN $3,000. Use: >\nFull line: if damage > 3000:\n\nExpected output (damages list = 1200, 4500, 8000, 650):\nBig claim: 4500\nBig claim: 8000\nTotal: 13350\n\n💡 Why is 1200 not flagged? 1200 is NOT > 3000. The if block is skipped silently. The payout is still added to total (that line is outside the if).',
+        pt: 'Antes de começar: este dashboard percorre 4 sinistros e filtra os grandes. Três espaços para preencher.\n\nBlank 1 — total = ___: O acumulador deve começar em zero antes do loop adicionar qualquer coisa. Preencha com: 0\n\nBlank 2 — total ___ payout: Cada volta do loop calcula um pagamento. Adicione ao total corrente. Use: +=\nLinha completa: total += payout\n\nBlank 3 — if damage ___ 3000: Você quer sinalizar sinistros MAIORES QUE R$3.000. Use: >\nLinha completa: if damage > 3000:\n\nSaída esperada (lista damages = 1200, 4500, 8000, 650):\nBig claim: 4500\nBig claim: 8000\nTotal: 13350\n\n💡 Por que 1200 não é sinalizado? 1200 NÃO é > 3000. O bloco if é pulado silenciosamente. O pagamento ainda é somado ao total (aquela linha está fora do if).'
       },
       starterCode: `damages = [1200, 4500, 8000, 650]
 total = ___                     # fill: accumulator start
@@ -1986,20 +1979,19 @@ print("Total:", total)`,
     },
     {
       id: 'ex8_zero',
-      title: { en: '🔴 From Scratch: Inspection Round', pt: '🔴 Do Zero: Ronda de Inspeção' },
+      title: { en: '🔴 From Scratch: Playlist Analyzer', pt: '🔴 Do Zero: Analisador de Playlist' },
       description: {
-        en: 'Build the multi-site report:\n• sites = 3 names, progress = 3 percentages\n• Loop by index pairing both lists\n• >= 90 → "Final inspection" | >= 50 → "On track" | else → "Behind"\n• Print each site with status',
-        pt: 'Construa o relatório multi-obra:\n• obras = 3 nomes, progresso = 3 percentuais\n• Loop por índice emparelhando as listas\n• >= 90 → "Inspeção final" | >= 50 → "No prazo" | senão → "Atrasado"\n• Imprima cada obra com status'
+        en: 'Build a music playlist analyzer. Given a list of song durations in seconds, calculate total time, count long songs (over 4 minutes = 240 seconds), and find the average.\n\n📋 What to build (10 lines):\nLine 1:  songs = [210, 195, 300, 180, 265, 240, 320]   ← 7 song durations\nLine 2:  total = 0         ← accumulator starts at zero\nLine 3:  long_songs = 0    ← counter for songs above 240 seconds\nLine 4:  for duration in songs:        ← loop over each song\nLine 5:      total += duration          ← add each song to total (4 spaces indent)\nLine 6:      if duration > 240:         ← is this song longer than 4 min?\nLine 7:          long_songs += 1        ← yes → count it (8 spaces indent!)\nLine 8:  print("Total time:", total, "seconds")           ← OUTSIDE the loop\nLine 9:  print("Long songs (>4 min):", long_songs)\nLine 10: print("Average:", total / len(songs), "seconds")\n\nExpected output:\nTotal time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds\n\n💡 Which 3 songs are "long"? Find the values above 240 in the list: 300, 265, 320.',
+        pt: 'Construa um analisador de playlist musical. Dada uma lista de durações em segundos, calcule o tempo total, conte músicas longas (acima de 4 minutos = 240 segundos) e calcule a média.\n\n📋 O que construir (10 linhas):\nLinha 1:  songs = [210, 195, 300, 180, 265, 240, 320]   ← 7 durações\nLinha 2:  total = 0         ← acumulador começa em zero\nLinha 3:  long_songs = 0    ← contador para músicas acima de 240 segundos\nLinha 4:  for duration in songs:        ← percorra cada música\nLinha 5:      total += duration          ← adicione ao total (4 espaços de indentação)\nLinha 6:      if duration > 240:         ← esta música é mais longa que 4 min?\nLinha 7:          long_songs += 1        ← sim → conte-a (8 espaços de indentação!)\nLinha 8:  print("Total time:", total, "seconds")         ← FORA do loop\nLinha 9:  print("Long songs (>4 min):", long_songs)\nLinha 10: print("Average:", total / len(songs), "seconds")\n\nSaída esperada:\nTotal time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds\n\n💡 Quais 3 músicas são "longas"? Encontre os valores acima de 240 na lista: 300, 265, 320.'
       },
-      starterCode: `sites = ["Tower A", "Mall B", "School C"]
-progress = [95, 60, 30]
+      starterCode: `songs = [210, 195, 300, 180, 265, 240, 320]
 
-# Loop by index and print each status:`,
+# Analyze the playlist:`,
       hints: [
-        { en: 'for i in range(len(sites)):', pt: 'for i in range(len(sites)):' },
-        { en: 'Access pairs: sites[i] and progress[i]', pt: 'Acesse pares: sites[i] e progress[i]' }
+        { en: 'total = 0 and long_songs = 0 BEFORE the loop', pt: 'total = 0 e long_songs = 0 ANTES do loop' },
+        { en: 'Inside the loop: total += duration then if duration > 240: long_songs += 1', pt: 'Dentro do loop: total += duration depois if duration > 240: long_songs += 1' }
       ],
-      sampleOutput: { en: 'Tower A: 95% — Final inspection\nMall B: 60% — On track\nSchool C: 30% — Behind', pt: 'Tower A: 95% — Inspeção final\nMall B: 60% — No prazo\nSchool C: 30% — Atrasado' }
+      sampleOutput: { en: 'Total time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds', pt: 'Total time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds' }
     }
   ],
 
