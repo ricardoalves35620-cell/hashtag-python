@@ -6,7 +6,7 @@ import { getSupabase } from '../lib/supabase'
 import type { Theme } from '../contexts/AppContext'
 import EditorPreferences from '../components/EditorPreferences'
 import SyncStatusIndicator from '../components/SyncStatusIndicator'
-import { clearLocalLearningData, resetLearningProgress } from '../lib/resetLearningProgress'
+import { resetLearningProgress } from '../lib/resetLearningProgress'
 import LearningPreferences from '../components/LearningPreferences'
 
 const COUNTRY_CODES = [
@@ -130,7 +130,7 @@ export default function Profile() {
             <div className="text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--c-muted)' }}>{t.learningData}</div>
             <div className="text-sm font-semibold mb-2" style={{ color: 'var(--c-text)' }}>{t.resetProgress}</div>
             <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--c-text2)' }}>{t.resetDescription}</p>
-            <button onClick={() => { clearLocalLearningData(); navigate('/phase/0', { replace: true }); window.location.reload() }} className="w-full rounded-xl py-3 text-sm font-semibold" style={{ background: '#3f1117', color: '#fca5a5', border: '1px solid #7f1d1d' }}>{t.resetOpen}</button>
+            <button onClick={() => { setResetConfirmation(''); setShowReset(true) }} data-testid="reset-progress-open" className="w-full rounded-xl py-3 text-sm font-semibold" style={{ background: '#3f1117', color: '#fca5a5', border: '1px solid #7f1d1d' }}>{t.resetOpen}</button>
           </div>
           <LearningPreferences lang={lang} />
           <EditorPreferences />
