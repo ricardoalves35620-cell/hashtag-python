@@ -1,6 +1,7 @@
 import type { CodeRequirement, Exercise, Lang } from '../data/types'
 import { meetsCodeRequirement, normalizeAssessmentText, runCode, runExam, type PythonAnalysis, type TestResult } from './pyodide'
 import { findPythonPlaceholders } from './placeholders'
+import { personalize } from './learnerProfile'
 
 export interface ValidationItem {
   id: string
@@ -39,18 +40,18 @@ export function outputSimilarity(exercise: Exercise, lang: Lang, output: string)
   const normalizedOutput = normalize(output)
   const languages: Lang[] = lang === 'en' ? ['en', 'pt'] : ['pt', 'en']
   const scores = languages.map(language => {
-    const expected = meaningfulLines(exercise.sampleOutput![language])
+    const expected = meaningfulLines(personalize(exercise.sampleOutput![language]))
     if (expected.length === 0) return 1
     const matched = expected.filter(line => normalizedOutput.includes(line)).length
     return matched / expected.length
   })
 
   const numericTokens = Array.from(new Set(
-    languages.flatMap(language => exercise.sampleOutput![language].match(/-?\d+(?:[.,]\d+)?/g) || [])
+    languages.flatMap(language => personalize(exercise.sampleOutput![language]).match(/-?\d+(?:[.,]\d+)?/g) || [])
   ))
   const hasNumbers = numericTokens.every(token => normalizedOutput.includes(token.replace(',', '.')) || normalizedOutput.includes(token))
   const bestScore = Math.max(...scores)
-  const threshold = meaningfulLines(exercise.sampleOutput[lang]).length <= 2 ? 1 : 0.75
+  const threshold = meaningfulLines(personalize(exercise.sampleOutput[lang])).length <= 2 ? 1 : 0.75
 
   return {
     passed: bestScore >= threshold && hasNumbers,
