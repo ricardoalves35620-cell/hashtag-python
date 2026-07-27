@@ -63,11 +63,18 @@ export default function Exercises() {
   const draftLoadToken = useRef(0)
   const lastEditAt = useRef(0)
 
-  // Exercises already earned survive a reload, an offline session or a deploy.
+  // Exercises already earned survive a reload, an offline session or a deploy — and
+  // the page opens on the first one still outstanding rather than always on number 1.
+  const restoredFor = useRef<string | null>(null)
   useEffect(() => {
     if (!learnerId || !phase) return
+    const token = `${learnerId}:${phase.id}`
     const done = loadCompletedExercises(learnerId, phase.id)
     if (Object.keys(done).length) setValidated(previous => ({ ...done, ...previous }))
+    if (restoredFor.current === token) return
+    restoredFor.current = token
+    const firstOutstanding = phase.exercises.findIndex(item => !done[item.id])
+    setActiveEx(firstOutstanding === -1 ? phase.exercises.length - 1 : firstOutstanding)
   }, [learnerId, phase?.id])
 
   if (!phase || phase.exercises.length === 0) {
