@@ -66,6 +66,17 @@ print(sinistros[0][1])    # 5230   (linha 0, coluna 1)
 print(sinistros[2][2])    # aprovado`,
         }
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'rows = [[10, 20], [30, 40]]\nprint(rows[1][0])',
+        options: [
+          { en: '30', pt: '30' },
+          { en: '20', pt: '20' },
+          { en: '40', pt: '40' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'rows[1] picks the second inner list, [30, 40]. Then [0] picks its first item. Read nested indexes left to right: outer first, then inner.', pt: 'rows[1] pega a segunda lista interna, [30, 40]. Depois [0] pega o primeiro item dela. Leia índices aninhados da esquerda para a direita: primeiro o de fora, depois o de dentro.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 2 — loop through nested list', pt: '🐍 Passo 2 — percorra a lista aninhada' } },
       {
         type: 'code',
@@ -94,6 +105,17 @@ for sinistro in sinistros:
     print(nome, "→ R$", valor, "→", status)`,
         }
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'rows = [[1, 2], [3, 4], [5, 6]]\nprint(len(rows))',
+        options: [
+          { en: '3', pt: '3' },
+          { en: '6', pt: '6' },
+          { en: '2', pt: '2' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'len() counts the outer list, so it sees 3 inner lists — not the 6 numbers inside them. To count everything you have to loop.', pt: 'len() conta a lista de fora, então enxerga 3 listas internas — não os 6 números dentro delas. Para contar tudo é preciso percorrer.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 3 — calculate from nested data', pt: '🐍 Passo 3 — calcule com dados aninhados' } },
       {
         type: 'code',
@@ -320,6 +342,17 @@ print(claim["client"])   # Alice Costa
 print(claim["damage"])   # 5230
 print(claim["status"])   # approved`
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'prices = {"coffee": 8}\nprint(prices["tea"])',
+        options: [
+          { en: 'KeyError', pt: 'KeyError' },
+          { en: 'None', pt: 'None' },
+          { en: '0', pt: '0' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Asking for a key that does not exist raises KeyError and stops the program. Use prices.get("tea") when a missing key is acceptable — it returns None instead of crashing.', pt: 'Pedir uma chave que não existe gera KeyError e para o programa. Use prices.get("tea") quando a ausência for aceitável — devolve None em vez de quebrar.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 2 — add, update, delete', pt: '🐍 Passo 2 — adicionar, atualizar, deletar' } },
       {
         type: 'code',
@@ -350,6 +383,17 @@ del sinistro["franquia"]
 print(sinistro)   # {"id": 2501, "dano": 5500}`
         }
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'prices = {"coffee": 8}\nprices["coffee"] = 9\nprint(len(prices))',
+        options: [
+          { en: '1', pt: '1' },
+          { en: '2', pt: '2' },
+          { en: '0', pt: '0' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Assigning to a key that already exists REPLACES its value, it does not add a second entry. A dictionary can only hold each key once.', pt: 'Atribuir a uma chave que já existe SUBSTITUI o valor, não adiciona uma segunda entrada. Um dicionário guarda cada chave só uma vez.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 3 — loop through a dictionary', pt: '🐍 Passo 3 — percorra um dicionário' } },
       {
         type: 'code',
@@ -553,12 +597,34 @@ export const phase11: Phase = {
 print(claims[0])                   # full first dict
 print(claims[0]["client"])         # Alice`
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'people = [{"name": "Ana"}, {"name": "Bob"}]\nprint(people[0]["name"])',
+        options: [
+          { en: 'Ana', pt: 'Ana' },
+          { en: 'Bob', pt: 'Bob' },
+          { en: 'name', pt: 'name' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Two steps: [0] takes the first dictionary out of the list, then ["name"] reads a field from that dictionary. List index first, key second.', pt: 'Dois passos: [0] tira o primeiro dicionário da lista, depois ["name"] lê um campo desse dicionário. Primeiro o índice da lista, depois a chave.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 2 — loop and read', pt: '🐍 Passo 2 — percorra e leia' } },
       {
         type: 'code',
         code: `for claim in claims:
     print(claim["client"], "→ $", claim["damage"])`
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'people = [{"name": "Ana"}, {"name": "Bob"}]\nprint(people["name"])',
+        options: [
+          { en: 'TypeError', pt: 'TypeError' },
+          { en: 'Ana', pt: 'Ana' },
+          { en: 'A list of names', pt: 'A list of names' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'A list is indexed by position, not by key, so people["name"] raises TypeError. You have to loop and read the key from each dictionary.', pt: 'Uma lista é indexada por posição, não por chave, então people["name"] gera TypeError. É preciso percorrer e ler a chave de cada dicionário.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 3 — filter and calculate', pt: '🐍 Passo 3 — filtre e calcule' } },
       {
         type: 'code',
@@ -768,6 +834,17 @@ payouts = [d - 250 for d in damages]
 
 print(payouts)  # [950, 4250, 7750, 0, 2850]`
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'print([n * 2 for n in [1, 2, 3]])',
+        options: [
+          { en: '[2, 4, 6]', pt: '[2, 4, 6]' },
+          { en: '[1, 2, 3, 1, 2, 3]', pt: '[1, 2, 3, 1, 2, 3]' },
+          { en: '12', pt: '12' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'The expression before the for runs once per item and the results are collected into a new list. The original list is untouched.', pt: 'A expressão antes do for roda uma vez por item e os resultados viram uma lista nova. A lista original não muda.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Add a filter with IF', pt: '🐍 Adicione filtro com IF' } },
       {
         type: 'code',
@@ -787,7 +864,17 @@ print(payouts)      # [950, 4250, 7750, 2850]`
           en: '💡 Anatomy: [EXPRESSION for ITEM in LIST if CONDITION]\n• EXPRESSION = what to do with each item\n• ITEM = loop variable\n• LIST = source list\n• if CONDITION = optional filter',
           pt: '💡 Anatomia: [EXPRESSÃO for ITEM in LISTA if CONDIÇÃO]\n• EXPRESSÃO = o que fazer com cada item\n• ITEM = variável do loop\n• LISTA = lista de origem\n• if CONDIÇÃO = filtro opcional'
         }
-      }
+      },
+      { type: 'checkpoint', checkpoint: {
+        code: 'print([n for n in [1, 2, 3, 4] if n > 2])',
+        options: [
+          { en: '[3, 4]', pt: '[3, 4]' },
+          { en: '[1, 2]', pt: '[1, 2]' },
+          { en: '[False, False, True, True]', pt: '[False, False, True, True]' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'The if at the end decides which items are KEPT, not what they turn into. Items that fail the test are simply left out.', pt: 'O if no final decide quais itens são MANTIDOS, não no que eles viram. Os itens que falham no teste ficam de fora.' }
+      } }
     ]
   },
 
@@ -962,6 +1049,17 @@ def greet():
 greet()   # Hello, client!
 greet()   # Hello, client! (again, same code)`
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'def double(n):\n    n * 2\n\nprint(double(5))',
+        options: [
+          { en: 'None', pt: 'None' },
+          { en: '10', pt: '10' },
+          { en: '5', pt: '5' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'The function calculates 10 and then throws it away, because there is no return. A function without return always hands back None. This is the most common function bug there is.', pt: 'A função calcula 10 e joga fora, porque não há return. Uma função sem return sempre devolve None. Este é o erro mais comum com funções.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 2 — add parameters (inputs)', pt: '🐍 Passo 2 — adicione parâmetros (entradas)' } },
       {
         type: 'code',
@@ -972,6 +1070,17 @@ greet("Alice")    # Hello, Alice
 greet("Bob")      # Hello, Bob
 greet("Carlos")   # Hello, Carlos`
       },
+      { type: 'checkpoint', checkpoint: {
+        code: 'def greet():\n    print("hi")\n\ngreet',
+        options: [
+          { en: 'Nothing is printed', pt: 'Nothing is printed' },
+          { en: 'hi', pt: 'hi' },
+          { en: 'An error', pt: 'An error' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Writing greet only refers to the function; it does not run it. You need the parentheses: greet(). Defining and calling are two separate things.', pt: 'Escrever greet apenas referencia a função; não a executa. São necessários os parênteses: greet(). Definir e chamar são coisas diferentes.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 3 — return a value', pt: '🐍 Passo 3 — retorne um valor' } },
       {
         type: 'code',
