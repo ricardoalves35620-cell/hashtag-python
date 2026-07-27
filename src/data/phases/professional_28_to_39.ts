@@ -74,6 +74,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+        "transfer": {
+      "functionName": "misplaced_files",
+      "starterCode": "def misplaced_files(paths):\n    \"\"\"Return the paths that sit in the wrong layer, sorted alphabetically.\n\n    Two rules define this project layout:\n      - a file whose name starts with \"test_\" belongs under tests/\n      - any other file belongs under src/\n\n    A path is misplaced when it breaks one of those rules.\n    Example: \"src/test_models.py\" is misplaced, \"tests/test_models.py\" is not.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(misplaced_files([\"src/models.py\", \"src/test_models.py\", \"tests/test_models.py\"]))",
+      "publicExpected": "['src/test_models.py']",
+      "hiddenAfterCode": "print(misplaced_files([\"tests/test_api.py\", \"tests/helpers.py\", \"src/api.py\"]))",
+      "hiddenExpected": "['tests/helpers.py']",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "misplaced_files"
+        }
+      ]
+    },
     "exam": {
       "functionName": "project_manifest",
       "starterCode": "def project_manifest(package, modules):\n    \"\"\"Return src package files, one test file per module and README.md.\"\"\"\n    pass",
