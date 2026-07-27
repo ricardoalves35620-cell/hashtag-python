@@ -62,7 +62,7 @@ function samplePattern(text: string): string {
     .join('.+')
 }
 
-function exerciseChecks(output: Bilingual): Check[] {
+function exerciseChecks(output: Bilingual, readsInput = false): Check[] {
   const accepted = unique([output.en.trim(), output.pt.trim()].filter(Boolean))
 
   // An exercise that invites "any name, any age" must not be graded against one
@@ -77,6 +77,24 @@ function exerciseChecks(output: Bilingual): Check[] {
         label: {
           en: 'Produces the expected output, with your own values where the sample shows them',
           pt: 'Produz a saída esperada, com os seus valores onde a amostra os indica',
+        },
+      },
+    ]
+  }
+
+  // input() echoes its prompt into the output, so a program that asks four questions
+  // produces four extra lines the sample never contained. Whole-output equality can
+  // then never match, however correct the answer is. Require the expected block to be
+  // PRESENT instead — the prompts may precede it.
+  if (readsInput) {
+    return [
+      { type: 'no_error' },
+      {
+        type: 'matches',
+        value: accepted.map(samplePattern).join('|'),
+        label: {
+          en: 'Produces the expected result (input prompts may appear before it)',
+          pt: 'Produz o resultado esperado (as perguntas do input podem aparecer antes)',
         },
       },
     ]
@@ -132,7 +150,7 @@ function ensureExerciseGrading(phase: Phase, exercise: Exercise) {
       },
       expectedOutput: exercise.sampleOutput,
       inputs,
-      checks: exerciseChecks(exercise.sampleOutput),
+      checks: exerciseChecks(exercise.sampleOutput, /input\s*\(/.test(String(exercise.starterCode || ''))),
       points: 100,
       codeRequirements: PHASE_REQUIREMENTS[phase.id],
     }],

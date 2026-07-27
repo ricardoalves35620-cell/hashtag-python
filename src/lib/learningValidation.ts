@@ -163,6 +163,39 @@ function requirementLabel(requirement: CodeRequirement, lang: Lang) {
     || (lang === 'en' ? `Uses required structure: ${requirement.value}` : `Usa a estrutura exigida: ${requirement.value}`)
 }
 
+/**
+ * Says what was expected and what arrived, line by line, instead of announcing that
+ * something unspecified went wrong. Only the FIRST differing line is reported: a wall
+ * of diffs is as unhelpful as no diff at all.
+ */
+function describeDifference(exercise: Exercise, lang: Lang, actual: string): string {
+  const generic = lang === 'en'
+    ? 'One of the expected behaviors was not produced.'
+    : 'Um dos comportamentos esperados não foi produzido.'
+
+  const sample = exercise.sampleOutput?.[lang] || exercise.sampleOutput?.en
+  if (!sample || !actual) return generic
+
+  const expectedLines = meaningfulLines(personalize(sample))
+  const actualLines = meaningfulLines(actual)
+  const missing = expectedLines.find(line => !actualLines.some(candidate => candidate.includes(line)))
+  if (!missing) return generic
+
+  const nearest = actualLines.find(candidate => {
+    const head = missing.split(/[\s:]+/)[0]
+    return head.length > 2 && candidate.includes(head)
+  })
+
+  if (nearest) {
+    return lang === 'en'
+      ? `Expected a line like "${missing}" but yours reads "${nearest}".`
+      : `Esperava uma linha como "${missing}", mas a sua é "${nearest}".`
+  }
+  return lang === 'en'
+    ? `Your output never contains "${missing}".`
+    : `Sua saída não contém "${missing}".`
+}
+
 export async function gradeExercise(
   exercise: Exercise,
   phaseId: number,
@@ -256,9 +289,11 @@ export async function gradeExercise(
           : result.description[lang],
         passed: result.passed,
         hidden: result.hidden,
+        // Naming the difference beats naming the failure. A learner who is told only
+        // that "a behaviour was not produced" has to guess which one, and how it differed.
         why: result.passed ? undefined : (result.hidden
           ? (lang === 'en' ? 'The solution worked for the visible example but failed with another valid input.' : 'A solução funcionou no exemplo visível, mas falhou com outra entrada válida.')
-          : (lang === 'en' ? 'One of the expected behaviors was not produced.' : 'Um dos comportamentos esperados não foi produzido.')),
+          : describeDifference(exercise, lang, result.output)),
         fix: result.passed ? undefined : (result.hidden
           ? (lang === 'en' ? 'Avoid fixed answers. Use the input variables and calculations so the logic works with different values.' : 'Evite respostas fixas. Use as variáveis de entrada e os cálculos para a lógica funcionar com valores diferentes.')
           : (lang === 'en' ? 'Review the test description and compare the expected behavior with your output.' : 'Revise a descrição do teste e compare o comportamento esperado com sua saída.')),
