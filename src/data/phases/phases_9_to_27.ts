@@ -2511,35 +2511,128 @@ export const phase21: Phase = {
   lesson: {
     title: { en: 'Controlled Randomness', pt: 'Aleatoriedade Controlada' },
     blocks: [
-      { type: 'heading', content: { en: '🌍 Insurance companies simulate risk with random', pt: '🌍 Seguradoras simulam risco com random' } },
+      { type: 'heading', content: { en: '🌍 Every shuffle you have ever pressed', pt: '🌍 Todo "aleatório" que você já apertou' } },
       { type: 'text', content: {
-        en: 'Insurance uses Monte Carlo simulations:\n"If we insure 10,000 homes, how many will claim in a storm?"\n\nRun the simulation 1 million times with random values → predict real costs.\nSame concept: Python random module.',
-        pt: 'Seguradoras usam simulações Monte Carlo:\n"Se assegurarmos 10.000 casas, quantas reclamarão numa tempestade?"\n\nRodam a simulação 1 milhão de vezes com valores aleatórios → preveem custos reais.\nMesmo conceito: módulo random do Python.'
+        en: 'Shuffle on a music app. The daily word in a puzzle game. Which of two checkout designs a shop shows you. A lottery draw.\n\nNone of those are truly random — a computer cannot be. They use a random NUMBER GENERATOR: a formula that produces numbers so evenly spread that, for any practical purpose, nobody can predict the next one.\n\nThat matters more than it sounds. The same tool that shuffles a playlist also decides which half of a website sees a new button, and picks the sample of parcels a warehouse checks by hand.',
+        pt: 'O embaralhar de um app de música. A palavra do dia num jogo. Qual de dois layouts de checkout uma loja te mostra. Um sorteio.\n\nNada disso é realmente aleatório — um computador não consegue ser. Tudo usa um GERADOR DE NÚMEROS aleatórios: uma fórmula que produz números tão bem distribuídos que, na prática, ninguém prevê o próximo.\n\nIsso importa mais do que parece. A mesma ferramenta que embaralha uma playlist também decide qual metade de um site vê um botão novo, e escolhe a amostra de encomendas que um armazém confere à mão.'
       }},
-      { type: 'heading', content: { en: '🧩 Dice with rules', pt: '🧩 Dados com regras' } },
+      { type: 'heading', content: { en: '🧩 A die is random, but only from 1 to 6', pt: '🧩 Um dado é aleatório, mas só de 1 a 6' } },
       { type: 'text', content: {
-        en: 'A die roll is random — but constrained to 1–6.\nrandom lets you roll any "die":\n• randint(1,6) = dice roll\n• choice(list) = pick from options\n• random() = float 0.0–1.0',
-        pt: 'Um dado é aleatório — mas limitado a 1–6.\nrandom permite jogar qualquer "dado":\n• randint(1,6) = jogar dado\n• choice(lista) = escolher opção\n• random() = float 0.0–1.0'
+        en: 'Randomness in programming is always FENCED. You never ask for "a random number" — you ask for a random number inside limits you choose.\n\nA die is the everyday version: unpredictable, yet never 7 and never 0.5. Your job is to set the fence, and random fills it.',
+        pt: 'Aleatoriedade em programação é sempre CERCADA. Você nunca pede "um número aleatório" — pede um número aleatório dentro de limites que você escolhe.\n\nUm dado é a versão do dia a dia: imprevisível, mas nunca 7 e nunca 0,5. Seu trabalho é montar a cerca, e o random preenche.'
+      }},
+
+      { type: 'heading', content: { en: '🐍 Fundamentals 1 — whole numbers in a range', pt: '🐍 Fundamentos 1 — números inteiros num intervalo' } },
+      { type: 'text', content: {
+        en: 'randint(a, b) gives a whole number from a to b, and BOTH ends can come up. That last part catches people out: randint(1, 6) can return 6.',
+        pt: 'randint(a, b) devolve um número inteiro de a até b, e os DOIS extremos podem sair. Essa última parte pega muita gente: randint(1, 6) pode devolver 6.'
       }},
       { type: 'code', code: `import random
 
-print(random.randint(1, 100))        # random int 1–100
+print(random.randint(1, 6))      # a die roll: 1, 2, 3, 4, 5 or 6
+print(random.randint(0, 1))      # a coin: 0 or 1` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'import random\n\nvalue = random.randint(1, 6)\nprint(value == 7)',
+        options: [
+          { en: 'False, always', pt: 'False, sempre' },
+          { en: 'True, sometimes', pt: 'True, às vezes' },
+          { en: 'An error', pt: 'Um erro' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'randint(1, 6) never leaves its fence, so 7 is impossible and the comparison is always False. Random does not mean unlimited — it means unpredictable inside limits you set.',
+          pt: 'randint(1, 6) nunca sai da cerca, então 7 é impossível e a comparação é sempre False. Aleatório não quer dizer ilimitado — quer dizer imprevisível dentro dos limites que você define.'
+        }
+      } },
 
-clients = ["Alice", "Bob", "Carlos", "Diana"]
-print(random.choice(clients))        # pick one
+      { type: 'heading', content: { en: '🐍 Fundamentals 2 — picking from a list', pt: '🐍 Fundamentos 2 — escolher de uma lista' } },
+      { type: 'text', content: {
+        en: 'choice() takes one item. sample() takes several WITHOUT repeating. shuffle() reorders the list in place — it changes the original and returns None.',
+        pt: 'choice() pega um item. sample() pega vários SEM repetir. shuffle() reordena a lista no lugar — altera a original e devolve None.'
+      }},
+      { type: 'code', code: `import random
 
-print(random.sample(clients, 2))     # pick 2, no repeats
+songs = ["Aurora", "Bailar", "Cinza", "Dunas"]
 
-random.shuffle(clients)
-print(clients)                       # shuffled list
+print(random.choice(songs))      # one song
+print(random.sample(songs, 2))   # two different songs
+random.shuffle(songs)            # reorders songs itself
+print(songs)` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'import random\n\nsongs = ["Aurora", "Bailar", "Cinza"]\nresult = random.shuffle(songs)\nprint(result)',
+        options: [
+          { en: 'None', pt: 'None' },
+          { en: 'The shuffled list', pt: 'A lista embaralhada' },
+          { en: 'The original list', pt: 'A lista original' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'shuffle() rearranges the list you gave it and returns nothing, so result is None. Print songs itself, not the return value. random.sample(songs, len(songs)) is the version that hands back a new list.',
+          pt: 'shuffle() reorganiza a lista que você passou e não devolve nada, então result é None. Imprima songs, não o retorno. random.sample(songs, len(songs)) é a versão que devolve uma lista nova.'
+        }
+      } },
 
-print(random.random())               # float 0.0–1.0` },
+      { type: 'heading', content: { en: '🐍 Fundamentals 3 — decimals and probability', pt: '🐍 Fundamentos 3 — decimais e probabilidade' } },
+      { type: 'text', content: {
+        en: 'random() gives a decimal from 0.0 up to (but never reaching) 1.0. Compare it against a threshold and you have a probability: "happens 30% of the time" is simply random() < 0.3.',
+        pt: 'random() devolve um decimal de 0.0 até (mas nunca alcançando) 1.0. Compare com um limite e você tem probabilidade: "acontece 30% das vezes" é simplesmente random() < 0.3.'
+      }},
+      { type: 'code', code: `import random
+
+print(random.random())           # e.g. 0.6841...
+
+if random.random() < 0.3:
+    print("This runs about 30% of the time")
+else:
+    print("This runs about 70% of the time")` },
+
+      { type: 'heading', content: { en: '🏗️ Real scenario 1 — quality sampling in a warehouse', pt: '🏗️ Cenário real 1 — amostragem de qualidade num armazém' } },
+      { type: 'text', content: {
+        en: 'Checking every parcel is too slow, so a warehouse checks a random handful each morning. Random selection is what makes the sample fair: nobody can arrange to have their parcels skipped.',
+        pt: 'Conferir toda encomenda é lento demais, então um armazém confere um punhado aleatório a cada manhã. A escolha aleatória é o que torna a amostra justa: ninguém consegue combinar para que suas encomendas fiquem de fora.'
+      }},
+      { type: 'code', code: `import random
+
+parcels = ["P-101", "P-102", "P-103", "P-104", "P-105", "P-106"]
+
+to_check = random.sample(parcels, 3)
+print("Check today:", to_check)` },
+
+      { type: 'heading', content: { en: '🏗️ Real scenario 2 — a repeatable test run', pt: '🏗️ Cenário real 2 — um teste que se repete' } },
+      { type: 'text', content: {
+        en: 'Random data is a problem for testing: a test that passes today and fails tomorrow tells you nothing. seed() fixes the starting point, so the same "random" values come out every run — unpredictable to a user, perfectly repeatable for you.',
+        pt: 'Dados aleatórios são um problema para testes: um teste que passa hoje e falha amanhã não diz nada. seed() fixa o ponto de partida, então os mesmos valores "aleatórios" saem a cada execução — imprevisíveis para o usuário, perfeitamente repetíveis para você.'
+      }},
+      { type: 'code', code: `import random
+
+random.seed(42)
+print(random.randint(1, 100))    # same number every single run
+
+random.seed(42)
+print(random.randint(1, 100))    # and again, identical` },
+
+      { type: 'heading', content: { en: '⚠️ Common errors', pt: '⚠️ Erros comuns' } },
+      { type: 'text', content: {
+        en: '• Forgetting import random — every function here lives in that module.\n• Expecting randint(1, 6) to exclude 6. It does not; both ends are included.\n• Printing the result of shuffle(). It returns None.\n• Asking sample() for more items than the list holds — that raises ValueError.\n• Treating a small run as proof. Ten rolls of a die may show no 4 at all; that is randomness, not a bug.',
+        pt: '• Esquecer import random — todas essas funções vivem nesse módulo.\n• Esperar que randint(1, 6) exclua o 6. Não exclui; os dois extremos entram.\n• Imprimir o retorno de shuffle(). Ele devolve None.\n• Pedir a sample() mais itens do que a lista tem — isso gera ValueError.\n• Achar que poucas execuções provam algo. Dez jogadas podem não trazer nenhum 4; isso é aleatoriedade, não bug.'
+      }},
+      { type: 'warning', content: {
+        en: '⚠️ Never use random for passwords, tokens or anything security-related. It is predictable to anyone who knows the algorithm. Python has secrets for that job.',
+        pt: '⚠️ Nunca use random para senhas, tokens ou qualquer coisa de segurança. É previsível para quem conhece o algoritmo. O Python tem o módulo secrets para isso.'
+      }},
       { type: 'tip', content: {
-        en: '💡 random.seed(42) makes results reproducible.\nSame seed = same results every run. Great for testing.',
-        pt: '💡 random.seed(42) torna resultados reproduzíveis.\nMesma seed = mesmos resultados. Ótimo para testes.'
+        en: '💡 random.seed(42) makes results reproducible. Same seed, same sequence, every run — ideal while you are testing.',
+        pt: '💡 random.seed(42) torna os resultados reproduzíveis. Mesma seed, mesma sequência, sempre — ideal enquanto você testa.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recapitulando' } },
+      { type: 'text', content: {
+        en: 'randint(a, b) — a whole number, both ends included.\nchoice(list) — one item.\nsample(list, n) — n different items.\nshuffle(list) — reorders in place, returns None.\nrandom() — a decimal from 0.0 to just under 1.0, the basis of probability.\nseed(n) — makes the sequence repeat, so tests stay honest.',
+        pt: 'randint(a, b) — um inteiro, com os dois extremos incluídos.\nchoice(lista) — um item.\nsample(lista, n) — n itens diferentes.\nshuffle(lista) — reordena no lugar e devolve None.\nrandom() — um decimal de 0.0 até quase 1.0, a base da probabilidade.\nseed(n) — faz a sequência se repetir, para os testes serem honestos.'
       }}
     ]
   },
+
   exercises: [
     {
       id: 'ex21_fill',
@@ -2567,8 +2660,8 @@ print("Simulated damage: $", damage)`,
       id: 'ex21_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
       description: {
-        en: 'Build this program from scratch. Every line goes into the blue editor.\n\nThe complete simulation is already provided in the starter — read it carefully, then run it as-is.\n\nWhat each part does:\nrandom.seed(42) — fixes the random sequence so every run gives the same numbers\nfor i in range(5): — simulates 5 claims\n    damage = random.randint(500, 12000) — generates a random damage value\n    payout = damage - 250 — applies the deductible\n    risk = "HIGH" if damage > 5000 else "normal" — classifies each claim\n    if damage > 5000: high_risk += 1 — counts high-risk claims\n    print(...) — shows each simulated claim\nprint("High risk:", high_risk) — prints the total count\n\nExpected output:\nClaim 1: $4634 → $4384 [normal]\nHigh risk: 2',
-        pt: 'Construa este programa do zero. Cada linha vai no editor azul.\n\nA simulação completa já está fornecida no starter — leia com atenção e execute como está.\n\nO que cada parte faz:\nrandom.seed(42) — fixa a sequência aleatória para que cada execução dê os mesmos números\nfor i in range(5): — simula 5 sinistros\n    damage = random.randint(500, 12000) — gera um valor de dano aleatório\n    payout = damage - 250 — aplica a franquia\n    risk = "HIGH" if damage > 5000 else "normal" — classifica cada sinistro\n    if damage > 5000: high_risk += 1 — conta sinistros de alto risco\n    print(...) — exibe cada sinistro simulado\nprint("High risk:", high_risk) — imprime o total\n\nSaída esperada:\nClaim 1: $4634 → $4384 [normal]\nHigh risk: 2'
+        en: 'Build this program from scratch. Every line goes into the blue editor.\n\nThe complete simulation is already provided in the starter — read it carefully, then run it as-is.\n\nWhat each part does:\nrandom.seed(42) — fixes the random sequence so every run gives the same numbers\nfor i in range(5): — simulates 5 quotes\n    damage = random.randint(500, 12000) — generates a random damage value\n    quote = damage - 250 — applies the standard parts credit\n    risk = "HIGH" if damage > 5000 else "normal" — classifies each quote\n    if damage > 5000: high_risk += 1 — counts heavy jobss\n    print(...) — shows each simulated quote\nprint("High risk:", high_risk) — prints the total count\n\nExpected output:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2',
+        pt: 'Construa este programa do zero. Cada linha vai no editor azul.\n\nA simulação completa já está fornecida no starter — leia com atenção e execute como está.\n\nO que cada parte faz:\nrandom.seed(42) — fixa a sequência aleatória para que cada execução dê os mesmos números\nfor i in range(5): — simula 5 orçamentos\n    damage = random.randint(500, 12000) — gera um valor de dano aleatório\n    quote = damage - 250 — aplica o crédito padrão de peças\n    risk = "HIGH" if damage > 5000 else "normal" — classifica cada orçamento\n    if damage > 5000: high_risk += 1 — conta orçamentos de alto risco\n    print(...) — exibe cada orçamento simulado\nprint("High risk:", high_risk) — imprime o total\n\nSaída esperada:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2'
       },
       starterCode: `import random
 random.seed(42)
@@ -2576,14 +2669,14 @@ random.seed(42)
 high_risk = 0
 for i in range(5):
     damage = random.randint(500, 12000)
-    payout = damage - 250
+    quote = damage - 250
     risk = "HIGH" if damage > 5000 else "normal"
     if damage > 5000: high_risk += 1
-    print(f"Claim {i+1}: \${damage} → \${payout} [{risk}]")
+    print(f"Quote {i+1}: \${damage} → \${quote} [{risk}]")
 
 print("High risk:", high_risk)`,
       hints: [{ en: 'random.randint(500, 12000) generates the damage', pt: 'random.randint(500, 12000) gera o dano' }],
-      sampleOutput: { en: 'Claim 1: $4634 → $4384 [normal]\nHigh risk: 2', pt: 'Claim 1: $4634 → $4384 [normal]\nHigh risk: 2' }
+      sampleOutput: { en: 'Quote 1: $4634 → $4384 [normal]\nHigh risk: 2', pt: 'Quote 1: $4634 → $4384 [normal]\nHigh risk: 2' }
     }
   ],
   quiz: [
@@ -2594,8 +2687,8 @@ print("High risk:", high_risk)`,
   ],
   exam: {
     title: { en: 'Risk Simulation', pt: 'Simulação de Risco' },
-    scenario: { en: 'Simulate 10 claims and produce a risk report.', pt: 'Simule 10 sinistros e produza um relatório de risco.' },
-    requirements: { en: ['10 random damages $200–$15000', '$250 deductible', 'Critical>8k, Urgent 3k-8k, Normal<3k', 'Print each + totals'], pt: ['10 danos aleatórios R$200–R$15000', 'R$250 franquia', 'Crítico>8k, Urgente 3k-8k, Normal<3k', 'Imprima cada + totais'] },
+    scenario: { en: 'Simulate 10 repair quotes and produce a workload report.', pt: 'Simule 10 orçamentos de reparo e produza um relatório de carga.' },
+    requirements: { en: ['10 random damages $200–$15000', '$250 parts credit', 'Critical>8k, Urgent 3k-8k, Normal<3k', 'Print each + totals'], pt: ['10 danos aleatórios R$200–R$15000', 'R$250 de crédito de peças', 'Crítico>8k, Urgente 3k-8k, Normal<3k', 'Imprima cada + totais'] },
     starterCode: `import random
 random.seed(99)
 
@@ -2604,12 +2697,12 @@ total = 0
 
 for i in range(10):
     damage = random.randint(200, 15000)
-    payout = damage - 250
-    total += payout
+    quote = damage - 250
+    total += quote
     if damage > 8000:   level = "CRITICAL"; critical += 1
     elif damage >= 3000: level = "URGENT";  urgent += 1
     else:                level = "normal";  normal_c += 1
-    print(f"#{i+1}: \${damage} → \${payout} [{level}]")
+    print(f"#{i+1}: \${damage} → \${quote} [{level}]")
 
 print(f"Critical:{critical} Urgent:{urgent} Normal:{normal_c}")
 print("Total: $", total)`,
