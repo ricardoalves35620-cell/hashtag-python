@@ -232,7 +232,7 @@ export const phase17: Phase = {
       title: b('Complete — parse a stock document', 'Complete — interprete um documento de estoque'),
       description: b('Complete parse_stock(text). Each non-empty row is sku|name|quantity. Return dictionaries and reject negative quantities.', 'Complete parse_stock(text). Cada linha não vazia é sku|name|quantity. Retorne dicionários e rejeite quantidades negativas.'),
       starterCode: 'def parse_stock(text):\n    records = []\n    for raw_line in text.splitlines():\n        if not raw_line.strip():\n            continue\n        sku, name, quantity_text = [part.strip() for part in raw_line.split("|")]\n        quantity = int(quantity_text)\n        # Validate and append the normalized record.\n    return records',
-      sampleOutput: b("[{'sku': 'A1', 'name': 'Café', 'quantity': 3}]", "[{'sku': 'A1', 'name': 'Café', 'quantity': 3}]"),
+      sampleOutput: b("[{'sku': 'A1', 'name': 'Café', 'quantity': 3}, {'sku': 'B2', 'name': 'Rice', 'quantity': 10}]", "[{'sku': 'A1', 'name': 'Café', 'quantity': 3}, {'sku': 'B2', 'name': 'Rice', 'quantity': 10}]"),
       hints: [b('Build a dictionary with sku, name and quantity.', 'Monte dicionário com sku, name e quantity.'), b("Raise ValueError('negative quantity') when quantity < 0.", "Gere ValueError('negative quantity') quando quantity < 0.")],
       requirements: p17ParseRequirements,
       tests: [

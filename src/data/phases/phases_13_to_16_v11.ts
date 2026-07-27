@@ -109,7 +109,7 @@ export const phase13: Phase = {
       b("🟢 Guided — create a reusable label function", "🟢 Guiado — crie uma função reutilizável de rótulo"),
       b("Complete clean_label so it strips surrounding spaces, converts the text to title case and returns the result.", "Complete clean_label para remover espaços externos, converter o texto para formato de título e retornar o resultado."),
       "def clean_label(label):\n    cleaned = label.___().___()\n    return ___",
-      b("São Paulo", "São Paulo"),
+      b("North Zone", "North Zone"),
       [b("Call strip before title.", "Chame strip antes de title."), b("Return the local variable rather than printing it.", "Retorne a variável local em vez de imprimi-la."), b("Use the parameter; do not hardcode the visible label.", "Use o parâmetro; não fixe o rótulo visível.")],
       [{ kind: "function", value: "clean_label" }, { kind: "call", value: "strip" }, { kind: "call", value: "title" }, { kind: "node", value: "Return" }],
       exactTest("p13-label-visible", b("Normalizes a visible label", "Normaliza um rótulo visível"), "print(clean_label(\"  north zone \"))", b("North Zone", "North Zone"), 60, [{ kind: "function", value: "clean_label" }, { kind: "call", value: "strip" }, { kind: "node", value: "Return" }], false),
