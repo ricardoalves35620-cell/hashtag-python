@@ -70,7 +70,17 @@ function simulateConsole(exercise: any, sample: string): string {
   const starter = String(exercise.starterCode || '')
   const prompts = [...starter.matchAll(/input\s*\(\s*["']([^"']*)["']/g)].map(m => m[1])
   const supplied: string[] = (exercise as any).suggestedInputs || []
-  if (!prompts.length) return sample
+  if (!prompts.length) {
+    // A from-scratch exercise writes its own prompts, which the starter never shows.
+    // Simulate them only when the task actually asks the learner to gather input —
+    // inventing prompts for an exercise that reads nothing breaks its line counts.
+    const brief = [exercise.description?.en, exercise.description?.pt].filter(Boolean).join(' ')
+    if (!/\b(ask|input|gather|pergunt|digite|receber)\b/i.test(brief)) return sample
+    const invented = supplied.length
+      ? supplied.map((v, i) => `Question ${i + 1}: ${v}`).join('\n')
+      : 'Question: value'
+    return `${invented}\n${sample}`
+  }
   const echoed = prompts.map((p, i) => `${p}${supplied[i] ?? ''}`).join('\n')
   return `${echoed}\n${sample}`
 }
