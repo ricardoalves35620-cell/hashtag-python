@@ -279,13 +279,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "clean_records",
       "starterCode": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Normalize status, coerce amount, remove invalid and duplicate rows, sort by amount.\"\"\"\n    pass",
-      "publicAfterCode": "print(clean_records([{\"amount\": \"10\", \"status\": \" Open \"}, {\"amount\": \"bad\", \"status\": \"x\"}]))",
-      "publicExpected": "'status': 'open'",
-      "hiddenAfterCode": "print(clean_records([{\"amount\": 2, \"status\": \"A\"}, {\"amount\": 1, \"status\": \"B\"}, {\"amount\": 2, \"status\": \"A\"}]))",
-      "hiddenExpected": "[{'amount': 1",
+      "publicAfterCode": "print(clean_records([{\"amount\": \"10\", \"status\": \" Open \"}, {\"amount\": \"bad\", \"status\": \"x\"}])[0][\"status\"])",
+      "publicExpected": "open",
+      "hiddenAfterCode": "print([int(row[\"amount\"]) for row in clean_records([{\"amount\": 2, \"status\": \"A\"}, {\"amount\": 1, \"status\": \"B\"}, {\"amount\": 2, \"status\": \"A\"}])])",
+      "hiddenExpected": "[1, 2]",
       "requirements": [
         {
           "kind": "import",
@@ -299,13 +298,12 @@ const specs: ConceptPhaseSpec[] = [
       "timeoutMs": 90000
     },
     "exam": {
-      "checkType": "contains",
       "functionName": "clean_records",
       "starterCode": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Return a list of cleaned records without changing the source list.\"\"\"\n    pass",
-      "publicAfterCode": "source=[{\"amount\": \"5\", \"status\": \" OPEN \"}]\nprint(clean_records(source), source)",
-      "publicExpected": "'status': 'open'",
-      "hiddenAfterCode": "print(clean_records([]))",
-      "hiddenExpected": "[]",
+      "publicAfterCode": "source = [{\"amount\": \"5\", \"status\": \" OPEN \"}]\ncleaned = clean_records(source)\nprint(cleaned[0][\"status\"], source[0][\"status\"].strip())",
+      "publicExpected": "open OPEN",
+      "hiddenAfterCode": "print(len(clean_records([])))",
+      "hiddenExpected": "0",
       "requirements": [
         {
           "kind": "import",
