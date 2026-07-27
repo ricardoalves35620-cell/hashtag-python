@@ -39,10 +39,30 @@ export function outputSimilarity(exercise: Exercise, lang: Lang, output: string)
 
   const normalizedOutput = normalize(output)
   const languages: Lang[] = lang === 'en' ? ['en', 'pt'] : ['pt', 'en']
+
+  // A sample line may mark the part that legitimately varies with a placeholder, e.g.
+  // "Running: {{file}}". Those lines are matched by pattern, so an exercise that tells
+  // the learner to change a value does not then fail them for changing it.
+  const lineMatches = (rawLine: string) => {
+    const line = rawLine.trim().toLowerCase()
+    if (!line) return true
+    if (!line.includes('{{')) return normalizedOutput.includes(personalize(line))
+    const pattern = line
+      .split(/\{\{[^}]*\}\}/)
+      .map(part => part.replace(/[.*+?^${}()|[\]\\]/g, match => '\\' + match))
+      .join('.+')
+    try {
+      return new RegExp(pattern, 'i').test(normalizedOutput)
+    } catch {
+      return normalizedOutput.includes(personalize(line))
+    }
+  }
+
   const scores = languages.map(language => {
-    const expected = meaningfulLines(personalize(exercise.sampleOutput![language]))
+    const expected = (exercise.sampleOutput![language] || '')
+      .replace(/\r/g, '').split('\n').map(l => l.trim()).filter(Boolean)
     if (expected.length === 0) return 1
-    const matched = expected.filter(line => normalizedOutput.includes(line)).length
+    const matched = expected.filter(lineMatches).length
     return matched / expected.length
   })
 
@@ -50,8 +70,9 @@ export function outputSimilarity(exercise: Exercise, lang: Lang, output: string)
     languages.flatMap(language => personalize(exercise.sampleOutput![language]).match(/-?\d+(?:[.,]\d+)?/g) || [])
   ))
   const hasNumbers = numericTokens.every(token => normalizedOutput.includes(token.replace(',', '.')) || normalizedOutput.includes(token))
+  const expectedCount = (exercise.sampleOutput[lang] || '').replace(/\r/g, '').split('\n').map(l => l.trim()).filter(Boolean).length
   const bestScore = Math.max(...scores)
-  const threshold = meaningfulLines(personalize(exercise.sampleOutput[lang])).length <= 2 ? 1 : 0.75
+  const threshold = expectedCount <= 2 ? 1 : 0.75
 
   return {
     passed: bestScore >= threshold && hasNumbers,

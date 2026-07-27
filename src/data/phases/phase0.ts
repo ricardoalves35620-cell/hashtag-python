@@ -33,7 +33,7 @@ export const phase0: Phase = {
         { en: 'The variable file_name stores text. The first print combines a label with that stored value.', pt: 'A variável file_name guarda um texto. O primeiro print combina um rótulo com esse valor guardado.' },
         { en: 'After the first run, change only the filename text, run again, and confirm which part of the output changed.', pt: 'Depois da primeira execução, altere somente o texto do nome do arquivo, execute novamente e confirme qual parte da saída mudou.' },
       ],
-      sampleOutput: { en: 'Python is ready', pt: 'Python is ready' },
+      sampleOutput: { en: 'Running: {{file}}\nPython is ready', pt: 'Running: {{file}}\nPython is ready' },
       grading: {
         codeRequirements: [{ kind: 'assignment', value: 'file_name' }, { kind: 'call', value: 'print', minCount: 2 }],
         tests: [{ id: 'output', description: { en: 'Shows the Python filename and ready message', pt: 'Mostra o arquivo Python e a mensagem de pronto' }, inputs: [], checks: [{ type: 'matches', value: '[A-Za-z0-9_-]+[.]py' }, { type: 'contains_any', value: ['ready', 'pronto'] }], points: 100 }],
