@@ -33,6 +33,9 @@ export interface ConceptPhaseSpec {
   bestPractice: Bilingual
   outcomes: { en: string[]; pt: string[] }
   practice: ChallengeSpec
+  /** Optional genuinely different challenge. When absent, no third exercise is generated
+   *  rather than duplicating the practice task. */
+  transfer?: ChallengeSpec
   exam: ChallengeSpec
   quizPurpose: Bilingual
   quizBestPractice: Bilingual
@@ -72,7 +75,66 @@ function makeTests(prefix: string, challenge: ChallengeSpec) {
   ]
 }
 
-export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
+/** Pulls plausible wrong answers from other phases in the same batch. A statement that is
+ *  true elsewhere but wrong here forces the learner to know THIS concept, unlike a joke
+ *  option that can be eliminated without understanding anything. */
+function distractorsFrom(
+  siblings: ConceptPhaseSpec[],
+  self: ConceptPhaseSpec,
+  pick: (spec: ConceptPhaseSpec) => Bilingual,
+  fallback: Bilingual[],
+): Bilingual[] {
+  const correct = pick(self).en.trim()
+  const seen = new Set<string>([correct])
+  const pool: Bilingual[] = []
+  const others = siblings.filter(item => item.id !== self.id)
+
+  // Rotate the start position by phase id so neighbouring phases don't share
+  // the same three wrong answers, then take the first distinct ones.
+  const start = others.length > 0 ? Math.abs(self.id) % others.length : 0
+  for (let step = 0; step < others.length && pool.length < 3; step++) {
+    const candidate = pick(others[(start + step) % others.length])
+    const key = candidate.en.trim()
+    if (seen.has(key)) continue
+    seen.add(key)
+    pool.push(candidate)
+  }
+
+  return pool.length === 3 ? pool : fallback
+}
+
+const practiceClosing: Record<string, Bilingual> = {
+  base: {
+    en: 'Predict the result before running. Change one value. Run again. Explain why it changed.',
+    pt: 'Preveja o resultado antes de executar. Mude um valor. Execute de novo. Explique por que mudou.',
+  },
+  professional: {
+    en: 'Write the failing case first, then the fix. Ask what a reviewer would question, and answer it in the code.',
+    pt: 'Escreva primeiro o caso que falha, depois a correção. Pergunte o que um revisor questionaria e responda no código.',
+  },
+  advanced: {
+    en: 'Reason about cost and limits before optimising. Measure, change one thing, measure again.',
+    pt: 'Pense em custo e limites antes de otimizar. Meça, mude uma coisa, meça de novo.',
+  },
+  engineering: {
+    en: 'Design the interface before the implementation. Then break your own assumptions and see what holds.',
+    pt: 'Projete a interface antes da implementação. Depois quebre suas suposições e veja o que resiste.',
+  },
+  'ai-data': {
+    en: 'Check shapes and units by hand on a tiny example before trusting any library output.',
+    pt: 'Confira dimensões e unidades à mão em um exemplo pequeno antes de confiar na biblioteca.',
+  },
+  'ai-deep': {
+    en: 'Inspect intermediate values, not just the final number. Most errors hide in the middle.',
+    pt: 'Inspecione valores intermediários, não só o número final. A maioria dos erros se esconde no meio.',
+  },
+  'ai-local': {
+    en: 'Run it once end to end before improving anything. A working baseline beats a clever guess.',
+    pt: 'Rode tudo de ponta a ponta antes de melhorar. Uma base funcionando vale mais que um palpite esperto.',
+  },
+}
+
+export function createConceptPhase(spec: ConceptPhaseSpec, siblings: ConceptPhaseSpec[] = [spec]): Phase {
   const practiceRequirements = spec.practice.requirements || [{ kind: 'function', value: spec.practice.functionName } as CodeRequirement]
   const examRequirements = spec.exam.requirements || [{ kind: 'function', value: spec.exam.functionName } as CodeRequirement]
 
@@ -103,10 +165,7 @@ export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
         { type: 'heading', content: { en: 'What mastery looks like', pt: 'Como é o domínio real' } },
         { type: 'text', content: { en: lines(spec.outcomes.en), pt: lines(spec.outcomes.pt) } },
         { type: 'heading', content: { en: 'Deliberate practice', pt: 'Prática deliberada' } },
-        { type: 'text', content: {
-          en: 'Predict the result before running. Change one assumption. Break the code on purpose. Read the traceback. Repair it. Then explain why the repaired version is safer.',
-          pt: 'Preveja o resultado antes de executar. Mude uma suposição. Quebre o código de propósito. Leia o traceback. Corrija. Depois explique por que a versão corrigida é mais segura.'
-        } },
+        { type: 'text', content: practiceClosing[spec.stage] || practiceClosing.base },
       ],
     },
     exercises: [
@@ -143,24 +202,25 @@ export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
           timeoutMs: spec.practice.timeoutMs,
         },
       },
-      {
-        id: `p${spec.id}-explain`,
-        title: { en: 'Explain and harden', pt: 'Explique e fortaleça' },
+      ...(spec.transfer ? [{
+        id: `p${spec.id}-transfer`,
+        title: { en: 'Transfer to a new situation', pt: 'Transfira para uma situação nova' },
         description: {
-          en: 'Improve the starter solution with clear names, validation and one short docstring. The tests evaluate behavior, not formatting.',
-          pt: 'Melhore a solução inicial com nomes claros, validação e uma docstring curta. Os testes avaliam comportamento, não formatação.'
+          en: `Apply the same idea to a different problem. Complete ${spec.transfer.functionName}. Reusing the previous solution unchanged will not pass.`,
+          pt: `Aplique a mesma ideia a outro problema. Complete ${spec.transfer.functionName}. Reaproveitar a solução anterior sem mudanças não passa.`
         },
-        starterCode: spec.practice.starterCode,
+        starterCode: spec.transfer.starterCode,
+        difficulty: 'challenge' as const,
         hints: [
-          { en: 'A good function has one clear responsibility.', pt: 'Uma boa função tem uma responsabilidade clara.' },
-          { en: 'Make invalid states explicit instead of silently producing a wrong result.', pt: 'Torne estados inválidos explícitos em vez de produzir resultado errado silenciosamente.' },
+          { en: 'Name what the two problems have in common before writing code.', pt: 'Diga o que os dois problemas têm em comum antes de escrever código.' },
+          spec.bestPractice,
         ],
         grading: {
-          tests: makeTests(`p${spec.id}-harden`, spec.practice),
-          codeRequirements: practiceRequirements,
-          timeoutMs: spec.practice.timeoutMs,
+          tests: makeTests(`p${spec.id}-transfer`, spec.transfer),
+          codeRequirements: spec.transfer.requirements || [{ kind: 'function', value: spec.transfer.functionName } as CodeRequirement],
+          timeoutMs: spec.transfer.timeoutMs,
         },
-      },
+      }] : []),
     ],
     quiz: [
       {
@@ -168,9 +228,11 @@ export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
         question: { en: `What is the main purpose of ${spec.concept.en}?`, pt: `Qual é o objetivo principal de ${spec.concept.pt}?` },
         options: [
           spec.quizPurpose,
-          { en: 'Make the file longer without changing behavior', pt: 'Deixar o arquivo maior sem mudar o comportamento' },
-          { en: 'Avoid understanding the problem', pt: 'Evitar entender o problema' },
-          { en: 'Replace tests with visual inspection', pt: 'Substituir testes por inspeção visual' },
+          ...distractorsFrom(siblings, spec, item => item.quizPurpose, [
+            { en: 'Make the file longer without changing behavior', pt: 'Deixar o arquivo maior sem mudar o comportamento' },
+            { en: 'Avoid understanding the problem', pt: 'Evitar entender o problema' },
+            { en: 'Replace tests with visual inspection', pt: 'Substituir testes por inspeção visual' },
+          ]),
         ],
         correctIndex: 0,
         explanation: spec.why,
@@ -180,9 +242,11 @@ export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
         question: { en: 'Which choice reflects professional practice?', pt: 'Qual escolha representa prática profissional?' },
         options: [
           spec.quizBestPractice,
-          { en: 'Copy a result that only works for the example', pt: 'Copiar um resultado que só funciona no exemplo' },
-          { en: 'Ignore errors until production', pt: 'Ignorar erros até produção' },
-          { en: 'Use unclear names to type less', pt: 'Usar nomes confusos para digitar menos' },
+          ...distractorsFrom(siblings, spec, item => item.quizBestPractice, [
+            { en: 'Copy a result that only works for the example', pt: 'Copiar um resultado que só funciona no exemplo' },
+            { en: 'Ignore errors until production', pt: 'Ignorar erros até produção' },
+            { en: 'Use unclear names to type less', pt: 'Usar nomes confusos para digitar menos' },
+          ]),
         ],
         correctIndex: 0,
         explanation: spec.bestPractice,
@@ -192,9 +256,11 @@ export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
         question: { en: 'What should you avoid?', pt: 'O que deve ser evitado?' },
         options: [
           spec.quizAvoid,
-          { en: 'Testing more than one input', pt: 'Testar mais de uma entrada' },
-          { en: 'Reading documentation', pt: 'Ler documentação' },
-          { en: 'Explaining a design decision', pt: 'Explicar uma decisão de design' },
+          ...distractorsFrom(siblings, spec, item => item.quizAvoid, [
+            { en: 'Testing more than one input', pt: 'Testar mais de uma entrada' },
+            { en: 'Reading documentation', pt: 'Ler documentação' },
+            { en: 'Explaining a design decision', pt: 'Explicar uma decisão de design' },
+          ]),
         ],
         correctIndex: 0,
         explanation: spec.commonMistake,
@@ -227,5 +293,5 @@ export function createConceptPhase(spec: ConceptPhaseSpec): Phase {
 }
 
 export function createConceptPhases(specs: ConceptPhaseSpec[]): Phase[] {
-  return specs.map(createConceptPhase)
+  return specs.map(spec => createConceptPhase(spec, specs))
 }
