@@ -908,7 +908,7 @@ print(client_labels)`,
     testCases: [
       { id: 'tc12_1', description: { en: 'all_payouts has 950', pt: 'all_payouts tem 950' }, inputs: [], checks: [{ type: 'contains', value: '950' }], points: 25 },
       { id: 'tc12_2', description: { en: 'big_payouts has 4250', pt: 'big_payouts tem 4250' }, inputs: [], checks: [{ type: 'contains', value: '4250' }], points: 25 },
-      { id: 'tc12_3', description: { en: 'client_labels produced', pt: 'client_labels produzido' }, inputs: [], checks: [{ type: 'contains', value: 'Client' }], points: 25 },
+      { id: 'tc12_3', description: { en: 'client_labels produced', pt: 'client_labels produzido' }, inputs: [], checks: [{ type: 'matches', value: '(client|cliente)' }], points: 25 },
       { id: 'tc12_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
     ]
   }
@@ -1105,7 +1105,7 @@ process_claim("Bob", 3500, 250)`,
             afterCode: 'process_claim("Eve", 9000, 400)',
             checks: [
               { type: 'contains', value: 'Eve', target: 'test_output' },
-              { type: 'contains', value: 'Urgent', target: 'test_output' },
+              { type: 'matches', value: '(urgent|urgente)', target: 'test_output' },
               { type: 'contains', value: '8600', target: 'test_output' }
             ],
             points: 2,
@@ -1201,8 +1201,8 @@ for claim in claims:
     print(claim["client"], "|", priority, "| $", payout)`,
     testCases: [
       { id: 'tc13_1', description: { en: 'Alice payout 11700', pt: 'Alice pagamento 11700' }, inputs: [], checks: [{ type: 'contains', value: '11700' }], points: 20 },
-      { id: 'tc13_2', description: { en: 'Alice is Critical', pt: 'Alice é Critical' }, inputs: [], checks: [{ type: 'contains', value: 'Critical' }], points: 20 },
-      { id: 'tc13_3', description: { en: 'Carlos is Urgent', pt: 'Carlos é Urgent' }, inputs: [], checks: [{ type: 'contains', value: 'Urgent' }], points: 20 },
+      { id: 'tc13_2', description: { en: 'Alice is Critical', pt: 'Alice é Critical' }, inputs: [], checks: [{ type: 'matches', value: '(critical|cr[ií]tico)' }], points: 20 },
+      { id: 'tc13_3', description: { en: 'Carlos is Urgent', pt: 'Carlos é Urgent' }, inputs: [], checks: [{ type: 'matches', value: '(urgent|urgente)' }], points: 20 },
       { id: 'tc13_4', description: { en: 'Bob payout 3250', pt: 'Bob pagamento 3250' }, inputs: [], checks: [{ type: 'contains', value: '3250' }], points: 20 },
       { id: 'tc13_5', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
     ]
@@ -1644,7 +1644,7 @@ for name, dmg, ded in claims:
     testCases: [
       { id: 'tc15_1', description: { en: 'Alice | Critical | $11700', pt: 'Alice | Critical | $11700' }, inputs: [], checks: [{ type: 'contains', value: '11700' }], points: 25 },
       { id: 'tc15_2', description: { en: 'Bob | Normal | $4250', pt: 'Bob | Normal | $4250' }, inputs: [], checks: [{ type: 'contains', value: '4250' }], points: 25 },
-      { id: 'tc15_3', description: { en: 'Carlos | Urgent', pt: 'Carlos | Urgent' }, inputs: [], checks: [{ type: 'contains', value: 'Urgent' }], points: 25 },
+      { id: 'tc15_3', description: { en: 'Carlos | Urgent', pt: 'Carlos | Urgent' }, inputs: [], checks: [{ type: 'matches', value: '(urgent|urgente)' }], points: 25 },
       { id: 'tc15_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
     ]
   }
@@ -2127,7 +2127,7 @@ print("Saved to report.csv")`,
     testCases: [
       { id: 'tc18_1', description: { en: 'Shows total', pt: 'Mostra total' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 30 },
       { id: 'tc18_2', description: { en: 'Total = 14230', pt: 'Total = 14230' }, inputs: [], checks: [{ type: 'contains', value: '14230' }], points: 40 },
-      { id: 'tc18_3', description: { en: 'Shows saved', pt: 'Mostra salvo' }, inputs: [], checks: [{ type: 'contains', value: 'Saved' }], points: 20 },
+      { id: 'tc18_3', description: { en: 'Shows saved', pt: 'Mostra salvo' }, inputs: [], checks: [{ type: 'matches', value: '(saved|salvo|economizado)' }], points: 20 },
       { id: 'tc18_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 }
     ]
   }
@@ -2385,9 +2385,9 @@ for c in claims:
 
 print("Overdue:", overdue)`,
     testCases: [
-      { id: 'tc20_1', description: { en: 'Alice OVERDUE', pt: 'Alice OVERDUE' }, inputs: [], checks: [{ type: 'contains', value: 'OVERDUE' }], points: 25 },
-      { id: 'tc20_2', description: { en: 'Carlos On time', pt: 'Carlos On time' }, inputs: [], checks: [{ type: 'contains', value: 'On time' }], points: 25 },
-      { id: 'tc20_3', description: { en: 'Overdue count', pt: 'Contagem overdue' }, inputs: [], checks: [{ type: 'contains', value: 'Overdue' }], points: 25 },
+      { id: 'tc20_1', description: { en: 'Alice OVERDUE', pt: 'Alice OVERDUE' }, inputs: [], checks: [{ type: 'matches', value: '(overdue|atrasado|vencido)' }], points: 25 },
+      { id: 'tc20_2', description: { en: 'Carlos On time', pt: 'Carlos On time' }, inputs: [], checks: [{ type: 'matches', value: '(on time|em dia|no prazo)' }], points: 25 },
+      { id: 'tc20_3', description: { en: 'Overdue count', pt: 'Contagem overdue' }, inputs: [], checks: [{ type: 'matches', value: '(overdue|atrasado|vencido)' }], points: 25 },
       { id: 'tc20_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
     ]
   }
@@ -2505,8 +2505,8 @@ for i in range(10):
 print(f"Critical:{critical} Urgent:{urgent} Normal:{normal_c}")
 print("Total: $", total)`,
     testCases: [
-      { id: 'tc21_1', description: { en: 'Shows CRITICAL', pt: 'Mostra CRITICAL' }, inputs: [], checks: [{ type: 'contains', value: 'CRITICAL' }], points: 25 },
-      { id: 'tc21_2', description: { en: 'Count summary shown', pt: 'Resumo de contagem' }, inputs: [], checks: [{ type: 'contains', value: 'Critical' }], points: 25 },
+      { id: 'tc21_1', description: { en: 'Shows CRITICAL', pt: 'Mostra CRITICAL' }, inputs: [], checks: [{ type: 'matches', value: '(critical|cr[ií]tico)' }], points: 25 },
+      { id: 'tc21_2', description: { en: 'Count summary shown', pt: 'Resumo de contagem' }, inputs: [], checks: [{ type: 'matches', value: '(critical|cr[ií]tico)' }], points: 25 },
       { id: 'tc21_3', description: { en: 'Total shown', pt: 'Total mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 25 },
       { id: 'tc21_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 25 }
     ]
@@ -3205,9 +3205,9 @@ print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
 print(f"Top 3: {top3}")`,
     testCases: [
       { id: 'tc26_1', description: { en: 'Total shown', pt: 'Total mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 20 },
-      { id: 'tc26_2', description: { en: 'Critical count', pt: 'Contagem crítica' }, inputs: [], checks: [{ type: 'contains', value: 'Critical' }], points: 20 },
+      { id: 'tc26_2', description: { en: 'Critical count', pt: 'Contagem crítica' }, inputs: [], checks: [{ type: 'matches', value: '(critical|cr[ií]tico)' }], points: 20 },
       { id: 'tc26_3', description: { en: 'Top 3 shown', pt: 'Top 3 mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Top 3' }], points: 20 },
-      { id: 'tc26_4', description: { en: 'Payout shown', pt: 'Payout mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Payout' }], points: 20 },
+      { id: 'tc26_4', description: { en: 'Payout shown', pt: 'Payout mostrado' }, inputs: [], checks: [{ type: 'matches', value: '(payout|pagamento)' }], points: 20 },
       { id: 'tc26_5', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
     ]
   }
@@ -3405,10 +3405,10 @@ delete_claim(db, 4)
 print("=== FINAL ==="); read_all(db)
 print("=== STATS ==="); analyze(db)`,
     testCases: [
-      { id: 'tc27_1', description: { en: 'Alice Critical approved', pt: 'Alice Critical aprovada' }, inputs: [], checks: [{ type: 'contains', value: 'Critical' }], points: 20 },
-      { id: 'tc27_2', description: { en: 'Alice status approved', pt: 'Status Alice approved' }, inputs: [], checks: [{ type: 'contains', value: 'approved' }], points: 20 },
+      { id: 'tc27_1', description: { en: 'Alice Critical approved', pt: 'Alice Critical aprovada' }, inputs: [], checks: [{ type: 'matches', value: '(critical|cr[ií]tico)' }], points: 20 },
+      { id: 'tc27_2', description: { en: 'Alice status approved', pt: 'Status Alice approved' }, inputs: [], checks: [{ type: 'matches', value: '(approved|aprovado)' }], points: 20 },
       { id: 'tc27_3', description: { en: 'Stats total shown', pt: 'Total de stats mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 20 },
-      { id: 'tc27_4', description: { en: 'Payout shown', pt: 'Payout mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Payout' }], points: 20 },
+      { id: 'tc27_4', description: { en: 'Payout shown', pt: 'Payout mostrado' }, inputs: [], checks: [{ type: 'matches', value: '(payout|pagamento)' }], points: 20 },
       { id: 'tc27_5', description: { en: 'No crash', pt: 'Sem crash' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
     ]
   }

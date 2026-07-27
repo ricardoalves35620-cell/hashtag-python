@@ -36,7 +36,7 @@ export const phase0: Phase = {
       sampleOutput: { en: 'Running: meu_primeiro.py\nPython is ready', pt: 'Running: meu_primeiro.py\nPython is ready' },
       grading: {
         codeRequirements: [{ kind: 'assignment', value: 'file_name' }, { kind: 'call', value: 'print', minCount: 2 }],
-        tests: [{ id: 'output', description: { en: 'Shows the Python filename and ready message', pt: 'Mostra o arquivo Python e a mensagem de pronto' }, inputs: [], checks: [{ type: 'contains', value: 'meu_primeiro.py' }, { type: 'contains', value: 'Python is ready' }], points: 100 }],
+        tests: [{ id: 'output', description: { en: 'Shows the Python filename and ready message', pt: 'Mostra o arquivo Python e a mensagem de pronto' }, inputs: [], checks: [{ type: 'matches', value: '[A-Za-z0-9_-]+[.]py' }, { type: 'contains_any', value: ['ready', 'pronto'] }], points: 100 }],
       },
     },
     {

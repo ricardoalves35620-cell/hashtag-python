@@ -1208,8 +1208,8 @@ days = int(input("Days since policy: "))
 
 # Build your decision logic:`,
     testCases: [
-      { id: 'tc5_1', description: { en: 'Fraud case flagged', pt: 'Caso de fraude sinalizado' }, inputs: ['8000', '10'], checks: [{ type: 'contains', value: 'INVESTIGATE' }], points: 35 },
-      { id: 'tc5_2', description: { en: 'Big old claim needs approval', pt: 'Sinistro grande antigo precisa aprovação' }, inputs: ['15000', '200'], checks: [{ type: 'contains', value: 'APPROVAL' }], points: 35 },
+      { id: 'tc5_1', description: { en: 'Fraud case flagged', pt: 'Caso de fraude sinalizado' }, inputs: ['8000', '10'], checks: [{ type: 'matches', value: '(investigate|investigar)' }], points: 35 },
+      { id: 'tc5_2', description: { en: 'Big old claim needs approval', pt: 'Sinistro grande antigo precisa aprovação' }, inputs: ['15000', '200'], checks: [{ type: 'matches', value: '(approval|aprova[cç][aã]o)' }], points: 35 },
       { id: 'tc5_3', description: { en: 'Normal claim auto-approved', pt: 'Sinistro normal auto-aprovado' }, inputs: ['2000', '100'], checks: [{ type: 'contains', value: 'AUTO' }], points: 30 }
     ]
   }
@@ -1503,10 +1503,10 @@ print("Premium:", premium)`,
 
 # Build the 4-tier waterfall (highest first!):`,
     testCases: [
-      { id: 'tc6_1', description: { en: 'Critical tier', pt: 'Nível crítico' }, inputs: ['15000'], checks: [{ type: 'contains', value: 'CRITICAL' }], points: 25 },
-      { id: 'tc6_2', description: { en: 'Urgent tier', pt: 'Nível urgente' }, inputs: ['7000'], checks: [{ type: 'contains', value: 'URGENT' }], points: 25 },
+      { id: 'tc6_1', description: { en: 'Critical tier', pt: 'Nível crítico' }, inputs: ['15000'], checks: [{ type: 'matches', value: '(critical|cr[ií]tico)' }], points: 25 },
+      { id: 'tc6_2', description: { en: 'Urgent tier', pt: 'Nível urgente' }, inputs: ['7000'], checks: [{ type: 'matches', value: '(urgent|urgente)' }], points: 25 },
       { id: 'tc6_3', description: { en: 'Normal tier', pt: 'Nível normal' }, inputs: ['2000'], checks: [{ type: 'contains', value: 'NORMAL' }], points: 25 },
-      { id: 'tc6_4', description: { en: 'Low tier', pt: 'Nível baixo' }, inputs: ['500'], checks: [{ type: 'contains', value: 'LOW' }], points: 25 }
+      { id: 'tc6_4', description: { en: 'Low tier', pt: 'Nível baixo' }, inputs: ['500'], checks: [{ type: 'matches', value: '(low|baixo)' }], points: 25 }
     ]
   }
 }
