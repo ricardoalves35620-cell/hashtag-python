@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Layout from '../components/Layout'
 import VSCodeEditor from '../components/VSCodeEditor'
@@ -12,7 +12,8 @@ import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
-import { loadCompletedExercises, saveCompletedExercise } from '../lib/exerciseProgress'
+import { loadCompletedExercises, saveCompletedExercise, loadExerciseNotes, saveExerciseNote } from '../lib/exerciseProgress'
+import { subscribeState, getStateVersion } from '../lib/syncedStore'
 import { preparePythonEngine } from '../lib/pyodide'
 import { gradeExercise, type ValidationItem } from '../lib/learningValidation'
 import { getSkillsForPhase } from '../data/skills'
@@ -65,6 +66,7 @@ export default function Exercises() {
 
   // Exercises already earned survive a reload, an offline session or a deploy — and
   // the page opens on the first one still outstanding rather than always on number 1.
+  useSyncExternalStore(subscribeState, getStateVersion, getStateVersion)
   const restoredFor = useRef<string | null>(null)
   useEffect(() => {
     if (!learnerId || !phase) return
@@ -73,6 +75,11 @@ export default function Exercises() {
     if (Object.keys(done).length) setValidated(previous => ({ ...done, ...previous }))
     if (restoredFor.current === token) return
     restoredFor.current = token
+    const notes = loadExerciseNotes(learnerId, phase.id)
+    if (Object.keys(notes).length) {
+      setPredictions(previous => ({ ...Object.fromEntries(Object.entries(notes).map(([id, note]) => [id, note.prediction || ''])), ...previous }))
+      setChangePlans(previous => ({ ...Object.fromEntries(Object.entries(notes).map(([id, note]) => [id, note.plan || ''])), ...previous }))
+    }
     const firstOutstanding = phase.exercises.findIndex(item => !done[item.id])
     setActiveEx(firstOutstanding === -1 ? phase.exercises.length - 1 : firstOutstanding)
   }, [learnerId, phase?.id])
@@ -308,9 +315,9 @@ export default function Exercises() {
           <h3 className="font-semibold text-ink">🧠 {t.thinkTitle}</h3>
           <p className="mt-1 text-sm leading-6 text-ink-secondary">{t.thinkHelp}</p>
           <label className="mt-3 block text-sm font-medium text-ink">{t.predict}</label>
-          <textarea data-testid="exercise-prediction" aria-describedby="exercise-run-requirements" className="mt-1 min-h-20 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={predictions[exercise.id] || ''} onChange={event => setPredictions(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
+          <textarea data-testid="exercise-prediction" aria-describedby="exercise-run-requirements" className="mt-1 min-h-20 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={predictions[exercise.id] || ''} onChange={event => { setPredictions(previous => ({ ...previous, [exercise.id]: event.target.value })); if (learnerId) saveExerciseNote(learnerId, phase.id, exercise.id, { prediction: event.target.value }) }} />
           <label className="mt-3 block text-sm font-medium text-ink">{t.plan}</label>
-          <input data-testid="exercise-change-plan" aria-describedby="exercise-run-requirements" className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={changePlans[exercise.id] || ''} onChange={event => setChangePlans(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
+          <input data-testid="exercise-change-plan" aria-describedby="exercise-run-requirements" className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={changePlans[exercise.id] || ''} onChange={event => { setChangePlans(previous => ({ ...previous, [exercise.id]: event.target.value })); if (learnerId) saveExerciseNote(learnerId, phase.id, exercise.id, { plan: event.target.value }) }} />
           <div id="exercise-run-requirements" data-testid="exercise-run-requirements" className="mt-3 rounded-lg border border-line bg-surface p-3 text-sm text-ink-secondary">
             <div className="font-semibold text-ink">{t.unlockTitle}</div>
             <div className="mt-2 grid gap-1">

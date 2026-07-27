@@ -1,50 +1,41 @@
 /**
- * Which exercises the learner has already got right.
+ * Which exercises the learner has already got right, synced across devices.
  *
- * Phase progress is only written once EVERY exercise in a phase passes, so a learner
- * who finishes two of three and then reloads — or who is interrupted by a deploy —
- * loses the ones they had already earned and starts again at exercise 1.
- *
- * This keeps that per-exercise state, scoped to the learner and the phase. It is
- * written synchronously to localStorage so it survives a reload, an offline session
- * and a flight. Cloud sync can be layered on later using the same shape.
+ * Phase progress is only written once EVERY exercise in a phase passes, so without
+ * this a learner who finishes two of three and reloads loses both. Storage goes
+ * through the shared synced store, so a pass survives a reload, a cleared cache,
+ * and moving to another device.
  */
 
-const KEY_PREFIX = 'hp_exercise_done_'
+import { readState, writeState } from './syncedStore'
 
-function key(learnerId: string, phaseId: number) {
-  return `${KEY_PREFIX}${learnerId}_${phaseId}`
-}
+const key = (phaseId: number) => `exercises_done:${phaseId}`
 
 export function loadCompletedExercises(learnerId: string, phaseId: number): Record<string, boolean> {
-  if (!learnerId || typeof localStorage === 'undefined') return {}
-  try {
-    const raw = localStorage.getItem(key(learnerId, phaseId))
-    if (!raw) return {}
-    const parsed = JSON.parse(raw)
-    if (!parsed || typeof parsed !== 'object') return {}
-    // Only ever restore positives: a stored `false` must never mask a fresh pass.
-    return Object.fromEntries(
-      Object.entries(parsed).filter(([, value]) => value === true).map(([id]) => [id, true]),
-    )
-  } catch {
-    return {}
-  }
+  const stored = readState<Record<string, boolean>>(learnerId, key(phaseId), {})
+  // Only ever restore positives: a stored `false` must never mask a fresh pass.
+  return Object.fromEntries(Object.entries(stored).filter(([, value]) => value === true).map(([id]) => [id, true]))
 }
 
 export function saveCompletedExercise(learnerId: string, phaseId: number, exerciseId: string) {
-  if (!learnerId || typeof localStorage === 'undefined') return
-  try {
-    const current = loadCompletedExercises(learnerId, phaseId)
-    if (current[exerciseId]) return
-    current[exerciseId] = true
-    localStorage.setItem(key(learnerId, phaseId), JSON.stringify(current))
-  } catch {
-    // Storage full or blocked. The exercise still counts for this session.
-  }
+  if (!learnerId) return
+  if (loadCompletedExercises(learnerId, phaseId)[exerciseId]) return
+  writeState<Record<string, boolean>>(learnerId, key(phaseId), { [exerciseId]: true })
 }
 
-/** Used by the reset flow so starting over really does clear earned exercises. */
-export function isExerciseProgressKey(storageKey: string) {
-  return storageKey.startsWith(KEY_PREFIX)
+/** Predictions and change plans the learner typed, kept so they can be revisited and edited. */
+const notesKey = (phaseId: number) => `exercise_notes:${phaseId}`
+
+export interface ExerciseNote { prediction?: string; plan?: string }
+
+export function loadExerciseNotes(learnerId: string, phaseId: number): Record<string, ExerciseNote> {
+  return readState<Record<string, ExerciseNote>>(learnerId, notesKey(phaseId), {})
+}
+
+export function saveExerciseNote(learnerId: string, phaseId: number, exerciseId: string, patch: ExerciseNote) {
+  if (!learnerId) return
+  const current = loadExerciseNotes(learnerId, phaseId)
+  writeState<Record<string, ExerciseNote>>(learnerId, notesKey(phaseId), {
+    [exerciseId]: { ...current[exerciseId], ...patch },
+  })
 }

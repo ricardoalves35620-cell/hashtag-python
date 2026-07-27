@@ -1,7 +1,8 @@
 import { getSupabase } from './supabase'
+import { clearState, isSyncedStateKey } from './syncedStore'
 
-const CLOUD_TABLES = ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack', 'learning_project_progress', 'learning_journey_progress', 'learning_journal_entries', 'learning_reflections', 'learner_profiles'] as const
-const OPTIONAL_CLOUD_TABLES = new Set<string>(['learning_project_progress', 'learning_journey_progress', 'learning_journal_entries', 'learning_reflections', 'learner_profiles'])
+const CLOUD_TABLES = ['user_progress', 'learning_states', 'code_drafts', 'exam_drafts', 'user_fasttrack', 'learning_project_progress', 'learning_journey_progress', 'learning_journal_entries', 'learning_reflections', 'learner_profiles', 'learner_state'] as const
+const OPTIONAL_CLOUD_TABLES = new Set<string>(['learning_project_progress', 'learning_journey_progress', 'learning_journal_entries', 'learning_reflections', 'learner_profiles', 'learner_state'])
 
 const PRESERVED_LOCAL_KEYS = new Set([
   'hp_lang', 'hp_theme', 'hp_editor_height', 'hp_editor_wrap', 'hp_editor_font_size',
@@ -17,6 +18,7 @@ function isLearningKey(key: string) {
     || key.startsWith('hp_base_zero_')
     || key === 'hp_learner_profile'
     || key.startsWith('hp_exercise_done_')
+    || isSyncedStateKey(key)
     || key.startsWith('hp_lesson_reflection_')
     || key === 'hp_ft_done'
     || key.startsWith('hp_project_lab_')
@@ -33,6 +35,7 @@ export function clearLocalLearningData() {
 }
 
 export async function resetLearningProgress(userId: string) {
+  await clearState(userId)
   const failures: string[] = []
 
   for (const table of CLOUD_TABLES) {

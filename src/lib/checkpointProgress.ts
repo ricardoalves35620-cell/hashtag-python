@@ -1,62 +1,39 @@
 /**
- * Checkpoint answers, kept so they survive navigation.
+ * Checkpoint answers, synced across devices.
  *
- * A checkpoint exists to make the learner commit to an answer before moving on. Two
- * things follow from that: the answer has to persist (walking back to a lesson and
- * finding your reasoning erased teaches nothing), and an unanswered checkpoint should
- * hold the "next" button — otherwise it is trivially skipped and adds nothing.
- *
- * Answers are never scored. Getting one wrong still counts as answered; the point is
- * to have committed and read the explanation.
+ * A checkpoint asks the learner to commit before moving on, so the answer has to
+ * persist — walking back and finding your reasoning erased teaches nothing. Answers
+ * are never scored: a wrong one still counts as answered, and can be changed later.
  */
 
 import type { LessonBlock } from '../data/types'
+import { readState, writeState } from './syncedStore'
 
-const KEY_PREFIX = 'hp_checkpoint_'
-
-function key(learnerId: string) {
-  return `${KEY_PREFIX}${learnerId}`
-}
+const KEY = 'checkpoints'
 
 /** Checkpoints carry no id, so derive a stable one from the snippet they show. */
 export function checkpointId(block: LessonBlock): string {
   const source = block.checkpoint?.code || ''
   let hash = 0
-  for (let index = 0; index < source.length; index += 1) {
-    hash = (hash * 31 + source.charCodeAt(index)) | 0
-  }
+  for (let index = 0; index < source.length; index += 1) hash = (hash * 31 + source.charCodeAt(index)) | 0
   return `cp${hash.toString(36)}`
 }
 
 export type CheckpointAnswers = Record<string, number>
 
 export function loadCheckpointAnswers(learnerId: string): CheckpointAnswers {
-  if (!learnerId || typeof localStorage === 'undefined') return {}
-  try {
-    const raw = localStorage.getItem(key(learnerId))
-    const parsed = raw ? JSON.parse(raw) : null
-    if (!parsed || typeof parsed !== 'object') return {}
-    return Object.fromEntries(
-      Object.entries(parsed).filter(([, value]) => typeof value === 'number'),
-    ) as CheckpointAnswers
-  } catch {
-    return {}
-  }
+  const stored = readState<Record<string, unknown>>(learnerId, KEY, {})
+  return Object.fromEntries(
+    Object.entries(stored).filter(([, value]) => typeof value === 'number'),
+  ) as CheckpointAnswers
 }
 
 export function saveCheckpointAnswer(learnerId: string, id: string, chosen: number) {
-  if (!learnerId || typeof localStorage === 'undefined') return
-  try {
-    const current = loadCheckpointAnswers(learnerId)
-    current[id] = chosen
-    localStorage.setItem(key(learnerId), JSON.stringify(current))
-  } catch {
-    // Storage blocked. The answer still stands for this session.
-  }
-  notify()
+  if (!learnerId) return
+  writeState<CheckpointAnswers>(learnerId, KEY, { [id]: chosen })
 }
 
-/** True when every checkpoint in these blocks has been answered. */
+/** True when every checkpoint in these blocks has been answered, right or wrong. */
 export function areCheckpointsAnswered(learnerId: string, blocks: LessonBlock[]): boolean {
   const checkpoints = blocks.filter(block => block.type === 'checkpoint' && block.checkpoint)
   if (checkpoints.length === 0) return true
@@ -71,24 +48,4 @@ export function countUnansweredCheckpoints(learnerId: string, blocks: LessonBloc
   return checkpoints.filter(block => typeof answers[checkpointId(block)] !== 'number').length
 }
 
-export function isCheckpointProgressKey(storageKey: string) {
-  return storageKey.startsWith(KEY_PREFIX)
-}
-
-// ── Change notification, so a gate re-evaluates the moment an answer lands ──
-let version = 0
-const listeners = new Set<() => void>()
-
-function notify() {
-  version += 1
-  listeners.forEach(listener => listener())
-}
-
-export function subscribeCheckpoints(listener: () => void): () => void {
-  listeners.add(listener)
-  return () => { listeners.delete(listener) }
-}
-
-export function getCheckpointVersion(): number {
-  return version
-}
+export { subscribeState as subscribeCheckpoints, getStateVersion as getCheckpointVersion } from './syncedStore'
