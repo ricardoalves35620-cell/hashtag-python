@@ -195,7 +195,16 @@ export async function gradeExercise(
     const authorPinsOutput = (exercise.grading?.tests || []).some(test =>
       (test.checks || []).some(check =>
         CONTENT_CHECKS.has(String(check.type)) && (!check.target || check.target === 'test_output')))
-    const similarity = authorPinsOutput
+
+    // The sample describes the run made with the exercise's OWN input values. If the
+    // learner typed their own, their output is different and still correct, so the
+    // comparison says nothing. The authored tests below run with fixed inputs and
+    // remain the real check.
+    const canonical = (exercise as { suggestedInputs?: string[] }).suggestedInputs || []
+    const usedCanonicalInputs = canonical.length === 0
+      || (inputs.length === canonical.length && inputs.every((value, index) => value.trim() === canonical[index].trim()))
+
+    const similarity = authorPinsOutput && usedCanonicalInputs
       ? outputSimilarity(exercise, lang, run.output)
       : { passed: Boolean(run.output && run.output.trim()), detail: '' }
     checks.push({
