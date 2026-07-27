@@ -41,12 +41,12 @@ describe('outputSimilarity', () => {
   }
 
   it('allows a personalized line while preserving the required result', () => {
-    const result = outputSimilarity(exercise, 'en', 'Welcome to Python!\nMy name is Ricardo\nMy age is 28\nIn 10 years I will be 38\nProgram complete!')
+    const result = outputSimilarity(exercise, 'en', 'Welcome to Python!\nMy name is Ana\nMy age is 28\nIn 10 years I will be 38\nProgram complete!')
     expect(result.passed).toBe(true)
   })
 
   it('rejects output missing required numeric results', () => {
-    const result = outputSimilarity(exercise, 'en', 'Welcome to Python!\nMy name is Ricardo\nProgram complete!')
+    const result = outputSimilarity(exercise, 'en', 'Welcome to Python!\nMy name is Ana\nProgram complete!')
     expect(result.passed).toBe(false)
   })
 })

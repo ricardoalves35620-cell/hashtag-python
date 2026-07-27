@@ -51,8 +51,8 @@ export const IDENTIFIER_ALIASES: Record<string, string[]> = {
   clean_names: ['limpar_nomes'],
   format_report: ['formatar_relatorio'],
   format_distance: ['formatar_distancia'],
-  safe_payout: ['pagamento_seguro'],
-  register_claim: ['registrar_sinistro', 'registrar_reclamacao'],
+  safe_refund: ['reembolso_seguro', 'pagamento_seguro'],
+  register_order: ['registrar_pedido', 'registrar_reclamacao'],
 }
 
 /** Accents, case and separator style should never decide whether an answer is right. */

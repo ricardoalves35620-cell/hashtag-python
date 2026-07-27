@@ -8,8 +8,8 @@ export const phase2: Phase = {
   id: 2,
   title: { en: 'Math & Operators', pt: 'Matemática e Operadores' },
   description: {
-    en: 'Master all Python math operators through real insurance and construction calculations.',
-    pt: 'Domine todos os operadores matemáticos com cálculos reais de seguros e construção.'
+    en: 'Master all Python math operators through real subscription and project calculations.',
+    pt: 'Domine todos os operadores matemáticos com cálculos reais de assinaturas e projeto.'
   },
   icon: '🧮',
   libraries: [],
@@ -20,8 +20,8 @@ export const phase2: Phase = {
 
       { type: 'heading', content: { en: '🌍 Math that lands rovers on Mars', pt: '🌍 Matemática que pousa rovers em Marte' } },
       { type: 'text', content: {
-        en: 'NASA used Python math to land the Perseverance rover within 2.4 meters of its target — after traveling 470 MILLION kilometers. 🚀\n\nCloser to home:\n• Uber calculates 20 million ride prices per day with these operators\n• Nubank processes millions of interest calculations per hour\n• Every insurance payout in the world uses subtraction and multiplication\n\nThe 6 operators you learn today power all of it.',
-        pt: 'A NASA usou matemática Python para pousar o rover Perseverance com 2,4 metros de precisão — após viajar 470 MILHÕES de quilômetros. 🚀\n\nMais perto de casa:\n• O Uber calcula 20 milhões de preços de corrida por dia com esses operadores\n• O Nubank processa milhões de cálculos de juros por hora\n• Todo pagamento de seguro no mundo usa subtração e multiplicação\n\nOs 6 operadores que você aprende hoje alimentam tudo isso.'
+        en: 'NASA used Python math to land the Perseverance rover within 2.4 meters of its target — after traveling 470 MILLION kilometers. 🚀\n\nCloser to home:\n• Uber calculates 20 million ride prices per day with these operators\n• Nubank processes millions of interest calculations per hour\n• Every subscription refund in the world uses subtraction and multiplication\n\nThe 6 operators you learn today power all of it.',
+        pt: 'A NASA usou matemática Python para pousar o rover Perseverance com 2,4 metros de precisão — após viajar 470 MILHÕES de quilômetros. 🚀\n\nMais perto de casa:\n• O Uber calcula 20 milhões de preços de corrida por dia com esses operadores\n• O Nubank processa milhões de cálculos de juros por hora\n• Todo pagamento de assinatura no mundo usa subtração e multiplicação\n\nOs 6 operadores que você aprende hoje alimentam tudo isso.'
       }},
 
       { type: 'heading', content: { en: '🧩 A calculator with memory', pt: '🧩 Uma calculadora com memória' } },
@@ -79,32 +79,32 @@ print((10 + 20 + 30) / 3)   # ✅ 20.0 — correct average` },
         explanation: { en: 'Floor division drops the remainder instead of rounding, so 7 // 2 is 3, not 3.5 and not 4.', pt: 'A divisão inteira descarta o resto em vez de arredondar, então 7 // 2 é 3, não 3.5 nem 4.' }
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Full insurance payout calculation', pt: '🏗️ Cenário Real 1: Cálculo completo de sinistro' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Full subscription refund calculation', pt: '🏗️ Cenário Real 1: Cálculo completo de pedido' } },
       { type: 'text', content: {
-        en: 'A real water damage claim, step by step:\n🔸 Damage claimed: $5,230\n🔸 Deductible: $250 (customer pays this part)\n🔸 Coverage: 80% of the remainder\n🔸 Company processing fee: 2% of payout\n\nThis is EXACTLY how adjusters calculate every day:',
-        pt: 'Um sinistro real de dano de água, passo a passo:\n🔸 Dano reclamado: R$5.230\n🔸 Franquia: R$250 (cliente paga essa parte)\n🔸 Cobertura: 80% do restante\n🔸 Taxa de processamento: 2% do pagamento\n\nÉ EXATAMENTE assim que ajustadores calculam todo dia:'
+        en: 'A real a damaged item order, step by step:\n🔸 Damage ordered: $5,230\n🔸 Discount: $250 (customer pays this part)\n🔸 cover rate: 80% of the remainder\n🔸 Company processing fee: 2% of refund\n\nThis is EXACTLY how reviewers calculate every day:',
+        pt: 'Um pedido real de item danificado, passo a passo:\n🔸 Dano reclamado: R$5.230\n🔸 Desconto: R$250 (cliente paga essa parte)\n🔸 taxa de cobertura: 80% do restante\n🔸 Taxa de processamento: 2% do pagamento\n\nÉ EXATAMENTE assim que revisores calculam todo dia:'
       }},
-      { type: 'code', code: `# Step-by-step insurance payout
+      { type: 'code', code: `# Step-by-step subscription refund
 damage     = 5230
-deductible = 250
+discount = 250
 
-# Step 1: subtract deductible
-after_ded = damage - deductible          # 4980
+# Step 1: subtract discount
+after_ded = damage - discount          # 4980
 
-# Step 2: apply 80% coverage
-gross_payout = after_ded * 0.80          # 3984.0
+# Step 2: apply 80% cover rate
+gross_refund = after_ded * 0.80          # 3984.0
 
 # Step 3: subtract 2% processing fee
-fee = gross_payout * 0.02                # 79.68
-net_payout = gross_payout - fee          # 3904.32
+fee = gross_refund * 0.02                # 79.68
+net_refund = gross_refund - fee          # 3904.32
 
-print("Damage claimed:  $", damage)
-print("After deductible:$", after_ded)
-print("Gross payout:    $", gross_payout)
+print("Damage ordered:  $", damage)
+print("After discount:$", after_ded)
+print("Gross refund:    $", gross_refund)
 print("Processing fee:  $", fee)
-print("NET PAYOUT:      $", net_payout)` },
+print("NET REFUND:      $", net_refund)` },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Construction budget breakdown', pt: '🏗️ Cenário Real 2: Divisão de orçamento de obra' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Project budget breakdown', pt: '🏗️ Cenário Real 2: Divisão de orçamento de projeto' } },
       { type: 'code', code: `# $180,000 renovation budget split by category
 budget = 180000
 
@@ -182,7 +182,7 @@ print(5 * 3)           # 15`
       title: { en: '🟢 Guided: Explore the Operators', pt: '🟢 Guiado: Explore os Operadores' },
       description: {
         en: 'The code is already written — run it, observe all 7 operators, then change one number and predict the results before running again.\n\nStep by step:\n\n1. Read the code. Notice: n = 17 is at the top. Every calculation below uses n.\n2. Click ▶ Run. You will see 7 lines of output.\n3. Study each line:\n   • n + 5: adds 5 to 17 → 22\n   • n - 5: subtracts 5 → 12\n   • n * 2: multiplies by 2 → 34\n   • n / 5: divides — result is 3.4, a decimal! Even though 17 is a whole number, / always returns decimal.\n   • n // 5: floor division — drops the decimal → 3\n   • n % 5: remainder — 17 ÷ 5 = 3 groups of 5, leftover is 2\n   • n ** 2: 17 to the power of 2 = 17 × 17 → 289\n4. Find the line n = 17 and change 17 to 20.\n   Before clicking Run, write down your predictions:\n   20 + 5 = ?   20 - 5 = ?   20 * 2 = ?   20 / 5 = ?   20 // 5 = ?   20 % 5 = ?   20 ** 2 = ?\n5. Click ▶ Run and check your predictions. Any surprises? Reread that operator in the lesson.',
-        pt: 'O código já está escrito — execute, observe os 7 operadores, depois mude um número e preveja os resultados antes de rodar de novo.\n\nPasso a passo:\n\n1. Leia o código. Note: n = 17 está no topo. Todos os cálculos abaixo usam n.\n2. Clique em ▶ Executar. Você verá 7 linhas de saída.\n3. Estude cada linha:\n   • n + 5: soma 5 a 17 → 22\n   • n - 5: subtrai 5 → 12\n   • n * 2: multiplica por 2 → 34\n   • n / 5: divide — resultado é 3.4, um decimal! Mesmo sendo 17 inteiro, / sempre retorna decimal.\n   • n // 5: divisão inteira — descarta o decimal → 3\n   • n % 5: resto — 17 ÷ 5 = 3 grupos de 5, sobra 2\n   • n ** 2: 17 elevado à potência 2 = 17 × 17 → 289\n4. Encontre a linha n = 17 e troque 17 por 20.\n   Antes de clicar em Executar, anote suas previsões:\n   20 + 5 = ?   20 - 5 = ?   20 * 2 = ?   20 / 5 = ?   20 // 5 = ?   20 % 5 = ?   20 ** 2 = ?\n5. Clique em ▶ Executar e confira suas previsões. Alguma surpresa? Releia aquele operador na lição.'
+        pt: 'O código já está escrito — execute, observe os 7 operadores, depois mude um número e preveja os resultados antes de rodar de novo.\n\nPasso a passo:\n\n1. Leia o código. Note: n = 17 está no topo. Todos os cálculos abaixo usam n.\n2. Clique em ▶ Executar. Você verá 7 linhas de saída.\n3. Estude cada linha:\n   • n + 5: soma 5 a 17 → 22\n   • n - 5: subtrai 5 → 12\n   • n * 2: multiplica por 2 → 34\n   • n / 5: divide — resultado é 3.4, um decimal! Mesmo sendo 17 inteiro, / sempre retorna decimal.\n   • n // 5: divisão inteira — descarta o decimal → 3\n   • n % 5: resto — 17 ÷ 5 = 3 grupos de 5, sprojeto 2\n   • n ** 2: 17 elevado à potência 2 = 17 × 17 → 289\n4. Encontre a linha n = 17 e troque 17 por 20.\n   Antes de clicar em Executar, anote suas previsões:\n   20 + 5 = ?   20 - 5 = ?   20 * 2 = ?   20 / 5 = ?   20 // 5 = ?   20 % 5 = ?   20 ** 2 = ?\n5. Clique em ▶ Executar e confira suas previsões. Alguma surpresa? Releia aquele operador na lição.'
       },
       starterCode: `n = 17
 print(n, "+ 5 =", n + 5)
@@ -193,30 +193,30 @@ print(n, "// 5 =", n // 5)
 print(n, "% 5 =", n % 5)
 print(n, "** 2 =", n ** 2)`,
       hints: [
-        { en: '// always drops the decimal: 17 // 5 = 3 because 5 fits into 17 exactly 3 whole times (3 × 5 = 15, leaving 2 over).', pt: '// sempre descarta o decimal: 17 // 5 = 3 porque 5 cabe em 17 exatamente 3 vezes inteiras (3 × 5 = 15, sobra 2).' },
+        { en: '// always drops the decimal: 17 // 5 = 3 because 5 fits into 17 exactly 3 whole times (3 × 5 = 15, leaving 2 over).', pt: '// sempre descarta o decimal: 17 // 5 = 3 porque 5 cabe em 17 exatamente 3 vezes inteiras (3 × 5 = 15, sprojeto 2).' },
         { en: '% gives only the leftover: 17 % 5 = 2 because 17 = 5×3 + 2. Think of it as the remainder after dividing.', pt: '% dá apenas o resto: 17 % 5 = 2 porque 17 = 5×3 + 2. Pense como o restante após a divisão.' }
       ]
     },
     {
       id: 'ex2_fill',
-      title: { en: '🟡 Fill the Gap: Payout Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
+      title: { en: '🟡 Fill the Gap: Refund Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
       description: {
-        en: 'Before you begin: A 2-step insurance payout calculation is almost done. Two operators are missing, replaced by ___. Fill in each blank with the correct operator symbol.\n\nBlank 1 — after_ded = damage ___ deductible\n  → You are subtracting the deductible from the damage amount.\n  → The operator for subtraction is: -\n  → Replace ___ with -\n  → Full line: after_ded = damage - deductible\n  → Check: 8000 - 300 = 7700 ✓\n\nBlank 2 — payout = after_ded ___ 0.75\n  → You are applying 75% coverage to the remainder.\n  → 75% of a number = multiply by 0.75\n  → The operator for multiplication is: *\n  → Replace ___ with *\n  → Full line: payout = after_ded * 0.75\n  → Check: 7700 × 0.75 = 5775.0 ✓\n\nAfter filling both blanks, click ▶ Run.\nExpected output:\nAfter deductible: 7700\nFinal payout: 5775.0',
-        pt: 'Antes de começar: Um cálculo de pagamento em 2 etapas está quase pronto. Dois operadores estão faltando, substituídos por ___. Preencha cada lacuna com o símbolo correto.\n\nLacuna 1 — after_ded = damage ___ deductible\n  → Você está subtraindo a franquia do valor do dano.\n  → O operador de subtração é: -\n  → Substitua ___ por -\n  → Linha completa: after_ded = damage - deductible\n  → Verificação: 8000 - 300 = 7700 ✓\n\nLacuna 2 — payout = after_ded ___ 0.75\n  → Você está aplicando 75% de cobertura ao restante.\n  → 75% de um número = multiplicar por 0.75\n  → O operador de multiplicação é: *\n  → Substitua ___ por *\n  → Linha completa: payout = after_ded * 0.75\n  → Verificação: 7700 × 0.75 = 5775.0 ✓\n\nApós preencher as duas lacunas, clique em ▶ Executar.\nSaída esperada:\nAfter deductible: 7700\nFinal payout: 5775.0'
+        en: 'Before you begin: A 2-step subscription refund calculation is almost done. Two operators are missing, replaced by ___. Fill in each blank with the correct operator symbol.\n\nBlank 1 — after_ded = damage ___ discount\n  → You are subtracting the discount from the damage amount.\n  → The operator for subtraction is: -\n  → Replace ___ with -\n  → Full line: after_ded = damage - discount\n  → Check: 8000 - 300 = 7700 ✓\n\nBlank 2 — refund = after_ded ___ 0.75\n  → You are applying 75% cover rate to the remainder.\n  → 75% of a number = multiply by 0.75\n  → The operator for multiplication is: *\n  → Replace ___ with *\n  → Full line: refund = after_ded * 0.75\n  → Check: 7700 × 0.75 = 5775.0 ✓\n\nAfter filling both blanks, click ▶ Run.\nExpected output:\nAfter discount: 7700\nFinal refund: 5775.0',
+        pt: 'Antes de começar: Um cálculo de pagamento em 2 etapas está quase pronto. Dois operadores estão faltando, substituídos por ___. Preencha cada lacuna com o símbolo correto.\n\nLacuna 1 — after_ded = damage ___ discount\n  → Você está subtraindo a desconto do valor do dano.\n  → O operador de subtração é: -\n  → Substitua ___ por -\n  → Linha completa: after_ded = damage - discount\n  → Verificação: 8000 - 300 = 7700 ✓\n\nLacuna 2 — refund = after_ded ___ 0.75\n  → Você está aplicando 75% de taxa de cobertura ao restante.\n  → 75% de um número = multiplicar por 0.75\n  → O operador de multiplicação é: *\n  → Substitua ___ por *\n  → Linha completa: refund = after_ded * 0.75\n  → Verificação: 7700 × 0.75 = 5775.0 ✓\n\nApós preencher as duas lacunas, clique em ▶ Executar.\nSaída esperada:\nAfter discount: 7700\nFinal refund: 5775.0'
       },
       starterCode: `damage = 8000
-deductible = 300
+discount = 300
 
-after_ded = damage ___ deductible     # fill: subtract
-payout = after_ded ___ 0.75           # fill: apply 75% coverage
+after_ded = damage ___ discount     # fill: subtract
+refund = after_ded ___ 0.75           # fill: apply 75% cover rate
 
-print("After deductible:", after_ded)
-print("Final payout:", payout)`,
+print("After discount:", after_ded)
+print("Final refund:", refund)`,
       hints: [
-        { en: 'Blank 1: you need to take the deductible away from the damage. The symbol for "take away" is minus: -', pt: 'Lacuna 1: você precisa tirar a franquia do valor do dano. O símbolo de "tirar" é menos: -' },
+        { en: 'Blank 1: you need to take the discount away from the damage. The symbol for "take away" is minus: -', pt: 'Lacuna 1: você precisa tirar a desconto do valor do dano. O símbolo de "tirar" é menos: -' },
         { en: 'Blank 2: 75% of a value means you multiply it by 0.75. The multiplication symbol in Python is: *', pt: 'Lacuna 2: 75% de um valor significa multiplicar por 0.75. O símbolo de multiplicação em Python é: *' }
       ],
-      sampleOutput: { en: 'After deductible: 7700\nFinal payout: 5775.0', pt: 'After deductible: 7700\nFinal payout: 5775.0' }
+      sampleOutput: { en: 'After discount: 7700\nFinal refund: 5775.0', pt: 'After discount: 7700\nFinal refund: 5775.0' }
     },
     {
       id: 'ex2_zero',
@@ -249,7 +249,7 @@ print("Final payout:", payout)`,
     title: { en: 'Multi-Site Budget Report', pt: 'Relatório de Orçamento Multi-Site' },
     scenario: {
       en: 'You manage 4 renovation sites. The CFO needs the complete budget report: individual budgets, total, average, a 10% contingency reserve, and what remains after the reserve.',
-      pt: 'Você gerencia 4 obras. O CFO precisa do relatório completo: orçamentos individuais, total, média, reserva de contingência de 10% e o que resta após a reserva.'
+      pt: 'Você gerencia 4 projetos. O CFO precisa do relatório completo: orçamentos individuais, total, média, reserva de contingência de 10% e o que resta após a reserva.'
     },
     requirements: {
       en: ['Print each of the 4 site budgets', 'Print the total (sum)', 'Print the average per site', 'Print the 10% reserve', 'Print remaining after reserve'],
@@ -299,46 +299,46 @@ export const phase3: Phase = {
 
       { type: 'heading', content: { en: '🧩 The labelled shoe box', pt: '🧩 A caixa de sapato etiquetada' } },
       { type: 'text', content: {
-        en: 'Imagine a shelf of shoe boxes, each with a label:\n📦 "client_name" → contains "Alice Costa"\n📦 "claim_amount" → contains 5230\n📦 "is_approved" → contains True\n\nCreating a variable = writing a label and putting something in the box.\nUsing a variable = reading the label and taking out what\'s inside.\nReassigning = swapping the contents (label stays).',
-        pt: 'Imagine uma prateleira de caixas de sapato, cada uma com etiqueta:\n📦 "nome_cliente" → contém "Alice Costa"\n📦 "valor_sinistro" → contém 5230\n📦 "aprovado" → contém True\n\nCriar variável = escrever a etiqueta e colocar algo na caixa.\nUsar variável = ler a etiqueta e tirar o que está dentro.\nReatribuir = trocar o conteúdo (etiqueta permanece).'
+        en: 'Imagine a shelf of shoe boxes, each with a label:\n📦 "client_name" → contains "Alice Costa"\n📦 "order_amount" → contains 5230\n📦 "is_approved" → contains True\n\nCreating a variable = writing a label and putting something in the box.\nUsing a variable = reading the label and taking out what\'s inside.\nReassigning = swapping the contents (label stays).',
+        pt: 'Imagine uma prateleira de caixas de sapato, cada uma com etiqueta:\n📦 "nome_cliente" → contém "Alice Costa"\n📦 "valor_pedido" → contém 5230\n📦 "aprovado" → contém True\n\nCriar variável = escrever a etiqueta e colocar algo na caixa.\nUsar variável = ler a etiqueta e tirar o que está dentro.\nReatribuir = trocar o conteúdo (etiqueta permanece).'
       }},
 
       { type: 'heading', content: { en: '🐍 Creating and using variables', pt: '🐍 Criando e usando variáveis' } },
       { type: 'code', code: {
         en: `# label = value
 client_name = "Alice Costa"    # str: text needs quotes
-claim_amount = 5230             # int: whole number
-coverage_rate = 0.80            # float: decimal number
+order_amount = 5230             # int: whole number
+cover rate_rate = 0.80            # float: decimal number
 is_approved = True              # bool: True or False, with a capital first letter
 
 # Use variables by name
 print(client_name)              # Alice Costa
-print(claim_amount)             # 5230
+print(order_amount)             # 5230
 
 # Combine variables in calculations
-payout = claim_amount * coverage_rate
-print("Payout:", payout)        # Payout: 4184.0
+refund = order_amount * cover rate_rate
+print("Refund:", refund)        # Refund: 4184.0
 
 # Check the type of a variable
 print(type(client_name))        # <class 'str'>
-print(type(claim_amount))       # <class 'int'>`,
+print(type(order_amount))       # <class 'int'>`,
         pt: `# etiqueta = valor
 nome_cliente = "Alice Costa"   # str: texto precisa de aspas
-valor_sinistro = 5230           # int: número inteiro
-taxa_cobertura = 0.80           # float: número decimal
+valor_pedido = 5230           # int: número inteiro
+taxa_taxa de cobertura = 0.80           # float: número decimal
 aprovado = True                 # bool: True ou False, com inicial maiúscula
 
 # Use as variáveis pelo nome
 print(nome_cliente)             # Alice Costa
-print(valor_sinistro)           # 5230
+print(valor_pedido)           # 5230
 
 # Combine variáveis em cálculos
-indenizacao = valor_sinistro * taxa_cobertura
-print("Indenização:", indenizacao)  # Indenização: 4184.0
+indenizacao = valor_pedido * taxa_taxa de cobertura
+print("reembolso:", indenizacao)  # reembolso: 4184.0
 
 # Consulte o tipo de uma variável
 print(type(nome_cliente))       # <class 'str'>
-print(type(valor_sinistro))     # <class 'int'>`
+print(type(valor_pedido))     # <class 'int'>`
       } },
 
       { type: 'heading', content: { en: '🐍 Deeper: updating, swapping, and building strings', pt: '🐍 Aprofundando: atualizar, trocar e montar strings' } },
@@ -374,32 +374,32 @@ print(f"In 10 years: {age + 10}")   # In 10 years: 42` },
       } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Client onboarding file', pt: '🏗️ Cenário Real 1: Ficha de cadastro de cliente' } },
-      { type: 'code', code: `# New insurance client registration
-client_name     = "Ricardo Alves"
+      { type: 'code', code: `# New subscription client registration
+client_name     = "Ana Souza"
 client_age      = 32
-city            = "Oshawa"
-monthly_premium = 385
-policy_active   = True
+city            = "Lisboa"
+monthly_fee = 385
+plan_active   = True
 
 # Derived values (calculated FROM other variables)
-annual_premium  = monthly_premium * 12
-weekly_cost     = annual_premium / 52
+annual_fee  = monthly_fee * 12
+weekly_cost     = annual_fee / 52
 
 print(f"=== CLIENT FILE ===")
 print(f"Name:    {client_name}")
 print(f"Age:     {client_age}")
 print(f"City:    {city}")
-print(f"Monthly: {monthly_premium}")
-print(f"Annual:  {annual_premium}")
+print(f"Monthly: {monthly_fee}")
+print(f"Annual:  {annual_fee}")
 print(f"Per week: {weekly_cost}")
-print(f"Active:  {policy_active}")` },
+print(f"Active:  {plan_active}")` },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Tracking a running total', pt: '🏗️ Cenário Real 2: Rastreando um total acumulado' } },
       { type: 'text', content: {
-        en: 'The most important variable pattern in all of programming: the ACCUMULATOR.\nStart at zero, keep adding. Every shopping cart, every payroll system, every claim batch uses this:',
-        pt: 'O padrão de variável mais importante de toda a programação: o ACUMULADOR.\nComece em zero, continue somando. Todo carrinho de compras, toda folha de pagamento, todo lote de sinistros usa isso:'
+        en: 'The most important variable pattern in all of programming: the ACCUMULATOR.\nStart at zero, keep adding. Every shopping cart, every payroll system, every order batch uses this:',
+        pt: 'O padrão de variável mais importante de toda a programação: o ACUMULADOR.\nComece em zero, continue somando. Todo carrinho de compras, toda folha de pagamento, todo lote de pedidos usa isso:'
       }},
-      { type: 'code', code: `# Construction site: tracking daily material costs
+      { type: 'code', code: `# Project site: tracking daily material costs
 total_spent = 0                    # start the accumulator at zero
 
 # Monday: bought cement
@@ -470,8 +470,8 @@ print(x == 5)   # x é igual a 5? → True`
       } },
 
       { type: 'tip', content: {
-        en: '💡 PRO TIP: name variables like you\'d explain them to a colleague.\n❌ x, a, temp, data2\n✅ client_name, total_payout, monthly_premium\nGood names make code self-documenting. 6 months from now, "x" tells you nothing.',
-        pt: '💡 DICA PRO: nomeie variáveis como explicaria a um colega.\n❌ x, a, temp, data2\n✅ nome_cliente, total_pagamento, premio_mensal\nBons nomes tornam o código auto-documentado. Daqui 6 meses, "x" não te diz nada.'
+        en: '💡 PRO TIP: name variables like you\'d explain them to a colleague.\n❌ x, a, temp, data2\n✅ client_name, total_refund, monthly_fee\nGood names make code self-documenting. 6 months from now, "x" tells you nothing.',
+        pt: '💡 DICA PRO: nomeie variáveis como explicaria a um colega.\n❌ x, a, temp, data2\n✅ nome_cliente, total_pagamento, taxa_mensal\nBons nomes tornam o código auto-documentado. Daqui 6 meses, "x" não te diz nada.'
       }},
 
       { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
@@ -510,19 +510,19 @@ print("After paint:", total)`,
       id: 'ex3_fill',
       title: { en: '🟡 Fill the Gap: Client File', pt: '🟡 Preencha: Ficha de Cliente' },
       description: {
-        en: 'Before you begin: you are setting up a new insurance client file. Three values and one operator are missing.\n\nBlank 1 — client_name: Type any name between quotes. Example: "Maria"  Text always needs quotes.\n\nBlank 2 — client_age: Type any whole number. Example: 35  No quotes — it is a number, not text.\n\nBlank 3 — policy_active: Type True or False (capital first letter, no quotes). Insurance is active → type: True\n\nBlank 4 — the operator between monthly_premium and 12: Annual means 12 months. "Monthly multiplied by 12" uses: *\n\nExpected output with the example values (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True',
-        pt: 'Antes de começar: você está criando uma ficha de novo cliente de seguro. Três valores e um operador estão faltando.\n\nBlank 1 — client_name: Digite qualquer nome entre aspas. Exemplo: "Maria"  Texto sempre precisa de aspas.\n\nBlank 2 — client_age: Digite qualquer número inteiro. Exemplo: 35  Sem aspas — é um número, não texto.\n\nBlank 3 — policy_active: Digite True ou False (inicial maiúscula, sem aspas). Seguro está ativo → digite: True\n\nBlank 4 — o operador entre monthly_premium e 12: Anual significa 12 meses. "Mensal multiplicado por 12" usa: *\n\nSaída esperada com os valores de exemplo (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True'
+        en: 'Before you begin: you are setting up a new subscription client file. Three values and one operator are missing.\n\nBlank 1 — client_name: Type any name between quotes. Example: "Maria"  Text always needs quotes.\n\nBlank 2 — client_age: Type any whole number. Example: 35  No quotes — it is a number, not text.\n\nBlank 3 — plan_active: Type True or False (capital first letter, no quotes). Subscription is active → type: True\n\nBlank 4 — the operator between monthly_fee and 12: Annual means 12 months. "Monthly multiplied by 12" uses: *\n\nExpected output with the example values (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True',
+        pt: 'Antes de começar: você está criando uma ficha de novo cliente de assinatura. Três valores e um operador estão faltando.\n\nBlank 1 — client_name: Digite qualquer nome entre aspas. Exemplo: "Maria"  Texto sempre precisa de aspas.\n\nBlank 2 — client_age: Digite qualquer número inteiro. Exemplo: 35  Sem aspas — é um número, não texto.\n\nBlank 3 — plan_active: Digite True ou False (inicial maiúscula, sem aspas). Assinatura está ativo → digite: True\n\nBlank 4 — o operador entre monthly_fee e 12: Anual significa 12 meses. "Mensal multiplicado por 12" usa: *\n\nSaída esperada com os valores de exemplo (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True'
       },
       starterCode: `client_name     = ___          # any name — text needs quotes!
 client_age      = ___          # any age — number, no quotes
-monthly_premium = 450
-policy_active   = ___          # True or False
+monthly_fee = 450
+plan_active   = ___          # True or False
 
-annual_premium = monthly_premium ___ 12    # fill the operator
+annual_fee = monthly_fee ___ 12    # fill the operator
 
 print(f"Client: {client_name}, age {client_age}")
-print(f"Annual: {annual_premium}")
-print(f"Active: {policy_active}")`,
+print(f"Annual: {annual_fee}")
+print(f"Active: {plan_active}")`,
       hints: [
         { en: 'Text: "Maria" | Number: 35 | Bool: True (capital T)', pt: 'Texto: "Maria" | Número: 35 | Bool: True (T maiúsculo)' },
         { en: 'Annual = monthly × 12 → use *', pt: 'Anual = mensal × 12 → use *' }
@@ -547,7 +547,7 @@ print(f"Active: {policy_active}")`,
 
   quiz: [
     { id: 'q3_1', question: { en: 'What does x = 10 do?', pt: 'O que x = 10 faz?' }, options: [{ en: 'Stores 10 in a box labelled x', pt: 'Armazena 10 numa caixa chamada x' }, { en: 'Compares x to 10', pt: 'Compara x com 10' }, { en: 'Prints 10', pt: 'Imprime 10' }, { en: 'Creates the number 10', pt: 'Cria o número 10' }], correctIndex: 0, explanation: { en: '= is assignment (store). == is comparison (check equality).', pt: '= é atribuição (armazenar). == é comparação (verificar igualdade).' } },
-    { id: 'q3_2', question: { en: 'Which name is VALID?', pt: 'Qual nome é VÁLIDO?' }, options: [{ en: 'total_payout', pt: 'total_pagamento' }, { en: '2total', pt: '2total' }, { en: 'total-payout', pt: 'total-pagamento' }, { en: 'total payout', pt: 'total pagamento' }], correctIndex: 0, explanation: { en: 'Letters, numbers, underscore only. Can\'t start with a number. No hyphens or spaces.', pt: 'Apenas letras, números e underscore. Não pode começar com número. Sem hífens ou espaços.' } },
+    { id: 'q3_2', question: { en: 'Which name is VALID?', pt: 'Qual nome é VÁLIDO?' }, options: [{ en: 'total_refund', pt: 'total_pagamento' }, { en: '2total', pt: '2total' }, { en: 'total-refund', pt: 'total-pagamento' }, { en: 'total refund', pt: 'total pagamento' }], correctIndex: 0, explanation: { en: 'Letters, numbers, underscore only. Can\'t start with a number. No hyphens or spaces.', pt: 'Apenas letras, números e underscore. Não pode começar com número. Sem hífens ou espaços.' } },
     { id: 'q3_3', question: { en: 'x = 100\nx += 50\nprint(x) → ?', pt: 'x = 100\nx += 50\nprint(x) → ?' }, options: [{ en: '150', pt: '150' }, { en: '100', pt: '100' }, { en: '50', pt: '50' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: '+= means "add to current". 100 + 50 = 150.', pt: '+= significa "adicione ao atual". 100 + 50 = 150.' } },
     { id: 'q3_4', question: { en: 'The 4 basic types are:', pt: 'Os 4 tipos básicos são:' }, options: [{ en: 'str, int, float, bool', pt: 'str, int, float, bool' }, { en: 'text, num, dec, bit', pt: 'text, num, dec, bit' }, { en: 'string, number, real, logic', pt: 'string, number, real, logic' }, { en: 'char, int, double, boolean', pt: 'char, int, double, boolean' }], correctIndex: 0, explanation: { en: 'str (text), int (whole), float (decimal), bool (True/False). These four cover most programs.', pt: 'str (texto), int (inteiro), float (decimal), bool (True/False). Esses quatro cobrem a maioria dos programas.' } },
     { id: 'q3_5', question: { en: 'f"Age: {30 + 5}" produces:', pt: 'f"Idade: {30 + 5}" produz:' }, options: [{ en: 'Age: 35', pt: 'Idade: 35' }, { en: 'Age: {30 + 5}', pt: 'Idade: {30 + 5}' }, { en: 'Age: 30 + 5', pt: 'Idade: 30 + 5' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: 'f-strings evaluate expressions inside braces. 30+5 is calculated → 35.', pt: 'f-strings avaliam expressões dentro das chaves. 30+5 é calculado → 35.' } },
@@ -557,26 +557,26 @@ print(f"Active: {policy_active}")`,
   exam: {
     title: { en: 'Complete Client Profile', pt: 'Perfil Completo de Cliente' },
     scenario: {
-      en: 'Create a full client profile with derived calculations: annual premium, weekly cost, and a 5% loyalty discount on the annual value.',
-      pt: 'Crie um perfil completo com cálculos derivados: prêmio anual, custo semanal e desconto de fidelidade de 5% sobre o valor anual.'
+      en: 'Create a full client profile with derived calculations: annual fee, weekly cost, and a 5% loyalty discount on the annual value.',
+      pt: 'Crie um perfil completo com cálculos derivados: taxa anual, custo semanal e desconto de fidelidade de 5% sobre o valor anual.'
     },
     requirements: {
       en: [
-        'name = "Ricardo Alves", age = 32, monthly_premium = 385',
-        'Calculate annual_premium (monthly × 12)',
+        'name = "Ana Souza", age = 32, monthly_fee = 385',
+        'Calculate annual_fee (monthly × 12)',
         'Calculate discounted (annual × 0.95)',
         'Print name, age, annual and discounted values'
       ],
       pt: [
-        'nome = "Ricardo Alves", idade = 32, premio_mensal = 385',
-        'Calcule premio_anual (mensal × 12)',
+        'nome = "Ana Souza", idade = 32, taxa_mensal = 385',
+        'Calcule taxa_anual (mensal × 12)',
         'Calcule com_desconto (anual × 0.95)',
         'Imprima nome, idade, valor anual e com desconto'
       ]
     },
     starterCode: `# Client profile with calculations:`,
     testCases: [
-      { id: 'tc3_1', description: { en: 'Shows name', pt: 'Mostra nome' }, inputs: [], checks: [{ type: 'contains', value: 'Ricardo' }], points: 20 },
+      { id: 'tc3_1', description: { en: 'Shows name', pt: 'Mostra nome' }, inputs: [], checks: [{ type: 'contains', value: 'Ana' }], points: 20 },
       { id: 'tc3_2', description: { en: 'Shows age 32', pt: 'Mostra idade 32' }, inputs: [], checks: [{ type: 'contains', value: '32' }], points: 15 },
       { id: 'tc3_3', description: { en: 'Annual = 4620', pt: 'Anual = 4620' }, inputs: [], checks: [{ type: 'contains', value: '4620' }], points: 30 },
       { id: 'tc3_4', description: { en: 'Discounted = 4389', pt: 'Com desconto = 4389' }, inputs: [], checks: [{ type: 'contains', value: '4389' }], points: 25 },
@@ -612,8 +612,8 @@ export const phase4: Phase = {
 
       { type: 'heading', content: { en: '🧩 The receptionist analogy', pt: '🧩 A analogia da recepcionista' } },
       { type: 'text', content: {
-        en: 'A receptionist at an insurance office:\n1. Asks a question: "What\'s your name?"\n2. WAITS for the answer (doesn\'t move until you speak)\n3. Writes it down on the form\n\ninput() works identically:\n1. Shows your question on screen\n2. PAUSES the program, waiting\n3. Stores whatever was typed into a variable\n\n⚠️ Critical detail: the receptionist writes EVERYTHING as text. Even if you say "42", she writes the characters 4-2, not the number.',
-        pt: 'Uma recepcionista numa seguradora:\n1. Faz a pergunta: "Qual seu nome?"\n2. ESPERA a resposta (não se move até você falar)\n3. Anota no formulário\n\ninput() funciona identicamente:\n1. Mostra sua pergunta na tela\n2. PAUSA o programa, esperando\n3. Armazena o que foi digitado numa variável\n\n⚠️ Detalhe crítico: a recepcionista anota TUDO como texto. Mesmo se você disser "42", ela escreve os caracteres 4-2, não o número.'
+        en: 'A receptionist at an subscription office:\n1. Asks a question: "What\'s your name?"\n2. WAITS for the answer (doesn\'t move until you speak)\n3. Writes it down on the form\n\ninput() works identically:\n1. Shows your question on screen\n2. PAUSES the program, waiting\n3. Stores whatever was typed into a variable\n\n⚠️ Critical detail: the receptionist writes EVERYTHING as text. Even if you say "42", she writes the characters 4-2, not the number.',
+        pt: 'Uma recepcionista numa loja:\n1. Faz a pergunta: "Qual seu nome?"\n2. ESPERA a resposta (não se move até você falar)\n3. Anota no formulário\n\ninput() funciona identicamente:\n1. Mostra sua pergunta na tela\n2. PAUSA o programa, esperando\n3. Armazena o que foi digitado numa variável\n\n⚠️ Detalhe crítico: a recepcionista anota TUDO como texto. Mesmo se você disser "42", ela escreve os caracteres 4-2, não o número.'
       }},
 
       { type: 'checkpoint', checkpoint: {
@@ -668,43 +668,43 @@ print(height * 100, "cm")
         explanation: { en: 'Since x holds the text "5", multiplying repeats it three times. This one is dangerous because it does not crash — it silently gives nonsense.', pt: 'Como x guarda o texto "5", multiplicar repete o texto três vezes. Este erro é perigoso porque não trava — só devolve algo sem sentido.' }
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claim intake form', pt: '🏗️ Cenário Real 1: Formulário de sinistro' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Order intake form', pt: '🏗️ Cenário Real 1: Formulário de pedido' } },
       { type: 'code', code: {
-        en: `# Complete claim intake: text and numeric inputs
-print("=== NEW CLAIM INTAKE ===")
+        en: `# Complete order intake: text and numeric inputs
+print("=== NEW ORDER INTAKE ===")
 
 client = input("Client name: ")                 # text; no conversion needed
 phone = input("Phone: ")                        # keep as text because it may contain dashes
 damage = int(input("Damage amount: $"))         # number used in calculations
-deductible = int(input("Deductible: $"))        # number used in calculations
+discount = int(input("Discount: $"))        # number used in calculations
 
-payout = damage - deductible
+refund = damage - discount
 
 print()
-print("=== CLAIM SUMMARY ===")
+print("=== ORDER SUMMARY ===")
 print(f"Client: {client}")
 print(f"Phone: {phone}")
 print(f"Damage: {damage}")
-print(f"Payout: {payout}")`,
-        pt: `# Cadastro completo do sinistro: entradas de texto e de número
-print("=== NOVO SINISTRO ===")
+print(f"Refund: {refund}")`,
+        pt: `# Cadastro completo do pedido: entradas de texto e de número
+print("=== NOVO PEDIDO ===")
 
 cliente = input("Nome do cliente: ")             # texto; não precisa de conversão
 telefone = input("Telefone: ")                   # mantenha como texto, pois pode conter hífens
 dano = int(input("Valor do dano: $"))            # número usado em cálculos
-franquia = int(input("Franquia: $"))             # número usado em cálculos
+desconto = int(input("Desconto: $"))             # número usado em cálculos
 
-indenizacao = dano - franquia
+indenizacao = dano - desconto
 
 print()
-print("=== RESUMO DO SINISTRO ===")
+print("=== RESUMO DO PEDIDO ===")
 print(f"Cliente: {cliente}")
 print(f"Telefone: {telefone}")
 print(f"Dano: {dano}")
-print(f"Indenização: {indenizacao}")`
+print(f"reembolso: {indenizacao}")`
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Construction estimate calculator', pt: '🏗️ Cenário Real 2: Calculadora de orçamento de obra' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Project estimate calculator', pt: '🏗️ Cenário Real 2: Calculadora de orçamento de projeto' } },
       { type: 'code', code: `# Interactive area & cost estimator
 print("=== RENOVATION ESTIMATE ===")
 
@@ -821,30 +821,30 @@ print(f"Phone: {phone}")`,
   ],
 
   exam: {
-    title: { en: 'Interactive Claim System', pt: 'Sistema Interativo de Sinistros' },
+    title: { en: 'Interactive Order System', pt: 'Sistema Interativo de Pedidos' },
     scenario: {
-      en: 'Build the complete claim intake: collect client data with proper types, calculate the payout with an 85% coverage rate, and print a professional summary.',
-      pt: 'Construa a entrada completa de sinistro: colete dados com tipos corretos, calcule o pagamento com cobertura de 85% e imprima um resumo profissional.'
+      en: 'Build the complete order intake: collect client data with proper types, calculate the refund with an 85% cover rate rate, and print a professional summary.',
+      pt: 'Construa a entrada completa de pedido: colete dados com tipos corretos, calcule o pagamento com taxa de cobertura de 85% e imprima um resumo profissional.'
     },
     requirements: {
       en: [
         'Ask client name (text)',
         'Ask damage amount (convert to int)',
-        'Ask deductible (convert to int)',
-        'Calculate: payout = (damage - deductible) * 0.85',
-        'Print name and payout in a summary'
+        'Ask discount (convert to int)',
+        'Calculate: refund = (damage - discount) * 0.85',
+        'Print name and refund in a summary'
       ],
       pt: [
         'Pergunte nome do cliente (texto)',
         'Pergunte valor do dano (converta para int)',
-        'Pergunte franquia (converta para int)',
-        'Calcule: pagamento = (dano - franquia) * 0.85',
+        'Pergunte desconto (converta para int)',
+        'Calcule: pagamento = (dano - desconto) * 0.85',
         'Imprima nome e pagamento num resumo'
       ]
     },
-    starterCode: `# Interactive claim intake:`,
+    starterCode: `# Interactive order intake:`,
     testCases: [
-      { id: 'tc4_1', description: { en: 'Correct payout (85%)', pt: 'Pagamento correto (85%)' }, inputs: ['Ana Lima', '5000', '250'], checks: [{ type: 'contains_any', value: ['4037.5', '4037'] }], points: 45 },
+      { id: 'tc4_1', description: { en: 'Correct refund (85%)', pt: 'Pagamento correto (85%)' }, inputs: ['Ana Lima', '5000', '250'], checks: [{ type: 'contains_any', value: ['4037.5', '4037'] }], points: 45 },
       { id: 'tc4_2', description: { en: 'Shows client name', pt: 'Mostra nome do cliente' }, inputs: ['Ana Lima', '5000', '250'], checks: [{ type: 'contains', value: 'Ana' }], points: 30 },
       { id: 'tc4_3', description: { en: 'No errors', pt: 'Sem erros' }, inputs: ['Test', '1000', '100'], checks: [{ type: 'no_error', value: '' }], points: 25 }
     ]
@@ -887,9 +887,9 @@ export const phase5: Phase = {
 
 if damage > 5000:                  # condition + colon
     print("🔴 HIGH PRIORITY")      # indented = inside the if
-    print("Send an experienced adjuster")  # still inside
+    print("Send an experienced reviewer")  # still inside
 else:
-    print("🟢 Standard claim")     # runs only if the condition is False
+    print("🟢 Standard order")     # runs only if the condition is False
 
 print("Done.")                     # not indented = always runs
 
@@ -905,9 +905,9 @@ print(x != 7)    # True   not equal`,
 
 if dano > 5000:                    # condição + dois-pontos
     print("🔴 ALTA PRIORIDADE")    # indentado = dentro do if
-    print("Enviar ajustador experiente")  # ainda dentro do bloco
+    print("Enviar revisor experiente")  # ainda dentro do bloco
 else:
-    print("🟢 Sinistro padrão")    # executa somente se a condição for False
+    print("🟢 Pedido padrão")    # executa somente se a condição for False
 
 print("Concluído.")                # sem indentação = sempre executa
 
@@ -935,11 +935,11 @@ print(x != 7)    # True   diferente`,
       { type: 'heading', content: { en: '🐍 Deeper: combining conditions with and / or / not', pt: '🐍 Aprofundando: combinando condições com and / or / not' } },
       { type: 'code', code: {
         en: `damage = 7000
-days_since_policy = 15
+days_since_plan = 15
 
 # AND — both conditions must be True
-if damage > 5000 and days_since_policy < 30:
-    print("⚠️ Large claim submitted soon after policy start — investigate")
+if damage > 5000 and days_since_plan < 30:
+    print("⚠️ Large order submitted soon after plan start — investigate")
 
 # OR — at least one condition must be True
 region = "flood_zone"
@@ -957,11 +957,11 @@ if status == "approved":
     print("✅ Release payment")
 # "Approved" != "approved" — capitalization matters`,
         pt: `dano = 7000
-dias_desde_apolice = 15
+dias_desde_plano = 15
 
 # AND — as duas condições devem ser True
-if dano > 5000 and dias_desde_apolice < 30:
-    print("⚠️ Sinistro grande logo após o início da apólice — investigar")
+if dano > 5000 and dias_desde_plano < 30:
+    print("⚠️ Pedido grande logo após o início da plano — investigar")
 
 # OR — pelo menos uma condição deve ser True
 regiao = "zona_de_inundacao"
@@ -982,35 +982,35 @@ if status == "aprovado":
 
       { type: 'heading', content: { en: '🏗️ Real-world scenario 1: Fraud-screening rule', pt: '🏗️ Cenário real 1: Regra de triagem de fraude' } },
       { type: 'text', content: {
-        en: 'Insurance companies flag claims submitted unusually soon after a policy begins. One common screening rule is: a claim submitted within the first 30 days AND exceeding $5,000 → automatic investigation.',
-        pt: 'Seguradoras sinalizam sinistros enviados logo após o início da apólice. Uma regra comum de triagem é: sinistro enviado nos primeiros 30 dias E acima de R$5.000 → investigação automática.'
+        en: 'Subscription companies flag orders submitted unusually soon after a plan begins. One common screening rule is: a order submitted within the first 30 days AND exceeding $5,000 → automatic investigation.',
+        pt: 'Lojas sinalizam pedidos enviados logo após o início da plano. Uma regra comum de triagem é: pedido enviado nos primeiros 30 dias E acima de R$5.000 → investigação automática.'
       }},
       { type: 'code', code: {
         en: `print("=== FRAUD SCREENING ===")
-damage = int(input("Claim amount: $"))
-days = int(input("Days since policy start: "))
+damage = int(input("Order amount: $"))
+days = int(input("Days since plan start: "))
 
 if damage > 5000 and days < 30:
-    print("🚨 FLAGGED: large claim submitted soon after policy start")
+    print("🚨 FLAGGED: large order submitted soon after plan start")
     print("Route to the Special Investigations Unit")
 else:
     print("✅ Passed fraud screening")
     print("Route to standard processing")`,
         pt: `print("=== TRIAGEM DE FRAUDE ===")
-dano = int(input("Valor do sinistro: R$"))
-dias = int(input("Dias desde o início da apólice: "))
+dano = int(input("Valor do pedido: R$"))
+dias = int(input("Dias desde o início da plano: "))
 
 if dano > 5000 and dias < 30:
-    print("🚨 SINALIZADO: sinistro grande logo após o início da apólice")
+    print("🚨 SINALIZADO: pedido grande logo após o início da plano")
     print("Encaminhar para a Unidade de Investigações Especiais")
 else:
     print("✅ Aprovado na triagem de fraude")
     print("Encaminhar para o processamento padrão")`,
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real-world scenario 2: Construction safety check', pt: '🏗️ Cenário real 2: Verificação de segurança da obra' } },
+      { type: 'heading', content: { en: '🏗️ Real-world scenario 2: Project safety check', pt: '🏗️ Cenário real 2: Verificação de segurança da projeto' } },
       { type: 'code', code: {
-        en: `# Construction safety check: wind speed and crane operations
+        en: `# Project safety check: wind speed and crane operations
 wind_speed = float(input("Wind speed (km/h): "))
 crane_active = input("Is the crane operating? (yes/no): ")
 
@@ -1021,7 +1021,7 @@ elif wind_speed > 40:
     print("⚠️ High winds — cranes must remain offline")
 else:
     print("✅ Conditions are safe for all operations")`,
-        pt: `# Verificação de segurança da obra: vento e operação do guindaste
+        pt: `# Verificação de segurança da projeto: vento e operação do guindaste
 velocidade_vento = float(input("Velocidade do vento (km/h): "))
 guindaste_ativo = input("O guindaste está operando? (sim/não): ")
 
@@ -1121,14 +1121,14 @@ if int(palpite) == 10:
       id: 'ex5_guided',
       title: { en: '🟢 Guided: Trace the Decision', pt: '🟢 Guiado: Rastreie a Decisão' },
       description: {
-        en: 'Step 1: Click Run. When it asks "Damage: $" type 8000 and press Enter.\n\nStep 2: Read the output:\n  🔴 HIGH PRIORITY\n  Expert adjuster assigned\n  --- check complete ---\n\nStep 3: Trace the code with damage = 8000:\n  "if damage > 5000:" → is 8000 > 5000? YES → the if-block runs\n  The else-block is SKIPPED completely\n  The last print runs because it is OUTSIDE the if/else — it always runs.\n\nStep 4: Run again. Type 2000 this time.\n  "if damage > 5000:" → is 2000 > 5000? NO → if-block is SKIPPED\n  The else-block runs: "🟢 Standard processing"\n  "--- check complete ---" still prints (outside the if/else)\n\nStep 5: What happens exactly at the boundary? Try 5000. Then try 5001. Which one triggers HIGH PRIORITY?',
-        pt: 'Passo 1: Clique em Executar. Quando pedir "Damage: $" digite 8000 e pressione Enter.\n\nPasso 2: Leia a saída:\n  🔴 HIGH PRIORITY\n  Expert adjuster assigned\n  --- check complete ---\n\nPasso 3: Rastreie o código com damage = 8000:\n  "if damage > 5000:" → 8000 > 5000? SIM → bloco if executa\n  O bloco else é PULADO completamente\n  O último print executa porque está FORA do if/else — ele sempre executa.\n\nPasso 4: Execute de novo. Digite 2000.\n  "if damage > 5000:" → 2000 > 5000? NÃO → bloco if é PULADO\n  O bloco else executa: "🟢 Standard processing"\n  "--- check complete ---" ainda imprime (fora do if/else)\n\nPasso 5: O que acontece na fronteira exata? Tente 5000. Depois tente 5001. Qual dispara HIGH PRIORITY?'
+        en: 'Step 1: Click Run. When it asks "Damage: $" type 8000 and press Enter.\n\nStep 2: Read the output:\n  🔴 HIGH PRIORITY\n  Expert reviewer assigned\n  --- check complete ---\n\nStep 3: Trace the code with damage = 8000:\n  "if damage > 5000:" → is 8000 > 5000? YES → the if-block runs\n  The else-block is SKIPPED completely\n  The last print runs because it is OUTSIDE the if/else — it always runs.\n\nStep 4: Run again. Type 2000 this time.\n  "if damage > 5000:" → is 2000 > 5000? NO → if-block is SKIPPED\n  The else-block runs: "🟢 Standard processing"\n  "--- check complete ---" still prints (outside the if/else)\n\nStep 5: What happens exactly at the boundary? Try 5000. Then try 5001. Which one triggers HIGH PRIORITY?',
+        pt: 'Passo 1: Clique em Executar. Quando pedir "Damage: $" digite 8000 e pressione Enter.\n\nPasso 2: Leia a saída:\n  🔴 HIGH PRIORITY\n  Expert reviewer assigned\n  --- check complete ---\n\nPasso 3: Rastreie o código com damage = 8000:\n  "if damage > 5000:" → 8000 > 5000? SIM → bloco if executa\n  O bloco else é PULADO completamente\n  O último print executa porque está FORA do if/else — ele sempre executa.\n\nPasso 4: Execute de novo. Digite 2000.\n  "if damage > 5000:" → 2000 > 5000? NÃO → bloco if é PULADO\n  O bloco else executa: "🟢 Standard processing"\n  "--- check complete ---" ainda imprime (fora do if/else)\n\nPasso 5: O que acontece na fronteira exata? Tente 5000. Depois tente 5001. Qual dispara HIGH PRIORITY?'
       },
       starterCode: `damage = int(input("Damage: $"))
 
 if damage > 5000:
     print("🔴 HIGH PRIORITY")
-    print("Expert adjuster assigned")
+    print("Expert reviewer assigned")
 else:
     print("🟢 Standard processing")
     print("Auto-queue assigned")
@@ -1142,11 +1142,11 @@ print("--- check complete ---")`,
       id: 'ex5_fill',
       title: { en: '🟡 Fill the Gap: Fraud Gate', pt: '🟡 Preencha: Portão de Fraude' },
       description: {
-        en: 'Before you begin: this code flags suspicious insurance claims. One if-condition has 3 blanks on the same line.\n\nThe rule: flag a claim if the damage is MORE THAN $5,000 AND the policy started LESS THAN 30 days ago.\n\nBlank 1 — after damage: "greater than 5000". The operator is: >\n\nBlank 2 — between the two conditions: BOTH must be true at the same time. The keyword is: and\n\nBlank 3 — after days: "fewer than 30". The operator is: <\n\nFull line: if damage > 5000 and days < 30:\n\nTest 1: damage = 8000, days = 10  → both true → 🚨 FLAGGED\nTest 2: damage = 8000, days = 60  → days is NOT < 30 → ✅ Passed\nTest 3: damage = 3000, days = 5   → damage is NOT > 5000 → ✅ Passed',
-        pt: 'Antes de começar: este código sinaliza sinistros suspeitos. Uma condição if tem 3 espaços em branco na mesma linha.\n\nA regra: sinalize se o dano for MAIOR QUE R$5.000 E a apólice tiver começado HÁ MENOS DE 30 dias.\n\nBlank 1 — após damage: "maior que 5000". O operador é: >\n\nBlank 2 — entre as duas condições: AMBAS devem ser verdadeiras ao mesmo tempo. A palavra-chave é: and\n\nBlank 3 — após days: "menos de 30". O operador é: <\n\nLinha completa: if damage > 5000 and days < 30:\n\nTeste 1: damage = 8000, days = 10  → ambas verdadeiras → 🚨 SINALIZADO\nTeste 2: damage = 8000, days = 60  → days NÃO é < 30 → ✅ Passou\nTeste 3: damage = 3000, days = 5   → damage NÃO é > 5000 → ✅ Passou'
+        en: 'Before you begin: this code flags suspicious subscription orders. One if-condition has 3 blanks on the same line.\n\nThe rule: flag a order if the damage is MORE THAN $5,000 AND the plan started LESS THAN 30 days ago.\n\nBlank 1 — after damage: "greater than 5000". The operator is: >\n\nBlank 2 — between the two conditions: BOTH must be true at the same time. The keyword is: and\n\nBlank 3 — after days: "fewer than 30". The operator is: <\n\nFull line: if damage > 5000 and days < 30:\n\nTest 1: damage = 8000, days = 10  → both true → 🚨 FLAGGED\nTest 2: damage = 8000, days = 60  → days is NOT < 30 → ✅ Passed\nTest 3: damage = 3000, days = 5   → damage is NOT > 5000 → ✅ Passed',
+        pt: 'Antes de começar: este código sinaliza pedidos suspeitos. Uma condição if tem 3 espaços em branco na mesma linha.\n\nA regra: sinalize se o dano for MAIOR QUE R$5.000 E a plano tiver começado HÁ MENOS DE 30 dias.\n\nBlank 1 — após damage: "maior que 5000". O operador é: >\n\nBlank 2 — entre as duas condições: AMBAS devem ser verdadeiras ao mesmo tempo. A palavra-chave é: and\n\nBlank 3 — após days: "menos de 30". O operador é: <\n\nLinha completa: if damage > 5000 and days < 30:\n\nTeste 1: damage = 8000, days = 10  → ambas verdadeiras → 🚨 SINALIZADO\nTeste 2: damage = 8000, days = 60  → days NÃO é < 30 → ✅ Passou\nTeste 3: damage = 3000, days = 5   → damage NÃO é > 5000 → ✅ Passou'
       },
       starterCode: `damage = int(input("Damage: $"))
-days = int(input("Days since policy start: "))
+days = int(input("Days since plan start: "))
 
 if damage ___ 5000 ___ days ___ 30:    # fill: >, and, <
     print("🚨 FLAGGED for investigation")
@@ -1184,33 +1184,33 @@ else:
   ],
 
   exam: {
-    title: { en: 'Smart Claim Gateway', pt: 'Gateway Inteligente de Sinistros' },
+    title: { en: 'Smart Order Gateway', pt: 'Gateway Inteligente de Pedidos' },
     scenario: {
-      en: 'Build the claim approval gateway with fraud detection: large claims need approval, and large+recent claims get flagged for investigation.',
-      pt: 'Construa o gateway de aprovação com detecção de fraude: sinistros grandes precisam de aprovação, e grandes+recentes são sinalizados para investigação.'
+      en: 'Build the order approval gateway with fraud detection: large orders need approval, and large+recent orders get flagged for investigation.',
+      pt: 'Construa o gateway de aprovação com detecção de fraude: pedidos grandes precisam de aprovação, e grandes+recentes são sinalizados para investigação.'
     },
     requirements: {
       en: [
-        'Ask damage amount and days since policy start',
+        'Ask damage amount and days since plan start',
         'If damage > 5000 AND days < 30 → print "INVESTIGATE"',
         'Else if damage > 10000 → print "NEEDS APPROVAL"',
         'Else → print "AUTO-APPROVED"'
       ],
       pt: [
-        'Pergunte valor do dano e dias desde início da apólice',
+        'Pergunte valor do dano e dias desde início da plano',
         'Se dano > 5000 E dias < 30 → imprima "INVESTIGATE"',
         'Senão se dano > 10000 → imprima "NEEDS APPROVAL"',
         'Senão → imprima "AUTO-APPROVED"'
       ]
     },
     starterCode: `damage = int(input("Damage: $"))
-days = int(input("Days since policy: "))
+days = int(input("Days since plan: "))
 
 # Build your decision logic:`,
     testCases: [
       { id: 'tc5_1', description: { en: 'Fraud case flagged', pt: 'Caso de fraude sinalizado' }, inputs: ['8000', '10'], checks: [{ type: 'matches', value: '(investigate|investigar)' }], points: 35 },
-      { id: 'tc5_2', description: { en: 'Big old claim needs approval', pt: 'Sinistro grande antigo precisa aprovação' }, inputs: ['15000', '200'], checks: [{ type: 'matches', value: '(approval|aprova[cç][aã]o)' }], points: 35 },
-      { id: 'tc5_3', description: { en: 'Normal claim auto-approved', pt: 'Sinistro normal auto-aprovado' }, inputs: ['2000', '100'], checks: [{ type: 'contains', value: 'AUTO' }], points: 30 }
+      { id: 'tc5_2', description: { en: 'Big old order needs approval', pt: 'Pedido grande antigo precisa aprovação' }, inputs: ['15000', '200'], checks: [{ type: 'matches', value: '(approval|aprova[cç][aã]o)' }], points: 35 },
+      { id: 'tc5_3', description: { en: 'Normal order auto-approved', pt: 'Pedido normal auto-aprovado' }, inputs: ['2000', '100'], checks: [{ type: 'contains', value: 'AUTO' }], points: 30 }
     ]
   }
 }
@@ -1236,8 +1236,8 @@ export const phase6: Phase = {
 
       { type: 'heading', content: { en: '🌍 Uber prices 20 million rides a day with elif', pt: '🌍 O Uber precifica 20 milhões de corridas por dia com elif' } },
       { type: 'text', content: {
-        en: 'Every Uber price is an elif chain:\n• Under 2km → base fare\n• 2–5km → standard rate\n• 5–15km → medium rate\n• Over 15km → long distance rate\n• Surge active? → multiply everything by 1.5x\n\nInsurance works the same: your premium is calculated through elif chains checking age brackets, claim history tiers, and coverage levels. Tax brackets? Also elif. Shipping costs? Elif. The whole pricing world runs on it.',
-        pt: 'Todo preço do Uber é uma cadeia de elif:\n• Menos de 2km → tarifa base\n• 2–5km → tarifa padrão\n• 5–15km → tarifa média\n• Mais de 15km → longa distância\n• Surge ativo? → multiplica tudo por 1,5x\n\nSeguros funcionam igual: seu prêmio é calculado por cadeias elif verificando faixas de idade, histórico de sinistros e níveis de cobertura. Faixas de imposto? Também elif. Custos de frete? Elif. O mundo inteiro da precificação roda nisso.'
+        en: 'Every Uber price is an elif chain:\n• Under 2km → base fare\n• 2–5km → standard rate\n• 5–15km → medium rate\n• Over 15km → long distance rate\n• Surge active? → multiply everything by 1.5x\n\nSubscription works the same: your fee is calculated through elif chains checking age brackets, order history tiers, and cover rate levels. Tax brackets? Also elif. Shipping costs? Elif. The whole pricing world runs on it.',
+        pt: 'Todo preço do Uber é uma cadeia de elif:\n• Menos de 2km → tarifa base\n• 2–5km → tarifa padrão\n• 5–15km → tarifa média\n• Mais de 15km → longa distância\n• Surge ativo? → multiplica tudo por 1,5x\n\nAssinaturas funcionam igual: seu taxa é calculado por cadeias elif verificando faixas de idade, histórico de pedidos e níveis de taxa de cobertura. Faixas de imposto? Também elif. Custos de frete? Elif. O mundo inteiro da precificação roda nisso.'
       }},
 
       { type: 'heading', content: { en: '🧩 The sorting conveyor belt', pt: '🧩 A esteira classificadora' } },
@@ -1286,11 +1286,11 @@ else:
 if damage > 10000:
     priority = "Critical"
     sla_hours = 2
-    team = "Senior adjusters"
+    team = "Senior reviewers"
 elif damage > 5000:
     priority = "Urgent"
     sla_hours = 4
-    team = "Standard adjusters"
+    team = "Standard reviewers"
 elif damage >= 1000:
     priority = "Normal"
     sla_hours = 24
@@ -1315,32 +1315,32 @@ print(f"Assigned to: {team}")` },
         explanation: { en: 'Only one branch of an if/elif chain ever runs. 85 matches the B test first, so C is never checked.', pt: 'Só um ramo de uma cadeia if/elif roda. 85 satisfaz o teste do B primeiro, então o C nem é verificado.' }
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Insurance premium brackets', pt: '🏗️ Cenário Real 1: Faixas de prêmio de seguro' } },
-      { type: 'code', code: `# Age-based car insurance premium (real industry pattern)
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Subscription fee brackets', pt: '🏗️ Cenário Real 1: Faixas de taxa de assinatura' } },
+      { type: 'code', code: `# Age-based car subscription fee (real industry pattern)
 age = int(input("Driver age: "))
 base = 1000
 
 if age < 21:
-    premium = base * 2.2      # young drivers: highest risk
+    fee = base * 2.2      # young drivers: highest risk
     bracket = "Young driver"
 elif age < 26:
-    premium = base * 1.6
+    fee = base * 1.6
     bracket = "Under 26"
 elif age < 60:
-    premium = base * 1.0      # prime bracket: base rate
+    fee = base * 1.0      # prime bracket: base rate
     bracket = "Standard"
 elif age < 75:
-    premium = base * 1.3
+    fee = base * 1.3
     bracket = "Senior"
 else:
-    premium = base * 1.8
+    fee = base * 1.8
     bracket = "75+"
 
 print(f"Bracket: {bracket}")
-print(f"Annual premium: \${premium}")` },
+print(f"Annual fee: \${fee}")` },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Concrete strength grading', pt: '🏗️ Cenário Real 2: Classificação de resistência de concreto' } },
-      { type: 'code', code: `# Construction QC: grade concrete by test strength (MPa)
+      { type: 'code', code: `# Project QC: grade concrete by test strength (MPa)
 strength = float(input("Test strength (MPa): "))
 
 if strength >= 40:
@@ -1411,7 +1411,7 @@ if dano > 1000:
       { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
       { type: 'text', content: {
         en: '✅ elif = "else if" — adds middle branches between if and else\n✅ Checked top to bottom — FIRST True wins, rest are skipped\n✅ Order matters: most specific/highest condition first\n✅ Exactly ONE branch runs (else catches leftovers)\n✅ Multiple separate ifs = independent checks (usually a bug!)\n✅ Unlimited elifs allowed\n\nNext: repeating actions with while loops. 🔄',
-        pt: '✅ elif = "else if" — adiciona ramos do meio entre if e else\n✅ Verificado de cima para baixo — PRIMEIRO True vence, resto é pulado\n✅ Ordem importa: condição mais específica/alta primeiro\n✅ Exatamente UM ramo roda (else captura sobras)\n✅ Múltiplos ifs separados = verificações independentes (geralmente um bug!)\n✅ Elifs ilimitados permitidos\n\nPróxima: repetindo ações com loops while. 🔄'
+        pt: '✅ elif = "else if" — adiciona ramos do meio entre if e else\n✅ Verificado de cima para baixo — PRIMEIRO True vence, resto é pulado\n✅ Ordem importa: condição mais específica/alta primeiro\n✅ Exatamente UM ramo roda (else captura sprojetos)\n✅ Múltiplos ifs separados = verificações independentes (geralmente um bug!)\n✅ Elifs ilimitados permitidos\n\nPróxima: repetindo ações com loops while. 🔄'
       }}
     ]
   },
@@ -1440,36 +1440,36 @@ else:
     },
     {
       id: 'ex6_fill',
-      title: { en: '🟡 Fill: Premium Brackets', pt: '🟡 Preencha: Faixas de Prêmio' },
+      title: { en: '🟡 Fill: Fee Brackets', pt: '🟡 Preencha: Faixas de Taxa' },
       description: {
-        en: 'Before you begin: this code calculates a car insurance premium based on the driver\'s age. Three blanks to fill.\n\nBlank 1 — after "age" in the first if: the youngest bracket is "under 21 years". The operator is: <\nFull line: if age < 21:\n\nBlank 2 — after "age <" in the first elif: the next bracket covers ages "under 26". Fill the number: 26\nFull line: elif age < 26:\n\nBlank 3 — the last branch catches everyone not matched above (age 60 and older). This is the catch-all keyword: else\nFull line: else:\n\nTest with age = 25  → should print "Premium: 1600.0" (1000 × 1.6)\nTest with age = 30  → should print "Premium: 1000.0" (1000 × 1.0)\nTest with age = 70  → should print "Premium: 1500.0" (1000 × 1.5)',
-        pt: 'Antes de começar: este código calcula um prêmio de seguro de carro baseado na idade do motorista. Três espaços para preencher.\n\nBlank 1 — após "age" no primeiro if: o menor bracket é "abaixo de 21 anos". O operador é: <\nLinha completa: if age < 21:\n\nBlank 2 — após "age <" no primeiro elif: o próximo bracket cobre "abaixo de 26". Preencha o número: 26\nLinha completa: elif age < 26:\n\nBlank 3 — o último ramo captura todos não capturados acima (60 anos ou mais). A palavra-chave é: else\nLinha completa: else:\n\nTeste com age = 25  → deve imprimir "Premium: 1600.0" (1000 × 1,6)\nTeste com age = 30  → deve imprimir "Premium: 1000.0" (1000 × 1,0)\nTeste com age = 70  → deve imprimir "Premium: 1500.0" (1000 × 1,5)'
+        en: 'Before you begin: this code calculates a car subscription fee based on the driver\'s age. Three blanks to fill.\n\nBlank 1 — after "age" in the first if: the youngest bracket is "under 21 years". The operator is: <\nFull line: if age < 21:\n\nBlank 2 — after "age <" in the first elif: the next bracket covers ages "under 26". Fill the number: 26\nFull line: elif age < 26:\n\nBlank 3 — the last branch catches everyone not matched above (age 60 and older). This is the catch-all keyword: else\nFull line: else:\n\nTest with age = 25  → should print "Fee: 1600.0" (1000 × 1.6)\nTest with age = 30  → should print "Fee: 1000.0" (1000 × 1.0)\nTest with age = 70  → should print "Fee: 1500.0" (1000 × 1.5)',
+        pt: 'Antes de começar: este código calcula um taxa de assinatura de carro baseado na idade do motorista. Três espaços para preencher.\n\nBlank 1 — após "age" no primeiro if: o menor bracket é "abaixo de 21 anos". O operador é: <\nLinha completa: if age < 21:\n\nBlank 2 — após "age <" no primeiro elif: o próximo bracket cobre "abaixo de 26". Preencha o número: 26\nLinha completa: elif age < 26:\n\nBlank 3 — o último ramo captura todos não capturados acima (60 anos ou mais). A palavra-chave é: else\nLinha completa: else:\n\nTeste com age = 25  → deve imprimir "Fee: 1600.0" (1000 × 1,6)\nTeste com age = 30  → deve imprimir "Fee: 1000.0" (1000 × 1,0)\nTeste com age = 70  → deve imprimir "Fee: 1500.0" (1000 × 1,5)'
       },
       starterCode: `age = int(input("Age: "))
 base = 1000
 
 if age ___ 21:              # fill: youngest bracket
-    premium = base * 2.2
+    fee = base * 2.2
 elif age < ___:             # fill: under 26
-    premium = base * 1.6
+    fee = base * 1.6
 elif age < 60:
-    premium = base * 1.0
+    fee = base * 1.0
 ___:                        # fill: catches everyone else
-    premium = base * 1.5
+    fee = base * 1.5
 
-print("Premium:", premium)`,
+print("Fee:", fee)`,
       hints: [
         { en: 'Youngest: age < 21', pt: 'Mais jovem: age < 21' },
         { en: 'The catch-all is else:', pt: 'O captura-tudo é else:' }
       ],
-      sampleOutput: { en: 'Premium: 1600.0', pt: 'Premium: 1600.0' }
+      sampleOutput: { en: 'Fee: 1600.0', pt: 'Fee: 1600.0' }
     },
     {
       id: 'ex6_zero',
       title: { en: '🔴 From Scratch: Movie Rating System', pt: '🔴 Do Zero: Sistema de Avaliação de Filmes' },
       description: {
         en: 'Build a movie review classifier. A critic enters a score from 0 to 100 and the program prints the rating label.\n\n📋 The 4 labels and their score ranges:\n90–100 → "🌟 Masterpiece"\n75–89  → "👍 Highly Recommended"\n60–74  → "✅ Worth Watching"\nbelow 60 → "👎 Skip It"\n\n📋 What to build (9 lines):\nLine 1: score = int(input("Movie score (0-100): "))\nLine 2: if score >= 90:   ← start from the HIGHEST (waterfall rule!)\nLine 3:     print("🌟 Masterpiece")\nLine 4: elif score >= 75:\nLine 5:     print("👍 Highly Recommended")\nLine 6: elif score >= 60:\nLine 7:     print("✅ Worth Watching")\nLine 8: else:\nLine 9:     print("👎 Skip It")\n\nTest: 95 → Masterpiece  |  80 → Highly Recommended  |  65 → Worth Watching  |  40 → Skip It\n\n⚠️ Remember the waterfall rule: always start from the HIGHEST condition (>= 90). If you write >= 60 first, scores of 80 and 95 would all land there incorrectly.',
-        pt: 'Construa um classificador de críticas de filmes. O crítico digita uma pontuação de 0 a 100 e o programa imprime o rótulo.\n\n📋 Os 4 rótulos e suas faixas de pontuação:\n90–100 → "🌟 Obra-prima"\n75–89  → "👍 Muito Recomendado"\n60–74  → "✅ Vale Assistir"\nabaixo de 60 → "👎 Pule"\n\n📋 O que construir (9 linhas):\nLinha 1: score = int(input("Pontuação do filme (0-100): "))\nLinha 2: if score >= 90:   ← comece do MAIS ALTO (regra da cachoeira!)\nLinha 3:     print("🌟 Obra-prima")\nLinha 4: elif score >= 75:\nLinha 5:     print("👍 Muito Recomendado")\nLinha 6: elif score >= 60:\nLinha 7:     print("✅ Vale Assistir")\nLinha 8: else:\nLinha 9:     print("👎 Pule")\n\nTeste: 95 → Obra-prima  |  80 → Muito Recomendado  |  65 → Vale Assistir  |  40 → Pule\n\n⚠️ Lembre a regra da cachoeira: comece sempre pelo MAIOR (>= 90). Se escrever >= 60 primeiro, pontuações de 80 e 95 cairiam ali incorretamente.'
+        pt: 'Construa um classificador de críticas de filmes. O crítico digita uma pontuação de 0 a 100 e o programa imprime o rótulo.\n\n📋 Os 4 rótulos e suas faixas de pontuação:\n90–100 → "🌟 Projeto-prima"\n75–89  → "👍 Muito Recomendado"\n60–74  → "✅ Vale Assistir"\nabaixo de 60 → "👎 Pule"\n\n📋 O que construir (9 linhas):\nLinha 1: score = int(input("Pontuação do filme (0-100): "))\nLinha 2: if score >= 90:   ← comece do MAIS ALTO (regra da cachoeira!)\nLinha 3:     print("🌟 Projeto-prima")\nLinha 4: elif score >= 75:\nLinha 5:     print("👍 Muito Recomendado")\nLinha 6: elif score >= 60:\nLinha 7:     print("✅ Vale Assistir")\nLinha 8: else:\nLinha 9:     print("👎 Pule")\n\nTeste: 95 → Projeto-prima  |  80 → Muito Recomendado  |  65 → Vale Assistir  |  40 → Pule\n\n⚠️ Lembre a regra da cachoeira: comece sempre pelo MAIOR (>= 90). Se escrever >= 60 primeiro, pontuações de 80 e 95 cairiam ali incorretamente.'
       },
       starterCode: `# Movie rating classifier:`,
       hints: [
@@ -1490,10 +1490,10 @@ print("Premium:", premium)`,
   ],
 
   exam: {
-    title: { en: 'Full Triage + Premium System', pt: 'Sistema Completo de Triagem + Prêmio' },
+    title: { en: 'Full Triage + Fee System', pt: 'Sistema Completo de Triagem + Taxa' },
     scenario: {
-      en: 'Build the complete 4-tier triage used by the claims department. Each tier has a different SLA. Order your conditions carefully!',
-      pt: 'Construa a triagem completa de 4 níveis usada pelo departamento de sinistros. Cada nível tem SLA diferente. Ordene suas condições com cuidado!'
+      en: 'Build the complete 4-tier triage used by the orders department. Each tier has a different SLA. Order your conditions carefully!',
+      pt: 'Construa a triagem completa de 4 níveis usada pelo departamento de pedidos. Cada nível tem SLA diferente. Ordene suas condições com cuidado!'
     },
     requirements: {
       en: ['Ask damage amount', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'else → "LOW - 72 hours"'],
@@ -1547,7 +1547,7 @@ export const phase7: Phase = {
 count = 1                       # 1️⃣ starting state
 
 while count <= 5:              # 2️⃣ condition for continuing
-    print("Processing claim #", count)
+    print("Processing order #", count)
     count += 1                 # 3️⃣ progress toward the end
 
 print("All done!")             # runs after the loop ends
@@ -1601,27 +1601,27 @@ print("Valid age:", age)` },
         explanation: { en: 'Nothing ever changes count, so the condition stays True and the loop never ends. Every while loop needs a line that moves it toward stopping.', pt: 'Nada muda count, então a condição continua True e o laço nunca acaba. Todo while precisa de uma linha que o aproxime do fim.' }
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Batch claim processing', pt: '🏗️ Cenário Real 1: Processamento em lote' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Batch order processing', pt: '🏗️ Cenário Real 1: Processamento em lote' } },
       { type: 'code', code: {
-        en: `# End of day: process every pending claim
+        en: `# End of day: process every pending order
 print("=== BATCH PROCESSOR ===")
-pending = int(input("How many claims should be processed? "))
+pending = int(input("How many orders should be processed? "))
 
 count = 1
-total_payout = 0
+total_refund = 0
 
 while count <= pending:
-    print(f"--- Claim {count} of {pending} ---")
+    print(f"--- Order {count} of {pending} ---")
     damage = int(input("Damage amount: $"))
-    payout = damage - 250
-    total_payout += payout
-    print(f"Payout: \${payout}")
+    refund = damage - 250
+    total_refund += refund
+    print(f"Refund: \${refund}")
     count += 1
 
 print()
-print(f"Batch complete: {pending} claims")
-print(f"Total payout: \${total_payout}")
-print(f"Average payout: \${total_payout / pending}")`,
+print(f"Batch complete: {pending} orders")
+print(f"Total refund: \${total_refund}")
+print(f"Average refund: \${total_refund / pending}")`,
         pt: `# No fim do dia, processe todas as solicitações pendentes
 print("=== PROCESSADOR EM LOTE ===")
 pendentes = int(input("Quantas solicitações devem ser processadas? "))
@@ -1634,13 +1634,13 @@ while contador <= pendentes:
     dano = int(input("Valor do dano: $"))
     indenizacao = dano - 250
     total_indenizacoes += indenizacao
-    print(f"Indenização: \${indenizacao}")
+    print(f"reembolso: \${indenizacao}")
     contador += 1
 
 print()
 print(f"Lote concluído: {pendentes} solicitações")
 print(f"Total de indenizações: \${total_indenizacoes}")
-print(f"Indenização média: \${total_indenizacoes / pendentes}")`
+print(f"reembolso média: \${total_indenizacoes / pendentes}")`
       } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Material stock countdown', pt: '🏗️ Cenário Real 2: Contagem regressiva de estoque' } },
@@ -1655,7 +1655,7 @@ while stock >= 12:             # 12 bags are used per day
     day += 1
 
 print(f"⚠️ Day {day}: only {stock} bags remain — REORDER NOW")`,
-        pt: `# Almoxarifado da obra: use cimento até o estoque ficar baixo
+        pt: `# Almoxarifado da projeto: use cimento até o estoque ficar baixo
 estoque = 47                   # sacos no almoxarifado
 dia = 1
 
@@ -1754,12 +1754,12 @@ while contador <= 5:        # 10 <= 5 é False, então o loop nunca executa
       id: 'ex7_guided',
       title: { en: '🟢 Guided: Trace the Counter', pt: '🟢 Guiado: Rastreie o Contador' },
       description: {
-        en: 'Step 1: Click Run. You will see 5 "processed" lines plus one final line.\n\nStep 2: Trace how count changes each turn:\n  Start: count = 1\n  Turn 1: 1 <= 5? YES → prints "Claim # 1 processed" → count becomes 2\n  Turn 2: 2 <= 5? YES → prints "Claim # 2 processed" → count becomes 3\n  ... (same for 3, 4, 5)\n  Turn 6: 6 <= 5? NO → loop ends\n  After loop: count is 6 — the first value that FAILED the check.\n\nStep 3: Change ONE number: find "while count <= 5:" and change 5 to 3.\n\nStep 4: Before running, predict:\n  How many "processed" lines will print? ___\n  What will the final count value be? ___\n  (Hint: the loop stops when count first FAILS the condition)\n\nStep 5: Click Run to confirm your prediction.',
-        pt: 'Passo 1: Clique em Executar. Você verá 5 linhas "processed" e uma linha final.\n\nPasso 2: Rastreie como count muda em cada volta:\n  Início: count = 1\n  Volta 1: 1 <= 5? SIM → imprime "Claim # 1 processed" → count vira 2\n  Volta 2: 2 <= 5? SIM → imprime "Claim # 2 processed" → count vira 3\n  ... (igual para 3, 4, 5)\n  Volta 6: 6 <= 5? NÃO → loop termina\n  Após loop: count é 6 — o primeiro valor que FALHOU na verificação.\n\nPasso 3: Mude UM número: encontre "while count <= 5:" e mude 5 para 3.\n\nPasso 4: Antes de rodar, preveja:\n  Quantas linhas "processed" serão impressas? ___\n  Qual será o valor final de count? ___\n  (Dica: o loop para quando count FALHA na condição pela primeira vez)\n\nPasso 5: Clique em Executar para confirmar sua previsão.'
+        en: 'Step 1: Click Run. You will see 5 "processed" lines plus one final line.\n\nStep 2: Trace how count changes each turn:\n  Start: count = 1\n  Turn 1: 1 <= 5? YES → prints "Order # 1 processed" → count becomes 2\n  Turn 2: 2 <= 5? YES → prints "Order # 2 processed" → count becomes 3\n  ... (same for 3, 4, 5)\n  Turn 6: 6 <= 5? NO → loop ends\n  After loop: count is 6 — the first value that FAILED the check.\n\nStep 3: Change ONE number: find "while count <= 5:" and change 5 to 3.\n\nStep 4: Before running, predict:\n  How many "processed" lines will print? ___\n  What will the final count value be? ___\n  (Hint: the loop stops when count first FAILS the condition)\n\nStep 5: Click Run to confirm your prediction.',
+        pt: 'Passo 1: Clique em Executar. Você verá 5 linhas "processed" e uma linha final.\n\nPasso 2: Rastreie como count muda em cada volta:\n  Início: count = 1\n  Volta 1: 1 <= 5? SIM → imprime "Order # 1 processed" → count vira 2\n  Volta 2: 2 <= 5? SIM → imprime "Order # 2 processed" → count vira 3\n  ... (igual para 3, 4, 5)\n  Volta 6: 6 <= 5? NÃO → loop termina\n  Após loop: count é 6 — o primeiro valor que FALHOU na verificação.\n\nPasso 3: Mude UM número: encontre "while count <= 5:" e mude 5 para 3.\n\nPasso 4: Antes de rodar, preveja:\n  Quantas linhas "processed" serão impressas? ___\n  Qual será o valor final de count? ___\n  (Dica: o loop para quando count FALHA na condição pela primeira vez)\n\nPasso 5: Clique em Executar para confirmar sua previsão.'
       },
       starterCode: `count = 1
 while count <= 5:
-    print("Claim #", count, "processed")
+    print("Order #", count, "processed")
     count += 1
 
 print("Final count value:", count)`,
@@ -1793,10 +1793,10 @@ print("Restock needed!")`,
       id: 'ex7_zero',
       title: { en: '🔴 From Scratch: Batch + Average', pt: '🔴 Do Zero: Lote + Média' },
       description: {
-        en: 'Build a batch processor that handles exactly 4 insurance claims.\n\n📋 What to build:\nLine 1: total = 0         ← accumulator starts at zero\nLine 2: count = 1         ← loop counter\nLine 3: while count <= 4:  ← run exactly 4 times (colon at the end!)\nLine 4:     damage = int(input("Damage: $"))  ← ask for each claim (4 spaces indent)\nLine 5:     payout = damage - 200             ← subtract $200 deductible\nLine 6:     total += payout                   ← add this claim\'s payout to total\nLine 7:     count += 1                        ← CRITICAL: without this the loop never ends!\nLine 8: print("Total:", total)    ← OUTSIDE the loop (no indentation)\nLine 9: print("Average:", total / 4)\n\nTest: enter 2750 four times → Total: 10200  |  Average: 2550.0\n\n⚠️ The most common mistake: forgetting count += 1 inside the loop. Without it, count stays at 1 forever.',
-        pt: 'Construa um processador em lote que processa exatamente 4 sinistros.\n\n📋 O que construir:\nLinha 1: total = 0          ← acumulador começa em zero\nLinha 2: count = 1          ← contador do loop\nLinha 3: while count <= 4:  ← rodar exatamente 4 vezes (dois pontos no final!)\nLinha 4:     damage = int(input("Damage: $"))  ← perguntar para cada sinistro (4 espaços de indentação)\nLinha 5:     payout = damage - 200             ← subtrair R$200 de franquia\nLinha 6:     total += payout                   ← adicionar ao total\nLinha 7:     count += 1                        ← CRÍTICO: sem isso o loop nunca termina!\nLinha 8: print("Total:", total)    ← FORA do loop (sem indentação)\nLinha 9: print("Average:", total / 4)\n\nTeste: digite 2750 quatro vezes → Total: 10200  |  Average: 2550.0\n\n⚠️ O erro mais comum: esquecer count += 1 dentro do loop. Sem isso count fica em 1 para sempre.'
+        en: 'Build a batch processor that handles exactly 4 subscription orders.\n\n📋 What to build:\nLine 1: total = 0         ← accumulator starts at zero\nLine 2: count = 1         ← loop counter\nLine 3: while count <= 4:  ← run exactly 4 times (colon at the end!)\nLine 4:     damage = int(input("Damage: $"))  ← ask for each order (4 spaces indent)\nLine 5:     refund = damage - 200             ← subtract $200 discount\nLine 6:     total += refund                   ← add this order\'s refund to total\nLine 7:     count += 1                        ← CRITICAL: without this the loop never ends!\nLine 8: print("Total:", total)    ← OUTSIDE the loop (no indentation)\nLine 9: print("Average:", total / 4)\n\nTest: enter 2750 four times → Total: 10200  |  Average: 2550.0\n\n⚠️ The most common mistake: forgetting count += 1 inside the loop. Without it, count stays at 1 forever.',
+        pt: 'Construa um processador em lote que processa exatamente 4 pedidos.\n\n📋 O que construir:\nLinha 1: total = 0          ← acumulador começa em zero\nLinha 2: count = 1          ← contador do loop\nLinha 3: while count <= 4:  ← rodar exatamente 4 vezes (dois pontos no final!)\nLinha 4:     damage = int(input("Damage: $"))  ← perguntar para cada pedido (4 espaços de indentação)\nLinha 5:     refund = damage - 200             ← subtrair R$200 de desconto\nLinha 6:     total += refund                   ← adicionar ao total\nLinha 7:     count += 1                        ← CRÍTICO: sem isso o loop nunca termina!\nLinha 8: print("Total:", total)    ← FORA do loop (sem indentação)\nLinha 9: print("Average:", total / 4)\n\nTeste: digite 2750 quatro vezes → Total: 10200  |  Average: 2550.0\n\n⚠️ O erro mais comum: esquecer count += 1 dentro do loop. Sem isso count fica em 1 para sempre.'
       },
-      starterCode: `# Batch processor (4 claims):`,
+      starterCode: `# Batch processor (4 orders):`,
       suggestedInputs: ['2750', '2750', '2750', '2750'],
       grading: {
         tests: [{
@@ -1832,11 +1832,11 @@ print("Restock needed!")`,
   exam: {
     title: { en: 'Monthly Batch + Statistics', pt: 'Lote Mensal + Estatísticas' },
     scenario: {
-      en: 'Month-end batch: process 5 claims with a $300 deductible each, then report total, average, and how many were above $3000 payout.',
-      pt: 'Lote de fim de mês: processe 5 sinistros com R$300 de franquia cada, depois reporte total, média e quantos ficaram acima de R$3000 de pagamento.'
+      en: 'Month-end batch: process 5 orders with a $300 discount each, then report total, average, and how many were above $3000 refund.',
+      pt: 'Lote de fim de mês: processe 5 pedidos com R$300 de desconto cada, depois reporte total, média e quantos ficaram acima de R$3000 de pagamento.'
     },
     requirements: {
-      en: ['Loop exactly 5 times', 'Ask damage, subtract 300', 'Accumulate total', 'Count payouts above 3000', 'Print total, average and count'],
+      en: ['Loop exactly 5 times', 'Ask damage, subtract 300', 'Accumulate total', 'Count refunds above 3000', 'Print total, average and count'],
       pt: ['Loop exatamente 5 vezes', 'Pergunte dano, subtraia 300', 'Acumule total', 'Conte pagamentos acima de 3000', 'Imprima total, média e contagem']
     },
     starterCode: `total = 0
@@ -1950,17 +1950,17 @@ for i in range(3):        # 0, 1, 2
       { type: 'heading', content: { en: '🐍 Step 3 — loop + filter + accumulate', pt: '🐍 Passo 3 — loop + filtro + acumular' } },
       { type: 'code', code: `damages = [1200, 4500, 8000, 250, 3100]
 total = 0
-big_claims = 0
+big_orders = 0
 
 for damage in damages:
-    payout = damage - 250
-    total += payout               # accumulate
+    refund = damage - 250
+    total += refund               # accumulate
     if damage > 3000:             # filter inside the loop!
-        big_claims += 1
-        print(f"⚠️ Big claim: \${damage}")
+        big_orders += 1
+        print(f"⚠️ Big order: \${damage}")
 
-print(f"Total payout: \${total}")
-print(f"Big claims: {big_claims} of {len(damages)}")` },
+print(f"Total refund: \${total}")
+print(f"Big orders: {big_orders} of {len(damages)}")` },
 
       { type: 'checkpoint', checkpoint: {
         code: 'total = 0\nfor n in [10, 20, 30]:\n    total = n\nprint(total)',
@@ -1976,29 +1976,29 @@ print(f"Big claims: {big_claims} of {len(damages)}")` },
         }
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claims dashboard', pt: '🏗️ Cenário Real 1: Dashboard de sinistros' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Orders dashboard', pt: '🏗️ Cenário Real 1: Dashboard de pedidos' } },
       { type: 'code', code: {
-        en: `# Morning dashboard: process the overnight claim queue
+        en: `# Morning dashboard: process the overnight order queue
 damages = [5230, 1200, 8000, 450, 3100, 9200]
 total = 0
 critical = 0
 
 print("=== MORNING QUEUE ===")
 for damage in damages:
-    payout = damage - 250
-    total += payout
+    refund = damage - 250
+    total += refund
     if damage > 8000:
         critical += 1
         print(f"🔴 \${damage} → CRITICAL, escalating")
     else:
-        print(f"🟢 \${damage} → payout \${payout}")
+        print(f"🟢 \${damage} → refund \${refund}")
 
 print()
-print(f"Queue: {len(damages)} claims")
+print(f"Queue: {len(damages)} orders")
 print(f"Critical: {critical}")
-print(f"Total payout: \${total}")
+print(f"Total refund: \${total}")
 print(f"Average: \${total / len(damages):.2f}")`,
-        pt: `# Dashboard matinal: processe a fila de sinistros da madrugada
+        pt: `# Dashboard matinal: processe a fila de pedidos da madrugada
 danos = [5230, 1200, 8000, 450, 3100, 9200]
 total = 0
 criticos = 0
@@ -2014,14 +2014,14 @@ for dano in danos:
         print(f"🟢 R\${dano} → pagamento R\${pagamento}")
 
 print()
-print(f"Fila: {len(danos)} sinistros")
+print(f"Fila: {len(danos)} pedidos")
 print(f"Críticos: {criticos}")
 print(f"Pagamento total: R\${total}")
 print(f"Média: R\${total / len(danos):.2f}")`,
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Multi-site inspection round', pt: '🏗️ Cenário Real 2: Ronda de inspeção multi-obra' } },
-      { type: 'code', code: `# Friday inspection: visit every active site
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Multi-site review round', pt: '🏗️ Cenário Real 2: Ronda de inspeção multi-projeto' } },
+      { type: 'code', code: `# Friday review: visit every active site
 sites = ["Warehouse A", "Tower B", "Mall C", "School D"]
 progress = [85, 42, 97, 60]        # % complete, same order!
 
@@ -2029,7 +2029,7 @@ for i in range(len(sites)):        # loop by INDEX to pair two lists
     site = sites[i]
     pct = progress[i]
     if pct >= 90:
-        status = "🏁 Final inspection"
+        status = "🏁 Final review"
     elif pct >= 50:
         status = "🔨 On track"
     else:
@@ -2084,7 +2084,7 @@ print(total)              # 60 ✅
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: name the loop variable as the SINGULAR of the list.\nfor client in clients / for damage in damages / for site in sites\nYour code reads like English and bugs become obvious: "for damage in clients" instantly looks wrong.',
-        pt: '💡 DICA PRO: nomeie a variável do loop como o SINGULAR da lista.\nfor cliente in clientes / for dano in danos / for obra in obras\nSeu código lê como português e bugs ficam óbvios: "for dano in clientes" parece errado na hora.'
+        pt: '💡 DICA PRO: nomeie a variável do loop como o SINGULAR da lista.\nfor cliente in clientes / for dano in danos / for projeto in projetos\nSeu código lê como português e bugs ficam óbvios: "for dano in clientes" parece errado na hora.'
       }},
 
       { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
@@ -2118,24 +2118,24 @@ print("Queue complete!")`,
       id: 'ex8_fill',
       title: { en: '🟡 Fill: Filter + Accumulate', pt: '🟡 Preencha: Filtrar + Acumular' },
       description: {
-        en: 'Before you begin: this dashboard loops over 4 insurance claims and filters the big ones. Three blanks to fill.\n\nBlank 1 — total = ___: The accumulator must start at zero before the loop adds anything. Fill with: 0\n\nBlank 2 — total ___ payout: Each loop turn calculates a payout. Add it to the running total. Use: +=\nFull line: total += payout\n\nBlank 3 — if damage ___ 3000: You want to flag claims that are BIGGER THAN $3,000. Use: >\nFull line: if damage > 3000:\n\nExpected output (damages list = 1200, 4500, 8000, 650):\nBig claim: 4500\nBig claim: 8000\nTotal: 13350\n\n💡 Why is 1200 not flagged? 1200 is NOT > 3000. The if block is skipped silently. The payout is still added to total (that line is outside the if).',
-        pt: 'Antes de começar: este dashboard percorre 4 sinistros e filtra os grandes. Três espaços para preencher.\n\nBlank 1 — total = ___: O acumulador deve começar em zero antes do loop adicionar qualquer coisa. Preencha com: 0\n\nBlank 2 — total ___ payout: Cada volta do loop calcula um pagamento. Adicione ao total corrente. Use: +=\nLinha completa: total += payout\n\nBlank 3 — if damage ___ 3000: Você quer sinalizar sinistros MAIORES QUE R$3.000. Use: >\nLinha completa: if damage > 3000:\n\nSaída esperada (lista damages = 1200, 4500, 8000, 650):\nBig claim: 4500\nBig claim: 8000\nTotal: 13350\n\n💡 Por que 1200 não é sinalizado? 1200 NÃO é > 3000. O bloco if é pulado silenciosamente. O pagamento ainda é somado ao total (aquela linha está fora do if).'
+        en: 'Before you begin: this dashboard loops over 4 subscription orders and filters the big ones. Three blanks to fill.\n\nBlank 1 — total = ___: The accumulator must start at zero before the loop adds anything. Fill with: 0\n\nBlank 2 — total ___ refund: Each loop turn calculates a refund. Add it to the running total. Use: +=\nFull line: total += refund\n\nBlank 3 — if damage ___ 3000: You want to flag orders that are BIGGER THAN $3,000. Use: >\nFull line: if damage > 3000:\n\nExpected output (damages list = 1200, 4500, 8000, 650):\nBig order: 4500\nBig order: 8000\nTotal: 13350\n\n💡 Why is 1200 not flagged? 1200 is NOT > 3000. The if block is skipped silently. The refund is still added to total (that line is outside the if).',
+        pt: 'Antes de começar: este dashboard percorre 4 pedidos e filtra os grandes. Três espaços para preencher.\n\nBlank 1 — total = ___: O acumulador deve começar em zero antes do loop adicionar qualquer coisa. Preencha com: 0\n\nBlank 2 — total ___ refund: Cada volta do loop calcula um pagamento. Adicione ao total corrente. Use: +=\nLinha completa: total += refund\n\nBlank 3 — if damage ___ 3000: Você quer sinalizar pedidos MAIORES QUE R$3.000. Use: >\nLinha completa: if damage > 3000:\n\nSaída esperada (lista damages = 1200, 4500, 8000, 650):\nBig order: 4500\nBig order: 8000\nTotal: 13350\n\n💡 Por que 1200 não é sinalizado? 1200 NÃO é > 3000. O bloco if é pulado silenciosamente. O pagamento ainda é somado ao total (aquela linha está fora do if).'
       },
       starterCode: `damages = [1200, 4500, 8000, 650]
 total = ___                     # fill: accumulator start
 
 for damage in damages:
-    payout = damage - 250
-    total ___ payout            # fill: accumulate
+    refund = damage - 250
+    total ___ refund            # fill: accumulate
     if damage ___ 3000:         # fill: bigger than
-        print("Big claim:", damage)
+        print("Big order:", damage)
 
 print("Total:", total)`,
       hints: [
         { en: 'Start at 0, accumulate with +=', pt: 'Comece em 0, acumule com +=' },
         { en: 'Bigger than: >', pt: 'Maior que: >' }
       ],
-      sampleOutput: { en: 'Big claim: 4500\nBig claim: 8000\nTotal: 13350', pt: 'Big claim: 4500\nBig claim: 8000\nTotal: 13350' }
+      sampleOutput: { en: 'Big order: 4500\nBig order: 8000\nTotal: 13350', pt: 'Big order: 4500\nBig order: 8000\nTotal: 13350' }
     },
     {
       id: 'ex8_zero',
@@ -2165,22 +2165,22 @@ print("Total:", total)`,
   ],
 
   exam: {
-    title: { en: 'Full Claims Dashboard', pt: 'Dashboard Completo de Sinistros' },
+    title: { en: 'Full Orders Dashboard', pt: 'Dashboard Completo de Pedidos' },
     scenario: {
-      en: 'Build the morning dashboard: process the overnight queue, apply deductibles, flag critical claims, and report full statistics.',
-      pt: 'Construa o dashboard matinal: processe a fila da madrugada, aplique franquias, sinalize sinistros críticos e reporte estatísticas completas.'
+      en: 'Build the morning dashboard: process the overnight queue, apply discounts, flag critical orders, and report full statistics.',
+      pt: 'Construa o dashboard matinal: processe a fila da madrugada, aplique descontos, sinalize pedidos críticos e reporte estatísticas completas.'
     },
     requirements: {
-      en: ['Use the provided damages list', 'Loop applying $250 deductible', 'Count claims above $5000', 'Print total payout, count of claims, count of big ones'],
-      pt: ['Use a lista de danos fornecida', 'Percorra aplicando R$250 de franquia', 'Conte sinistros acima de R$5000', 'Imprima pagamento total, quantidade de sinistros, quantidade de grandes']
+      en: ['Use the provided damages list', 'Loop applying $250 discount', 'Count orders above $5000', 'Print total refund, count of orders, count of big ones'],
+      pt: ['Use a lista de danos fornecida', 'Percorra aplicando R$250 de desconto', 'Conte pedidos acima de R$5000', 'Imprima pagamento total, quantidade de pedidos, quantidade de grandes']
     },
     starterCode: `damages = [5230, 1200, 8000, 450, 3100, 9200]
 
 # Build your dashboard:`,
     testCases: [
-      { id: 'tc8_1', description: { en: 'Total payout 25680', pt: 'Pagamento total 25680' }, inputs: [], checks: [{ type: 'contains', value: '25680' }], points: 40 },
-      { id: 'tc8_2', description: { en: 'Claim count 6', pt: 'Contagem 6' }, inputs: [], checks: [{ type: 'contains', value: '6' }], points: 20 },
-      { id: 'tc8_3', description: { en: 'Big claims counted', pt: 'Grandes contados' }, inputs: [], checks: [{ type: 'contains', value: '3' }], points: 20 },
+      { id: 'tc8_1', description: { en: 'Total refund 25680', pt: 'Pagamento total 25680' }, inputs: [], checks: [{ type: 'contains', value: '25680' }], points: 40 },
+      { id: 'tc8_2', description: { en: 'Order count 6', pt: 'Contagem 6' }, inputs: [], checks: [{ type: 'contains', value: '6' }], points: 20 },
+      { id: 'tc8_3', description: { en: 'Big orders counted', pt: 'Grandes contados' }, inputs: [], checks: [{ type: 'contains', value: '3' }], points: 20 },
       { id: 'tc8_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
     ]
   }
