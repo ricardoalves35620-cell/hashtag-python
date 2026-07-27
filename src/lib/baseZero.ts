@@ -61,10 +61,23 @@ export function migrateGuestBaseZeroState(userId: string) {
   saveBaseZeroState(userId, { version: 1, completed, readinessScore, updatedAt: Date.now() })
 }
 
+/**
+ * This practice teaches what a folder and a file extension ARE — not how to copy a
+ * name accurately. So it accepts any sensible folder plus any Python file, and only
+ * rejects answers that miss the actual concept: a folder that looks like a file, or
+ * a filename without the .py extension.
+ */
 export function validateFileChallenge(folderName: string, fileName: string) {
-  const folder = folderName.trim().toLocaleLowerCase().replace(/\s+/g, '')
+  const folder = folderName.trim()
   const file = fileName.trim().toLocaleLowerCase()
-  return folder === 'projetospython' && file === 'meu_primeiro.py'
+
+  // A folder name: at least two characters, and no extension or path separators.
+  const folderIsValid = folder.length >= 2 && !/[./]/.test(folder) && !folder.includes('\\')
+
+  // A Python file: a real name, a dot, then the py extension.
+  const fileIsValid = /^[a-z0-9 _-]+[.]py$/.test(file)
+
+  return folderIsValid && fileIsValid
 }
 
 export const INSTALL_SEQUENCE = ['download', 'open', 'path', 'install', 'verify'] as const
