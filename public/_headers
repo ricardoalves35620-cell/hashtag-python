@@ -1,0 +1,14 @@
+# The HTML shell must never be cached: it carries the hashed asset names for the
+# current build, so a stale copy points at files the server no longer has.
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/sw.js
+  Cache-Control: no-cache
+/manifest.json
+  Cache-Control: no-cache
+
+# Hashed build assets are safe to cache forever — the name changes when they do.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
