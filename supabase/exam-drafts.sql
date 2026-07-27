@@ -2,7 +2,7 @@
 -- Persists exam code drafts across devices (auto-saved as user types)
 
 create table if not exists exam_drafts (
-  user_id uuid references auth.users not null,
+  user_id uuid not null references auth.users(id) on delete cascade,
   phase_id integer not null,
   code text not null default '',
   updated_at timestamptz default now(),

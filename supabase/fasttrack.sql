@@ -2,7 +2,7 @@
 
 -- FastTrack progress table (one row per completed day per user)
 create table if not exists user_fasttrack (
-  user_id uuid references auth.users not null,
+  user_id uuid not null references auth.users(id) on delete cascade,
   day_id  integer not null,
   completed_at timestamptz default now(),
   primary key (user_id, day_id)

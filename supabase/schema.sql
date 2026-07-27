@@ -3,7 +3,7 @@
 -- 1. User progress table
 create table if not exists user_progress (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users not null,
+  user_id uuid not null references auth.users(id) on delete cascade,
   phase_id integer not null,
   lesson_done boolean default false,
   exercises_done boolean default false,
@@ -20,7 +20,7 @@ create table if not exists user_progress (
 create table if not exists family_groups (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  created_by uuid references auth.users not null,
+  created_by uuid not null references auth.users(id) on delete cascade,
   invite_code text unique not null,
   created_at timestamptz default now()
 );
@@ -29,7 +29,7 @@ create table if not exists family_groups (
 create table if not exists family_members (
   id uuid primary key default gen_random_uuid(),
   group_id uuid references family_groups not null,
-  user_id uuid references auth.users not null,
+  user_id uuid not null references auth.users(id) on delete cascade,
   display_name text not null,
   joined_at timestamptz default now(),
   unique(group_id, user_id)
