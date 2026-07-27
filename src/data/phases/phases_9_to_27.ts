@@ -3161,51 +3161,145 @@ export const phase24: Phase = {
   lesson: {
     title: { en: 'Your First Complete Program', pt: 'Seu Primeiro Programa Completo' },
     blocks: [
-      { type: 'heading', content: { en: '🌍 Real software = simple concepts combined', pt: '🌍 Software real = conceitos simples combinados' } },
+      { type: 'heading', content: { en: '🌍 Real software is small pieces, arranged', pt: '🌍 Software real é peças pequenas, arranjadas' } },
       { type: 'text', content: {
-        en: 'Nubank\'s core engine is essentially:\n• Input → Validate → Calculate → Route → Store → Report\n\nYou already know ALL of these. Now combine them.',
-        pt: 'O motor central do Nubank é essencialmente:\n• Input → Validar → Calcular → Rotear → Armazenar → Reportar\n\nVocê já sabe TODOS esses. Agora combine-os.'
+        en: 'Everything you have learned so far arrived one piece at a time: a variable, a condition, a loop, a function, a try block. Each was small enough to hold in your head.\n\nA finished program is not a bigger idea. It is those same pieces in an order: take input, check it, do the work, keep a record, show the result.\n\nThis phase is the first time you build the whole shape instead of one piece of it. Nothing new is being introduced — that is deliberate. The difficulty here is arrangement, not knowledge.',
+        pt: 'Tudo que você aprendeu até aqui chegou uma peça por vez: uma variável, uma condição, um laço, uma função, um bloco try. Cada uma pequena o bastante para caber na cabeça.\n\nUm programa pronto não é uma ideia maior. São essas mesmas peças numa ordem: receber a entrada, conferir, fazer o trabalho, guardar um registro, mostrar o resultado.\n\nEsta fase é a primeira vez que você monta a forma inteira em vez de uma peça dela. Nada novo é introduzido — isso é de propósito. A dificuldade aqui é arranjo, não conhecimento.'
       }},
-      { type: 'heading', content: { en: '🆚 Beginner vs Professional', pt: '🆚 Iniciante vs Profissional' } },
-      { type: 'code', code: `# ❌ BEGINNER: one big block, no structure
+      { type: 'heading', content: { en: '🧩 A kitchen, not a single recipe', pt: '🧩 Uma cozinha, não uma receita só' } },
+      { type: 'text', content: {
+        en: 'One recipe is a function: given these ingredients, produce this dish. A kitchen is a program: orders arrive in an unpredictable order, some are wrong, someone has to keep track of what was served.\n\nThe recipes do not get harder. The kitchen is what you are learning to run.',
+        pt: 'Uma receita é uma função: dados estes ingredientes, produza este prato. Uma cozinha é um programa: pedidos chegam em ordem imprevisível, alguns vêm errados, e alguém precisa registrar o que foi servido.\n\nAs receitas não ficam mais difíceis. A cozinha é o que você está aprendendo a operar.'
+      }},
+
+      { type: 'heading', content: { en: '🆚 One block versus separated parts', pt: '🆚 Um bloco só versus partes separadas' } },
+      { type: 'text', content: {
+        en: 'Both versions below add two numbers. The first cannot be tested, reused or fixed without reading all of it. The second can be checked one piece at a time — and that is the entire difference between code that survives and code that gets rewritten.',
+        pt: 'As duas versões abaixo somam dois números. A primeira não dá para testar, reaproveitar nem corrigir sem ler tudo. A segunda dá para conferir uma peça por vez — e essa é toda a diferença entre um código que sobrevive e um que é reescrito.'
+      }},
+      { type: 'code', code: `# One block: works, but everything is tangled together
 x = int(input("x: "))
 y = int(input("y: "))
 op = input("op: ")
 if op == "+": print(x + y)
 elif op == "-": print(x - y)` },
-      { type: 'code', code: `# ✅ PROFESSIONAL: functions + validation + history
+      { type: 'code', code: `# Separated: the maths knows nothing about input or printing
 def calculate(x, op, y):
-    """Perform arithmetic operation."""
-    if op == "+": return x + y
-    elif op == "-": return x - y
-    elif op == "*": return x * y
-    elif op == "/":
-        if y == 0: raise ValueError("Cannot divide by zero")
+    """Return the result of one arithmetic operation."""
+    if op == "+":
+        return x + y
+    if op == "-":
+        return x - y
+    if op == "*":
+        return x * y
+    if op == "/":
+        if y == 0:
+            raise ValueError("Cannot divide by zero")
         return x / y
-    else:
-        raise ValueError(f"Unknown operator: {op}")
+    raise ValueError(f"Unknown operator: {op}")
 
-history = []
+print(calculate(4, "+", 6))     # 10 — testable without typing anything` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'def calculate(x, op, y):\n    if op == "+":\n        return x + y\n    print("unknown operator")\n\nprint(calculate(4, "*", 6))',
+        options: [
+          { en: 'unknown operator, then None', pt: 'unknown operator, depois None' },
+          { en: 'unknown operator only', pt: 'apenas unknown operator' },
+          { en: '24', pt: '24' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'The function prints its complaint and then falls off the end, so it hands back None — and the outer print shows it. Printing a problem is not the same as reporting one. raise ValueError(...) stops the function and lets the caller decide what to do.',
+          pt: 'A função imprime a reclamação e chega ao fim, então devolve None — e o print de fora mostra isso. Imprimir um problema não é o mesmo que reportá-lo. raise ValueError(...) interrompe a função e deixa quem chamou decidir o que fazer.'
+        }
+      } },
 
-def run():
+      { type: 'heading', content: { en: '🐍 Part 1 — the work, with no input and no printing', pt: '🐍 Parte 1 — o trabalho, sem entrada e sem impressão' } },
+      { type: 'text', content: {
+        en: 'Write the calculating function first and keep input() out of it. A function that only takes values and returns a value can be tested in one line, a hundred times, without you typing anything.',
+        pt: 'Escreva primeiro a função que calcula e mantenha input() fora dela. Uma função que só recebe valores e devolve um valor pode ser testada em uma linha, cem vezes, sem você digitar nada.'
+      }},
+      { type: 'code', code: `print(calculate(10, "/", 4))     # 2.5
+print(calculate(10, "*", 0))     # 0
+try:
+    calculate(10, "/", 0)
+except ValueError as error:
+    print("refused:", error)     # refused: Cannot divide by zero` },
+
+      { type: 'heading', content: { en: '🐍 Part 2 — the conversation with the person', pt: '🐍 Parte 2 — a conversa com a pessoa' } },
+      { type: 'text', content: {
+        en: 'Only now add the part that talks to a human. It reads, it validates, it calls the function, it shows the answer. Notice that a bad number no longer ends the program — it asks again.',
+        pt: 'Só agora adicione a parte que fala com uma pessoa. Ela lê, valida, chama a função e mostra a resposta. Repare que um número inválido não encerra mais o programa — ele pergunta de novo.'
+      }},
+      { type: 'code', code: `def ask_number(label):
     while True:
         try:
-            x  = float(input("First number (q=quit): "))
-            op = input("Operator (+,-,*,/): ")
-            y  = float(input("Second number: "))
-            result = calculate(x, op, y)
-            history.append(f"{x} {op} {y} = {result}")
-            print("=", result)
-        except ValueError as e:
-            print("Error:", e)
-        except:
-            break
+            return float(input(label))
+        except ValueError:
+            print("Numbers only — try again.")
 
-run()
-print("\\nHistory:")
-for h in history: print(" ", h)` }
+x = ask_number("First number: ")
+op = input("Operator (+ - * /): ")
+y = ask_number("Second number: ")
+
+try:
+    print("=", calculate(x, op, y))
+except ValueError as error:
+    print("Cannot do that:", error)` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'def ask_number(label):\n    while True:\n        try:\n            return float(input(label))\n        except ValueError:\n            print("Numbers only")\n\nvalue = ask_number("n: ")   # the person types: abc, then 7',
+        options: [
+          { en: 'It prints "Numbers only" once, then value is 7.0', pt: 'Imprime "Numbers only" uma vez, e value fica 7.0' },
+          { en: 'It stops at the first wrong answer', pt: 'Para na primeira resposta errada' },
+          { en: 'value ends up as the text "7"', pt: 'value acaba sendo o texto "7"' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'return only happens when float() succeeded, so a bad answer falls to except, prints, and the while sends it round again. The loop is what turns a crash into a second chance — and float() means the result is a number, not text.',
+          pt: 'O return só acontece quando o float() deu certo, então uma resposta ruim cai no except, imprime, e o while manda de volta. O laço é o que transforma uma quebra em uma segunda chance — e o float() garante que o resultado é número, não texto.'
+        }
+      } },
+
+      { type: 'heading', content: { en: '🐍 Part 3 — remembering what happened', pt: '🐍 Parte 3 — lembrar o que aconteceu' } },
+      { type: 'text', content: {
+        en: 'A list of what the program did is worth more than it looks. It is how you check your own work, and it is the first step towards saving anything to a file.',
+        pt: 'Uma lista do que o programa fez vale mais do que parece. É como você confere seu próprio trabalho, e é o primeiro passo para salvar qualquer coisa num arquivo.'
+      }},
+      { type: 'code', code: `history = []
+
+result = calculate(4, "+", 6)
+history.append(f"4 + 6 = {result}")
+
+result = calculate(9, "/", 3)
+history.append(f"9 / 3 = {result}")
+
+print("History:")
+for line in history:
+    print(" ", line)` },
+
+      { type: 'heading', content: { en: '🏗️ Putting it together', pt: '🏗️ Juntando tudo' } },
+      { type: 'text', content: {
+        en: 'Five parts, each one already familiar:\n1. calculate() — the work, pure and testable\n2. ask_number() — input that survives a typo\n3. a loop — keep going until the person stops\n4. try/except — refuse impossible operations without crashing\n5. history — a record of what was done\n\nBuild them in that order and test each before adding the next. If you write all five and only then run it, you will be debugging five things at once.',
+        pt: 'Cinco partes, cada uma já conhecida:\n1. calculate() — o trabalho, puro e testável\n2. ask_number() — entrada que sobrevive a um erro de digitação\n3. um laço — continuar até a pessoa parar\n4. try/except — recusar operações impossíveis sem quebrar\n5. history — um registro do que foi feito\n\nConstrua nessa ordem e teste cada uma antes de somar a próxima. Se você escrever as cinco e só então rodar, vai depurar cinco coisas ao mesmo tempo.'
+      }},
+
+      { type: 'heading', content: { en: '⚠️ Common errors', pt: '⚠️ Erros comuns' } },
+      { type: 'text', content: {
+        en: '• Putting input() inside the calculating function. It can then never be tested without a person typing.\n• A bare except: around the whole loop, which swallows your own mistakes along with the user\'s.\n• Printing an error instead of raising one, so the caller receives None and carries on regardless.\n• Forgetting that float() accepts "7" but not "seven".\n• Writing all five parts before running any of them.',
+        pt: '• Colocar input() dentro da função que calcula. Aí ela nunca pode ser testada sem alguém digitando.\n• Um except: pelado em volta do laço inteiro, que engole seus próprios erros junto com os do usuário.\n• Imprimir um erro em vez de levantá-lo, e quem chamou recebe None e segue mesmo assim.\n• Esquecer que float() aceita "7" mas não "sete".\n• Escrever as cinco partes antes de rodar qualquer uma.'
+      }},
+      { type: 'tip', content: {
+        en: '💡 Run after every part you add. A program that worked one minute ago tells you exactly where the new problem is.',
+        pt: '💡 Rode depois de cada parte que adicionar. Um programa que funcionava há um minuto diz exatamente onde está o problema novo.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recapitulando' } },
+      { type: 'text', content: {
+        en: 'Separate the work from the conversation: calculating functions take values and return values.\nValidate at the edge, where input arrives, not deep inside.\nraise to report a refusal; return to report an answer.\nKeep a record of what happened.\nBuild in parts and run after each one.',
+        pt: 'Separe o trabalho da conversa: funções que calculam recebem valores e devolvem valores.\nValide na borda, onde a entrada chega, não lá no fundo.\nUse raise para reportar uma recusa; return para reportar uma resposta.\nGuarde um registro do que aconteceu.\nConstrua em partes e rode depois de cada uma.'
+      }}
     ]
   },
+
   exercises: [
     {
       id: 'ex24_recog',
@@ -3281,22 +3375,22 @@ for h in history: print(" ", h)`,
     { id: 'q24_4', question: { en: 'while True loop runs until:', pt: 'Loop while True roda até:' }, options: [{ en: 'A break statement or unhandled exception', pt: 'Um break ou exceção não tratada' }, { en: '100 iterations', pt: '100 iterações' }, { en: 'Memory runs out', pt: 'Memória acabar' }, { en: 'User closes terminal', pt: 'Usuário fecha o terminal' }], correctIndex: 0, explanation: { en: 'while True runs forever. Use break to exit cleanly, or let an unhandled exception stop it.', pt: 'while True roda para sempre. Use break para sair, ou deixe exceção não tratada pará-lo.' } }
   ],
   exam: {
-    title: { en: 'Insurance Fee Calculator', pt: 'Calculadora de Taxas de Seguro' },
-    scenario: { en: 'Build an error-safe fee calculator with history.', pt: 'Construa uma calculadora de taxas resistente a erros, com histórico.' },
-    requirements: { en: ['calc_premium(base, risk, years)', 'premium = base * risk * years', 'Validate all > 0', '3 clients with loop', 'Error handling', 'Print history'], pt: ['calc_premium(base, risk, years)', 'premium = base * risk * years', 'Valide todos > 0', '3 clientes com loop', 'Tratamento de erros', 'Imprima histórico'] },
-    starterCode: `def calc_premium(base, risk, years):
-    """Calculate insurance premium. All args must be positive."""
-    if base <= 0 or risk <= 0 or years <= 0:
+    title: { en: 'Equipment Hire Calculator', pt: 'Calculadora de Aluguel de Equipamento' },
+    scenario: { en: 'Build an error-safe hire-cost calculator with history.', pt: 'Construa uma calculadora de custo de aluguel resistente a erros, com histórico.' },
+    requirements: { en: ['calc_hire(base, rate, years)', 'cost = base * rate * years', 'Validate all > 0', '3 bookings with loop', 'Error handling', 'Print history'], pt: ['calc_hire(base, rate, years)', 'cost = base * rate * years', 'Valide todos > 0', '3 clientes com loop', 'Tratamento de erros', 'Imprima histórico'] },
+    starterCode: `def calc_hire(base, rate, years):
+    """Calculate the hire cost. All values must be positive."""
+    if base <= 0 or rate <= 0 or years <= 0:
         raise ValueError("All values must be positive")
-    return base * risk * years
+    return base * rate * years
 
-clients = [("Alice",10000,0.08,3),("Bob",-5000,0.05,2),("Carlos",15000,0.12,5)]
+bookings = [("Alice",10000,0.08,3),("Bob",-5000,0.05,2),("Carlos",15000,0.12,5)]
 history = []
 
-for name, base, risk, years in clients:
+for name, base, rate, years in bookings:
     try:
-        premium = calc_premium(base, risk, years)
-        entry = f"{name}: \${premium:.2f}"
+        cost = calc_hire(base, rate, years)
+        entry = f"{name}: \${cost:.2f}"
         history.append(entry)
         print("✅", entry)
     except ValueError as e:
