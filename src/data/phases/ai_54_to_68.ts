@@ -1013,11 +1013,10 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "build_vocabulary",
       "starterCode": "def build_vocabulary(texts):\n    \"\"\"Return <unk>:0 plus sorted unique lowercase whitespace tokens.\"\"\"\n    pass",
-      "publicAfterCode": "print(build_vocabulary([\"Python local\", \"IA local\"]))",
-      "publicExpected": "'local': 2",
+      "publicAfterCode": "print(build_vocabulary([\"Python local\", \"IA local\"])[\"local\"])",
+      "publicExpected": "2",
       "hiddenAfterCode": "print(build_vocabulary([]))",
       "hiddenExpected": "{'<unk>': 0}",
       "requirements": [
@@ -1032,13 +1031,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
-      "checkType": "contains",
       "functionName": "build_vocabulary",
       "starterCode": "def build_vocabulary(texts):\n    \"\"\"Use deterministic IDs independent of input order.\"\"\"\n    pass",
-      "publicAfterCode": "print(build_vocabulary([\"b a\", \"a c\"]))",
-      "publicExpected": "'a': 1",
-      "hiddenAfterCode": "print(build_vocabulary([\"C\", \"c\"]))",
-      "hiddenExpected": "'c': 1",
+      "publicAfterCode": "print(build_vocabulary([\"b a\", \"a c\"])[\"a\"])",
+      "publicExpected": "1",
+      "hiddenAfterCode": "print(build_vocabulary([\"C\", \"c\"])[\"c\"])",
+      "hiddenExpected": "1",
       "requirements": [
         {
           "kind": "function",
@@ -1561,13 +1559,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "answer_with_sources",
       "starterCode": "def answer_with_sources(question, passages):\n    \"\"\"Return up to two overlapping passages and their source IDs, or insufficient evidence.\"\"\"\n    pass",
-      "publicAfterCode": "print(answer_with_sources(\"song title\", [{\"text\": \"song title is Bohemian Rhapsody\", \"source\": \"p1\"}]))",
-      "publicExpected": "'sources': ['p1']",
-      "hiddenAfterCode": "print(answer_with_sources(\"unrelated\", [{\"text\": \"song title\", \"source\": \"p1\"}]))",
-      "hiddenExpected": "'sources': []",
+      "publicAfterCode": "print(answer_with_sources(\"song title\", [{\"text\": \"song title is Bohemian Rhapsody\", \"source\": \"p1\"}])[\"sources\"])",
+      "publicExpected": "['p1']",
+      "hiddenAfterCode": "print(answer_with_sources(\"unrelated\", [{\"text\": \"song title\", \"source\": \"p1\"}])[\"sources\"])",
+      "hiddenExpected": "[]",
       "requirements": [
         {
           "kind": "function",

@@ -1151,13 +1151,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "normalize_response",
       "starterCode": "def normalize_response(status, payload):\n    \"\"\"Normalize success and error responses into one stable shape.\"\"\"\n    pass",
-      "publicAfterCode": "print(normalize_response(201, {\"id\": 7}))",
-      "publicExpected": "'ok': True",
-      "hiddenAfterCode": "print(normalize_response(404, {\"error\": \"missing\"}))",
-      "hiddenExpected": "'error': 'missing'",
+      "publicAfterCode": "print(normalize_response(201, {\"id\": 7})[\"ok\"])",
+      "publicExpected": "True",
+      "hiddenAfterCode": "print(normalize_response(404, {\"error\": \"missing\"})[\"error\"])",
+      "hiddenExpected": "missing",
       "requirements": [
         {
           "kind": "function",
@@ -1170,13 +1169,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
-      "checkType": "contains",
       "functionName": "normalize_response",
       "starterCode": "def normalize_response(status, payload):\n    \"\"\"Treat only 2xx as success and use unknown for missing error text.\"\"\"\n    pass",
-      "publicAfterCode": "print(normalize_response(204, {}))",
-      "publicExpected": "'ok': True",
-      "hiddenAfterCode": "print(normalize_response(500, {}))",
-      "hiddenExpected": "'error': 'unknown'",
+      "publicAfterCode": "print(normalize_response(204, {})[\"ok\"])",
+      "publicExpected": "True",
+      "hiddenAfterCode": "print(normalize_response(500, {})[\"error\"])",
+      "hiddenExpected": "unknown",
       "requirements": [
         {
           "kind": "function",
@@ -1257,11 +1255,10 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "redact_record",
       "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Return a new dictionary with secret values replaced by ***.\"\"\"\n    pass",
-      "publicAfterCode": "print(redact_record({\"name\": \"Ana\", \"token\": \"abc\"}, {\"token\"}))",
-      "publicExpected": "'token': '***'",
+      "publicAfterCode": "print(redact_record({\"name\": \"Ana\", \"token\": \"abc\"}, {\"token\"})[\"token\"])",
+      "publicExpected": "***",
       "hiddenAfterCode": "original = {\"password\": \"p\", \"id\": 3}\nprint(redact_record(original, {\"password\"}))\nprint(original[\"password\"])",
       "hiddenExpected": "p",
       "requirements": [
@@ -1276,13 +1273,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
-      "checkType": "contains",
       "functionName": "redact_record",
       "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Do not mutate the source and support multiple secret fields.\"\"\"\n    pass",
-      "publicAfterCode": "print(redact_record({\"a\": 1, \"secret\": 2}, {\"secret\"}))",
-      "publicExpected": "'secret': '***'",
-      "hiddenAfterCode": "print(redact_record({\"token\": \"x\", \"password\": \"y\"}, {\"token\", \"password\"}))",
-      "hiddenExpected": "'password': '***'",
+      "publicAfterCode": "print(redact_record({\"a\": 1, \"secret\": 2}, {\"secret\"})[\"secret\"])",
+      "publicExpected": "***",
+      "hiddenAfterCode": "print(redact_record({\"token\": \"x\", \"password\": \"y\"}, {\"token\", \"password\"})[\"password\"])",
+      "hiddenExpected": "***",
       "requirements": [
         {
           "kind": "function",
@@ -1363,13 +1359,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "release_ready",
       "starterCode": "def release_ready(checks):\n    \"\"\"Require types, tests, security and build to be exactly True.\"\"\"\n    pass",
-      "publicAfterCode": "print(release_ready({\"types\": True, \"tests\": True, \"security\": True, \"build\": True}))",
-      "publicExpected": "'ready': True",
-      "hiddenAfterCode": "print(release_ready({\"types\": True, \"tests\": False, \"security\": True, \"build\": True}))",
-      "hiddenExpected": "'failures': ['tests']",
+      "publicAfterCode": "print(release_ready({\"types\": True, \"tests\": True, \"security\": True, \"build\": True})[\"ready\"])",
+      "publicExpected": "True",
+      "hiddenAfterCode": "print(release_ready({\"types\": True, \"tests\": False, \"security\": True, \"build\": True})[\"failures\"])",
+      "hiddenExpected": "['tests']",
       "requirements": [
         {
           "kind": "function",
@@ -1464,13 +1459,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "process_orders",
       "starterCode": "def process_orders(orders, tax_rate):\n    \"\"\"Validate orders and return subtotal, tax and total.\"\"\"\n    pass",
-      "publicAfterCode": "print(process_orders([{\"quantity\": 2, \"unit_price\": 10}], 0.13))",
-      "publicExpected": "'total': 22.6",
-      "hiddenAfterCode": "print(process_orders([], 0.2))",
-      "hiddenExpected": "'total': 0.0",
+      "publicAfterCode": "print(process_orders([{\"quantity\": 2, \"unit_price\": 10}], 0.13)[\"total\"])",
+      "publicExpected": "22.6",
+      "hiddenAfterCode": "print(process_orders([], 0.2)[\"total\"])",
+      "hiddenExpected": "0.0",
       "requirements": [
         {
           "kind": "function",
@@ -1479,11 +1473,10 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
-      "checkType": "contains",
       "functionName": "process_orders",
       "starterCode": "def process_orders(orders, tax_rate):\n    \"\"\"Reject negative rates, quantities or prices and round money to 2 decimals.\"\"\"\n    pass",
-      "publicAfterCode": "print(process_orders([{\"quantity\": 3, \"unit_price\": 2.5}], 0.1))",
-      "publicExpected": "'total': 8.25",
+      "publicAfterCode": "print(process_orders([{\"quantity\": 3, \"unit_price\": 2.5}], 0.1)[\"total\"])",
+      "publicExpected": "8.25",
       "hiddenAfterCode": "try:\n    process_orders([{\"quantity\": -1, \"unit_price\": 10}], 0.1)\nexcept ValueError:\n    print(\"invalid-order\")",
       "hiddenExpected": "invalid-order",
       "requirements": [

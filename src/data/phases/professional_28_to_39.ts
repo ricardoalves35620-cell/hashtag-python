@@ -439,13 +439,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "parse_command",
       "starterCode": "def parse_command(args):\n    \"\"\"Return command and optional value; empty args means help.\"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    print(parse_command([]))",
-      "publicAfterCode": "print(parse_command([\"report\", \"july\"]))",
-      "publicExpected": "'command': 'report'",
-      "hiddenAfterCode": "print(parse_command([]))",
-      "hiddenExpected": "'command': 'help'",
+      "publicAfterCode": "print(parse_command([\"report\", \"july\"])[\"command\"])",
+      "publicExpected": "report",
+      "hiddenAfterCode": "print(parse_command([])[\"command\"])",
+      "hiddenExpected": "help",
       "requirements": [
         {
           "kind": "function",
@@ -458,13 +457,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
-      "checkType": "contains",
       "functionName": "parse_command",
       "starterCode": "def parse_command(args):\n    \"\"\"Normalize the command to lowercase and preserve one optional value.\"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    print(parse_command([]))",
-      "publicAfterCode": "print(parse_command([\"REPORT\", \"july\"]))",
-      "publicExpected": "'command': 'report'",
-      "hiddenAfterCode": "print(parse_command([\"sync\"]))",
-      "hiddenExpected": "'value': None",
+      "publicAfterCode": "print(parse_command([\"REPORT\", \"july\"])[\"command\"])",
+      "publicExpected": "report",
+      "hiddenAfterCode": "print(parse_command([\"sync\"])[\"value\"])",
+      "hiddenExpected": "None",
       "requirements": [
         {
           "kind": "function",
@@ -1125,13 +1123,12 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "checkType": "contains",
       "functionName": "monthly_summary",
       "starterCode": "def monthly_summary(transactions):\n    \"\"\"Return income, expense and balance totals.\"\"\"\n    pass",
-      "publicAfterCode": "print(monthly_summary([{\"kind\": \"income\", \"amount\": 100}, {\"kind\": \"expense\", \"amount\": 35}]))",
-      "publicExpected": "'balance': 65",
-      "hiddenAfterCode": "print(monthly_summary([]))",
-      "hiddenExpected": "'balance': 0",
+      "publicAfterCode": "print(monthly_summary([{\"kind\": \"income\", \"amount\": 100}, {\"kind\": \"expense\", \"amount\": 35}])[\"balance\"])",
+      "publicExpected": "65",
+      "hiddenAfterCode": "print(monthly_summary([])[\"balance\"])",
+      "hiddenExpected": "0",
       "requirements": [
         {
           "kind": "function",
@@ -1140,11 +1137,10 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
-      "checkType": "contains",
       "functionName": "monthly_summary",
       "starterCode": "def monthly_summary(transactions):\n    \"\"\"Validate kind and non-negative amount, then return totals.\"\"\"\n    pass",
-      "publicAfterCode": "print(monthly_summary([{\"kind\": \"income\", \"amount\": 200}, {\"kind\": \"expense\", \"amount\": 50}]))",
-      "publicExpected": "'balance': 150",
+      "publicAfterCode": "print(monthly_summary([{\"kind\": \"income\", \"amount\": 200}, {\"kind\": \"expense\", \"amount\": 50}])[\"balance\"])",
+      "publicExpected": "150",
       "hiddenAfterCode": "try:\n    monthly_summary([{\"kind\": \"other\", \"amount\": 10}])\nexcept ValueError:\n    print(\"invalid-transaction\")",
       "hiddenExpected": "invalid-transaction",
       "requirements": [
