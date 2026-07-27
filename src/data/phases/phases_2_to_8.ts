@@ -30,6 +30,17 @@ export const phase2: Phase = {
         pt: 'Uma calculadora de bolso dá a resposta e esquece.\nPython dá a resposta E lembra — você pode salvar resultados e reusá-los no próximo cálculo.\n\nEssa única diferença é o motivo pelo qual Python substituiu o Excel em toda empresa financeira séria.'
       }},
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'print(10 / 2)',
+        options: [
+          { en: '5.0', pt: '5.0' },
+          { en: '5', pt: '5' },
+          { en: '5.00', pt: '5.00' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'The / operator always produces a decimal, even when the division is exact. Use // when you want a whole number.', pt: 'O operador / sempre produz um decimal, mesmo quando a divisão é exata. Use // quando quiser um número inteiro.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 The 6 operators', pt: '🐍 Os 6 operadores' } },
       { type: 'code', code: `print(10 + 3)    # Addition        → 13
 print(10 - 3)    # Subtraction     → 7
@@ -56,6 +67,17 @@ print((2 + 3) * 4)   # 20  (parentheses force order)
 # Real trap: calculating average
 print(10 + 20 + 30 / 3)     # ❌ 40.0 — only 30 was divided!
 print((10 + 20 + 30) / 3)   # ✅ 20.0 — correct average` },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'print(7 // 2)',
+        options: [
+          { en: '3', pt: '3' },
+          { en: '3.5', pt: '3.5' },
+          { en: '4', pt: '4' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Floor division drops the remainder instead of rounding, so 7 // 2 is 3, not 3.5 and not 4.', pt: 'A divisão inteira descarta o resto em vez de arredondar, então 7 // 2 é 3, não 3.5 nem 4.' }
+      } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Full insurance payout calculation', pt: '🏗️ Cenário Real 1: Cálculo completo de sinistro' } },
       { type: 'text', content: {
@@ -340,6 +362,17 @@ print(message)                   # Ana Souza is 32 years old
 # f-strings can even do math inside the braces:
 print(f"In 10 years: {age + 10}")   # In 10 years: 42` },
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'score = 10\nscore + 5\nprint(score)',
+        options: [
+          { en: '10', pt: '10' },
+          { en: '15', pt: '15' },
+          { en: '5', pt: '5' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'score + 5 calculates 15 but nothing stores it, so score is still 10. You need score = score + 5, or the shorthand score += 5.', pt: 'score + 5 calcula 15 mas nada guarda o resultado, então score continua 10. É preciso score = score + 5, ou o atalho score += 5.' }
+      } },
+
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Client onboarding file', pt: '🏗️ Cenário Real 1: Ficha de cadastro de cliente' } },
       { type: 'code', code: `# New insurance client registration
 client_name     = "Ricardo Alves"
@@ -382,6 +415,17 @@ print("Total spent this week: $", total_spent)
 
 # The variable REMEMBERS between operations.
 # That's the superpower a calculator doesn't have.` },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'total = 0\ntotal += 960\ntotal += 1240\nprint(total)',
+        options: [
+          { en: '2200', pt: '2200' },
+          { en: '1240', pt: '1240' },
+          { en: '960', pt: '960' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Each += adds to what is already there. The accumulator starts at 0 before the additions — that first line is what makes the pattern work.', pt: 'Cada += soma ao que já existe. O acumulador começa em 0 antes das somas — essa primeira linha é o que faz o padrão funcionar.' }
+      } },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
       { type: 'code', code: {
@@ -572,6 +616,17 @@ export const phase4: Phase = {
         pt: 'Uma recepcionista numa seguradora:\n1. Faz a pergunta: "Qual seu nome?"\n2. ESPERA a resposta (não se move até você falar)\n3. Anota no formulário\n\ninput() funciona identicamente:\n1. Mostra sua pergunta na tela\n2. PAUSA o programa, esperando\n3. Armazena o que foi digitado numa variável\n\n⚠️ Detalhe crítico: a recepcionista anota TUDO como texto. Mesmo se você disser "42", ela escreve os caracteres 4-2, não o número.'
       }},
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'age = input("Age: ")   # the user types 30\nprint(age + 5)',
+        options: [
+          { en: 'TypeError', pt: 'TypeError' },
+          { en: '35', pt: '35' },
+          { en: '305', pt: '305' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'input() always hands back text, never a number. Adding text and a number raises TypeError. Wrap it: int(input("Age: ")).', pt: 'input() sempre devolve texto, nunca número. Somar texto com número gera TypeError. Converta: int(input("Age: ")).' }
+      } },
+
       { type: 'heading', content: { en: '🐍 The fundamentals', pt: '🐍 Os fundamentos' } },
       { type: 'code', code: `# input() shows a message and waits for typing
 name = input("What is your name? ")
@@ -601,6 +656,17 @@ print(height * 100, "cm")
 # int(x)    → whole number    int("42") → 42
 # float(x)  → decimal          float("3.14") → 3.14
 # str(x)    → back to text     str(42) → "42"` },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'x = input("Number: ")   # the user types 5\nprint(x * 3)',
+        options: [
+          { en: '555', pt: '555' },
+          { en: '15', pt: '15' },
+          { en: 'TypeError', pt: 'TypeError' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Since x holds the text "5", multiplying repeats it three times. This one is dangerous because it does not crash — it silently gives nonsense.', pt: 'Como x guarda o texto "5", multiplicar repete o texto três vezes. Este erro é perigoso porque não trava — só devolve algo sem sentido.' }
+      } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claim intake form', pt: '🏗️ Cenário Real 1: Formulário de sinistro' } },
       { type: 'code', code: {
@@ -855,6 +921,17 @@ print(x == 10)   # True   igual (DOIS sinais de igual!)
 print(x != 7)    # True   diferente`,
       } },
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'temperature = 30\nif temperature > 30:\n    print("Hot")\nelse:\n    print("Mild")',
+        options: [
+          { en: 'Mild', pt: 'Mild' },
+          { en: 'Hot', pt: 'Hot' },
+          { en: 'Nothing', pt: 'Nothing' }
+        ],
+        correctIndex: 0,
+        explanation: { en: '30 is not greater than 30, so the condition is False and the else branch runs. Use >= when the boundary value should count.', pt: '30 não é maior que 30, então a condição é False e o else roda. Use >= quando o valor limite deve contar.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Deeper: combining conditions with and / or / not', pt: '🐍 Aprofundando: combinando condições com and / or / not' } },
       { type: 'code', code: {
         en: `damage = 7000
@@ -955,6 +1032,17 @@ elif velocidade_vento > 40:
     print("⚠️ Vento forte — os guindastes devem permanecer parados")
 else:
     print("✅ Condições seguras para todas as operações")`,
+      } },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'x = 5\nif x = 5:\n    print("yes")',
+        options: [
+          { en: 'SyntaxError', pt: 'SyntaxError' },
+          { en: 'yes', pt: 'yes' },
+          { en: '5', pt: '5' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'A single = assigns a value; comparing needs ==. Python refuses to run the file at all, which is why the error appears before any output.', pt: 'Um único = atribui valor; comparar exige ==. O Python nem executa o arquivo, por isso o erro aparece antes de qualquer saída.' }
       } },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
@@ -1158,6 +1246,17 @@ export const phase6: Phase = {
         pt: 'Uma esteira de fábrica classificando pacotes:\n📦 Pesado? → Doca A. Pronto, próximo pacote.\n📦 Não pesado mas médio? → Doca B. Pronto.\n📦 Não médio mas leve? → Doca C. Pronto.\n📦 Nenhum dos acima? → Caixa de rejeitados (else).\n\nRegra chave: a esteira verifica EM ORDEM e PARA no primeiro match.\nUm pacote nunca visita duas docas. Exatamente um destino, sempre.'
       }},
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'damage = 12000\nif damage > 5000:\n    print("Urgent")\nelif damage > 10000:\n    print("Critical")',
+        options: [
+          { en: 'Urgent', pt: 'Urgent' },
+          { en: 'Critical', pt: 'Critical' },
+          { en: 'Urgent and Critical', pt: 'Urgent and Critical' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Python stops at the first condition that is True, so 12000 never reaches the Critical test. Order your branches from most specific to least.', pt: 'O Python para na primeira condição verdadeira, então 12000 nunca chega no teste Critical. Ordene os ramos do mais específico para o menos.' }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 1 — you already know if/else', pt: '🐍 Passo 1 — você já sabe if/else' } },
       { type: 'code', code: `damage = 4500
 
@@ -1204,6 +1303,17 @@ else:
 print(f"Priority: {priority}")
 print(f"Respond within: {sla_hours}h")
 print(f"Assigned to: {team}")` },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'score = 85\nif score >= 90:\n    print("A")\nelif score >= 80:\n    print("B")\nelif score >= 70:\n    print("C")',
+        options: [
+          { en: 'B', pt: 'B' },
+          { en: 'B and C', pt: 'B and C' },
+          { en: 'C', pt: 'C' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Only one branch of an if/elif chain ever runs. 85 matches the B test first, so C is never checked.', pt: 'Só um ramo de uma cadeia if/elif roda. 85 satisfaz o teste do B primeiro, então o C nem é verificado.' }
+      } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Insurance premium brackets', pt: '🏗️ Cenário Real 1: Faixas de prêmio de seguro' } },
       { type: 'code', code: `# Age-based car insurance premium (real industry pattern)
@@ -1480,6 +1590,17 @@ while age < 0 or age > 120:
     age = int(input("Age (0-120): "))
 print("Valid age:", age)` },
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'count = 1\nwhile count <= 3:\n    print(count)',
+        options: [
+          { en: '1 forever', pt: '1 forever' },
+          { en: '1 2 3', pt: '1 2 3' },
+          { en: 'nothing', pt: 'nothing' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Nothing ever changes count, so the condition stays True and the loop never ends. Every while loop needs a line that moves it toward stopping.', pt: 'Nada muda count, então a condição continua True e o laço nunca acaba. Todo while precisa de uma linha que o aproxime do fim.' }
+      } },
+
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Batch claim processing', pt: '🏗️ Cenário Real 1: Processamento em lote' } },
       { type: 'code', code: {
         en: `# End of day: process every pending claim
@@ -1544,6 +1665,17 @@ while estoque >= 12:           # são usados 12 sacos por dia
     dia += 1
 
 print(f"⚠️ Dia {dia}: restam apenas {estoque} sacos — FAÇA UM NOVO PEDIDO")`
+      } },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'count = 0\nwhile count < 3:\n    count += 1\nprint(count)',
+        options: [
+          { en: '3', pt: '3' },
+          { en: '2', pt: '2' },
+          { en: '4', pt: '4' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'The loop stops the moment the condition fails. count reaches 3, 3 < 3 is False, so it exits with count holding exactly 3.', pt: 'O laço para no momento em que a condição falha. count chega a 3, 3 < 3 é False, e ele sai com count valendo exatamente 3.' }
       } },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },

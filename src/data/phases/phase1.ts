@@ -60,6 +60,17 @@ print("Line 1")
 print()                      # blank line here
 print("Line 3")` },
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'print("10 + 5")',
+        options: [
+          { en: '10 + 5', pt: '10 + 5' },
+          { en: '15', pt: '15' },
+          { en: 'Error', pt: 'Error' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Quotes make it literal text, so Python prints the characters 1, 0, +, 5 without doing any maths. Without quotes, print(10 + 5) calculates first and shows 15.', pt: 'As aspas tornam tudo texto literal, então o Python imprime os caracteres 1, 0, +, 5 sem fazer conta. Sem aspas, print(10 + 5) calcula primeiro e mostra 15.' }
+      } },
+
       { type: 'heading', content: { en: '🎵 Real Scenario 1: Music app startup', pt: '🎵 Cenário Real 1: Inicialização de app de música' } },
       { type: 'text', content: {
         en: 'You just joined MusicBox, a music streaming startup, as a dev intern.\nEvery morning the server starts and prints a status report so the team knows everything is running.\n\nThis is a REAL pattern — every server in production prints startup logs exactly like this:',
@@ -76,6 +87,17 @@ print("New playlists:", 12)
 print("Total updates:", 47 + 12)      # Python calculates: 59
 print()
 print("System ready. Good morning, team!")` },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'print("Songs:", 47)',
+        options: [
+          { en: 'Songs: 47', pt: 'Songs: 47' },
+          { en: 'Songs:47', pt: 'Songs:47' },
+          { en: 'Songs: , 47', pt: 'Songs: , 47' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'A comma inside print() joins the parts and adds one space between them automatically. You do not need to type the space yourself.', pt: 'A vírgula dentro de print() junta as partes e adiciona um espaço entre elas automaticamente. Você não precisa digitar o espaço.' }
+      } },
 
       { type: 'heading', content: { en: '☕ Real Scenario 2: Coffee shop daily report', pt: '☕ Cenário Real 2: Relatório diário de cafeteria' } },
       { type: 'text', content: {
