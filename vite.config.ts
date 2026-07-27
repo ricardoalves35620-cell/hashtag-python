@@ -37,6 +37,11 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        // A reload is a navigation request. Without a fallback the service worker has
+        // nothing mapped to the URL, so offline the page fails to open at all — even
+        // though every asset it needs is already precached.
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api\//, /\.[^/]+$/],
         // Without these, a deploy leaves the previous index.html in the precache.
         // It then requests asset hashes that no longer exist on the server and the
         // app fails to boot until the user hard-refreshes.
