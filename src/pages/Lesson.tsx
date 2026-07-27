@@ -202,7 +202,7 @@ export default function Lesson() {
             />
           </aside>
 
-          <main className="learning-reading-column" data-testid="learning-engine-v25">
+          <section className="learning-reading-column" data-testid="learning-engine-v25" aria-label={t.journey}>
             <div className="learning-content-stack">
               <LearningHero
                 eyebrow={`${t.of} ${phase.id} · ${phase.title[lang]}`}
@@ -239,7 +239,7 @@ export default function Lesson() {
                         <h2 className="text-base font-semibold m-0" style={{ color: 'var(--c-text)' }}>{t.optional}</h2>
                         <span className="learning-journal-card__optional">{t.journalBadge}</span>
                       </div>
-                      <p className="text-xs mt-2 mb-0 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{t.journalHelp}</p>
+                      <p className="text-sm mt-2 mb-0 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{t.journalHelp}</p>
                     </div>
                     <button type="button" onClick={() => setJournalVisible(false)} className="text-xs underline" style={{ color: 'var(--c-muted)', background: 'none', border: 0 }}>{t.skip}</button>
                   </div>
@@ -287,7 +287,7 @@ export default function Lesson() {
               />
               <div className="h-4" />
             </div>
-          </main>
+          </section>
         </div>
       </div>
     </Layout>

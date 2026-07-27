@@ -1,8 +1,7 @@
 import { getSupabase } from './supabase'
 import type { UserProgress } from '../data/types'
-import { ALL_PHASES } from '../data/phases'
 import { emitSyncState } from './syncStatus'
-import { getMiniProjectForPhase } from '../data/miniProjects'
+import { PHASE_IDS, phaseHasProject } from '../data/progressionCatalog'
 
 const GUEST_ID = 'guest'
 
@@ -240,27 +239,26 @@ export async function fetchFamilyProgress(groupId: string) {
 }
 
 export function getPhaseStatus(progress: UserProgress[], phaseId: number): 'locked' | 'active' | 'done' {
-  const orderedIds = ALL_PHASES.map(phase => phase.id)
-  const phaseIndex = orderedIds.indexOf(phaseId)
+  const phaseIndex = PHASE_IDS.indexOf(phaseId)
   if (phaseIndex === -1) return 'locked'
 
   const current = progress.find(row => row.phase_id === phaseId)
-  const currentHasProject = Boolean(getMiniProjectForPhase(phaseId))
+  const currentHasProject = phaseHasProject(phaseId)
   const currentMastered = Boolean(current?.exam_passed && (!currentHasProject || current.project_done))
   if (currentMastered) return 'done'
 
   if (phaseIndex === 0) return 'active'
-  const previousPhaseId = orderedIds[phaseIndex - 1]
+  const previousPhaseId = PHASE_IDS[phaseIndex - 1]
   const previous = progress.find(row => row.phase_id === previousPhaseId)
-  const previousHasProject = Boolean(getMiniProjectForPhase(previousPhaseId))
+  const previousHasProject = phaseHasProject(previousPhaseId)
   const previousMastered = Boolean(previous?.exam_passed && (!previousHasProject || previous.project_done))
   return previousMastered ? 'active' : 'locked'
 }
 
 export function getOverallProgress(progress: UserProgress[]): number {
-  const mastered = ALL_PHASES.filter(phase => {
-    const row = progress.find(item => item.phase_id === phase.id)
-    return Boolean(row?.exam_passed && (!getMiniProjectForPhase(phase.id) || row.project_done))
+  const mastered = PHASE_IDS.filter(phaseId => {
+    const row = progress.find(item => item.phase_id === phaseId)
+    return Boolean(row?.exam_passed && (!phaseHasProject(phaseId) || row.project_done))
   }).length
-  return ALL_PHASES.length > 0 ? Math.round((mastered / ALL_PHASES.length) * 100) : 0
+  return PHASE_IDS.length > 0 ? Math.round((mastered / PHASE_IDS.length) * 100) : 0
 }

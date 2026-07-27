@@ -16,8 +16,8 @@ describe('Learning Engine V2.5 educational workspace', () => {
   it('presents phase progress as a learning path rather than a click list', () => {
     const overview = read('./pages/PhaseOverview.tsx')
     expect(overview).toContain('phase-path')
-    expect(overview).toContain('Progress here measures evidence of learning—not clicks.')
-    expect(overview).toContain('O progresso aqui mede evidências de aprendizagem — não cliques.')
+    expect(overview).toContain('Practice and assessments provide the evidence of mastery.')
+    expect(overview).toContain('As práticas e avaliações fornecem as evidências de domínio.')
     expect(overview).toContain('Professional mini-project')
   })
 

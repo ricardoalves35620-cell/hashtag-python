@@ -24,27 +24,27 @@ export const PHASE_GROUPS: PhaseGroup[] = [
   {
     id: 'advanced', icon: '⚙️', track: 'core', phaseRange: [40, 47], labPath: '/engineering-lab',
     title: { en: 'Advanced Python', pt: 'Python avançado' },
-    subtitle: { en: 'Protocols, generators, decorators, async, concurrency and performance.', pt: 'Protocolos, generators, decorators, async, concorrência e desempenho.' },
+    subtitle: { en: 'Protocols, generators, decorators, async, concurrency and performance.', pt: 'Protocolos, geradores, decoradores, programação assíncrona, concorrência e desempenho.' },
   },
   {
     id: 'engineering', icon: '🏭', track: 'core', phaseRange: [48, 53], labPath: '/engineering-lab',
     title: { en: 'Software engineering', pt: 'Engenharia de software' },
-    subtitle: { en: 'Databases, APIs, architecture, security, packaging and mastery capstone.', pt: 'Bancos, APIs, arquitetura, segurança, empacotamento e capstone de domínio.' },
+    subtitle: { en: 'Databases, APIs, architecture, security, packaging and mastery capstone.', pt: 'Bancos de dados, APIs, arquitetura, segurança, empacotamento e projeto final.' },
   },
   {
     id: 'ai-data', icon: '📊', track: 'ai-local', phaseRange: [54, 60], labPath: '/ai-lab',
-    title: { en: 'Data and machine learning', pt: 'Dados e Machine Learning' },
-    subtitle: { en: 'Math, NumPy, Pandas, statistics and classical ML.', pt: 'Matemática, NumPy, Pandas, estatística e ML clássico.' },
+    title: { en: 'Data and machine learning', pt: 'Dados e aprendizado de máquina' },
+    subtitle: { en: 'Math, NumPy, Pandas, statistics and classical ML.', pt: 'Matemática, NumPy, Pandas, estatística e aprendizado de máquina clássico.' },
   },
   {
     id: 'ai-deep', icon: '🧠', track: 'ai-local', phaseRange: [61, 64], labPath: '/ai-lab',
     title: { en: 'Neural networks and language', pt: 'Redes neurais e linguagem' },
-    subtitle: { en: 'Neural networks, PyTorch concepts, tokenization and transformers.', pt: 'Redes neurais, conceitos de PyTorch, tokenização e Transformers.' },
+    subtitle: { en: 'Neural networks, PyTorch concepts, tokenization and transformers.', pt: 'Redes neurais, conceitos de PyTorch, divisão de textos em tokens e modelos Transformer.' },
   },
   {
     id: 'ai-local', icon: '🤖', track: 'ai-local', phaseRange: [65, 68], labPath: '/ai-lab',
     title: { en: 'Local AI engineering', pt: 'Engenharia de IA local' },
-    subtitle: { en: 'Local models, RAG, evaluation, LoRA and an offline capstone.', pt: 'Modelos locais, RAG, avaliação, LoRA e capstone offline.' },
+    subtitle: { en: 'Local models, RAG, evaluation, LoRA and an offline capstone.', pt: 'Modelos locais, busca em documentos (RAG), avaliação, ajuste LoRA e projeto final sem internet.' },
   },
 ]
 

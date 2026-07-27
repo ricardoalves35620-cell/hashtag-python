@@ -1,54 +1,62 @@
+import { lazy, Suspense, type ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AppProvider, useApp } from './contexts/AppContext'
-import Login from './pages/Login'
-import Home from './pages/Home'
-import PhaseOverview from './pages/PhaseOverview'
-import Lesson from './pages/Lesson'
-import Exercises from './pages/Exercises'
-import Quiz from './pages/Quiz'
-import Exam from './pages/Exam'
-import Profile from './pages/Profile'
-import Group from './pages/Group'
-import FastTrackHome from './pages/FastTrackHome'
-import FastTrackDay from './pages/FastTrackDay'
-import Roadmap from './pages/Roadmap'
-import Onboarding from './pages/Onboarding'
-import ResetPassword from './pages/ResetPassword'
-import ConfigurationScreen from './components/ConfigurationScreen'
 import AppLoadingScreen from './components/AppLoadingScreen'
 import { ToastProvider } from './components/ui'
-import LearningProgress from './pages/LearningProgress'
-import Review from './pages/Review'
-import Diagnostic from './pages/Diagnostic'
-import BaseZero from './pages/BaseZero'
-import Visualizer from './pages/Visualizer'
-import ProjectLab from './pages/ProjectLab'
-import EngineeringLab from './pages/EngineeringLab'
-import AILab from './pages/AILab'
-import CareerReadiness from './pages/CareerReadiness'
-import MiniProject from './pages/MiniProject'
-import Portfolio from './pages/Portfolio'
-import { appConfiguration } from './lib/config'
+import LearningRouteGuard from './components/LearningRouteGuard'
+
+const Login = lazy(() => import('./pages/Login'))
+const Home = lazy(() => import('./pages/Home'))
+const PhaseOverview = lazy(() => import('./pages/PhaseOverview'))
+const Lesson = lazy(() => import('./pages/Lesson'))
+const Exercises = lazy(() => import('./pages/Exercises'))
+const Quiz = lazy(() => import('./pages/Quiz'))
+const Exam = lazy(() => import('./pages/Exam'))
+const Profile = lazy(() => import('./pages/Profile'))
+const Group = lazy(() => import('./pages/Group'))
+const FastTrackHome = lazy(() => import('./pages/FastTrackHome'))
+const FastTrackDay = lazy(() => import('./pages/FastTrackDay'))
+const Roadmap = lazy(() => import('./pages/Roadmap'))
+const Onboarding = lazy(() => import('./pages/Onboarding'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
+const LearningProgress = lazy(() => import('./pages/LearningProgress'))
+const Review = lazy(() => import('./pages/Review'))
+const Diagnostic = lazy(() => import('./pages/Diagnostic'))
+const BaseZero = lazy(() => import('./pages/BaseZero'))
+const Visualizer = lazy(() => import('./pages/Visualizer'))
+const ProjectLab = lazy(() => import('./pages/ProjectLab'))
+const EngineeringLab = lazy(() => import('./pages/EngineeringLab'))
+const AILab = lazy(() => import('./pages/AILab'))
+const CareerReadiness = lazy(() => import('./pages/CareerReadiness'))
+const MiniProject = lazy(() => import('./pages/MiniProject'))
+const Portfolio = lazy(() => import('./pages/Portfolio'))
 
 // Redirect to /login if not authenticated
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { user, isGuest, loading } = useApp()
-  if (loading) return <AppLoadingScreen label="Loading your learning space..." />
+function PrivateRoute({ children }: { children: ReactNode }) {
+  const { user, isGuest, loading, progressReady, lang } = useApp()
+  if (loading || ((user || isGuest) && !progressReady)) {
+    return <AppLoadingScreen label={lang === 'pt' ? 'Preparando seu espaço de aprendizagem...' : 'Preparing your learning space...'} />
+  }
   if (!user && !isGuest) return <Navigate to="/login" replace />
   return <>{children}</>
 }
 
 // Redirect to / if already authenticated
-function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { user, isGuest, loading } = useApp()
-  if (loading) return <AppLoadingScreen label="Preparing your account..." />
+function PublicRoute({ children }: { children: ReactNode }) {
+  const { user, isGuest, loading, lang } = useApp()
+  if (loading) {
+    return <AppLoadingScreen label={lang === 'pt' ? 'Preparando sua conta...' : 'Preparing your account...'} />
+  }
   if (user || isGuest) return <Navigate to="/" replace />
   return <>{children}</>
 }
 
 function AppRoutes() {
+  const { lang } = useApp()
+
   return (
-    <Routes>
+    <Suspense fallback={<AppLoadingScreen label={lang === 'pt' ? 'Carregando...' : 'Loading...'} />}>
+      <Routes>
       {/* Public */}
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/reset-password" element={<ResetPassword />} />
@@ -59,12 +67,12 @@ function AppRoutes() {
       <Route path="/home" element={<Navigate to="/" replace />} />
 
       {/* Phase flow — ALL use /phase/:id as base */}
-      <Route path="/phase/:id" element={<PrivateRoute><PhaseOverview /></PrivateRoute>} />
-      <Route path="/phase/:id/lesson" element={<PrivateRoute><Lesson /></PrivateRoute>} />
-      <Route path="/phase/:id/exercises" element={<PrivateRoute><Exercises /></PrivateRoute>} />
-      <Route path="/phase/:id/quiz" element={<PrivateRoute><Quiz /></PrivateRoute>} />
-      <Route path="/phase/:id/exam" element={<PrivateRoute><Exam /></PrivateRoute>} />
-      <Route path="/mini-project/:projectId" element={<PrivateRoute><MiniProject /></PrivateRoute>} />
+      <Route path="/phase/:id" element={<PrivateRoute><LearningRouteGuard step="overview"><PhaseOverview /></LearningRouteGuard></PrivateRoute>} />
+      <Route path="/phase/:id/lesson" element={<PrivateRoute><LearningRouteGuard step="lesson"><Lesson /></LearningRouteGuard></PrivateRoute>} />
+      <Route path="/phase/:id/exercises" element={<PrivateRoute><LearningRouteGuard step="exercises"><Exercises /></LearningRouteGuard></PrivateRoute>} />
+      <Route path="/phase/:id/quiz" element={<PrivateRoute><LearningRouteGuard step="quiz"><Quiz /></LearningRouteGuard></PrivateRoute>} />
+      <Route path="/phase/:id/exam" element={<PrivateRoute><LearningRouteGuard step="exam"><Exam /></LearningRouteGuard></PrivateRoute>} />
+      <Route path="/mini-project/:projectId" element={<PrivateRoute><LearningRouteGuard step="project"><MiniProject /></LearningRouteGuard></PrivateRoute>} />
 
       {/* Other pages */}
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
@@ -86,17 +94,14 @@ function AppRoutes() {
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+      </Routes>
+    </Suspense>
   )
 }
 
 export default function App() {
-  if (!appConfiguration.isConfigured) {
-    return <ConfigurationScreen missing={appConfiguration.missing} />
-  }
-
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AppProvider>
         <ToastProvider>
           <AppRoutes />

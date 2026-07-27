@@ -27,26 +27,29 @@ CREATE INDEX idx_challenges_created_by ON challenges(created_by);
 ALTER TABLE challenges ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "challenges_select" ON challenges
-  FOR SELECT
-  USING (group_id IN (
-    SELECT group_id FROM family_members WHERE user_id = auth.uid()
-  ));
+  FOR SELECT TO authenticated
+  USING (private.is_group_member(group_id));
 
 CREATE POLICY "challenges_insert" ON challenges
-  FOR INSERT
+  FOR INSERT TO authenticated
   WITH CHECK (
-    group_id IN (SELECT group_id FROM family_members WHERE user_id = auth.uid())
-    AND created_by = auth.uid()
+    private.is_group_member(group_id)
+    AND created_by = (select auth.uid())
+    AND points = CASE level WHEN 'easy' THEN 10 WHEN 'medium' THEN 25 WHEN 'hard' THEN 50 END
   );
 
 CREATE POLICY "challenges_update" ON challenges
-  FOR UPDATE
-  USING (created_by = auth.uid())
-  WITH CHECK (created_by = auth.uid());
+  FOR UPDATE TO authenticated
+  USING (created_by = (select auth.uid()) AND private.is_group_member(group_id))
+  WITH CHECK (
+    created_by = (select auth.uid())
+    AND private.is_group_member(group_id)
+    AND points = CASE level WHEN 'easy' THEN 10 WHEN 'medium' THEN 25 WHEN 'hard' THEN 50 END
+  );
 
 CREATE POLICY "challenges_delete" ON challenges
-  FOR DELETE
-  USING (created_by = auth.uid());
+  FOR DELETE TO authenticated
+  USING (created_by = (select auth.uid()) AND private.is_group_member(group_id));
 
 -- ============================================================================
 -- Table: challenge_attempts
@@ -72,19 +75,16 @@ CREATE INDEX idx_challenge_attempts_completed ON challenge_attempts(completed_at
 ALTER TABLE challenge_attempts ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "challenge_attempts_select" ON challenge_attempts
-  FOR SELECT
+  FOR SELECT TO authenticated
   USING (
-    user_id = auth.uid() OR
+    user_id = (select auth.uid()) OR
     challenge_id IN (
-      SELECT id FROM challenges WHERE group_id IN (
-        SELECT group_id FROM family_members WHERE user_id = auth.uid()
-      )
+      SELECT id FROM challenges WHERE private.is_group_member(group_id)
     )
   );
 
-CREATE POLICY "challenge_attempts_insert" ON challenge_attempts
-  FOR INSERT
-  WITH CHECK (user_id = auth.uid());
+-- Attempts are written only by a trusted server-side grader. The browser may
+-- read visible attempts but cannot claim a pass or choose its own points.
 
 -- ============================================================================
 -- Table: help_requests
@@ -112,23 +112,22 @@ CREATE INDEX idx_help_requests_status ON help_requests(status);
 ALTER TABLE help_requests ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "help_requests_select" ON help_requests
-  FOR SELECT
+  FOR SELECT TO authenticated
   USING (
-    user_id = auth.uid() OR
-    group_id IN (SELECT group_id FROM family_members WHERE user_id = auth.uid())
+    user_id = (select auth.uid()) OR private.is_group_member(group_id)
   );
 
 CREATE POLICY "help_requests_insert" ON help_requests
-  FOR INSERT
+  FOR INSERT TO authenticated
   WITH CHECK (
-    group_id IN (SELECT group_id FROM family_members WHERE user_id = auth.uid())
-    AND user_id = auth.uid()
+    private.is_group_member(group_id)
+    AND user_id = (select auth.uid())
   );
 
 CREATE POLICY "help_requests_update" ON help_requests
-  FOR UPDATE
-  USING (user_id = auth.uid())
-  WITH CHECK (user_id = auth.uid());
+  FOR UPDATE TO authenticated
+  USING (user_id = (select auth.uid()))
+  WITH CHECK (user_id = (select auth.uid()) AND private.is_group_member(group_id));
 
 -- ============================================================================
 -- Table: help_comments
@@ -151,23 +150,19 @@ CREATE INDEX idx_help_comments_user ON help_comments(user_id);
 ALTER TABLE help_comments ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "help_comments_select" ON help_comments
-  FOR SELECT
+  FOR SELECT TO authenticated
   USING (
     help_request_id IN (
-      SELECT id FROM help_requests WHERE group_id IN (
-        SELECT group_id FROM family_members WHERE user_id = auth.uid()
-      )
+      SELECT id FROM help_requests WHERE private.is_group_member(group_id)
     )
   );
 
 CREATE POLICY "help_comments_insert" ON help_comments
-  FOR INSERT
+  FOR INSERT TO authenticated
   WITH CHECK (
-    user_id = auth.uid() AND
+    user_id = (select auth.uid()) AND
     help_request_id IN (
-      SELECT id FROM help_requests WHERE group_id IN (
-        SELECT group_id FROM family_members WHERE user_id = auth.uid()
-      )
+      SELECT id FROM help_requests WHERE private.is_group_member(group_id)
     )
   );
 
@@ -195,10 +190,8 @@ CREATE INDEX idx_group_rankings_points ON group_rankings(total_points DESC);
 ALTER TABLE group_rankings ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "group_rankings_select" ON group_rankings
-  FOR SELECT
-  USING (
-    group_id IN (SELECT group_id FROM family_members WHERE user_id = auth.uid())
-  );
+  FOR SELECT TO authenticated
+  USING (private.is_group_member(group_id));
 
 -- ============================================================================
 -- Table: group_badges
@@ -221,28 +214,42 @@ CREATE INDEX idx_group_badges_user ON group_badges(user_id);
 ALTER TABLE group_badges ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "group_badges_select" ON group_badges
-  FOR SELECT
-  USING (
-    group_id IN (SELECT group_id FROM family_members WHERE user_id = auth.uid())
-  );
+  FOR SELECT TO authenticated
+  USING (private.is_group_member(group_id));
 
 -- ============================================================================
 -- Trigger: Update group_rankings when challenge is completed
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION update_group_ranking()
+CREATE OR REPLACE FUNCTION private.normalize_challenge_attempt()
+RETURNS TRIGGER AS $$
+DECLARE
+  trusted_points integer;
+BEGIN
+  SELECT points INTO trusted_points
+  FROM public.challenges
+  WHERE id = NEW.challenge_id;
+  NEW.points_earned := CASE WHEN NEW.passed THEN COALESCE(trusted_points, 0) ELSE 0 END;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+
+CREATE OR REPLACE FUNCTION private.update_group_ranking()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF NEW.passed AND NEW.points_earned > 0 THEN
-    INSERT INTO group_rankings (group_id, user_id, display_name, total_points, challenges_completed)
+  IF NEW.passed AND NEW.points_earned > 0 AND (
+    SELECT count(*) FROM public.challenge_attempts
+    WHERE challenge_id = NEW.challenge_id AND user_id = NEW.user_id AND passed
+  ) = 1 THEN
+    INSERT INTO public.group_rankings (group_id, user_id, display_name, total_points, challenges_completed)
     SELECT
       c.group_id,
       NEW.user_id,
       fm.display_name,
       NEW.points_earned,
       1
-    FROM challenges c
-    JOIN family_members fm ON fm.user_id = NEW.user_id AND fm.group_id = c.group_id
+    FROM public.challenges c
+    JOIN public.family_members fm ON fm.user_id = NEW.user_id AND fm.group_id = c.group_id
     WHERE c.id = NEW.challenge_id
     ON CONFLICT (group_id, user_id)
     DO UPDATE SET
@@ -252,54 +259,80 @@ BEGIN
   END IF;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
+DROP TRIGGER IF EXISTS trg_normalize_challenge_attempt ON challenge_attempts;
+CREATE TRIGGER trg_normalize_challenge_attempt
+BEFORE INSERT ON challenge_attempts
+FOR EACH ROW
+EXECUTE FUNCTION private.normalize_challenge_attempt();
+
+DROP TRIGGER IF EXISTS trg_update_ranking ON challenge_attempts;
 CREATE TRIGGER trg_update_ranking
 AFTER INSERT ON challenge_attempts
 FOR EACH ROW
-EXECUTE FUNCTION update_group_ranking();
+EXECUTE FUNCTION private.update_group_ranking();
 
 -- ============================================================================
 -- Trigger: Mark help_request as resolved when answer provided
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION update_help_request_status()
+CREATE OR REPLACE FUNCTION private.update_help_request_status()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE help_requests
+  UPDATE public.help_requests
   SET status = 'helping'
   WHERE id = NEW.help_request_id AND status = 'open';
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
+DROP TRIGGER IF EXISTS trg_help_request_status ON help_comments;
 CREATE TRIGGER trg_help_request_status
 AFTER INSERT ON help_comments
 FOR EACH ROW
-EXECUTE FUNCTION update_help_request_status();
+EXECUTE FUNCTION private.update_help_request_status();
 
 -- ============================================================================
 -- Views: Useful queries
 -- ============================================================================
 
 -- View: Latest challenges in a group
-CREATE OR REPLACE VIEW group_challenges_latest AS
+CREATE OR REPLACE VIEW group_challenges_latest
+WITH (security_invoker = true) AS
 SELECT
   c.*,
   COUNT(ca.id) as attempt_count,
   COUNT(CASE WHEN ca.passed THEN 1 END) as solved_count,
-  (SELECT display_name FROM family_members WHERE user_id = c.created_by LIMIT 1) as creator_name
+  (SELECT display_name FROM family_members WHERE user_id = c.created_by AND group_id = c.group_id LIMIT 1) as creator_name
 FROM challenges c
 LEFT JOIN challenge_attempts ca ON ca.challenge_id = c.id
 GROUP BY c.id
 ORDER BY c.created_at DESC;
 
 -- View: Leaderboard with rankings
-CREATE OR REPLACE VIEW group_leaderboards AS
+CREATE OR REPLACE VIEW group_leaderboards
+WITH (security_invoker = true) AS
 SELECT
   gr.*,
   ROW_NUMBER() OVER (PARTITION BY gr.group_id ORDER BY gr.total_points DESC) as rank
 FROM group_rankings gr;
+
+-- Explicit Data API surface. RLS policies above still filter every row.
+REVOKE ALL ON TABLE public.challenges, public.challenge_attempts, public.help_requests,
+  public.help_comments, public.group_rankings, public.group_badges FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.challenges TO authenticated;
+GRANT SELECT ON TABLE public.challenge_attempts TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.help_requests TO authenticated;
+GRANT SELECT, INSERT ON TABLE public.help_comments TO authenticated;
+GRANT SELECT ON TABLE public.group_rankings, public.group_badges TO authenticated;
+
+REVOKE ALL ON TABLE public.group_challenges_latest, public.group_leaderboards FROM anon, authenticated;
+GRANT SELECT ON TABLE public.group_challenges_latest, public.group_leaderboards TO authenticated;
+
+REVOKE ALL ON FUNCTION private.normalize_challenge_attempt() FROM public;
+REVOKE ALL ON FUNCTION private.update_group_ranking() FROM public;
+REVOKE ALL ON FUNCTION private.update_help_request_status() FROM public;
 
 -- ============================================================================
 -- Notes for Data Migration

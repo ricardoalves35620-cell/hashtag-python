@@ -12,6 +12,7 @@ import {
 import { migrateGuestBaseZeroState } from '../lib/baseZero'
 import { chooseNewestLearningState, fetchRemoteLearningState, scheduleLearningStateSync, syncLearningStateNow } from '../lib/learningSync'
 import { initialSyncState, SYNC_EVENT, type SyncSnapshot } from '../lib/syncStatus'
+import { appConfiguration } from '../lib/config'
 
 export type Theme = 'dark' | 'light' | 'system'
 export type EditorHeightMode = 'auto' | 'compact'
@@ -35,6 +36,7 @@ interface AppContextType {
   continueAsGuest: () => void
   exitGuest: () => void
   loading: boolean
+  progressReady: boolean
   progress: UserProgress[]
   refreshProgress: () => Promise<void>
   refreshUser: () => Promise<void>
@@ -51,6 +53,12 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null)
 const GUEST_ID = 'guest'
+
+function preferredLanguage(): Lang {
+  const saved = localStorage.getItem('hp_lang')
+  if (saved === 'en' || saved === 'pt') return saved
+  return navigator.language.toLowerCase().startsWith('pt') ? 'pt' : 'en'
+}
 
 function applyTheme(theme: Theme) {
   const root = document.documentElement
@@ -71,7 +79,7 @@ function getDisplayName(u: User | null): string {
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => (localStorage.getItem('hp_lang') as Lang) || 'en')
+  const [lang, setLangState] = useState<Lang>(preferredLanguage)
   const [theme, setThemeState] = useState<Theme>(() => (localStorage.getItem('hp_theme') as Theme) || 'dark')
   const [editorHeightMode, setEditorHeightModeState] = useState<EditorHeightMode>(() =>
     (localStorage.getItem('hp_editor_height') as EditorHeightMode) || 'auto'
@@ -87,6 +95,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem('hp_guest_mode') === 'true')
   const [loading, setLoading] = useState(true)
+  const [progressReady, setProgressReady] = useState(false)
   const [progress, setProgress] = useState<UserProgress[]>([])
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [accountDisplayName, setAccountDisplayName] = useState('Student')
@@ -190,9 +199,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const refreshUser = useCallback(async () => {
+    if (!appConfiguration.isConfigured) return
     const { data } = await getSupabase().auth.getUser()
     if (data.user) updateUserState(data.user)
   }, [])
+
+  useEffect(() => {
+    document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en'
+  }, [lang])
 
   useEffect(() => {
     applyTheme(theme)
@@ -227,6 +241,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [learnerId])
 
   useEffect(() => {
+    if (!appConfiguration.isConfigured) {
+      setUser(null)
+      setLoading(false)
+      return
+    }
     getSupabase().auth.getSession().then(({ data }) => {
       updateUserState(data.session?.user ?? null)
       setLoading(false)
@@ -235,7 +254,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  useEffect(() => { if (learnerId) refreshProgress(); else setProgress([]) }, [learnerId, refreshProgress])
+  useEffect(() => {
+    setProgressReady(false)
+    if (!learnerId) {
+      setProgress([])
+      setProgressReady(true)
+      return
+    }
+    void refreshProgress().finally(() => setProgressReady(true))
+  }, [learnerId, refreshProgress])
 
   // Keep progress current across tabs and devices. Local state remains the fallback
   // when the network is unavailable, and the next refresh reconciles it with cloud.
@@ -386,7 +413,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={{
       lang, setLang, theme, setTheme, editorHeightMode, setEditorHeightMode, editorWrapMode, setEditorWrapMode, editorFontSize, setEditorFontSize,
       user, isGuest, learnerId, continueAsGuest, exitGuest,
-      loading, progress, refreshProgress, refreshUser, displayName, avatarUrl, learningState,
+      loading, progressReady, progress, refreshProgress, refreshUser, displayName, avatarUrl, learningState,
       recordLearningAttempt, recordLearningAttempts, completeDiagnostic, refreshLearningState,
       syncSnapshot, syncNow,
     }}>

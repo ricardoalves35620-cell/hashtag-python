@@ -4,7 +4,7 @@
 
 - [x] Executar Pyodide em Web Worker descartável com timeout real.
 - [~] Expandir testes ocultos por exercício e exame; a infraestrutura está pronta e a Fase 13 foi migrada, mas o restante do currículo ainda precisa de casos específicos.
-- Criar progresso local para modo visitante e sincronização opcional com Supabase.
+- [x] Criar progresso local para modo visitante e sincronização opcional com Supabase.
 - [~] Adicionar testes E2E de rotas, bloqueios, quiz, exame e recuperação de senha. A versão 1.2 adicionou testes unitários e de integridade; E2E continua pendente.
 - Migrar conteúdo de grandes arquivos TypeScript para MDX/YAML validado.
 
@@ -16,7 +16,7 @@
 
 ## P2 — desempenho e offline
 
-- Carregar fases sob demanda em vez de importar todo o currículo na Home.
+- [~] Carregar páginas sob demanda e manter metadados de progressão separados do conteúdo. A Home ainda carrega o bloco curricular necessário para exibir o catálogo.
 - Hospedar/cachear o runtime Pyodide em infraestrutura própria.
 - Dividir conteúdo por idioma e por módulo.
 - Monitorar tamanho de bundle no CI.

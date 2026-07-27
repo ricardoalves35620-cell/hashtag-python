@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { getSupabase } from '../lib/supabase'
 import { useApp } from '../contexts/AppContext'
 import { Alert, Button, Card, Input } from '../components/ui'
+import { appConfiguration } from '../lib/config'
+import { friendlyAuthError } from '../lib/authError'
 
 type Mode = 'login' | 'register' | 'forgot'
 
@@ -53,6 +55,7 @@ export default function Login() {
     reset()
     setLoading(true)
     try {
+      if (!appConfiguration.isConfigured) throw new Error('Supabase is not configured')
       if (mode === 'login') {
         const { error: authError } = await getSupabase().auth.signInWithPassword({ email, password })
         if (authError) throw authError
@@ -67,19 +70,23 @@ export default function Login() {
         setSuccess(t.resetSent)
       }
     } catch (caught: unknown) {
-      setError(caught instanceof Error ? caught.message : 'An error occurred')
+      setError(friendlyAuthError(caught, lang))
     } finally {
       setLoading(false)
     }
   }
 
   const handleGoogle = async () => {
+    if (!appConfiguration.isConfigured) {
+      setError(friendlyAuthError(new Error('Supabase is not configured'), lang))
+      return
+    }
     setGoogleLoading(true)
     const { error: authError } = await getSupabase().auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/`, queryParams: { prompt: 'select_account', access_type: 'online' } },
     })
-    if (authError) { setError(authError.message); setGoogleLoading(false) }
+    if (authError) { setError(friendlyAuthError(authError, lang)); setGoogleLoading(false) }
   }
 
   return (
@@ -100,11 +107,17 @@ export default function Login() {
           {mode !== 'forgot' && (
             <button type="button" onClick={() => { continueAsGuest(); navigate('/onboarding') }} className="hp-guest-entry">
               <span className="hp-guest-entry__icon" aria-hidden="true">↗</span>
-              <span className="min-w-0 flex-1 text-left"><span className="block text-sm font-bold text-primary-text">{t.guest}</span><span className="mt-1 block text-xs text-ink-muted">{t.guestNote}</span></span>
+              <span className="min-w-0 flex-1 text-left"><span className="block text-base font-bold text-primary-text">{t.guest}</span><span className="mt-1 block text-sm text-ink-muted">{t.guestNote}</span></span>
             </button>
           )}
 
-          {mode === 'forgot' ? (
+          {!appConfiguration.isConfigured ? (
+            <Alert variant="warning">
+              {lang === 'pt'
+                ? 'O modo local está ativo. Você pode aprender normalmente como visitante; login e sincronização ficam disponíveis quando o Supabase for configurado.'
+                : 'Local mode is active. You can learn normally as a visitor; sign-in and sync become available when Supabase is configured.'}
+            </Alert>
+          ) : mode === 'forgot' ? (
             <>
               <div><h2 className="mb-1 text-title">{t.forgot}</h2><p className="mb-0 text-sm text-ink-muted">{t.forgotDesc}</p></div>
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -124,10 +137,10 @@ export default function Login() {
                 <Input label={t.email} type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="you@email.com" required autoComplete="email" />
                 <div>
                   <div className="mb-2 flex items-center justify-between gap-3">
-                    <span className="hp-field__label mb-0">{t.password}</span>
+                    <label htmlFor="login-password" className="hp-field__label mb-0">{t.password}</label>
                     {mode === 'login' && <button type="button" onClick={() => { setMode('forgot'); reset() }} className="hp-text-link">{t.forgotLink}</button>}
                   </div>
-                  <input className="hp-input" type="password" value={password} onChange={event => setPassword(event.target.value)} placeholder="••••••••" required minLength={6} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
+                  <input id="login-password" className="hp-input" type="password" value={password} onChange={event => setPassword(event.target.value)} placeholder="••••••••" required minLength={6} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} />
                 </div>
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Button type="submit" fullWidth size="lg" loading={loading}>{mode === 'login' ? t.login : t.register}</Button>
@@ -137,7 +150,7 @@ export default function Login() {
           )}
         </Card>
 
-        <p className="mt-6 mb-0 text-center text-xs text-ink-muted">{t.footer}</p>
+        <p className="mt-6 mb-0 text-center text-sm text-ink-muted">{t.footer}</p>
       </div>
     </div>
   )

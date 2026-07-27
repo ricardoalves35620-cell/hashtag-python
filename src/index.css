@@ -1745,6 +1745,25 @@ input, textarea, select { font-size: 16px !important; }
   }
 }
 
+/* Readability floor for the learning area. Tiny utility text remains useful
+   for compact badges elsewhere, but instructions and navigation should not
+   require extra visual effort from a first-time learner. */
+.hp-main .text-xs,
+.hp-main .text-\[11px\] {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.hp-bottom-nav__label {
+  font-size: 0.75rem;
+}
+
+@media (max-width: 370px) {
+  .hp-bottom-nav__label {
+    font-size: 0.7rem;
+  }
+}
+
 @media (max-width: 640px) {
   .learning-workspace { padding: var(--space-3); }
   .learning-hero__icon { width: 46px; height: 46px; font-size: 1.45rem; }

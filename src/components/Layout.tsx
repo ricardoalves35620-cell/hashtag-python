@@ -5,6 +5,7 @@ import BottomNav from './BottomNav'
 import { Button } from './ui'
 import { isVirtualKeyboardOpen } from '../lib/mobileViewport'
 import SyncStatusIndicator from './SyncStatusIndicator'
+import { appConfiguration } from '../lib/config'
 
 interface Props {
   children: React.ReactNode
@@ -121,6 +122,13 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
         id="main-scroll"
         aria-label={lang === 'en' ? 'Learning content' : 'Conteúdo de aprendizagem'}
       >
+        {!appConfiguration.isConfigured && (
+          <div className="px-4 py-2 text-center text-sm" role="status" style={{ background: 'var(--c-warning-bg)', color: 'var(--c-warning-text)', borderBottom: '1px solid var(--c-warning-border)' }}>
+            {lang === 'pt'
+              ? 'Modo local: seu progresso fica somente neste aparelho. Login e sincronização estão desativados.'
+              : 'Local mode: progress stays on this device. Sign-in and cloud sync are disabled.'}
+          </div>
+        )}
         <div key={location.pathname} id="main-content" className="hp-main__content hp-page-enter" tabIndex={-1}>
           {children}
         </div>

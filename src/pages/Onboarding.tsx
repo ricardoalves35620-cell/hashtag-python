@@ -46,18 +46,18 @@ export default function Onboarding() {
     <div className="min-h-screen p-4" style={{ background: 'var(--c-bg)', paddingTop: 'max(env(safe-area-inset-top, 0px), 24px)', paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 24px)' }}>
       <div className="max-w-lg mx-auto">
         <div className="font-mono text-3xl font-medium mb-8" style={{ color: 'var(--c-purple-l)' }}>#Python</div>
-        <div className="text-xs uppercase tracking-wide mb-1" style={{ color: 'var(--c-purple-l)' }}>{t.eyebrow}</div>
+        <div className="text-sm font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--c-purple-l)' }}>{t.eyebrow}</div>
         <h1 className="text-2xl font-semibold" style={{ color: 'var(--c-text)' }}>{t.title}</h1>
         <p className="text-sm leading-relaxed mt-2 mb-6" style={{ color: 'var(--c-text2)' }}>{t.sub}</p>
 
-        {isGuest && <div className="rounded-xl p-3 text-xs mb-4" style={{ background: '#1f1000', color: '#fbbf24', border: '1px solid #4a2a00' }}>ℹ️ {t.guest}</div>}
+        {isGuest && <div className="rounded-xl p-3 text-sm mb-4" style={{ background: '#1f1000', color: '#fbbf24', border: '1px solid #4a2a00' }}>ℹ️ {t.guest}</div>}
 
         <div className="space-y-3">
           {choices.map(choice => (
             <button key={choice.id} onClick={() => setSelected(choice.id)} className="w-full rounded-2xl p-4 text-left transition-all" style={{ background: selected === choice.id ? 'var(--c-purple-f)' : 'var(--c-card)', border: `2px solid ${selected === choice.id ? 'var(--c-purple)' : 'var(--c-border)'}` }}>
               <div className="flex gap-3">
                 <div className="text-3xl">{choice.icon}</div>
-                <div className="flex-1"><div className="text-xs mb-1" style={{ color: selected === choice.id ? 'var(--c-purple-l)' : 'var(--c-muted)' }}>{choice.badge}</div><div className="text-base font-semibold" style={{ color: 'var(--c-text)' }}>{choice.title}</div><p className="text-sm mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{choice.desc}</p></div>
+                <div className="flex-1"><div className="text-sm mb-1" style={{ color: selected === choice.id ? 'var(--c-purple-l)' : 'var(--c-muted)' }}>{choice.badge}</div><div className="text-base font-semibold" style={{ color: 'var(--c-text)' }}>{choice.title}</div><p className="text-sm mt-1 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{choice.desc}</p></div>
                 <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ border: `2px solid ${selected === choice.id ? 'var(--c-purple)' : 'var(--c-border)'}`, background: selected === choice.id ? 'var(--c-purple)' : 'transparent', color: '#fff', fontSize: 11 }}>{selected === choice.id ? '✓' : ''}</div>
               </div>
             </button>

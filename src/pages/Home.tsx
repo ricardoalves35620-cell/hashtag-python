@@ -9,6 +9,8 @@ import { getDueSkillStates, getLearningSummary, getWeakestSkillStates } from '..
 import { getSkill } from '../data/skills'
 import { PHASE_GROUPS, inferPhaseStage, phasesForGroup } from '../data/phaseCatalog'
 import type { PhaseStage } from '../data/types'
+import { getPhaseStatus } from '../lib/progress'
+import { PROJECT_PHASE_BY_ID } from '../data/progressionCatalog'
 
 export default function Home() {
   const { lang, displayName, progress, user, isGuest, learnerId, refreshProgress, learningState, refreshLearningState } = useApp()
@@ -30,6 +32,17 @@ export default function Home() {
   const learningSummary = getLearningSummary(learningState)
   const dueReviews = getDueSkillStates(learningState)
   const weakestSkills = getWeakestSkillStates(learningState, 3)
+  const currentPhase = corePhases.find(phase => getPhaseStatus(progress, phase.id) === 'active') || corePhases[corePhases.length - 1]
+  const currentPhaseProgress = progress.find(row => row.phase_id === currentPhase?.id)
+  const currentProjectId = Object.entries(PROJECT_PHASE_BY_ID).find(([, phaseId]) => phaseId === currentPhase?.id)?.[0]
+  const continuePath = !currentPhase ? '/roadmap'
+    : currentPhase.id === 0 && !currentPhaseProgress?.lesson_done ? '/base-zero'
+    : !currentPhaseProgress?.lesson_done ? `/phase/${currentPhase.id}/lesson`
+    : !currentPhaseProgress?.exercises_done ? `/phase/${currentPhase.id}/exercises`
+    : !currentPhaseProgress?.quiz_done ? `/phase/${currentPhase.id}/quiz`
+    : !currentPhaseProgress?.exam_passed ? `/phase/${currentPhase.id}/exam`
+    : currentProjectId && !currentPhaseProgress?.project_done ? `/mini-project/${currentProjectId}`
+    : `/phase/${currentPhase.id}`
 
   useEffect(() => {
     if (learnerId) loadFTProgress(learnerId).then(setFtDone)
@@ -71,17 +84,21 @@ export default function Home() {
       greeting: 'Welcome back', coreProgress: 'Complete Python path', complete: 'complete',
       learningTitle: 'Your learning today', reviewDue: dueReviews.length ? `${dueReviews.length} review${dueReviews.length === 1 ? '' : 's'} due` : 'Practice your weakest skills',
       diagnostic: 'Take the initial diagnostic', mastery: 'Average skill mastery', gaps: 'Priority gaps', seeProgress: 'Open learning dashboard',
-      ftTitle: '⚡ FastTrack', ftSub: ftCompleted ? '7/7 days complete ✓' : ftDone.length > 0 ? `Day ${ftDone.length + 1} of 7 up next` : '7 days · 20 min/day · Orientation only', ftBtn: ftCompleted ? 'Review' : ftDone.length > 0 ? 'Continue' : 'Start',
+      ftTitle: '⚡ 7-day quick plan', ftSub: ftCompleted ? '7/7 days complete ✓' : ftDone.length > 0 ? `Day ${ftDone.length + 1} of 7 up next` : '7 days · 20 min/day · Orientation only', ftBtn: ftCompleted ? 'Review' : ftDone.length > 0 ? 'Continue' : 'Start',
       zeroTitle: 'Base Zero · Computer essentials', zeroText: 'Interactive practice with files, downloads, cloud, terminal and hardware.', zeroBtn: 'Open Base Zero', visualBtn: 'Visual Python lab', guest: 'Visitor mode · progress is stored on this device',
       roadmap: 'Open complete roadmap', lab: 'Open practical lab', phaseWord: 'phases', stageProgress: 'Module progress', courseModules: 'Course modules',
+      continueEyebrow: 'Recommended next step', continueAction: 'Continue learning', explore: 'Explore other tools and paths',
+      pathSummary: `${corePhases.length} required phases + ${ALL_PHASES.length - corePhases.length} optional AI phases`, progressLink: 'See my progress',
     },
     pt: {
       greeting: 'Bem-vindo de volta', coreProgress: 'Formação completa em Python', complete: 'concluído',
       learningTitle: 'Seu aprendizado hoje', reviewDue: dueReviews.length ? `${dueReviews.length} revis${dueReviews.length === 1 ? 'ão pendente' : 'ões pendentes'}` : 'Praticar habilidades mais fracas',
       diagnostic: 'Fazer o diagnóstico inicial', mastery: 'Domínio médio das habilidades', gaps: 'Lacunas prioritárias', seeProgress: 'Abrir painel de aprendizagem',
-      ftTitle: '⚡ FastTrack', ftSub: ftCompleted ? '7/7 dias completos ✓' : ftDone.length > 0 ? `Dia ${ftDone.length + 1} de 7 a seguir` : '7 dias · 20 min/dia · Apenas orientação', ftBtn: ftCompleted ? 'Revisar' : ftDone.length > 0 ? 'Continuar' : 'Começar',
+      ftTitle: '⚡ Plano rápido de 7 dias', ftSub: ftCompleted ? '7/7 dias completos ✓' : ftDone.length > 0 ? `Dia ${ftDone.length + 1} de 7 a seguir` : '7 dias · 20 min/dia · Apenas orientação', ftBtn: ftCompleted ? 'Revisar' : ftDone.length > 0 ? 'Continuar' : 'Começar',
       zeroTitle: 'Base Zero · Essenciais do computador', zeroText: 'Prática interativa com arquivos, downloads, nuvem, terminal e hardware.', zeroBtn: 'Abrir Base Zero', visualBtn: 'Laboratório visual de Python', guest: 'Modo visitante · progresso salvo neste aparelho',
       roadmap: 'Abrir mapa completo', lab: 'Abrir laboratório prático', phaseWord: 'fases', stageProgress: 'Progresso do módulo', courseModules: 'Módulos do curso',
+      continueEyebrow: 'Próxima etapa recomendada', continueAction: 'Continuar aprendendo', explore: 'Explorar outras ferramentas e caminhos',
+      pathSummary: `${corePhases.length} fases obrigatórias + ${ALL_PHASES.length - corePhases.length} fases opcionais de IA`, progressLink: 'Ver meu progresso',
     },
   }[lang]
 
@@ -89,61 +106,45 @@ export default function Home() {
     <Layout>
       <div className="p-4 space-y-4">
         <div>
-          <div className="text-xs" style={{ color: 'var(--c-muted)' }}>{t.greeting} 👋</div>
+          <div className="text-sm" style={{ color: 'var(--c-muted)' }}>{t.greeting} 👋</div>
           <h1 className="text-xl font-medium" style={{ color: 'var(--c-text)' }}>{displayName}</h1>
-          {isGuest && <div className="text-xs mt-1" style={{ color: '#f8d477' }}>{t.guest}</div>}
+          {isGuest && <div className="text-sm mt-1" style={{ color: '#f8d477' }}>{t.guest}</div>}
         </div>
 
         <section className="rounded-2xl p-5" style={{ background: 'linear-gradient(145deg, var(--c-purple-f), var(--c-card))', border: '1px solid var(--c-purple-dm)' }}>
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1">
-              <div className="text-xs uppercase tracking-wide" style={{ color: 'var(--c-purple-l)' }}>{t.coreProgress}</div>
-              <div className="text-2xl font-semibold mt-1" style={{ color: 'var(--c-text)' }}>{coreOverall}%</div>
-              <div className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>{corePassed}/{corePhases.length} {t.phaseWord} · {t.complete}</div>
-            </div>
-            <button onClick={() => navigate('/roadmap')} className="rounded-lg px-3 py-2 text-xs font-medium" style={{ background: 'var(--c-purple-dm)', color: 'var(--c-purple-l)', border: '1px solid var(--c-purple)' }}>{t.roadmap}</button>
+          <div className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--c-purple-l)' }}>{t.continueEyebrow}</div>
+          <h2 className="text-xl font-semibold mt-2 mb-0" style={{ color: 'var(--c-text)' }}>
+            {currentPhase ? `${currentPhase.icon} ${lang === 'pt' ? 'Fase' : 'Phase'} ${currentPhase.id}: ${currentPhase.title[lang]}` : t.coreProgress}
+          </h2>
+          {currentPhase && <p className="text-base mt-2 mb-0 leading-relaxed" style={{ color: 'var(--c-text2)' }}>{currentPhase.description[lang]}</p>}
+          <button onClick={() => navigate(continuePath)} className="w-full rounded-xl py-3.5 px-4 mt-5 text-base font-semibold text-white" style={{ background: 'var(--c-purple)', border: 0 }}>{t.continueAction} →</button>
+          <div className="flex items-center justify-between gap-3 mt-4 text-sm" style={{ color: 'var(--c-muted)' }}>
+            <span>{corePassed}/{corePhases.length} · {coreOverall}% {t.complete}</span>
+            <button onClick={() => navigate('/progress')} className="font-medium" style={{ color: 'var(--c-purple-l)', background: 'none', border: 0 }}>{t.progressLink}</button>
           </div>
-          <div className="h-2 rounded-full overflow-hidden mt-4" style={{ background: 'var(--c-bg)' }}><div className="h-full rounded-full" style={{ width: `${coreOverall}%`, background: 'var(--c-purple)' }} /></div>
+          <div className="h-2 rounded-full overflow-hidden mt-2" style={{ background: 'var(--c-bg)' }}><div className="h-full rounded-full" style={{ width: `${coreOverall}%`, background: 'var(--c-purple)' }} /></div>
+          <p className="text-sm mt-3 mb-0" style={{ color: 'var(--c-muted)' }}>{t.pathSummary}</p>
         </section>
 
-        <div className="grid md:grid-cols-2 gap-3">
-          <button onClick={() => navigate('/base-zero')} className="rounded-xl p-4 text-left" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
-            <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🌱 {t.zeroTitle}</div>
-            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{t.zeroText}</div>
-            <div className="text-xs font-medium mt-3" style={{ color: 'var(--c-purple-l)' }}>{t.zeroBtn} →</div>
-          </button>
-          <button onClick={() => navigate('/visualizer')} className="rounded-xl p-4 text-left" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}>
-            <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🧩 {t.visualBtn}</div>
-            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Step through variables, conditions and loops.' : 'Avance passo a passo por variáveis, condições e laços.'}</div>
-          </button>
-        </div>
-
-        <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div><div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🧠 {t.learningTitle}</div><div className="text-xs mt-1" style={{ color: 'var(--c-muted)' }}>{t.mastery}: {learningSummary.averageMastery}%</div></div>
-            <button onClick={() => navigate('/progress')} className="text-xs font-medium" style={{ color: 'var(--c-purple-l)', background: 'none', border: 'none' }}>{t.seeProgress} →</button>
+        <details className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
+          <summary className="cursor-pointer text-base font-semibold" style={{ color: 'var(--c-text)' }}>{t.explore}</summary>
+          <div className="grid sm:grid-cols-2 gap-3 mt-4">
+            <button onClick={() => navigate('/roadmap')} className="rounded-xl p-4 text-left text-base" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)', color: 'var(--c-text)' }}>🗺️ {t.roadmap}</button>
+            <button onClick={() => navigate('/base-zero')} className="rounded-xl p-4 text-left text-base" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)', color: 'var(--c-text)' }}>🌱 {t.zeroBtn}</button>
+            <button onClick={() => navigate('/visualizer')} className="rounded-xl p-4 text-left text-base" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)', color: 'var(--c-text)' }}>🧩 {t.visualBtn}</button>
+            <button onClick={() => navigate(learningState.diagnosticCompletedAt ? '/review' : '/diagnostic')} className="rounded-xl p-4 text-left text-base" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)', color: 'var(--c-text)' }}>🧠 {learningState.diagnosticCompletedAt ? t.reviewDue : t.diagnostic}</button>
+            <button onClick={() => navigate('/fasttrack')} className="rounded-xl p-4 text-left" style={{ background: '#1a1040', border: '1px solid var(--c-purple)' }}><span className="block text-base font-semibold" style={{ color: 'var(--c-purple-l)' }}>{t.ftTitle}</span><span className="block text-sm mt-1" style={{ color: 'var(--c-purple-l)', opacity: 0.8 }}>{t.ftSub}</span></button>
+            <button onClick={() => navigate('/progress')} className="rounded-xl p-4 text-left" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><span className="block text-base font-semibold" style={{ color: 'var(--c-text)' }}>📈 {t.learningTitle}</span><span className="block text-sm mt-1" style={{ color: 'var(--c-muted)' }}>{t.mastery}: {learningSummary.averageMastery}%</span></button>
           </div>
-          {!learningState.diagnosticCompletedAt ? (
-            <button onClick={() => navigate('/diagnostic')} className="w-full rounded-lg py-2.5 text-sm font-medium text-white" style={{ background: 'var(--c-purple)' }}>{t.diagnostic}</button>
-          ) : (
-            <>
-              <button onClick={() => navigate('/review')} className="w-full rounded-lg py-2.5 text-sm font-medium" style={{ background: 'var(--c-purple-f)', color: 'var(--c-purple-l)', border: '1px solid var(--c-purple-dm)' }}>{t.reviewDue} →</button>
-              {weakestSkills.length > 0 && <div className="mt-3"><div className="text-[11px] uppercase tracking-wide mb-2" style={{ color: 'var(--c-muted)' }}>{t.gaps}</div><div className="flex flex-wrap gap-2">{weakestSkills.map(state => { const skill = getSkill(state.skillId); return skill ? <span key={state.skillId} className="text-xs px-2 py-1 rounded-full" style={{ background: 'var(--c-bg)', color: 'var(--c-text2)' }}>{skill.title[lang]} · {state.mastery}%</span> : null })}</div></div>}
-            </>
-          )}
-        </div>
-
-        <button onClick={() => navigate('/fasttrack')} className="w-full text-left rounded-xl p-4" style={{ background: '#1a1040', border: '1px solid var(--c-purple)' }}>
-          <div className="flex items-center justify-between mb-2"><div><div className="text-sm font-medium" style={{ color: 'var(--c-purple-l)' }}>{t.ftTitle}</div><div className="text-xs mt-0.5" style={{ color: 'var(--c-purple-l)', opacity: 0.65 }}>{t.ftSub}</div></div><span className="text-xs px-3 py-1.5 rounded-lg font-medium text-white" style={{ background: 'var(--c-purple)' }}>{t.ftBtn}</span></div>
-          {!ftCompleted && <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.3)' }}><div className="h-full rounded-full" style={{ width: `${(ftDone.length / 7) * 100}%`, background: 'var(--c-purple-l)' }} /></div>}
-        </button>
+          {weakestSkills.length > 0 && <div className="mt-4"><div className="text-sm font-medium mb-2" style={{ color: 'var(--c-muted)' }}>{t.gaps}</div><div className="flex flex-wrap gap-2">{weakestSkills.map(state => { const skill = getSkill(state.skillId); return skill ? <span key={state.skillId} className="text-sm px-2 py-1 rounded-full" style={{ background: 'var(--c-bg)', color: 'var(--c-text2)' }}>{skill.title[lang]} · {state.mastery}%</span> : null })}</div></div>}
+        </details>
 
         <section>
-          <div className="text-xs uppercase tracking-wide mb-3" style={{ color: 'var(--c-muted)' }}>{t.courseModules}</div>
+          <div className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: 'var(--c-muted)' }}>{t.courseModules}</div>
           <div className="flex gap-2 overflow-x-auto pb-2">
             {availableGroups.map(group => (
               <button key={group.id} onClick={() => setSelectedGroup(group.id)} className="rounded-xl p-3 text-left flex-shrink-0" style={{ width: 180, background: group.id === activeGroup?.id ? 'var(--c-purple-dm)' : 'var(--c-card)', border: `1px solid ${group.id === activeGroup?.id ? 'var(--c-purple)' : 'var(--c-border)'}` }}>
-                <div className="text-lg">{group.icon}</div><div className="text-sm font-semibold mt-1" style={{ color: 'var(--c-text)' }}>{group.title[lang]}</div><div className="text-[11px] mt-1" style={{ color: 'var(--c-muted)' }}>{phasesForGroup(ALL_PHASES, group.id).length} {t.phaseWord}</div>
+                <div className="text-lg">{group.icon}</div><div className="text-base font-semibold mt-1" style={{ color: 'var(--c-text)' }}>{group.title[lang]}</div><div className="text-sm mt-1" style={{ color: 'var(--c-muted)' }}>{phasesForGroup(ALL_PHASES, group.id).length} {t.phaseWord}</div>
               </button>
             ))}
           </div>

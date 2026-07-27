@@ -56,7 +56,7 @@ export default function PhaseOverview() {
     return () => window.removeEventListener('focus', refresh)
   }, [refreshProgress])
 
-  if (!phase) return <div className="p-4 text-muted">Phase not found</div>
+  if (!phase) return <div className="p-4 text-muted">{lang === 'pt' ? 'Fase não encontrada' : 'Phase not found'}</div>
 
   const group = getPhaseGroup(inferPhaseStage(phase))
   const phaseProgress = progress.find(p => p.phase_id === phase.id)
@@ -116,7 +116,7 @@ export default function PhaseOverview() {
       projectPending: 'The assessment passed. The topic is not mastered yet.',
       projectPendingText: 'Complete the mini-project to prove that you can plan, build, test and improve a solution.',
       hours: 'estimated study', desktop: 'Desktop practice recommended', lab: 'Open practical lab',
-      evidence: 'Progress here measures evidence of learning—not clicks.',
+      evidence: 'This percentage shows the path you have completed. Practice and assessments provide the evidence of mastery.',
     },
     pt: {
       home: 'Início', phase: 'Fase', mastery: 'Domínio do tópico', complete: 'concluído',
@@ -126,7 +126,7 @@ export default function PhaseOverview() {
       projectPending: 'A avaliação passou. O tópico ainda não foi dominado.',
       projectPendingText: 'Conclua o mini projeto para provar que consegue planejar, construir, testar e melhorar uma solução.',
       hours: 'de estudo estimado', desktop: 'Prática desktop recomendada', lab: 'Abrir laboratório prático',
-      evidence: 'O progresso aqui mede evidências de aprendizagem — não cliques.',
+      evidence: 'Esta porcentagem mostra o caminho percorrido. As práticas e avaliações fornecem as evidências de domínio.',
     },
   }[lang]
 

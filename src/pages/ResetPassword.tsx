@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getSupabase } from '../lib/supabase'
 import { useApp } from '../contexts/AppContext'
+import { appConfiguration } from '../lib/config'
+import { friendlyAuthError } from '../lib/authError'
 
 export default function ResetPassword() {
   const { lang } = useApp()
@@ -26,9 +28,10 @@ export default function ResetPassword() {
     setError('')
     if (password.length < 6) return setError(t.short)
     if (password !== confirm) return setError(t.mismatch)
+    if (!appConfiguration.isConfigured) return setError(friendlyAuthError(new Error('Supabase is not configured'), lang))
     setLoading(true)
     const { error } = await getSupabase().auth.updateUser({ password })
-    if (error) { setError(error.message); setLoading(false); return }
+    if (error) { setError(friendlyAuthError(error, lang)); setLoading(false); return }
     setSuccess(true)
     setTimeout(() => navigate('/'), 2000)
   }
@@ -51,13 +54,13 @@ export default function ResetPassword() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-xs text-muted mb-1.5 font-medium uppercase tracking-wide">{t.newPass}</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required minLength={6}
+              <label htmlFor="new-password" className="block text-sm text-muted mb-1.5 font-medium">{t.newPass}</label>
+              <input id="new-password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" required minLength={6}
                 className="w-full bg-card border border-border rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-DEFAULT placeholder:text-muted" />
             </div>
             <div>
-              <label className="block text-xs text-muted mb-1.5 font-medium uppercase tracking-wide">{t.confirm}</label>
-              <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="••••••••" required
+              <label htmlFor="confirm-password" className="block text-sm text-muted mb-1.5 font-medium">{t.confirm}</label>
+              <input id="confirm-password" type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="••••••••" required
                 className="w-full bg-card border border-border rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-DEFAULT placeholder:text-muted" />
             </div>
             {error && <div className="text-red-400 text-sm bg-red-900/20 border border-red-900/40 rounded-xl px-4 py-3">{error}</div>}
