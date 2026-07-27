@@ -6,6 +6,8 @@ import type { LessonBlock as LessonBlockType, LessonCheckpoint, Lang } from '../
 import { resolveLocalizedCode } from '../lib/localization'
 import { personalize, subscribeLearnerProfile, getLearnerProfileVersion } from '../lib/learnerProfile'
 import { shuffledIndices } from '../lib/assessmentIntegrity'
+import { useApp } from '../contexts/AppContext'
+import { checkpointId, loadCheckpointAnswers, saveCheckpointAnswer, subscribeCheckpoints, getCheckpointVersion } from '../lib/checkpointProgress'
 
 interface Props {
   block: LessonBlockType
@@ -42,7 +44,17 @@ function AlternateExplanation({ block, lang }: Props) {
 /** A short beat of doing, placed between code blocks. Not scored: a wrong answer
  *  costs nothing but surfaces the misunderstanding immediately, which is the point. */
 function Checkpoint({ checkpoint, lang }: { checkpoint: LessonCheckpoint; lang: Lang }) {
-  const [chosen, setChosen] = useState<number | null>(null)
+  const { learnerId } = useApp()
+  const id = checkpointId({ type: 'checkpoint', checkpoint })
+  useSyncExternalStore(subscribeCheckpoints, getCheckpointVersion, getCheckpointVersion)
+  // An answer already given must still be here when the learner walks back.
+  const stored = learnerId ? loadCheckpointAnswers(learnerId)[id] : undefined
+  const [local, setLocal] = useState<number | null>(null)
+  const chosen = local ?? (typeof stored === 'number' ? stored : null)
+  const setChosen = (value: number) => {
+    setLocal(value)
+    if (learnerId) saveCheckpointAnswer(learnerId, id, value)
+  }
   const answered = chosen !== null
   const correct = chosen === checkpoint.correctIndex
   // Without this the correct answer is always first, since specs author it at index 0.

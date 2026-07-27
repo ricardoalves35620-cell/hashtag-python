@@ -863,6 +863,33 @@ function genericBlueprint(phase: Phase): PhaseBlueprint {
   }
 }
 
+/**
+ * A heading and the blocks beneath it are one section. The journey used to slice the
+ * lesson by raw block index, so a boundary could fall between a heading and its text —
+ * the learner then saw a section title with nothing under it, and the content appeared
+ * in the following stage. Slicing by section keeps every heading with its own content.
+ */
+function toSections(blocks: LessonBlock[]): LessonBlock[][] {
+  const sections: LessonBlock[][] = []
+  for (const block of blocks) {
+    if (block.type === 'heading' || sections.length === 0) sections.push([block])
+    else sections[sections.length - 1].push(block)
+  }
+  return sections
+}
+
+function sectionSlice(sections: LessonBlock[][], from: number, to?: number): LessonBlock[] {
+  return sections.slice(from, to).flat()
+}
+
+/**
+ * Code blocks are shown in their own stage, so a section whose only content was code
+ * would otherwise appear here as a bare title with nothing beneath it.
+ */
+function withoutEmptySections(sections: LessonBlock[][]): LessonBlock[][] {
+  return sections.filter(section => section.length > 1 || section[0]?.type !== 'heading')
+}
+
 function authoredText(blocks: LessonBlock[]) {
   return blocks.filter(block => block.type !== 'code')
 }
@@ -890,6 +917,8 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
   const sourceText = authoredText(blocks)
   const sourceCode = authoredCode(blocks)
   const warnings = authoredWarnings(blocks)
+  const sections = withoutEmptySections(toSections(sourceText))
+  const quarter = Math.max(1, Math.ceil(sections.length / 4))
   const concept = phase.title
   const miniProject = getMiniProjectForPhase(phase.id)
 
@@ -913,7 +942,7 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
       blocks: [
         heading('How would a person solve it?', 'Como uma pessoa resolveria?'),
         text(blueprint.humanReasoning.en, blueprint.humanReasoning.pt),
-        ...sourceText.slice(0, Math.max(1, Math.ceil(sourceText.length / 4))),
+        ...sectionSlice(sections, 0, quarter),
       ],
       checkpoint: { en: 'Explain how you would solve one example using paper, speech, or a calculator—without code.', pt: 'Explique como resolveria um exemplo usando papel, fala ou calculadora — sem código.' },
       checkpointPlaceholder: { en: 'First I would... Then... I would know I am done when...', pt: 'Primeiro eu... Depois... Eu saberia que terminei quando...' },
@@ -963,7 +992,7 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
         heading('Now syntax has a reason to exist', 'Agora a sintaxe tem motivo para existir'),
         text('Read the code from top to bottom. For every important line, identify the pseudocode step it implements and the program state before and after it runs.', 'Leia o código de cima para baixo. Para cada linha importante, identifique o passo do pseudocódigo que ela implementa e o estado do programa antes e depois da execução.'),
         ...sourceCode,
-        ...sourceText.slice(Math.max(1, Math.ceil(sourceText.length / 4)), Math.max(2, Math.ceil(sourceText.length / 2))),
+        ...sectionSlice(sections, quarter, quarter * 2),
       ],
       checkpoint: { en: 'Select one line and explain which pseudocode step it implements, what it reads, and what it changes.', pt: 'Escolha uma linha e explique qual passo do pseudocódigo ela implementa, o que lê e o que altera.' },
       checkpointPlaceholder: { en: 'This line implements... It reads... It changes...', pt: 'Esta linha implementa... Ela lê... Ela altera...' },
@@ -975,7 +1004,7 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
       blocks: [
         heading('Freeze the program after each step', 'Congele o programa depois de cada passo'),
         text('Create a small trace table. Record the current line, relevant variable values, decision result, and visible output. This is how you turn invisible execution into evidence.', 'Crie uma pequena tabela de rastreamento. Registre a linha atual, os valores relevantes, o resultado da decisão e a saída visível. Assim você transforma execução invisível em evidência.'),
-        ...sourceText.slice(Math.max(2, Math.ceil(sourceText.length / 2)), Math.max(3, Math.ceil((sourceText.length * 3) / 4))),
+        ...sectionSlice(sections, quarter * 2, quarter * 3),
         tip(blueprint.expertLens.en, blueprint.expertLens.pt),
       ],
       checkpoint: { en: 'Trace one example for at least three execution steps. Show how one value changes.', pt: 'Rastreie um exemplo por pelo menos três passos de execução. Mostre como um valor muda.' },
@@ -1017,7 +1046,7 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
       blocks: [
         heading('Passing is not mastery', 'Passar não é dominar'),
         text('Mastery means you can rebuild the reasoning without looking, explain why the solution works, reject an unsuitable approach, and adapt the idea to new data or rules.', 'Domínio significa reconstruir o raciocínio sem olhar, explicar por que a solução funciona, rejeitar uma abordagem inadequada e adaptar a ideia a novos dados ou regras.'),
-        ...sourceText.slice(Math.max(3, Math.ceil((sourceText.length * 3) / 4))),
+        ...sectionSlice(sections, quarter * 3),
         text(blueprint.transferPrompt.en, blueprint.transferPrompt.pt),
       ],
       checkpoint: { en: `Create a different problem involving ${concept.en}. Explain the shared reasoning and what must change.`, pt: `Crie outro problema envolvendo ${concept.pt}. Explique o raciocínio compartilhado e o que precisa mudar.` },
