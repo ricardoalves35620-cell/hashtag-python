@@ -2930,51 +2930,152 @@ export const phase23: Phase = {
   lesson: {
     title: { en: 'Don\'t Crash. Handle It.', pt: 'Não Quebre. Trate.' },
     blocks: [
-      { type: 'heading', content: { en: '🌍 Unhandled errors cost millions', pt: '🌍 Erros não tratados custam milhões' } },
+      { type: 'heading', content: { en: '🌍 Red text is not failure', pt: '🌍 Texto vermelho não é fracasso' } },
       { type: 'text', content: {
-        en: 'In 2012, Knight Capital lost $440 million in 45 minutes due to unhandled exceptions.\nIn 2016, one CDN bug took down half the internet for 1 hour.\n\nProper error handling = the difference between a crash and a graceful recovery.',
-        pt: 'Em 2012, Knight Capital perdeu US$440 milhões em 45 minutos por exceções não tratadas.\nEm 2016, um bug de CDN derrubou metade da internet por 1 hora.\n\nTratamento adequado = diferença entre crash e recuperação graciosa.'
+        en: 'Every program you use hits errors constantly. A form gets a phone number where a date belongs. A file is missing. The wifi drops halfway through a save.\n\nThe difference between an app you trust and one you do not is never that errors stopped happening. It is that someone decided in advance what should happen when they do.\n\nUp to now, an error has ended your program. From here it becomes something you catch and answer.',
+        pt: 'Todo programa que você usa encontra erros o tempo todo. Um formulário recebe um telefone onde devia ir uma data. Um arquivo some. O wifi cai no meio de um salvamento.\n\nA diferença entre um app confiável e um que não é nunca foi os erros pararem de acontecer. É alguém ter decidido antes o que deve acontecer quando eles acontecem.\n\nAté agora, um erro encerrava seu programa. A partir daqui ele vira algo que você captura e responde.'
       }},
-      { type: 'heading', content: { en: '🆚 WITHOUT error handling', pt: '🆚 SEM tratamento de erros' } },
-      { type: 'code', code: `# User types "abc" — program CRASHES
-damage = int(input("Damage: "))
-# ValueError: invalid literal for int() with base 10: 'abc'` },
-      { type: 'heading', content: { en: '🆚 WITH error handling', pt: '🆚 COM tratamento de erros' } },
-      { type: 'code', code: `# Same situation — handled gracefully
-try:
-    damage = int(input("Damage: "))
-    print("Payout:", damage - 250)
-except ValueError:
-    print("⚠️  Please enter a valid number.")` },
-      { type: 'code', code: `# Full pattern: try / except / else / finally
-try:
-    damage = int(input("Damage: $"))
-    if damage < 0: raise ValueError("Must be positive")
-    payout = damage - 250
+      { type: 'heading', content: { en: '🧩 A safety net, not a blindfold', pt: '🧩 Uma rede de segurança, não uma venda' } },
+      { type: 'text', content: {
+        en: 'try/except is a net under a trapeze. The acrobat still falls sometimes; the net decides what the fall costs.\n\nWhat it must never become is a blindfold — catching an error and saying nothing leaves you with a program that fails silently, which is worse than one that stops loudly.',
+        pt: 'try/except é uma rede embaixo do trapézio. O acrobata ainda cai às vezes; a rede decide quanto custa a queda.\n\nO que ela nunca pode virar é uma venda nos olhos — capturar um erro e não dizer nada deixa um programa que falha em silêncio, o que é pior do que um que para fazendo barulho.'
+      }},
 
-except ValueError as e:
-    print("Input error:", e)
+      { type: 'heading', content: { en: '🐍 Fundamentals 1 — the shape of try / except', pt: '🐍 Fundamentos 1 — a forma do try / except' } },
+      { type: 'text', content: {
+        en: 'Put the risky line inside try. Put your answer to the failure inside except. If nothing goes wrong, the except block is skipped entirely.',
+        pt: 'Coloque a linha arriscada dentro do try. Coloque sua resposta à falha dentro do except. Se nada der errado, o bloco except é ignorado por completo.'
+      }},
+      { type: 'code', code: `# Without a net: the program stops here
+age = int(input("Age: "))          # ValueError if they type "abc"
+
+# With a net
+try:
+    age = int(input("Age: "))
+    print("Next year you will be", age + 1)
+except ValueError:
+    print("Please type a whole number, like 30.")` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'try:\n    total = 10 / 2\n    print("A")\nexcept ZeroDivisionError:\n    print("B")\nprint("C")',
+        options: [
+          { en: 'A then C', pt: 'A depois C' },
+          { en: 'A then B then C', pt: 'A depois B depois C' },
+          { en: 'B then C', pt: 'B depois C' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'Nothing went wrong, so except never runs — it is not a step in the sequence, it is a response that only happens on failure. The code after the block runs either way.',
+          pt: 'Nada deu errado, então o except não roda — ele não é um passo da sequência, é uma resposta que só acontece em caso de falha. O código depois do bloco roda de qualquer jeito.'
+        }
+      } },
+
+      { type: 'heading', content: { en: '🐍 Fundamentals 2 — catch the error you expect', pt: '🐍 Fundamentos 2 — capture o erro que você espera' } },
+      { type: 'text', content: {
+        en: 'Python has a different error type for each kind of problem, and naming the one you expect is what keeps the net honest. Catching everything hides the bugs you did not predict.\n\n• ValueError — the right kind of thing, an impossible value: int("abc")\n• ZeroDivisionError — dividing by zero\n• KeyError — a dictionary key that is not there\n• IndexError — a list position past the end\n• FileNotFoundError — the file is not where you said',
+        pt: 'O Python tem um tipo de erro diferente para cada tipo de problema, e nomear o que você espera é o que mantém a rede honesta. Capturar tudo esconde os bugs que você não previu.\n\n• ValueError — o tipo certo de coisa, com valor impossível: int("abc")\n• ZeroDivisionError — divisão por zero\n• KeyError — uma chave de dicionário que não existe\n• IndexError — uma posição de lista além do fim\n• FileNotFoundError — o arquivo não está onde você disse'
+      }},
+      { type: 'code', code: `scores = {"ana": 9}
+
+try:
+    print(scores["bruno"])
+except KeyError:
+    print("No score recorded for that name yet.")
+
+try:
+    print(10 / 0)
+except ZeroDivisionError:
+    print("Cannot divide by zero.")` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'try:\n    value = int("abc")\nexcept ZeroDivisionError:\n    print("caught it")',
+        options: [
+          { en: 'The program still crashes with ValueError', pt: 'O programa quebra mesmo assim com ValueError' },
+          { en: 'It prints "caught it"', pt: 'Imprime "caught it"' },
+          { en: 'It prints nothing and continues', pt: 'Não imprime nada e continua' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'The net was hung in the wrong place. int("abc") raises ValueError, and an except that names ZeroDivisionError does not catch it — so the program stops exactly as if there were no try at all. The error type has to match the error you actually get.',
+          pt: 'A rede foi pendurada no lugar errado. int("abc") gera ValueError, e um except que nomeia ZeroDivisionError não o captura — então o programa para exatamente como se não houvesse try nenhum. O tipo do erro precisa combinar com o erro que realmente acontece.'
+        }
+      } },
+
+      { type: 'heading', content: { en: '🐍 Fundamentals 3 — else and finally', pt: '🐍 Fundamentos 3 — else e finally' } },
+      { type: 'text', content: {
+        en: 'else runs only when the try succeeded. finally runs either way — it is where you close what you opened, whatever happened.',
+        pt: 'else roda só quando o try deu certo. finally roda de qualquer forma — é onde você fecha o que abriu, tenha acontecido o que tiver acontecido.'
+      }},
+      { type: 'code', code: `try:
+    amount = int(input("Amount: "))
+    if amount < 0:
+        raise ValueError("Amount cannot be negative")
+
+except ValueError as error:
+    print("Invalid:", error)
 
 else:
-    # Runs ONLY if no exception occurred
-    print("Payout: $", payout)
+    print("Accepted:", amount)      # only when nothing failed
 
 finally:
-    # ALWAYS runs — error or not
-    print("Processing complete.")` },
+    print("Done checking.")         # always` },
+
+      { type: 'heading', content: { en: '🏗️ Real scenario 1 — a form that keeps asking', pt: '🏗️ Cenário real 1 — um formulário que continua perguntando' } },
+      { type: 'text', content: {
+        en: 'A crash on bad input is unacceptable in anything a person uses. Combine a loop with try/except and a wrong answer simply asks again.',
+        pt: 'Quebrar por causa de uma entrada errada é inaceitável em qualquer coisa que uma pessoa use. Combine um laço com try/except e uma resposta errada apenas pergunta de novo.'
+      }},
+      { type: 'code', code: `while True:
+    try:
+        quantity = int(input("How many? "))
+        break                       # only reached when the line above worked
+    except ValueError:
+        print("Whole numbers only — try again.")
+
+print("Ordering", quantity)` },
+
+      { type: 'heading', content: { en: '🏗️ Real scenario 2 — refusing bad data on purpose', pt: '🏗️ Cenário real 2 — recusar dados ruins de propósito' } },
+      { type: 'text', content: {
+        en: 'raise is you creating an error deliberately. A negative quantity is not a Python error — it is perfectly valid Python and completely wrong for your program. Saying so early stops it travelling further in.',
+        pt: 'raise é você criando um erro de propósito. Uma quantidade negativa não é um erro do Python — é Python perfeitamente válido e completamente errado para o seu programa. Dizer isso cedo impede que ele viaje mais para dentro.'
+      }},
+      { type: 'code', code: `def confirm(quantity):
+    if quantity <= 0:
+        raise ValueError("Quantity must be greater than zero")
+    return quantity * 2
+
+try:
+    print(confirm(-5))
+except ValueError as error:
+    print("Rejected:", error)` },
+
+      { type: 'heading', content: { en: '⚠️ Common errors', pt: '⚠️ Erros comuns' } },
+      { type: 'text', content: {
+        en: '• Wrapping the whole program in one try. When it fails you have no idea which line did it.\n• A bare except: that swallows everything, including typos in your own code.\n• An except block that prints nothing — the program limps on with wrong data and no clue why.\n• Catching the wrong type, so the net misses entirely.\n• Using try/except where an if would do. Checking a list is not empty is a question, not an emergency.',
+        pt: '• Envolver o programa inteiro num único try. Quando falha, você não sabe qual linha causou.\n• Um except: pelado que engole tudo, inclusive erros de digitação no seu próprio código.\n• Um except que não imprime nada — o programa segue mancando com dados errados e sem pista do motivo.\n• Capturar o tipo errado, e a rede não pegar nada.\n• Usar try/except onde um if bastaria. Verificar se uma lista não está vazia é uma pergunta, não uma emergência.'
+      }},
+      { type: 'warning', content: {
+        en: '⚠️ except: on its own catches everything — including your own mistakes and the Ctrl+C you press to stop the program. Always name the error you expect.',
+        pt: '⚠️ except: sozinho captura tudo — inclusive seus próprios erros e o Ctrl+C que você aperta para parar o programa. Sempre nomeie o erro que você espera.'
+      }},
       { type: 'tip', content: {
-        en: '💡 Common exceptions:\n• ValueError — wrong type/value (int("abc"))\n• ZeroDivisionError — dividing by zero\n• FileNotFoundError — file missing\n• KeyError — dict key missing\n• IndexError — list index out of range',
-        pt: '💡 Exceções comuns:\n• ValueError — tipo/valor errado (int("abc"))\n• ZeroDivisionError — dividir por zero\n• FileNotFoundError — arquivo faltando\n• KeyError — chave de dict faltando\n• IndexError — índice de lista fora do intervalo'
+        en: '💡 Read the last line of a traceback first. It names the error type and the message, which is exactly what you need for the except.',
+        pt: '💡 Leia a última linha de um traceback primeiro. Ela nomeia o tipo do erro e a mensagem, que é exatamente o que você precisa para o except.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recapitulando' } },
+      { type: 'text', content: {
+        en: 'try holds the risky line; except holds your answer.\nName the error type you expect — ValueError, KeyError, ZeroDivisionError, FileNotFoundError.\nelse runs only on success; finally runs either way.\nraise lets you reject data that Python would happily accept.\nA net that hides the fall is worse than no net.',
+        pt: 'try guarda a linha arriscada; except guarda sua resposta.\nNomeie o tipo de erro que você espera — ValueError, KeyError, ZeroDivisionError, FileNotFoundError.\nelse roda só no sucesso; finally roda de qualquer jeito.\nraise permite recusar dados que o Python aceitaria numa boa.\nUma rede que esconde a queda é pior do que rede nenhuma.'
       }}
     ]
   },
+
   exercises: [
     {
       id: 'ex23_recog',
       title: { en: '🟡 Recognize the Problem', pt: '🟡 Reconheça o Problema' },
       description: {
-        en: 'The code already has some parts done. Your job is to fill in the blanks or fix the bug.\n\nStep 1: Read ALL the code first — three separate try/except blocks are already written with the correct exception names.\nStep 2: Notice what triggers each exception: int("not_a_number") → ValueError; 100 / 0 → ZeroDivisionError; d["damage"] when "damage" key is missing → KeyError.\nStep 3: The code is complete — run it as-is to confirm all three exceptions are caught.\nStep 4: If you want to explore: try changing "not_a_number" to a real number in the first block and see if ValueError is still triggered.\nStep 5: Run the code — you should see:\nValueError caught\nZeroDivisionError caught\nKeyError caught',
-        pt: 'O código já tem algumas partes prontas. Seu trabalho é preencher as lacunas ou corrigir o bug.\n\nPasso 1: Leia TODO o código primeiro — três blocos try/except separados já estão escritos com os nomes corretos de exceção.\nPasso 2: Observe o que dispara cada exceção: int("not_a_number") → ValueError; 100 / 0 → ZeroDivisionError; d["damage"] quando a chave "damage" está faltando → KeyError.\nPasso 3: O código está completo — execute como está para confirmar que as três exceções são capturadas.\nPasso 4: Se quiser explorar: tente mudar "not_a_number" para um número real no primeiro bloco e veja se ValueError ainda é disparado.\nPasso 5: Execute o código — você deve ver:\nValueError caught\nZeroDivisionError caught\nKeyError caught'
+        en: 'The code already has some parts done. Your job is to fill in the blanks or fix the bug.\n\nStep 1: Read ALL the code first — three separate try/except blocks are already written with the correct exception names.\nStep 2: Notice what triggers each exception: int("not_a_number") → ValueError; 100 / 0 → ZeroDivisionError; d["price"] when the "price" key is missing → KeyError.\nStep 3: The code is complete — run it as-is to confirm all three exceptions are caught.\nStep 4: If you want to explore: try changing "not_a_number" to a real number in the first block and see if ValueError is still triggered.\nStep 5: Run the code — you should see:\nValueError caught\nZeroDivisionError caught\nKeyError caught',
+        pt: 'O código já tem algumas partes prontas. Seu trabalho é preencher as lacunas ou corrigir o bug.\n\nPasso 1: Leia TODO o código primeiro — três blocos try/except separados já estão escritos com os nomes corretos de exceção.\nPasso 2: Observe o que dispara cada exceção: int("not_a_number") → ValueError; 100 / 0 → ZeroDivisionError; d["price"] quando a chave "price" está faltando → KeyError.\nPasso 3: O código está completo — execute como está para confirmar que as três exceções são capturadas.\nPasso 4: Se quiser explorar: tente mudar "not_a_number" para um número real no primeiro bloco e veja se ValueError ainda é disparado.\nPasso 5: Execute o código — você deve ver:\nValueError caught\nZeroDivisionError caught\nKeyError caught'
       },
       starterCode: `# Wrap each in try/except with the correct exception:
 
@@ -2990,7 +3091,7 @@ except ZeroDivisionError:
 
 try:
     d = {"name": "Alice"}
-    print(d["damage"])
+    print(d["amount"])
 except KeyError:
     print("KeyError caught")`,
       hints: [{ en: 'Each block uses a specific exception name', pt: 'Cada bloco usa um nome específico de exceção' }],
@@ -3000,24 +3101,24 @@ except KeyError:
       id: 'ex23_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
       description: {
-        en: 'Build this program from scratch. Every line goes into the blue editor.\n\nThe complete robust input loop is already provided in the starter — read each line carefully, then run it as-is.\n\nWhat each part does:\ndamage = None — signals "no valid input yet"\nwhile damage is None: — keeps looping until valid input is received\n    raw = input("Damage amount: $") — reads user input as a string\n    damage = int(raw) — attempts to convert to integer; raises ValueError if invalid\n    if damage <= 0: raise ValueError("Must be positive") — rejects negative or zero values\nexcept ValueError as e: print("Invalid:", e, "— try again") — catches any ValueError and shows the message\n    damage = None — resets so the loop continues\nprint("Confirmed payout: $", damage - 250) — runs only after valid positive input\n\nExpected output:\nInvalid: ... — try again\nConfirmed payout: $ 4750',
-        pt: 'Construa este programa do zero. Cada linha vai no editor azul.\n\nO loop de entrada robusto completo já está fornecido no starter — leia cada linha com atenção e execute como está.\n\nO que cada parte faz:\ndamage = None — sinaliza "ainda sem entrada válida"\nwhile damage is None: — continua no loop até receber entrada válida\n    raw = input("Damage amount: $") — lê a entrada do usuário como string\n    damage = int(raw) — tenta converter para inteiro; levanta ValueError se inválido\n    if damage <= 0: raise ValueError("Must be positive") — rejeita valores negativos ou zero\nexcept ValueError as e: print("Invalid:", e, "— try again") — captura qualquer ValueError e exibe a mensagem\n    damage = None — redefine para que o loop continue\nprint("Confirmed payout: $", damage - 250) — roda apenas após entrada positiva válida\n\nSaída esperada:\nInvalid: ... — try again\nConfirmed payout: $ 4750'
+        en: 'Build this program from scratch. Every line goes into the blue editor.\n\nThe complete robust input loop is already provided in the starter — read each line carefully, then run it as-is.\n\nWhat each part does:\namount = None — signals "no valid input yet"\nwhile amount is None: — keeps looping until valid input is received\n    raw = input("Order amount: $") — reads user input as a string\n    amount = int(raw) — attempts to convert to integer; raises ValueError if invalid\n    if amount <= 0: raise ValueError("Must be positive") — rejects negative or zero values\nexcept ValueError as e: print("Invalid:", e, "— try again") — catches any ValueError and shows the message\n    amount = None — resets so the loop continues\nprint("Confirmed total: $", amount - 250) — runs only after valid positive input\n\nExpected output:\nInvalid: ... — try again\nConfirmed total: $ 4750',
+        pt: 'Construa este programa do zero. Cada linha vai no editor azul.\n\nO loop de entrada robusto completo já está fornecido no starter — leia cada linha com atenção e execute como está.\n\nO que cada parte faz:\namount = None — sinaliza "ainda sem entrada válida"\nwhile amount is None: — continua no loop até receber entrada válida\n    raw = input("Order amount: $") — lê a entrada do usuário como string\n    amount = int(raw) — tenta converter para inteiro; levanta ValueError se inválido\n    if amount <= 0: raise ValueError("Must be positive") — rejeita valores negativos ou zero\nexcept ValueError as e: print("Invalid:", e, "— try again") — captura qualquer ValueError e exibe a mensagem\n    amount = None — redefine para que o loop continue\nprint("Confirmed total: $", amount - 250) — roda apenas após entrada positiva válida\n\nSaída esperada:\nInvalid: ... — try again\nConfirmed total: $ 4750'
       },
-      starterCode: `damage = None
+      starterCode: `amount = None
 
-while damage is None:
+while amount is None:
     try:
-        raw = input("Damage amount: $")
-        damage = int(raw)
-        if damage <= 0:
+        raw = input("Order amount: $")
+        amount = int(raw)
+        if amount <= 0:
             raise ValueError("Must be positive")
     except ValueError as e:
         print("Invalid:", e, "— try again")
-        damage = None
+        amount = None
 
-print("Confirmed payout: $", damage - 250)`,
-      hints: [{ en: 'Set damage = None before loop; reset to None on error', pt: 'Defina damage = None antes do loop; redefina como None no erro' }],
-      sampleOutput: { en: 'Invalid: ... — try again\nConfirmed payout: $ 4750', pt: 'Inválido: ... — tente novamente\nPayout confirmado: $ 4750' }
+print("Confirmed total: $", amount - 250)`,
+      hints: [{ en: 'Set amount = None before loop; reset to None on error', pt: 'Defina amount = None antes do loop; redefina como None no erro' }],
+      sampleOutput: { en: 'Invalid: ... — try again\nConfirmed total: $ 4750', pt: 'Inválido: ... — tente novamente\nTotal confirmado: $ 4750' }
     }
   ],
   quiz: [
@@ -3028,15 +3129,15 @@ print("Confirmed payout: $", damage - 250)`,
   ],
   exam: {
     title: { en: 'Bulletproof Processor', pt: 'Processador À Prova de Falhas' },
-    scenario: { en: 'Process mixed claim data — some entries invalid. Handle all errors.', pt: 'Processe dados mistos — algumas entradas inválidas. Trate todos os erros.' },
-    requirements: { en: ['5 data entries', 'Try/except per entry', 'Handle non-numeric damage', 'Handle negative damage', 'Print success or error per entry'], pt: ['5 entradas de dados', 'Try/except por entrada', 'Tratar dano não-numérico', 'Tratar dano negativo', 'Imprimir sucesso ou erro por entrada'] },
+    scenario: { en: 'Process mixed order data — some entries invalid. Handle all errors.', pt: 'Processe dados mistos — algumas entradas inválidas. Trate todos os erros.' },
+    requirements: { en: ['5 data entries', 'Try/except per entry', 'Handle non-numeric amount', 'Handle negative amount', 'Print success or error per entry'], pt: ['5 entradas de dados', 'Try/except por entrada', 'Tratar dano não-numérico', 'Tratar dano negativo', 'Imprimir sucesso ou erro por entrada'] },
     starterCode: `entries = [("Alice","5230"),("Bob","abc"),("Carlos","8000"),("Diana","-500"),("Eduardo","1200")]
 
 for name, raw in entries:
     try:
-        damage = int(raw)
-        if damage <= 0: raise ValueError("Must be positive")
-        print(f"✅ {name}: \${damage - 250}")
+        amount = int(raw)
+        if amount <= 0: raise ValueError("Must be positive")
+        print(f"✅ {name}: \${amount - 250}")
     except ValueError as e:
         print(f"❌ {name}: {e}")`,
     testCases: [
