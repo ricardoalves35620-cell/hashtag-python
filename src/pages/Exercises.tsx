@@ -12,6 +12,7 @@ import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { ALL_PHASES } from '../data/phases'
 import { markStepDone } from '../lib/progress'
+import { loadCompletedExercises, saveCompletedExercise } from '../lib/exerciseProgress'
 import { preparePythonEngine } from '../lib/pyodide'
 import { gradeExercise, type ValidationItem } from '../lib/learningValidation'
 import { getSkillsForPhase } from '../data/skills'
@@ -61,6 +62,13 @@ export default function Exercises() {
   const saveTimer = useRef<number | null>(null)
   const draftLoadToken = useRef(0)
   const lastEditAt = useRef(0)
+
+  // Exercises already earned survive a reload, an offline session or a deploy.
+  useEffect(() => {
+    if (!learnerId || !phase) return
+    const done = loadCompletedExercises(learnerId, phase.id)
+    if (Object.keys(done).length) setValidated(previous => ({ ...done, ...previous }))
+  }, [learnerId, phase?.id])
 
   if (!phase || phase.exercises.length === 0) {
     return <Layout showBack backTo={`/phase/${phase?.id}`} title={lang === 'en' ? 'Exercises' : 'Exercícios'}><div className="page-shell"><Alert variant="info">{lang === 'en' ? 'Exercises for this phase are being prepared.' : 'Os exercícios desta fase estão sendo preparados.'}</Alert></div></Layout>
@@ -203,6 +211,7 @@ export default function Exercises() {
       setOutput(grade.output || (grade.error ? '' : t.noOutput))
       setValidationChecks(previous => ({ ...previous, [exercise.id]: grade.checks }))
       setValidated(previous => ({ ...previous, [exercise.id]: grade.passed }))
+      if (grade.passed && learnerId) saveCompletedExercise(learnerId, phase.id, exercise.id)
       if (isFirstExercise && !observationRuns[exercise.id]) {
         setObservationRuns(previous => ({ ...previous, [exercise.id]: true }))
         setValidated(previous => ({ ...previous, [exercise.id]: false }))

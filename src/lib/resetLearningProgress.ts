@@ -16,6 +16,7 @@ function isLearningKey(key: string) {
     || key.startsWith('hp_learning_')
     || key.startsWith('hp_base_zero_')
     || key === 'hp_learner_profile'
+    || key.startsWith('hp_exercise_done_')
     || key.startsWith('hp_lesson_reflection_')
     || key === 'hp_ft_done'
     || key.startsWith('hp_project_lab_')
