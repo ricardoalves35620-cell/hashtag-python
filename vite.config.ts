@@ -41,20 +41,22 @@ export default defineConfig({
         // It then requests asset hashes that no longer exist on the server and the
         // app fails to boot until the user hard-refreshes.
         cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        skipWaiting: true,
+        // Do NOT claim open tabs mid-session: the running page still references the
+        // previous build's chunks, and taking over deletes them under its feet.
+        clientsClaim: false,
+        skipWaiting: false,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
             handler: 'NetworkFirst',
-            options: { cacheName: 'supabase-cache' }
+            options: { cacheName: 'supabase-cache', networkTimeoutSeconds: 3 }
           },
           {
             urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/pyodide\/v0\.25\.1\/full\/.*$/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'pyodide-runtime-v0.25.1',
-              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 * 30 }
+              expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 90 }
             }
           }
         ]
