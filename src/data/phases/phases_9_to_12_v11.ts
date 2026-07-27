@@ -6,6 +6,7 @@ const text = (en: string, pt: string): LessonBlock => ({ type: 'text', content: 
 const code = (en: string, pt: string): LessonBlock => ({ type: 'code', code: b(en, pt), language: 'python' })
 const warning = (en: string, pt: string): LessonBlock => ({ type: 'warning', content: b(en, pt) })
 const tip = (en: string, pt: string): LessonBlock => ({ type: 'tip', content: b(en, pt) })
+const checkpoint = (block: LessonBlock): LessonBlock => block
 
 function exactTest(
   id: string,
@@ -99,7 +100,17 @@ export const phase9: Phase = {
         'A nested list has an outer list and one or more inner lists. The outer index selects a row. The second index selects a value inside that row. Reading table[2][1] means: first obtain row 2, then obtain column 1 from that row. Python evaluates those two operations in sequence. This mental step matters because an IndexError may come from the missing row or from a row that is shorter than expected.',
         'Uma lista aninhada possui uma lista externa e uma ou mais listas internas. O índice externo seleciona uma linha. O segundo índice seleciona um valor dentro dessa linha. Ler tabela[2][1] significa: primeiro obtenha a linha 2, depois obtenha a coluna 1 dessa linha. Python avalia essas duas operações em sequência. Esse passo mental importa porque um IndexError pode vir da linha inexistente ou de uma linha menor que o esperado.',
       ),
-      heading('🧩 Physical analogy — a cabinet with drawers', '🧩 Analogia física — um armário com gavetas'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'rows = [[1, 2], [3, 4], [5, 6]]\nprint(len(rows))',
+        options: [
+          { en: '3', pt: '3' },
+          { en: '6', pt: '6' },
+          { en: '2', pt: '2' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'len() counts the outer list, so it sees 3 inner lists — not the 6 numbers inside them. To count everything you have to loop.', pt: 'len() conta a lista de fora, então enxerga 3 listas internas — não os 6 números dentro delas. Para contar tudo é preciso percorrer.' }
+      } },  heading('🧩 Physical analogy — a cabinet with drawers', '🧩 Analogia física — um armário com gavetas'),
       text(
         'Imagine a cabinet. The cabinet itself is the outer list. Each drawer is an inner list. A label such as drawer 0 identifies which drawer to open; a second number identifies which compartment inside that drawer to inspect. Opening cabinet[1][2] is not one magical jump. It is two actions: open drawer 1, then inspect compartment 2. If drawer 1 has only two compartments, compartment 2 does not exist because counting begins at zero.',
         'Imagine um armário. O próprio armário é a lista externa. Cada gaveta é uma lista interna. Um rótulo como gaveta 0 identifica qual gaveta abrir; um segundo número identifica qual compartimento dentro dela consultar. Abrir armario[1][2] não é um salto mágico. São duas ações: abrir a gaveta 1 e depois consultar o compartimento 2. Se a gaveta 1 possui apenas dois compartimentos, o compartimento 2 não existe porque a contagem começa em zero.',
@@ -108,7 +119,17 @@ export const phase9: Phase = {
         'The analogy also explains data shape. A rectangular cabinet has the same number of compartments in every drawer. A ragged cabinet has drawers with different sizes. Python allows both. Your program must decide whether ragged rows are valid or an error. That decision belongs in the contract of the function, not in a comment added after a failure.',
         'A analogia também explica o formato dos dados. Um armário retangular possui a mesma quantidade de compartimentos em todas as gavetas. Um armário irregular possui gavetas de tamanhos diferentes. Python permite os dois. Seu programa precisa decidir se linhas irregulares são válidas ou um erro. Essa decisão pertence ao contrato da função, não a um comentário adicionado depois de uma falha.',
       ),
-      heading('🐍 Fundamentals 1 — build and inspect the shape', '🐍 Fundamentos 1 — construa e inspecione o formato'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'rows = [[10, 20], [30, 40]]\nprint(rows[1][0])',
+        options: [
+          { en: '30', pt: '30' },
+          { en: '20', pt: '20' },
+          { en: '40', pt: '40' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'rows[1] picks the second inner list, [30, 40]. Then [0] picks its first item. Read nested indexes left to right: outer first, then inner.', pt: 'rows[1] pega a segunda lista interna, [30, 40]. Depois [0] pega o primeiro item dela. Leia índices aninhados da esquerda para a direita: primeiro o de fora, depois o de dentro.' }
+      } },  heading('🐍 Fundamentals 1 — build and inspect the shape', '🐍 Fundamentos 1 — construa e inspecione o formato'),
       code(
         `# A small cinema seating map: 1 means occupied, 0 means free.
 seats = [
@@ -460,7 +481,17 @@ print(livro.get("idioma", "desconhecido"))`,
         'Keys are case sensitive: "title" and "Title" are different. Prefer one naming convention, usually lowercase snake_case. A consistent schema lets functions and tests agree. If external data uses another convention, normalize it once at the boundary instead of scattering multiple spellings through the program.',
         'Chaves diferenciam maiúsculas de minúsculas: "titulo" e "Titulo" são diferentes. Prefira uma convenção, normalmente snake_case em minúsculas. Um formato consistente permite que funções e testes concordem. Se dados externos usam outra convenção, normalize uma vez na fronteira em vez de espalhar grafias diferentes pelo programa.',
       ),
-      heading('🐍 Fundamentals 2 — update, add and copy', '🐍 Fundamentos 2 — atualize, adicione e copie'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'prices = {"coffee": 8}\nprint(prices["tea"])',
+        options: [
+          { en: 'KeyError', pt: 'KeyError' },
+          { en: 'None', pt: 'None' },
+          { en: '0', pt: '0' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Asking for a key that does not exist raises KeyError and stops the program. Use prices.get("tea") when a missing key is acceptable — it returns None instead of crashing.', pt: 'Pedir uma chave que não existe gera KeyError e para o programa. Use prices.get("tea") quando a ausência for aceitável — devolve None em vez de quebrar.' }
+      } },  heading('🐍 Fundamentals 2 — update, add and copy', '🐍 Fundamentos 2 — atualize, adicione e copie'),
       code(
         `profile = {"name": "Maya", "level": 4}
 profile["level"] = 5          # update an existing key
@@ -485,7 +516,17 @@ print(foto)`,
         'Assignment does not copy: backup = profile creates a second name for the same dictionary. Changing backup then changes profile. copy creates a new outer dictionary, but nested lists or dictionaries are still shared. Later you will learn deeper copying strategies. For now, recognize whether your function promises to mutate the input or return a changed copy.',
         'Atribuição não copia: backup = perfil cria um segundo nome para o mesmo dicionário. Alterar backup então altera perfil. copy cria um novo dicionário externo, mas listas ou dicionários internos ainda são compartilhados. Depois você aprenderá estratégias de cópia profunda. Por enquanto, reconheça se sua função promete alterar a entrada ou retornar uma cópia modificada.',
       ),
-      heading('🐍 Fundamentals 3 — iterate over keys and values', '🐍 Fundamentos 3 — percorra chaves e valores'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'prices = {"coffee": 8}\nprices["coffee"] = 9\nprint(len(prices))',
+        options: [
+          { en: '1', pt: '1' },
+          { en: '2', pt: '2' },
+          { en: '0', pt: '0' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Assigning to a key that already exists REPLACES its value, it does not add a second entry. A dictionary holds each key once.', pt: 'Atribuir a uma chave que já existe SUBSTITUI o valor, não adiciona uma segunda entrada. Um dicionário guarda cada chave uma vez só.' }
+      } },  heading('🐍 Fundamentals 3 — iterate over keys and values', '🐍 Fundamentos 3 — percorra chaves e valores'),
       code(
         `stock = {"rice": 12, "beans": 8, "oil": 3}
 
@@ -737,7 +778,17 @@ export const phase11: Phase = {
         'The outer list answers questions about the collection: how many records exist, what is the first record, which records match a condition. Each inner dictionary answers questions about one record: what is its id, status, price or owner. Keep those levels separate in your mental model. Many bugs happen when code treats the list as if it had a status key or treats one dictionary as if it were the whole collection.',
         'A lista externa responde perguntas sobre a coleção: quantos registros existem, qual é o primeiro, quais atendem a uma condição. Cada dicionário interno responde perguntas sobre um registro: qual é seu id, status, preço ou responsável. Mantenha esses níveis separados no modelo mental. Muitos bugs acontecem quando o código trata a lista como se tivesse uma chave status ou trata um dicionário como se fosse a coleção inteira.',
       ),
-      heading('🧩 Physical analogy — a stack of labeled forms', '🧩 Analogia física — uma pilha de formulários etiquetados'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'people = [{"name": "Ana"}, {"name": "Bob"}]\nprint(people["name"])',
+        options: [
+          { en: 'TypeError', pt: 'TypeError' },
+          { en: 'Ana', pt: 'Ana' },
+          { en: 'A list of names', pt: 'A list of names' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'A list is indexed by position, not by key, so people["name"] raises TypeError. You have to loop and read the key from each dictionary.', pt: 'Uma lista é indexada por posição, não por chave, então people["name"] gera TypeError. É preciso percorrer e ler a chave de cada dicionário.' }
+      } },  heading('🧩 Physical analogy — a stack of labeled forms', '🧩 Analogia física — uma pilha de formulários etiquetados'),
       text(
         'Imagine a stack of completed forms. The stack is the list; one form is a dictionary; field labels are keys; filled answers are values. You can walk through the stack, inspect each form, place selected forms in a new stack or build an alphabetical index. Removing or rewriting fields on the original form changes the source record, so analytical functions should usually create new output structures.',
         'Imagine uma pilha de formulários preenchidos. A pilha é a lista; um formulário é um dicionário; os rótulos dos campos são chaves; as respostas preenchidas são valores. Você pode percorrer a pilha, inspecionar cada formulário, colocar selecionados em uma nova pilha ou criar um índice alfabético. Remover ou reescrever campos no formulário original altera o registro de origem, então funções analíticas normalmente devem criar novas estruturas de saída.',
@@ -746,7 +797,17 @@ export const phase11: Phase = {
         'A collection also needs an identity rule. If each record has a unique id, you can find or index records reliably. Names are rarely safe identifiers because they may repeat or change. Professional code defines whether duplicate ids are rejected, replaced or grouped. Silent duplication creates confusing reports.',
         'Uma coleção também precisa de regra de identidade. Se cada registro possui id único, você consegue localizar ou indexar com segurança. Nomes raramente são identificadores seguros porque podem repetir ou mudar. Código profissional define se ids duplicados são rejeitados, substituídos ou agrupados. Duplicação silenciosa cria relatórios confusos.',
       ),
-      heading('🐍 Fundamentals 1 — create and inspect records', '🐍 Fundamentos 1 — crie e inspecione registros'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'people = [{"name": "Ana"}, {"name": "Bob"}]\nprint(people[0]["name"])',
+        options: [
+          { en: 'Ana', pt: 'Ana' },
+          { en: 'Bob', pt: 'Bob' },
+          { en: 'name', pt: 'name' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Two steps: [0] takes the first dictionary out of the list, then ["name"] reads a field from that dictionary. List index first, key second.', pt: 'Dois passos: [0] tira o primeiro dicionário da lista, depois ["name"] lê um campo desse dicionário. Primeiro o índice da lista, depois a chave.' }
+      } },  heading('🐍 Fundamentals 1 — create and inspect records', '🐍 Fundamentos 1 — crie e inspecione registros'),
       code(
         `movies = [
     {"id": 1, "title": "Arrival", "rating": 8.0},
@@ -1103,7 +1164,17 @@ print(com_imposto)`,
         'The expression round(price * 1.13, 2) is what enters the new list. The clause for price in prices supplies each source item. There is no filter, so the output length equals the input length. Keep transformations free of unrelated side effects: printing or changing external state inside a comprehension is difficult to read and test.',
         'A expressão round(preco * 1.13, 2) é o que entra na nova lista. A cláusula for preco in precos fornece cada item de origem. Não há filtro, então o tamanho da saída é igual ao da entrada. Mantenha transformações livres de efeitos externos sem relação: imprimir ou alterar estado externo dentro de uma compreensão é difícil de ler e testar.',
       ),
-      heading('🐍 Fundamentals 2 — filter items', '🐍 Fundamentos 2 — filtre itens'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'print([n * 2 for n in [1, 2, 3]])',
+        options: [
+          { en: '[2, 4, 6]', pt: '[2, 4, 6]' },
+          { en: '[1, 2, 3, 1, 2, 3]', pt: '[1, 2, 3, 1, 2, 3]' },
+          { en: '12', pt: '12' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'The expression before the for runs once per item and the results are collected into a new list. The original list is untouched.', pt: 'A expressão antes do for roda uma vez por item e os resultados viram uma lista nova. A lista original não muda.' }
+      } },  heading('🐍 Fundamentals 2 — filter items', '🐍 Fundamentos 2 — filtre itens'),
       code(
         `scores = [42, 81, 67, 95, 50]
 passing = [score for score in scores if score >= 60]
@@ -1116,7 +1187,17 @@ print(aprovadas)  # [81, 67, 95]`,
         'The condition appears after the for clause and decides whether the current item is included. The expression may be the original item or a transformed value. Be precise about > versus >= and about truthy shortcuts. if name removes empty strings but also accepts whitespace-only strings; if name.strip() expresses the cleaner contract.',
         'A condição aparece depois da cláusula for e decide se o item atual entra. A expressão pode ser o item original ou um valor transformado. Seja preciso sobre > versus >= e sobre atalhos de valores verdadeiros. if nome remove textos vazios, mas aceita textos apenas com espaços; if nome.strip() expressa o contrato mais limpo.',
       ),
-      heading('🐍 Fundamentals 3 — transform and filter records', '🐍 Fundamentos 3 — transforme e filtre registros'),
+    
+      { type: 'checkpoint', checkpoint: {
+        code: 'print([n for n in [1, 2, 3, 4] if n > 2])',
+        options: [
+          { en: '[3, 4]', pt: '[3, 4]' },
+          { en: '[1, 2]', pt: '[1, 2]' },
+          { en: '[False, False, True, True]', pt: '[False, False, True, True]' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'The if at the end decides which items are KEPT, not what they turn into. Items that fail the test are simply left out.', pt: 'O if no final decide quais itens são MANTIDOS, não no que eles viram. Os itens que falham no teste ficam de fora.' }
+      } },  heading('🐍 Fundamentals 3 — transform and filter records', '🐍 Fundamentos 3 — transforme e filtre registros'),
       code(
         `products = [
     {"name": "Mouse", "stock": 3},

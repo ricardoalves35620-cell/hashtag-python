@@ -6,6 +6,7 @@ const text = (en: string, pt: string): LessonBlock => ({ type: 'text', content: 
 const code = (en: string, pt: string): LessonBlock => ({ type: 'code', code: b(en, pt), language: 'python' })
 const warning = (en: string, pt: string): LessonBlock => ({ type: 'warning', content: b(en, pt) })
 const tip = (en: string, pt: string): LessonBlock => ({ type: 'tip', content: b(en, pt) })
+const checkpoint = (block: LessonBlock): LessonBlock => block
 
 function exactTest(
   id: string,
@@ -108,7 +109,17 @@ const phase17Blocks: LessonBlock[] = [
     'Mode r means read. If the path does not exist, Python raises FileNotFoundError instead of silently creating an empty file. encoding="utf-8" makes character interpretation explicit and protects names such as João, café and ação. The with statement calls the file cleanup logic automatically. Even when parsing raises an exception, the operating-system resource is released correctly. This is why with open(...) is the default pattern rather than manually remembering file.close().',
     'O modo r significa leitura. Se o caminho não existir, Python gera FileNotFoundError em vez de criar silenciosamente um arquivo vazio. encoding="utf-8" torna explícita a interpretação dos caracteres e protege nomes como João, café e ação. O with chama automaticamente a limpeza do arquivo. Mesmo quando o parser gera exceção, o recurso do sistema operacional é liberado corretamente. Por isso with open(...) é o padrão, em vez de depender da memória para chamar file.close().',
   ),
-  heading('🐍 Fundamentals 2 — read all content or stream line by line', '🐍 Fundamentos 2 — leia tudo ou processe linha por linha'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'f = open("data.txt")   # the file contains: abc\nprint(len(f.read()))\nprint(len(f.read()))',
+        options: [
+          { en: '3 then 0', pt: '3 then 0' },
+          { en: '3 then 3', pt: '3 then 3' },
+          { en: '3 then an error', pt: '3 then an error' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Reading moves a cursor to the end of the file. The second read starts from there and finds nothing. Store the content in a variable if you need it twice.', pt: 'A leitura move um cursor até o fim do arquivo. A segunda leitura começa dali e não encontra nada. Guarde o conteúdo em uma variável se precisar dele duas vezes.' }
+      } },  heading('🐍 Fundamentals 2 — read all content or stream line by line', '🐍 Fundamentos 2 — leia tudo ou processe linha por linha'),
   code(
     'with open("/tmp/menu.txt", "r", encoding="utf-8") as file:\n    for line_number, raw_line in enumerate(file, start=1):\n        line = raw_line.strip()\n        if not line:\n            continue\n        print(line_number, line)',
     'with open("/tmp/cardapio.txt", "r", encoding="utf-8") as arquivo:\n    for numero_linha, linha_bruta in enumerate(arquivo, start=1):\n        linha = linha_bruta.strip()\n        if not linha:\n            continue\n        print(numero_linha, linha)',
@@ -153,7 +164,17 @@ const phase17Blocks: LessonBlock[] = [
     'Logs often include comments or metadata lines. Here a line beginning with # is intentionally ignored, while every data row must have a timestamp and numeric value. maxsplit=1 avoids splitting more fields than the contract defines. The range check detects a sensor or format problem early. A robust reader defines what is ignored, what is accepted and what stops processing; ambiguity is the enemy of reliable ingestion and reproducible science.',
     'Logs frequentemente incluem comentários ou metadados. Aqui uma linha iniciada por # é ignorada de propósito, enquanto cada dado precisa de instante e valor numérico. maxsplit=1 evita dividir mais campos que o contrato define. A verificação de faixa detecta cedo problema de sensor ou formato. Um leitor robusto define o que ignora, aceita e interrompe; ambiguidade é inimiga de ingestão confiável e ciência reproduzível.',
   ),
-  heading('⚠️ Common errors and the real Python messages', '⚠️ Erros comuns e as mensagens reais do Python'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'line = "42\\n"\nprint(line == "42")',
+        options: [
+          { en: 'False', pt: 'False' },
+          { en: 'True', pt: 'True' },
+          { en: 'TypeError', pt: 'TypeError' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'A line read from a file keeps its line break, so it is not equal to the text you expect. Use line.strip() before comparing or converting.', pt: 'Uma linha lida de um arquivo mantém a quebra de linha, então ela não é igual ao texto que você espera. Use line.strip() antes de comparar ou converter.' }
+      } },  heading('⚠️ Common errors and the real Python messages', '⚠️ Erros comuns e as mensagens reais do Python'),
   warning(
     'FileNotFoundError means the resolved path does not exist. UnicodeDecodeError means the selected encoding cannot decode the bytes. ValueError commonly appears when int(), float() or your parser rejects malformed content. IndexError from parts[3] means you accessed a column before verifying the number of fields. PermissionError means the process cannot read that location. Fix the cause; do not replace these errors with an empty except that pretends the file was valid.',
     'FileNotFoundError significa que o caminho resolvido não existe. UnicodeDecodeError indica que a codificação não decodifica os bytes. ValueError aparece quando int(), float() ou seu parser rejeita conteúdo malformado. IndexError em parts[3] significa acesso antes de verificar campos. PermissionError indica falta de acesso ao local. Corrija a causa; não substitua esses erros por except vazio que finge que o arquivo era válido.',
@@ -330,7 +351,17 @@ const phase18Blocks: LessonBlock[] = [
     'write() requires a string. Passing an integer raises TypeError: write() argument must be str, not int. Convert values deliberately, preferably by formatting a complete row before writing it. newline="" is especially useful with the csv module because it prevents the text layer from adding extra platform-specific blank lines. A final newline keeps line-oriented tools and future appends predictable. The function should only report success after the with block closes.',
     'write() exige string. Passar inteiro gera TypeError: write() argument must be str, not int. Converta valores conscientemente, de preferência formatando a linha completa antes de gravar. newline="" é especialmente útil com csv porque evita linhas extras específicas da plataforma. Uma quebra final mantém ferramentas orientadas a linhas e futuros appends previsíveis. A função só deve informar sucesso depois que o with fechar.',
   ),
-  heading('🐍 Fundamentals 2 — replace versus append', '🐍 Fundamentos 2 — substituir versus acrescentar'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'open("log.txt", "w").write("first")\nopen("log.txt", "w").write("second")\nprint(open("log.txt").read())',
+        options: [
+          { en: 'second', pt: 'second' },
+          { en: 'firstsecond', pt: 'firstsecond' },
+          { en: 'first', pt: 'first' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'Mode "w" empties the file before writing. To add to what is already there, open it with "a".', pt: 'O modo "w" esvazia o arquivo antes de escrever. Para acrescentar ao que já existe, abra com "a".' }
+      } },  heading('🐍 Fundamentals 2 — replace versus append', '🐍 Fundamentos 2 — substituir versus acrescentar'),
   code(
     'def write_snapshot(path, message):\n    with open(path, "w", encoding="utf-8") as file:\n        file.write(message.rstrip("\\n") + "\\n")\n\n\ndef append_event(path, event):\n    with open(path, "a", encoding="utf-8") as file:\n        file.write(event.rstrip("\\n") + "\\n")',
     'def escrever_retrato(caminho, mensagem):\n    with open(caminho, "w", encoding="utf-8") as arquivo:\n        arquivo.write(mensagem.rstrip("\\n") + "\\n")\n\n\ndef acrescentar_evento(caminho, evento):\n    with open(caminho, "a", encoding="utf-8") as arquivo:\n        arquivo.write(evento.rstrip("\\n") + "\\n")',
@@ -375,7 +406,17 @@ const phase18Blocks: LessonBlock[] = [
     'Newlines are removed from the action so one event cannot impersonate several log rows. The timestamp is supplied by the caller, making the function deterministic and testable instead of hiding the current clock inside it. Appending preserves history, while UTF-8 preserves names. In security-sensitive systems an append-only file alone is not tamper-proof, but this design teaches the difference between a current-state export and a chronological event stream.',
     'Quebras são removidas da ação para um evento não fingir várias linhas. O instante é fornecido por quem chama, tornando a função determinística e testável em vez de esconder o relógio atual. Append preserva histórico e UTF-8 preserva nomes. Em sistemas sensíveis, arquivo append-only não é inviolável, mas o desenho ensina a diferença entre exportação de estado atual e fluxo cronológico.',
   ),
-  heading('⚠️ Common errors and the real Python messages', '⚠️ Erros comuns e as mensagens reais do Python'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'f = open("out.txt", "w")\nf.write("a")\nf.write("b")\nf.close()\nprint(open("out.txt").read())',
+        options: [
+          { en: 'ab', pt: 'ab' },
+          { en: 'a and b on separate lines', pt: 'a and b on separate lines' },
+          { en: 'a b', pt: 'a b' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'write() adds nothing of its own — no space and no line break. If you want lines, write "a\\n" yourself.', pt: 'write() não adiciona nada por conta própria — nem espaço nem quebra de linha. Se quiser linhas, escreva "a\\n" você mesmo.' }
+      } },  heading('⚠️ Common errors and the real Python messages', '⚠️ Erros comuns e as mensagens reais do Python'),
   warning(
     'Using mode w on the wrong path permanently truncates the existing file. FileNotFoundError can occur when the parent directory does not exist. PermissionError means the process cannot write there. TypeError: write() argument must be str appears when you pass a number directly. ValueError: I/O operation on closed file appears when code writes after leaving the with block. With csv, forgetting newline="" can create extra blank rows on some systems.',
     'Usar modo w no caminho errado trunca permanentemente o arquivo existente. FileNotFoundError pode ocorrer quando a pasta pai não existe. PermissionError significa falta de escrita. TypeError: write() argument must be str aparece ao passar número diretamente. ValueError: I/O operation on closed file surge ao escrever depois do with. Com csv, esquecer newline="" pode criar linhas extras em alguns sistemas.',
@@ -514,7 +555,17 @@ const phase19Blocks: LessonBlock[] = [
     'load and dump receive file objects. indent improves human readability but increases size; compact JSON is common for network responses. Key order does not carry business meaning in JSON objects, so code should access by key rather than position. Arrays do preserve order. Writing with a stable key order is still useful for version control because the same logical content produces the same text and reviewers can identify real changes without noise.',
     'load e dump recebem objetos de arquivo. indent melhora leitura humana, mas aumenta tamanho; JSON compacto é comum em rede. Ordem de chaves não possui significado de negócio em objetos JSON, então o código deve acessar por chave, não posição. Arrays preservam ordem. Gravar chaves em ordem estável ainda ajuda no controle de versão porque o mesmo conteúdo lógico produz o mesmo texto e revisores identificam mudanças reais sem ruído.',
   ),
-  heading('🐍 Fundamentals 3 — validate shape before using fields', '🐍 Fundamentos 3 — valide o formato antes de usar campos'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'import json\nprint(json.loads(json.dumps({1: "a"})))',
+        options: [
+          { en: '{\'1\': \'a\'}', pt: '{\'1\': \'a\'}' },
+          { en: '{1: \'a\'}', pt: '{1: \'a\'}' },
+          { en: 'TypeError', pt: 'TypeError' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'JSON object keys are always text. A number used as a key goes out as a string and comes back as a string — the round trip does not return what you started with.', pt: 'Chaves de objeto em JSON são sempre texto. Um número usado como chave sai como string e volta como string — a ida e volta não devolve o que você começou.' }
+      } },  heading('🐍 Fundamentals 3 — validate shape before using fields', '🐍 Fundamentos 3 — valide o formato antes de usar campos'),
   code(
     'def validate_order(value):\n    if not isinstance(value, dict):\n        raise ValueError("order must be an object")\n    if not isinstance(value.get("items"), list):\n        raise ValueError("items must be a list")\n    for index, item in enumerate(value["items"]):\n        if not isinstance(item, dict):\n            raise ValueError(f"item {index} must be an object")\n        price = item.get("price")\n        quantity = item.get("quantity")\n        if isinstance(price, bool) or not isinstance(price, (int, float)):\n            raise ValueError(f"item {index} price must be numeric")\n        if isinstance(quantity, bool) or not isinstance(quantity, int) or quantity < 0:\n            raise ValueError(f"item {index} quantity must be a non-negative integer")',
     'def validar_pedido(valor):\n    if not isinstance(valor, dict):\n        raise ValueError("order must be an object")\n    if not isinstance(valor.get("items"), list):\n        raise ValueError("items must be a list")\n    for indice, item in enumerate(valor["items"]):\n        if not isinstance(item, dict):\n            raise ValueError(f"item {indice} must be an object")\n        preco = item.get("price")\n        quantidade = item.get("quantity")\n        if isinstance(preco, bool) or not isinstance(preco, (int, float)):\n            raise ValueError(f"item {indice} price must be numeric")\n        if isinstance(quantidade, bool) or not isinstance(quantidade, int) or quantidade < 0:\n            raise ValueError(f"item {indice} quantity must be a non-negative integer")',
@@ -550,7 +601,17 @@ const phase19Blocks: LessonBlock[] = [
     'The appointment payload contains administrative scheduling data rather than sensitive clinical detail. Required fields are checked together so the error reports every missing name. notes explicitly accepts either text or null, matching JSON null to Python None. The summary uses only validated values. A real API would add schema versioning, authentication and privacy controls, but the same parse–validate–normalize sequence remains the reliable core.',
     'O payload contém dados administrativos de agendamento, não detalhes clínicos sensíveis. Campos obrigatórios são verificados juntos para o erro listar todos os nomes ausentes. notes aceita explicitamente texto ou null, que vira None. O resumo usa apenas valores validados. Uma API real acrescentaria versão de schema, autenticação e privacidade, mas a sequência interpretar–validar–normalizar permanece como núcleo confiável.',
   ),
-  heading('⚠️ Common errors and the real Python messages', '⚠️ Erros comuns e as mensagens reais do Python'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'import json\nprint(json.loads(json.dumps((1, 2))))',
+        options: [
+          { en: '[1, 2]', pt: '[1, 2]' },
+          { en: '(1, 2)', pt: '(1, 2)' },
+          { en: 'TypeError', pt: 'TypeError' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'JSON has no tuple. A tuple is written as an array and returns as a list. If the difference matters to your code, convert it back explicitly.', pt: 'JSON não tem tupla. Uma tupla é escrita como array e volta como lista. Se essa diferença importa no seu código, converta de volta explicitamente.' }
+      } },  heading('⚠️ Common errors and the real Python messages', '⚠️ Erros comuns e as mensagens reais do Python'),
   warning(
     'json.JSONDecodeError means invalid JSON syntax, often single quotes, a trailing comma or an unquoted key. TypeError: Object of type datetime is not JSON serializable means you must convert the value, commonly with isoformat(). KeyError means a required key was accessed before validation. TypeError while totaling usually means a numeric field arrived as text, boolean or null. Never repair malformed data with global string replacement; parse and validate deliberately.',
     'json.JSONDecodeError significa sintaxe inválida, geralmente aspas simples, vírgula final ou chave sem aspas. TypeError: Object of type datetime is not JSON serializable exige converter o valor, normalmente com isoformat(). KeyError indica acesso antes da validação. TypeError em soma costuma significar número recebido como texto, booleano ou null. Nunca conserte dados com substituição global de strings; interprete e valide conscientemente.',
@@ -679,7 +740,17 @@ const phase20Blocks: LessonBlock[] = [
     'strptime means string parse time. The format must match the input exactly: %Y is a four-digit year, %m is month and %d is day. Invalid calendar values raise ValueError, so 2026-02-30 is rejected. ISO format YYYY-MM-DD is sortable and unambiguous across languages; use localized display formats only at presentation boundaries. date.fromisoformat is an even clearer choice when ISO input is guaranteed by the contract.',
     'strptime significa interpretar tempo a partir de string. O formato precisa corresponder: %Y é ano de quatro dígitos, %m mês e %d dia. Valores impossíveis geram ValueError, então 2026-02-30 é rejeitada. ISO YYYY-MM-DD é ordenável e sem ambiguidade; use formato local apenas na apresentação. date.fromisoformat é opção ainda mais clara quando a entrada ISO é garantida pelo contrato.',
   ),
-  heading('🐍 Fundamentals 2 — calculate durations with timedelta', '🐍 Fundamentos 2 — calcule durações com timedelta'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'from datetime import datetime\nprint(datetime.strptime("2026-07-27", "%d/%m/%Y"))',
+        options: [
+          { en: 'ValueError', pt: 'ValueError' },
+          { en: '2026-07-27 00:00:00', pt: '2026-07-27 00:00:00' },
+          { en: 'None', pt: 'None' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'strptime does not guess. The format string must describe the text exactly, separators included, or it refuses to parse.', pt: 'strptime não adivinha. A string de formato precisa descrever o texto exatamente, separadores incluídos, ou ela se recusa a converter.' }
+      } },  heading('🐍 Fundamentals 2 — calculate durations with timedelta', '🐍 Fundamentos 2 — calcule durações com timedelta'),
   code(
     'from datetime import date, timedelta\n\nordered = date.fromisoformat("2026-07-15")\nestimated = ordered + timedelta(days=4)\nelapsed = estimated - ordered\n\nprint(estimated.isoformat())\nprint(elapsed.days)',
     'from datetime import date, timedelta\n\npedido = date.fromisoformat("2026-07-15")\nestimada = pedido + timedelta(days=4)\ndecorrido = estimada - pedido\n\nprint(estimada.isoformat())\nprint(decorrido.days)',
@@ -706,7 +777,17 @@ const phase20Blocks: LessonBlock[] = [
     'An offset such as +00:00 makes the datetime aware. Subtraction between aware values represents elapsed real time. ISO 8601 carries date, time and an optional offset. timezone.utc is the standard UTC zone in the built-in library. Full regional daylight-saving rules require zoneinfo, which you will encounter later; the essential rule now is never mix naive and aware values silently or remove tzinfo just to make an error disappear.',
     'Um offset como +00:00 torna o datetime consciente. Subtrair valores conscientes representa tempo real decorrido. ISO 8601 transporta data, hora e offset opcional. timezone.utc é a zona UTC padrão. Regras regionais completas de horário de verão exigem zoneinfo, visto depois; a regra essencial agora é nunca misturar valores ingênuos e conscientes silenciosamente nem remover tzinfo só para o erro desaparecer.',
   ),
-  heading('🏗️ Real scenario 1 — logistics delivery commitment', '🏗️ Cenário real 1 — compromisso de entrega logística'),
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'from datetime import date, timedelta\nprint(date(2026, 3, 1) - timedelta(days=1))',
+        options: [
+          { en: '2026-02-28', pt: '2026-02-28' },
+          { en: '2026-02-29', pt: '2026-02-29' },
+          { en: '2026-03-00', pt: '2026-03-00' }
+        ],
+        correctIndex: 0,
+        explanation: { en: 'date arithmetic knows the calendar: month lengths and leap years are handled for you. 2026 is not a leap year, so the day before 1 March is 28 February.', pt: 'A aritmética de datas conhece o calendário: tamanhos de mês e anos bissextos são tratados para você. 2026 não é bissexto, então o dia anterior a 1 de março é 28 de fevereiro.' }
+      } },  heading('🏗️ Real scenario 1 — logistics delivery commitment', '🏗️ Cenário real 1 — compromisso de entrega logística'),
   code(
     'from datetime import date, timedelta\n\n\ndef estimated_delivery(order_date_text, handling_days, transit_days):\n    if handling_days < 0 or transit_days < 0:\n        raise ValueError("days must be non-negative")\n    order_date = date.fromisoformat(order_date_text)\n    estimate = order_date + timedelta(days=handling_days + transit_days)\n    return estimate.isoformat()\n\nprint(estimated_delivery("2026-07-30", 1, 4))',
     'from datetime import date, timedelta\n\n\ndef entrega_estimada(data_pedido_texto, dias_preparo, dias_transporte):\n    if dias_preparo < 0 or dias_transporte < 0:\n        raise ValueError("days must be non-negative")\n    data_pedido = date.fromisoformat(data_pedido_texto)\n    estimativa = data_pedido + timedelta(days=dias_preparo + dias_transporte)\n    return estimativa.isoformat()\n\nprint(entrega_estimada("2026-07-30", 1, 4))',
