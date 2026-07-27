@@ -1,5 +1,6 @@
 import type { Exercise, Lang } from '../data/types'
 import { getVisibleExerciseContracts } from '../lib/exerciseContract'
+import { describeRequirement } from '../lib/requirementLanguage'
 
 export default function ExerciseExpectedOutput({ exercise, lang }: { exercise: Exercise; lang: Lang }) {
   const contracts = getVisibleExerciseContracts(exercise, lang)
@@ -10,6 +11,7 @@ export default function ExerciseExpectedOutput({ exercise, lang }: { exercise: E
     output: 'Saída esperada',
     exact: 'Esta é a forma canônica esperada. O corretor pode aceitar variações de apresentação que não mudem o significado.',
     flexible: 'O corretor verifica estes valores ou comportamentos e aceita diferenças de apresentação que não mudem o resultado.',
+    alsoChecks: 'O corretor também verifica como você resolveu',
   } : {
     title: 'Visible exercise contract',
     inputs: 'Values used as input',
@@ -17,6 +19,7 @@ export default function ExerciseExpectedOutput({ exercise, lang }: { exercise: E
     output: 'Expected output',
     exact: 'This is the canonical expected form. The grader may accept presentation differences that do not change the meaning.',
     flexible: 'The grader checks these values or behaviors and accepts presentation differences that do not change the result.',
+    alsoChecks: 'The grader also checks how you solved it',
   }
 
   return (
@@ -28,6 +31,21 @@ export default function ExerciseExpectedOutput({ exercise, lang }: { exercise: E
       <div className="mb-3 text-xs font-extrabold uppercase tracking-wider" style={{ color: 'var(--c-success-text)' }}>
         ✓ {copy.title}
       </div>
+      {/* Structural requirements shown BEFORE submitting. Without this a learner can
+          produce the exact expected output and still fail, with no way to have known. */}
+      {(exercise.grading?.codeRequirements || []).length > 0 && (
+        <div className="mb-3 rounded-lg border border-line bg-surface p-3">
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted">{copy.alsoChecks}</div>
+          <ul className="text-sm leading-6 text-ink-secondary">
+            {(exercise.grading?.codeRequirements || []).map((requirement, index) => (
+              <li key={`${requirement.kind}-${requirement.value}-${index}`}>
+                • {describeRequirement(requirement.kind, String(requirement.value)).what[lang]}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="space-y-3">
         {contracts.map((contract, index) => (
           <article key={contract.id} className="rounded-lg border border-line bg-surface p-3">
