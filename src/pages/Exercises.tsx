@@ -287,7 +287,7 @@ export default function Exercises() {
 
         <Card padding="md">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div><h2 className="text-lg font-semibold text-ink">{personalize(exercise.title[lang])}</h2><p className="mt-1 text-sm leading-6 text-ink-secondary">{personalize(exercise.description[lang])}</p></div>
+            <div><h2 className="text-lg font-semibold text-ink">{personalize(exercise.title[lang])}</h2><p className="mt-1 text-sm leading-6 text-ink-secondary whitespace-pre-line">{personalize(exercise.description[lang])}</p></div>
             <Badge data-testid="draft-status" variant={draftStatus === 'saved' ? 'success' : 'neutral'}>{draftStatus === 'saved' ? `✓ ${t.saved}` : draftStatus === 'local' ? `✓ ${t.local}` : t.ready}</Badge>
           </div>
           <ExerciseExpectedOutput exercise={exercise} lang={lang} />
