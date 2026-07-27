@@ -1,4 +1,5 @@
 import type { Check, CodeRequirement, TestCase } from '../data/types'
+import { identifierMatches } from './identifierAliases'
 
 export interface PythonFunctionAnalysis {
   name: string
@@ -242,9 +243,11 @@ export function meetsCodeRequirement(analysis: PythonAnalysis | null, requiremen
   switch (requirement.kind) {
     case 'node': return (analysis.nodeCounts[requirement.value] ?? 0) >= minimum
     case 'call': return analysis.calls.some(call => call === requirement.value || call.endsWith(`.${requirement.value}`))
-    case 'function': return analysis.functionNames.includes(requirement.value)
+    // Names the learner chooses may be written in their own language; Python's own
+    // vocabulary (call, import, node) below stays English by design.
+    case 'function': return analysis.functionNames.some(name => identifierMatches(requirement.value, name))
     case 'import': return analysis.imports.some(name => name === requirement.value || name.startsWith(`${requirement.value}.`))
-    case 'assignment': return analysis.assignedNames.includes(requirement.value)
+    case 'assignment': return analysis.assignedNames.some(name => identifierMatches(requirement.value, name))
     case 'main_guard': return analysis.hasMainGuard
     default: return false
   }
