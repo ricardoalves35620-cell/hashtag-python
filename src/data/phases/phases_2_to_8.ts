@@ -562,24 +562,34 @@ print(f"Active: {plan_active}")`,
     },
     requirements: {
       en: [
-        'name = "Ana Souza", age = 32, monthly_fee = 385',
+        'name = any text you like, age = any whole number, monthly_fee = any number',
         'Calculate annual_fee (monthly × 12)',
         'Calculate discounted (annual × 0.95)',
         'Print name, age, annual and discounted values'
       ],
       pt: [
-        'nome = "Ana Souza", idade = 32, taxa_mensal = 385',
+        'nome = qualquer texto, idade = qualquer número inteiro, taxa_mensal = qualquer número',
         'Calcule taxa_anual (mensal × 12)',
         'Calcule com_desconto (anual × 0.95)',
         'Imprima nome, idade, valor anual e com desconto'
       ]
     },
-    starterCode: `# Client profile with calculations:`,
+    starterCode: `# Client profile with calculations.
+# Choose your own name, age and monthly fee — the grader checks the maths, not the values.
+`,
     testCases: [
-      { id: 'tc3_1', description: { en: 'Shows name', pt: 'Mostra nome' }, inputs: [], checks: [{ type: 'contains', value: 'Ana' }], points: 20 },
-      { id: 'tc3_2', description: { en: 'Shows age 32', pt: 'Mostra idade 32' }, inputs: [], checks: [{ type: 'contains', value: '32' }], points: 15 },
-      { id: 'tc3_3', description: { en: 'Annual = 4620', pt: 'Anual = 4620' }, inputs: [], checks: [{ type: 'contains', value: '4620' }], points: 30 },
-      { id: 'tc3_4', description: { en: 'Discounted = 4389', pt: 'Com desconto = 4389' }, inputs: [], checks: [{ type: 'contains', value: '4389' }], points: 25 },
+      { id: 'tc3_1', description: { en: 'name holds text', pt: 'nome guarda um texto' }, inputs: [],
+        afterCode: 'print(isinstance(name if "name" in dir() else nome, str))',
+        checks: [{ type: 'contains', value: 'True', label: { en: 'name is text — any name you like', pt: 'nome é texto — o nome que você quiser' } }], points: 20 },
+      { id: 'tc3_2', description: { en: 'age holds a whole number', pt: 'idade guarda um número inteiro' }, inputs: [],
+        afterCode: 'print(isinstance(age if "age" in dir() else idade, int))',
+        checks: [{ type: 'contains', value: 'True', label: { en: 'age is a whole number — any age', pt: 'idade é um número inteiro — qualquer idade' } }], points: 15 },
+      { id: 'tc3_3', description: { en: 'annual = monthly x 12', pt: 'anual = mensal x 12' }, inputs: [],
+        afterCode: 'a = annual_fee if "annual_fee" in dir() else taxa_anual\nm = monthly_fee if "monthly_fee" in dir() else taxa_mensal\nprint(round(a, 2) == round(m * 12, 2))',
+        checks: [{ type: 'contains', value: 'True', label: { en: 'the annual value is the monthly one multiplied by 12', pt: 'o valor anual é o mensal multiplicado por 12' } }], points: 30 },
+      { id: 'tc3_4', description: { en: 'discounted = annual x 0.95', pt: 'com desconto = anual x 0.95' }, inputs: [],
+        afterCode: 'd = discounted if "discounted" in dir() else com_desconto\na = annual_fee if "annual_fee" in dir() else taxa_anual\nprint(round(d, 2) == round(a * 0.95, 2))',
+        checks: [{ type: 'contains', value: 'True', label: { en: 'the discounted value is 95% of the annual one', pt: 'o valor com desconto é 95% do anual' } }], points: 25 },
       { id: 'tc3_5', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 10 }
     ]
   }
