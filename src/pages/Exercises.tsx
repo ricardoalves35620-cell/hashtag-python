@@ -158,7 +158,7 @@ export default function Exercises() {
       next: 'Next exercise', phase: 'Phase', sampleOutput: 'Expected output', lockedNext: 'Run this exercise successfully to continue.',
       validated: 'Validated', reset: 'Restore starter code', saved: 'Saved across devices', local: 'Saved on this device', attempts: 'Recent attempts',
       noOutput: 'The program finished without printing anything.', ready: 'Ready to run', progress: 'Validation progress',
-      thinkTitle: 'Think before running', predict: 'What do you predict this code will do?', plan: 'What one value, operator or line will you change after the first run?', thinkHelp: 'The first exercise is a predict → run → modify → run challenge. Merely pressing Run is not enough.', observeDone: 'Observation complete. Now make the planned code change and run again.',
+      thinkTitle: 'Think before running', predict: 'What do you predict this code will do?', plan: 'What one value, operator or line will you change after the first run?', thinkHelp: 'The first exercise is a predict → run → modify → run challenge. Merely pressing Run is not enough.', observeDone: 'Observation complete. Now make the planned code change and run again.', notChangedYet: 'The code is still exactly as it started. Edit the value you planned to change — then run again.',
       unlockTitle: 'Complete these two short steps to enable Run', predictionMissing: 'Write a prediction with at least 10 characters.', planMissing: 'Describe one change with at least 3 characters.', readyToRun: 'Prediction and change plan completed. Run is enabled.'
     },
     pt: {
@@ -167,7 +167,7 @@ export default function Exercises() {
       next: 'Próximo exercício', phase: 'Fase', sampleOutput: 'Saída esperada', lockedNext: 'Execute este exercício corretamente para continuar.',
       validated: 'Validado', reset: 'Restaurar código inicial', saved: 'Salvo entre dispositivos', local: 'Salvo neste aparelho', attempts: 'Tentativas recentes',
       noOutput: 'O programa terminou sem imprimir nada.', ready: 'Pronto para executar', progress: 'Progresso da validação',
-      thinkTitle: 'Pense antes de executar', predict: 'O que você prevê que este código fará?', plan: 'Qual valor, operador ou linha você mudará depois da primeira execução?', thinkHelp: 'O primeiro exercício agora segue prever → executar → modificar → executar. Apenas apertar Executar não é suficiente.', observeDone: 'Observação concluída. Agora faça a alteração planejada no código e execute novamente.',
+      thinkTitle: 'Pense antes de executar', predict: 'O que você prevê que este código fará?', plan: 'Qual valor, operador ou linha você mudará depois da primeira execução?', thinkHelp: 'O primeiro exercício agora segue prever → executar → modificar → executar. Apenas apertar Executar não é suficiente.', observeDone: 'Observação concluída. Agora faça a alteração planejada no código e execute novamente.', notChangedYet: 'O código continua exatamente como começou. Edite o valor que você planejou mudar — depois execute de novo.',
       unlockTitle: 'Conclua estes dois passos curtos para liberar Executar', predictionMissing: 'Escreva uma previsão com pelo menos 10 caracteres.', planMissing: 'Descreva uma alteração com pelo menos 3 caracteres.', readyToRun: 'Previsão e plano preenchidos. O botão Executar está liberado.'
     }
   })[lang], [lang])
@@ -209,7 +209,7 @@ export default function Exercises() {
         setValidationMessage(t.observeDone)
       } else if (isFirstExercise && !codeChanged) {
         setValidated(previous => ({ ...previous, [exercise.id]: false }))
-        setValidationMessage(t.observeDone)
+        setValidationMessage(t.notChangedYet)
       } else {
         setValidationMessage(grade.message)
       }
@@ -270,24 +270,6 @@ export default function Exercises() {
           <ExerciseExpectedOutput exercise={exercise} lang={lang} />
         </Card>
 
-        {isFirstExercise && <Card padding="md" variant="subtle">
-          <h3 className="font-semibold text-ink">🧠 {t.thinkTitle}</h3>
-          <p className="mt-1 text-sm leading-6 text-ink-secondary">{t.thinkHelp}</p>
-          <label className="mt-3 block text-sm font-medium text-ink">{t.predict}</label>
-          <textarea data-testid="exercise-prediction" aria-describedby="exercise-run-requirements" className="mt-1 min-h-20 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={predictions[exercise.id] || ''} onChange={event => setPredictions(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
-          <label className="mt-3 block text-sm font-medium text-ink">{t.plan}</label>
-          <input data-testid="exercise-change-plan" aria-describedby="exercise-run-requirements" className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={changePlans[exercise.id] || ''} onChange={event => setChangePlans(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
-          <div id="exercise-run-requirements" data-testid="exercise-run-requirements" className="mt-3 rounded-lg border border-line bg-surface p-3 text-sm text-ink-secondary">
-            <div className="font-semibold text-ink">{t.unlockTitle}</div>
-            <div className="mt-2 grid gap-1">
-              <span>{(predictions[exercise.id] || '').trim().length >= 10 ? '✓' : '○'} {t.predictionMissing}</span>
-              <span>{(changePlans[exercise.id] || '').trim().length >= 3 ? '✓' : '○'} {t.planMissing}</span>
-            </div>
-            {thinkingReady && <div className="mt-2 font-medium text-success">✓ {t.readyToRun}</div>}
-          </div>
-          {observationRuns[exercise.id] && !codeChanged && <Alert variant="info" className="mt-3">{t.observeDone}</Alert>}
-        </Card>}
-
         <VSCodeEditor
           value={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)}
           onChange={value => {
@@ -305,6 +287,25 @@ export default function Exercises() {
           }}
           filename={`exercise_${activeEx + 1}.py`} height="clamp(280px, 48vh, 520px)" label={lang === 'en' ? 'editable' : 'editável'}
         />
+
+        {isFirstExercise && <Card padding="md" variant="subtle">
+          <h3 className="font-semibold text-ink">🧠 {t.thinkTitle}</h3>
+          <p className="mt-1 text-sm leading-6 text-ink-secondary">{t.thinkHelp}</p>
+          <label className="mt-3 block text-sm font-medium text-ink">{t.predict}</label>
+          <textarea data-testid="exercise-prediction" aria-describedby="exercise-run-requirements" className="mt-1 min-h-20 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={predictions[exercise.id] || ''} onChange={event => setPredictions(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
+          <label className="mt-3 block text-sm font-medium text-ink">{t.plan}</label>
+          <input data-testid="exercise-change-plan" aria-describedby="exercise-run-requirements" className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink" value={changePlans[exercise.id] || ''} onChange={event => setChangePlans(previous => ({ ...previous, [exercise.id]: event.target.value }))} />
+          <div id="exercise-run-requirements" data-testid="exercise-run-requirements" className="mt-3 rounded-lg border border-line bg-surface p-3 text-sm text-ink-secondary">
+            <div className="font-semibold text-ink">{t.unlockTitle}</div>
+            <div className="mt-2 grid gap-1">
+              <span>{(predictions[exercise.id] || '').trim().length >= 10 ? '✓' : '○'} {t.predictionMissing}</span>
+              <span>{(changePlans[exercise.id] || '').trim().length >= 3 ? '✓' : '○'} {t.planMissing}</span>
+            </div>
+            {thinkingReady && <div className="mt-2 font-medium text-success">✓ {t.readyToRun}</div>}
+          </div>
+          {observationRuns[exercise.id] && !codeChanged && <Alert variant="warning" className="mt-3">{t.notChangedYet}</Alert>}
+        </Card>}
+
 
         <div><TestInputEditor key={exercise.id} code={codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang)} value={customInputs[exercise.id] || ''} onChange={value => {
             lastEditAt.current = Date.now()
