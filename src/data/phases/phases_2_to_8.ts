@@ -308,7 +308,7 @@ export const phase3: Phase = {
         en: `# label = value
 client_name = "Alice Costa"    # str: text needs quotes
 order_amount = 5230             # int: whole number
-cover rate_rate = 0.80            # float: decimal number
+cover_rate = 0.80            # float: decimal number
 is_approved = True              # bool: True or False, with a capital first letter
 
 # Use variables by name
@@ -316,7 +316,7 @@ print(client_name)              # Alice Costa
 print(order_amount)             # 5230
 
 # Combine variables in calculations
-refund = order_amount * cover rate_rate
+refund = order_amount * cover_rate
 print("Refund:", refund)        # Refund: 4184.0
 
 # Check the type of a variable
