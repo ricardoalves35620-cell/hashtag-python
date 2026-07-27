@@ -2724,36 +2724,129 @@ export const phase22: Phase = {
   lesson: {
     title: { en: 'Beyond Basic Arithmetic', pt: 'Além da Aritmética Básica' },
     blocks: [
-      { type: 'heading', content: { en: '🌍 Engineers and actuaries use math daily', pt: '🌍 Engenheiros e atuários usam math diariamente' } },
+      { type: 'heading', content: { en: '🌍 The buttons your calculator has and Python does not', pt: '🌍 Os botões que sua calculadora tem e o Python não' } },
       { type: 'text', content: {
-        en: 'Civil engineers calculate beam stress with math.sqrt().\nInsurance actuaries use math.log() for mortality tables.\nData scientists use math.pi for circular calculations.\n\nmath module = Python\'s scientific calculator.',
-        pt: 'Engenheiros civis calculam tensão de vigas com math.sqrt().\nAtuários usam math.log() para tabelas de mortalidade.\nCientistas de dados usam math.pi para cálculos circulares.\n\nmódulo math = calculadora científica do Python.'
+        en: 'Python arrives with +, -, * and /. That is a pocket calculator.\n\nA square root, a logarithm, π, rounding that always goes up — none of that is built in. It lives in a module called math, and you switch it on with one line.\n\nThis is not academic. Working out how many boxes you need for 47 items in packs of 6 is a ceiling. Working out the distance between two points on a map is a square root. Charging by area is π when the shape is round.',
+        pt: 'O Python chega com +, -, * e /. Isso é uma calculadora de bolso.\n\nRaiz quadrada, logaritmo, π, arredondamento que sempre sobe — nada disso vem embutido. Tudo mora num módulo chamado math, que você liga com uma linha.\n\nIsso não é acadêmico. Descobrir quantas caixas você precisa para 47 itens em pacotes de 6 é um teto. Calcular a distância entre dois pontos num mapa é raiz quadrada. Cobrar por área é π quando a forma é redonda.'
       }},
-      { type: 'heading', content: { en: '🧩 Extra buttons on a scientific calculator', pt: '🧩 Botões extras de calculadora científica' } },
+      { type: 'heading', content: { en: '🧩 A second row of keys', pt: '🧩 Uma segunda fileira de teclas' } },
       { type: 'text', content: {
-        en: 'Basic Python = pocket calculator (+, -, *, /)\nmath module = the √, log, π, ceil, floor buttons\n\nimport math to unlock them.',
-        pt: 'Python básico = calculadora de bolso (+, -, *, /)\nmódulo math = os botões √, log, π, ceil, floor\n\nimport math para desbloqueá-los.'
+        en: 'Think of import math as flipping your calculator over to reveal the scientific keys. The four you already know keep working exactly the same; you simply gain more.',
+        pt: 'Pense em import math como virar a calculadora e revelar as teclas científicas. As quatro que você já conhece continuam iguais; você apenas ganha mais.'
+      }},
+
+      { type: 'heading', content: { en: '🐍 Fundamentals 1 — roots, powers and π', pt: '🐍 Fundamentos 1 — raízes, potências e π' } },
+      { type: 'text', content: {
+        en: 'Note what comes back: math.sqrt(144) is 12.0, not 12. Almost everything in math returns a decimal, because the answer usually is one.',
+        pt: 'Repare no que volta: math.sqrt(144) é 12.0, não 12. Quase tudo em math devolve um decimal, porque a resposta normalmente é decimal.'
       }},
       { type: 'code', code: `import math
 
-print(math.pi)          # 3.14159...
-print(math.sqrt(144))   # 12.0
-print(math.pow(2, 10))  # 1024.0
+print(math.sqrt(144))    # 12.0  — a decimal, not 12
+print(math.pow(2, 10))   # 1024.0
+print(2 ** 10)           # 1024  — Python's own operator, stays whole
+print(math.pi)           # 3.141592653589793` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'import math\n\nprint(math.sqrt(144) == 12)',
+        options: [
+          { en: 'True', pt: 'True' },
+          { en: 'False', pt: 'False' },
+          { en: 'An error', pt: 'Um erro' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'It prints True. sqrt returns 12.0 and Python treats 12.0 and 12 as equal in value, even though one is a float and the other an int. type() would tell them apart; == compares the number, not the kind.',
+          pt: 'Imprime True. sqrt devolve 12.0 e o Python considera 12.0 e 12 iguais em valor, mesmo um sendo float e o outro int. type() os distingue; == compara o número, não o tipo.'
+        }
+      } },
 
-# Rounding
-print(math.ceil(4.1))   # 5 — always UP
-print(math.floor(4.9))  # 4 — always DOWN
+      { type: 'heading', content: { en: '🐍 Fundamentals 2 — rounding on purpose', pt: '🐍 Fundamentos 2 — arredondar de propósito' } },
+      { type: 'text', content: {
+        en: 'There are three different rounding tools and they are not interchangeable. Choosing the wrong one is how a delivery ends up one box short.\n\n• ceil() always goes UP — use it for containers, vehicles, staff, anything you cannot have a fraction of.\n• floor() always goes DOWN — use it for how many whole items fit in a budget.\n• round() goes to the NEAREST, and settles a .5 tie by moving to the even number.',
+        pt: 'Existem três ferramentas de arredondamento e elas não são intercambiáveis. Escolher a errada é como uma entrega acabar com uma caixa a menos.\n\n• ceil() sempre PARA CIMA — use para caixas, veículos, pessoas, qualquer coisa que não exista pela metade.\n• floor() sempre PARA BAIXO — use para quantos itens inteiros cabem num orçamento.\n• round() vai para o MAIS PRÓXIMO, e resolve o empate .5 indo para o número par.'
+      }},
+      { type: 'code', code: `import math
 
-# Compound interest formula: A = P * (1+r)^t
-principal = 10000
-amount = principal * math.pow(1.08, 5)
-print(f"After 5 years: \${amount:.2f}")` },
+print(math.ceil(4.1))    # 5  — always up
+print(math.floor(4.9))   # 4  — always down
+print(round(4.4))        # 4  — nearest
+print(round(4.5))        # 4  — tie goes to the even number
+print(round(5.5))        # 6  — even again` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'import math\n\nitems = 47\nper_box = 6\nprint(math.floor(items / per_box), "boxes")',
+        options: [
+          { en: '7 boxes — and 5 items are left with no box', pt: '7 caixas — e sobram 5 itens sem caixa' },
+          { en: '8 boxes — everything fits', pt: '8 caixas — tudo cabe' },
+          { en: '7.83 boxes', pt: '7,83 caixas' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: '47 / 6 is 7.83, and floor cuts it down to 7 — leaving 5 items with nowhere to go. Whenever the leftover still needs a container, you want ceil, which gives 8. This choice is the whole point of having three rounding functions.',
+          pt: '47 / 6 é 7,83, e floor corta para 7 — deixando 5 itens sem lugar. Sempre que a sobra ainda precisa de um recipiente, você quer ceil, que dá 8. Essa escolha é o motivo de existirem três funções de arredondamento.'
+        }
+      } },
+
+      { type: 'heading', content: { en: '🐍 Fundamentals 3 — growth over time', pt: '🐍 Fundamentos 3 — crescimento ao longo do tempo' } },
+      { type: 'text', content: {
+        en: 'Anything that grows by a percentage each period follows the same shape: start × (1 + rate) ** periods. Savings, a subscriber count, a population. math.pow does it, and so does Python\'s ** operator.',
+        pt: 'Tudo que cresce uma porcentagem por período segue a mesma forma: inicial × (1 + taxa) ** períodos. Poupança, número de assinantes, população. math.pow faz isso, e o operador ** do Python também.'
+      }},
+      { type: 'code', code: `import math
+
+start = 10000
+rate = 0.08          # 8% each year
+years = 5
+
+total = start * math.pow(1 + rate, years)
+print(f"After {years} years: {total:.2f}")   # 14693.28` },
+
+      { type: 'heading', content: { en: '🏗️ Real scenario 1 — how many vans for the round', pt: '🏗️ Cenário real 1 — quantas vans para a rota' } },
+      { type: 'text', content: {
+        en: 'A courier has 138 parcels and each van holds 40. Divide and you get 3.45 vans, which does not exist. The remainder still has to travel, so this is ceil every time.',
+        pt: 'Um entregador tem 138 encomendas e cada van leva 40. Dividindo dá 3,45 vans, que não existe. A sobra também precisa viajar, então aqui é ceil sempre.'
+      }},
+      { type: 'code', code: `import math
+
+parcels = 138
+per_van = 40
+
+vans = math.ceil(parcels / per_van)
+print(vans, "vans needed")     # 4, not 3` },
+
+      { type: 'heading', content: { en: '🏗️ Real scenario 2 — the area of a round table top', pt: '🏗️ Cenário real 2 — a área de um tampo de mesa redondo' } },
+      { type: 'text', content: {
+        en: 'A workshop charges by surface area. For a circular top the area is π × r², and the price follows from it. Rounding up at the end means the shop is never short.',
+        pt: 'Uma oficina cobra por área de superfície. Para um tampo circular a área é π × r², e o preço sai dela. Arredondar para cima no fim garante que a oficina nunca fique no prejuízo.'
+      }},
+      { type: 'code', code: `import math
+
+radius = 0.6                 # metres
+price_per_m2 = 150
+
+area = math.pi * radius ** 2
+price = math.ceil(area * price_per_m2)
+
+print(f"Area: {area:.2f} m2")
+print(f"Price: {price}")` },
+
+      { type: 'heading', content: { en: '⚠️ Common errors', pt: '⚠️ Erros comuns' } },
+      { type: 'text', content: {
+        en: '• Forgetting import math. Every name here needs the module.\n• Writing sqrt(9) instead of math.sqrt(9) — the module name is not optional.\n• Reaching for ceil when floor is meant, or the reverse. Ask: does the leftover still need a place?\n• Expecting round(4.5) to give 5. Python moves a .5 tie to the even number, so it gives 4.\n• math.sqrt() of a negative number raises ValueError — there is no real answer to give you.',
+        pt: '• Esquecer import math. Todo nome daqui precisa do módulo.\n• Escrever sqrt(9) em vez de math.sqrt(9) — o nome do módulo não é opcional.\n• Usar ceil quando queria floor, ou o contrário. Pergunte: a sobra ainda precisa de lugar?\n• Esperar que round(4.5) dê 5. O Python leva o empate .5 para o número par, então dá 4.\n• math.sqrt() de um número negativo gera ValueError — não existe resposta real para dar.'
+      }},
       { type: 'tip', content: {
-        en: '💡 ceil vs floor vs round:\n• ceil(4.1) = 5  (always UP)\n• floor(4.9) = 4  (always DOWN)\n• round(4.5) = 4  (banker\'s rounding)',
-        pt: '💡 ceil vs floor vs round:\n• ceil(4.1) = 5  (sempre PARA CIMA)\n• floor(4.9) = 4  (sempre PARA BAIXO)\n• round(4.5) = 4  (arredondamento bancário)'
+        en: '💡 Quick rule: containers and vehicles round UP, whole items you can afford round DOWN, measurements round to NEAREST.',
+        pt: '💡 Regra rápida: recipientes e veículos arredondam PARA CIMA, itens inteiros que cabem no orçamento PARA BAIXO, medidas para o MAIS PRÓXIMO.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recapitulando' } },
+      { type: 'text', content: {
+        en: 'import math unlocks the scientific keys.\nsqrt, pow and pi return decimals.\nceil goes up, floor goes down, round goes to the nearest with ties to the even number.\nGrowth over time is start * (1 + rate) ** periods.\nPicking the right rounding is a decision about the real world, not about maths.',
+        pt: 'import math libera as teclas científicas.\nsqrt, pow e pi devolvem decimais.\nceil sobe, floor desce, round vai ao mais próximo com empate para o par.\nCrescimento ao longo do tempo é inicial * (1 + taxa) ** períodos.\nEscolher o arredondamento certo é uma decisão sobre o mundo real, não sobre matemática.'
       }}
     ]
   },
+
   exercises: [
     {
       id: 'ex22_fill',
@@ -2804,25 +2897,25 @@ print(f"Rounded up: \${rounded}")`,
     { id: 'q22_4', question: { en: 'math.pow(3, 4) returns:', pt: 'math.pow(3, 4) retorna:' }, options: [{ en: '81.0', pt: '81.0' }, { en: '12.0', pt: '12.0' }, { en: '7.0', pt: '7.0' }, { en: '64.0', pt: '64.0' }], correctIndex: 0, explanation: { en: '3^4 = 3×3×3×3 = 81.0. Always float.', pt: '3^4 = 3×3×3×3 = 81.0. Sempre float.' } }
   ],
   exam: {
-    title: { en: 'Construction Math Report', pt: 'Relatório de Matemática de Construção' },
-    scenario: { en: 'Calculate areas and costs for 3 sites.', pt: 'Calcule áreas e custos para 3 obras.' },
-    requirements: { en: ['Rectangular: length×width', 'Circular: π×r²', 'Cost = area×$150, rounded UP', 'Print area + cost per site'], pt: ['Retangular: comprimento×largura', 'Circular: π×r²', 'Custo = área×R$150, arredondado CIMA', 'Imprima área + custo por obra'] },
+    title: { en: 'Flooring Quote Report', pt: 'Relatório de Orçamento de Piso' },
+    scenario: { en: 'Calculate floor areas and costs for 3 rooms.', pt: 'Calcule áreas de piso e custos para 3 ambientes.' },
+    requirements: { en: ['Rectangular: length×width', 'Circular: π×r²', 'Cost = area×$150, rounded UP', 'Print area + cost per room'], pt: ['Retangular: comprimento×largura', 'Circular: π×r²', 'Custo = área×R$150, arredondado CIMA', 'Imprima área + custo por ambiente'] },
     starterCode: `import math
 
-sites = [
-    {"name": "Warehouse", "type": "rect",   "a": 40, "b": 25},
-    {"name": "Tank",      "type": "circle", "a": 8,  "b": 0},
-    {"name": "Office",    "type": "rect",   "a": 30, "b": 15}
+rooms = [
+    {"name": "Studio",  "type": "rect",   "a": 40, "b": 25},
+    {"name": "Lounge",  "type": "circle", "a": 8,  "b": 0},
+    {"name": "Kitchen", "type": "rect",   "a": 30, "b": 15}
 ]
 
-for s in sites:
+for s in rooms:
     area = s["a"] * s["b"] if s["type"] == "rect" else math.pi * s["a"]**2
     cost = math.ceil(area * 150)
     print(f"{s['name']}: {area:.1f} m² → \${cost}")`,
     testCases: [
-      { id: 'tc22_1', description: { en: 'Warehouse 150000', pt: 'Warehouse 150000' }, inputs: [], checks: [{ type: 'contains', value: '150000' }], points: 30 },
-      { id: 'tc22_2', description: { en: 'Tank shown', pt: 'Tank mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Tank' }], points: 30 },
-      { id: 'tc22_3', description: { en: 'Office shown', pt: 'Office mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Office' }], points: 20 },
+      { id: 'tc22_1', description: { en: 'Studio area cost 150000', pt: 'Custo da área do Studio 150000' }, inputs: [], checks: [{ type: 'contains', value: '150000' }], points: 30 },
+      { id: 'tc22_2', description: { en: 'Lounge shown', pt: 'Lounge mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Lounge' }], points: 30 },
+      { id: 'tc22_3', description: { en: 'Kitchen shown', pt: 'Kitchen mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Kitchen' }], points: 20 },
       { id: 'tc22_4', description: { en: 'No errors', pt: 'Sem erros' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
     ]
   }
