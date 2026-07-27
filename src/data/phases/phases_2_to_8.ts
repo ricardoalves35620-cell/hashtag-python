@@ -9,7 +9,7 @@ export const phase2: Phase = {
   title: { en: 'Math & Operators', pt: 'Matemática e Operadores' },
   description: {
     en: 'Master all Python math operators through real subscription and project calculations.',
-    pt: 'Domine todos os operadores matemáticos com cálculos reais de assinaturas e projeto.'
+    pt: 'Domine todos os operadores matemáticos com cálculos reais de faturas e orçamentos.'
   },
   icon: '🧮',
   libraries: [],
@@ -79,10 +79,10 @@ print((10 + 20 + 30) / 3)   # ✅ 20.0 — correct average` },
         explanation: { en: 'Floor division drops the remainder instead of rounding, so 7 // 2 is 3, not 3.5 and not 4.', pt: 'A divisão inteira descarta o resto em vez de arredondar, então 7 // 2 é 3, não 3.5 nem 4.' }
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Full subscription refund calculation', pt: '🏗️ Cenário Real 1: Cálculo completo de pedido' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Freelance invoice release', pt: '🏗️ Cenário Real 1: Liberação de uma fatura freelance' } },
       { type: 'text', content: {
-        en: 'A real a damaged item order, step by step:\n🔸 Damage ordered: $5,230\n🔸 Discount: $250 (customer pays this part)\n🔸 cover rate: 80% of the remainder\n🔸 Company processing fee: 2% of refund\n\nThis is EXACTLY how reviewers calculate every day:',
-        pt: 'Um pedido real de item danificado, passo a passo:\n🔸 Dano reclamado: R$5.230\n🔸 Desconto: R$250 (cliente paga essa parte)\n🔸 taxa de cobertura: 80% do restante\n🔸 Taxa de processamento: 2% do pagamento\n\nÉ EXATAMENTE assim que revisores calculam todo dia:'
+        en: 'A real freelance invoice, step by step:\n🔸 Invoice total: $5,230\n🔸 Deposit already paid: $250\n🔸 Platform releases: 80% of the remainder\n🔸 Company processing fee: 2% of refund\n\nThis is EXACTLY how reviewers calculate every day:',
+        pt: 'Uma fatura freelance real, passo a passo:\n🔸 Total da fatura: R$5.230\n🔸 Depósito já pago: R$250\n🔸 Plataforma libera: 80% do restante\n🔸 Taxa de processamento: 2% do pagamento\n\nÉ EXATAMENTE assim que revisores calculam todo dia:'
       }},
       { type: 'code', code: `# Step-by-step subscription refund
 damage     = 5230
@@ -105,7 +105,7 @@ print("Processing fee:  $", fee)
 print("NET REFUND:      $", net_refund)` },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Project budget breakdown', pt: '🏗️ Cenário Real 2: Divisão de orçamento de projeto' } },
-      { type: 'code', code: `# $180,000 renovation budget split by category
+      { type: 'code', code: `# $180,000 event budget split by category
 budget = 180000
 
 materials = budget * 0.40    # 40% → 72000.0
@@ -121,8 +121,8 @@ print("Admin:", admin)
 # Sanity check: percentages must total 100%
 print("Check:", materials + labor + equipment + admin)  # 180000.0 ✅
 
-# How many $50 cement bags fit in the materials budget?
-print("Cement bags possible:", materials // 50)   # floor division!
+# How many $50 chairs fit in the equipment budget?
+print("Cartons bags possible:", materials // 50)   # floor division!
 print("Money left over: $", materials % 50)       # remainder!` },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
@@ -202,7 +202,7 @@ print(n, "** 2 =", n ** 2)`,
       title: { en: '🟡 Fill the Gap: Refund Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
       description: {
         en: 'Before you begin: A 2-step subscription refund calculation is almost done. Two operators are missing, replaced by ___. Fill in each blank with the correct operator symbol.\n\nBlank 1 — after_ded = damage ___ discount\n  → You are subtracting the discount from the damage amount.\n  → The operator for subtraction is: -\n  → Replace ___ with -\n  → Full line: after_ded = damage - discount\n  → Check: 8000 - 300 = 7700 ✓\n\nBlank 2 — refund = after_ded ___ 0.75\n  → You are applying 75% cover rate to the remainder.\n  → 75% of a number = multiply by 0.75\n  → The operator for multiplication is: *\n  → Replace ___ with *\n  → Full line: refund = after_ded * 0.75\n  → Check: 7700 × 0.75 = 5775.0 ✓\n\nAfter filling both blanks, click ▶ Run.\nExpected output:\nAfter discount: 7700\nFinal refund: 5775.0',
-        pt: 'Antes de começar: Um cálculo de pagamento em 2 etapas está quase pronto. Dois operadores estão faltando, substituídos por ___. Preencha cada lacuna com o símbolo correto.\n\nLacuna 1 — after_ded = damage ___ discount\n  → Você está subtraindo a desconto do valor do dano.\n  → O operador de subtração é: -\n  → Substitua ___ por -\n  → Linha completa: after_ded = damage - discount\n  → Verificação: 8000 - 300 = 7700 ✓\n\nLacuna 2 — refund = after_ded ___ 0.75\n  → Você está aplicando 75% de taxa de cobertura ao restante.\n  → 75% de um número = multiplicar por 0.75\n  → O operador de multiplicação é: *\n  → Substitua ___ por *\n  → Linha completa: refund = after_ded * 0.75\n  → Verificação: 7700 × 0.75 = 5775.0 ✓\n\nApós preencher as duas lacunas, clique em ▶ Executar.\nSaída esperada:\nAfter discount: 7700\nFinal refund: 5775.0'
+        pt: 'Antes de começar: Um cálculo de pagamento em 2 etapas está quase pronto. Dois operadores estão faltando, substituídos por ___. Preencha cada lacuna com o símbolo correto.\n\nLacuna 1 — after_ded = damage ___ discount\n  → Você está subtraindo a desconto do valor do dano.\n  → O operador de subtração é: -\n  → Substitua ___ por -\n  → Linha completa: after_ded = damage - discount\n  → Verificação: 8000 - 300 = 7700 ✓\n\nLacuna 2 — refund = after_ded ___ 0.75\n  → Você está aplicando 75% de a taxa de liberação ao restante.\n  → 75% de um número = multiplicar por 0.75\n  → O operador de multiplicação é: *\n  → Substitua ___ por *\n  → Linha completa: refund = after_ded * 0.75\n  → Verificação: 7700 × 0.75 = 5775.0 ✓\n\nApós preencher as duas lacunas, clique em ▶ Executar.\nSaída esperada:\nAfter discount: 7700\nFinal refund: 5775.0'
       },
       starterCode: `damage = 8000
 discount = 300
@@ -248,7 +248,7 @@ print("Final refund:", refund)`,
   exam: {
     title: { en: 'Multi-Site Budget Report', pt: 'Relatório de Orçamento Multi-Site' },
     scenario: {
-      en: 'You manage 4 renovation sites. The CFO needs the complete budget report: individual budgets, total, average, a 10% contingency reserve, and what remains after the reserve.',
+      en: 'You manage 4 event venues. The organiser needs the complete budget report: individual budgets, total, average, a 10% contingency reserve, and what remains after the reserve.',
       pt: 'Você gerencia 4 projetos. O CFO precisa do relatório completo: orçamentos individuais, total, média, reserva de contingência de 10% e o que resta após a reserva.'
     },
     requirements: {
@@ -325,7 +325,7 @@ print(type(order_amount))       # <class 'int'>`,
         pt: `# etiqueta = valor
 nome_cliente = "Alice Costa"   # str: texto precisa de aspas
 valor_pedido = 5230           # int: número inteiro
-taxa_taxa de cobertura = 0.80           # float: número decimal
+taxa_liberacao = 0.80           # float: número decimal
 aprovado = True                 # bool: True ou False, com inicial maiúscula
 
 # Use as variáveis pelo nome
@@ -333,7 +333,7 @@ print(nome_cliente)             # Alice Costa
 print(valor_pedido)           # 5230
 
 # Combine variáveis em cálculos
-indenizacao = valor_pedido * taxa_taxa de cobertura
+indenizacao = valor_pedido * taxa_liberacao
 print("reembolso:", indenizacao)  # reembolso: 4184.0
 
 # Consulte o tipo de uma variável
@@ -402,7 +402,7 @@ print(f"Active:  {plan_active}")` },
       { type: 'code', code: `# Project site: tracking daily material costs
 total_spent = 0                    # start the accumulator at zero
 
-# Monday: bought cement
+# Monday: bought cartons
 total_spent = total_spent + 960    # 0 + 960 = 960
 
 # Tuesday: bought steel
@@ -487,14 +487,14 @@ print(x == 5)   # x é igual a 5? → True`
       id: 'ex3_guided',
       title: { en: '🟢 Guided: Watch Variables Change', pt: '🟢 Guiado: Veja Variáveis Mudarem' },
       description: {
-        en: 'Step 1: Click Run. You will see 4 lines — a starting value and 3 updates.\n\nStep 2: "After cement: 960" — find the line total += 960. It added 960 to the starting 0.\n\nStep 3: "After steel: 2235" — the line total += 1275 added 1275 to 960. Check: 960 + 1275 = 2235. ✓\n\nStep 4: "After paint: 3035" — the line total += 800 added 800 to 2235. Check: 2235 + 800 = 3035. ✓\n\nStep 5: Add a 4th purchase. AFTER the last print line, add these two new lines:\n    total += 500\n    print("After tiles:", total)\n\nPredict the new total BEFORE running: 3035 + 500 = ___. Click Run to confirm.',
-        pt: 'Passo 1: Clique em Executar. Você verá 4 linhas — um valor inicial e 3 atualizações.\n\nPasso 2: "After cement: 960" — encontre a linha total += 960. Ela adicionou 960 ao 0 inicial.\n\nPasso 3: "After steel: 2235" — a linha total += 1275 adicionou 1275 a 960. Confira: 960 + 1275 = 2235. ✓\n\nPasso 4: "After paint: 3035" — a linha total += 800 adicionou 800 a 2235. Confira: 2235 + 800 = 3035. ✓\n\nPasso 5: Adicione uma 4ª compra. APÓS a última linha print, adicione estas duas linhas:\n    total += 500\n    print("After tiles:", total)\n\nPreveja o novo total ANTES de executar: 3035 + 500 = ___. Clique em Executar para confirmar.'
+        en: 'Step 1: Click Run. You will see 4 lines — a starting value and 3 updates.\n\nStep 2: "After cartons: 960" — find the line total += 960. It added 960 to the starting 0.\n\nStep 3: "After steel: 2235" — the line total += 1275 added 1275 to 960. Check: 960 + 1275 = 2235. ✓\n\nStep 4: "After paint: 3035" — the line total += 800 added 800 to 2235. Check: 2235 + 800 = 3035. ✓\n\nStep 5: Add a 4th purchase. AFTER the last print line, add these two new lines:\n    total += 500\n    print("After tiles:", total)\n\nPredict the new total BEFORE running: 3035 + 500 = ___. Click Run to confirm.',
+        pt: 'Passo 1: Clique em Executar. Você verá 4 linhas — um valor inicial e 3 atualizações.\n\nPasso 2: "After cartons: 960" — encontre a linha total += 960. Ela adicionou 960 ao 0 inicial.\n\nPasso 3: "After steel: 2235" — a linha total += 1275 adicionou 1275 a 960. Confira: 960 + 1275 = 2235. ✓\n\nPasso 4: "After paint: 3035" — a linha total += 800 adicionou 800 a 2235. Confira: 2235 + 800 = 3035. ✓\n\nPasso 5: Adicione uma 4ª compra. APÓS a última linha print, adicione estas duas linhas:\n    total += 500\n    print("After tiles:", total)\n\nPreveja o novo total ANTES de executar: 3035 + 500 = ___. Clique em Executar para confirmar.'
       },
       starterCode: `total = 0
 print("Start:", total)
 
 total += 960
-print("After cement:", total)
+print("After cartons:", total)
 
 total += 1275
 print("After steel:", total)
@@ -510,8 +510,8 @@ print("After paint:", total)`,
       id: 'ex3_fill',
       title: { en: '🟡 Fill the Gap: Client File', pt: '🟡 Preencha: Ficha de Cliente' },
       description: {
-        en: 'Before you begin: you are setting up a new subscription client file. Three values and one operator are missing.\n\nBlank 1 — client_name: Type any name between quotes. Example: "Maria"  Text always needs quotes.\n\nBlank 2 — client_age: Type any whole number. Example: 35  No quotes — it is a number, not text.\n\nBlank 3 — plan_active: Type True or False (capital first letter, no quotes). Subscription is active → type: True\n\nBlank 4 — the operator between monthly_fee and 12: Annual means 12 months. "Monthly multiplied by 12" uses: *\n\nExpected output with the example values (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True',
-        pt: 'Antes de começar: você está criando uma ficha de novo cliente de assinatura. Três valores e um operador estão faltando.\n\nBlank 1 — client_name: Digite qualquer nome entre aspas. Exemplo: "Maria"  Texto sempre precisa de aspas.\n\nBlank 2 — client_age: Digite qualquer número inteiro. Exemplo: 35  Sem aspas — é um número, não texto.\n\nBlank 3 — plan_active: Digite True ou False (inicial maiúscula, sem aspas). Assinatura está ativo → digite: True\n\nBlank 4 — o operador entre monthly_fee e 12: Anual significa 12 meses. "Mensal multiplicado por 12" usa: *\n\nSaída esperada com os valores de exemplo (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True'
+        en: 'Before you begin: you are setting up a new client file. Three values and one operator are missing.\n\nBlank 1 — client_name: Type any name between quotes. Example: "Maria"  Text always needs quotes.\n\nBlank 2 — client_age: Type any whole number. Example: 35  No quotes — it is a number, not text.\n\nBlank 3 — plan_active: Type True or False (capital first letter, no quotes). Subscription is active → type: True\n\nBlank 4 — the operator between monthly_fee and 12: Annual means 12 months. "Monthly multiplied by 12" uses: *\n\nExpected output with the example values (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True',
+        pt: 'Antes de começar: você está criando uma ficha de novo cliente. Três valores e um operador estão faltando.\n\nBlank 1 — client_name: Digite qualquer nome entre aspas. Exemplo: "Maria"  Texto sempre precisa de aspas.\n\nBlank 2 — client_age: Digite qualquer número inteiro. Exemplo: 35  Sem aspas — é um número, não texto.\n\nBlank 3 — plan_active: Digite True ou False (inicial maiúscula, sem aspas). Assinatura está ativo → digite: True\n\nBlank 4 — o operador entre monthly_fee e 12: Anual significa 12 meses. "Mensal multiplicado por 12" usa: *\n\nSaída esperada com os valores de exemplo (Maria, 35, True):\nClient: Maria, age 35\nAnnual: 5400\nActive: True'
       },
       starterCode: `client_name     = ___          # any name — text needs quotes!
 client_age      = ___          # any age — number, no quotes
@@ -706,7 +706,7 @@ print(f"reembolso: {indenizacao}")`
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Project estimate calculator', pt: '🏗️ Cenário Real 2: Calculadora de orçamento de projeto' } },
       { type: 'code', code: `# Interactive area & cost estimator
-print("=== RENOVATION ESTIMATE ===")
+print("=== FLOORING ESTIMATE ===")
 
 room    = input("Room name: ")
 width   = float(input("Width (m): "))     # float — meters have decimals!
@@ -824,7 +824,7 @@ print(f"Phone: {phone}")`,
     title: { en: 'Interactive Order System', pt: 'Sistema Interativo de Pedidos' },
     scenario: {
       en: 'Build the complete order intake: collect client data with proper types, calculate the refund with an 85% cover rate rate, and print a professional summary.',
-      pt: 'Construa a entrada completa de pedido: colete dados com tipos corretos, calcule o pagamento com taxa de cobertura de 85% e imprima um resumo profissional.'
+      pt: 'Construa a entrada completa de pedido: colete dados com tipos corretos, calcule o pagamento com taxa de uma taxa de 85% e imprima um resumo profissional.'
     },
     requirements: {
       en: [
@@ -1237,7 +1237,7 @@ export const phase6: Phase = {
       { type: 'heading', content: { en: '🌍 Uber prices 20 million rides a day with elif', pt: '🌍 O Uber precifica 20 milhões de corridas por dia com elif' } },
       { type: 'text', content: {
         en: 'Every Uber price is an elif chain:\n• Under 2km → base fare\n• 2–5km → standard rate\n• 5–15km → medium rate\n• Over 15km → long distance rate\n• Surge active? → multiply everything by 1.5x\n\nSubscription works the same: your fee is calculated through elif chains checking age brackets, order history tiers, and cover rate levels. Tax brackets? Also elif. Shipping costs? Elif. The whole pricing world runs on it.',
-        pt: 'Todo preço do Uber é uma cadeia de elif:\n• Menos de 2km → tarifa base\n• 2–5km → tarifa padrão\n• 5–15km → tarifa média\n• Mais de 15km → longa distância\n• Surge ativo? → multiplica tudo por 1,5x\n\nAssinaturas funcionam igual: seu taxa é calculado por cadeias elif verificando faixas de idade, histórico de pedidos e níveis de taxa de cobertura. Faixas de imposto? Também elif. Custos de frete? Elif. O mundo inteiro da precificação roda nisso.'
+        pt: 'Todo preço do Uber é uma cadeia de elif:\n• Menos de 2km → tarifa base\n• 2–5km → tarifa padrão\n• 5–15km → tarifa média\n• Mais de 15km → longa distância\n• Surge ativo? → multiplica tudo por 1,5x\n\nAssinaturas funcionam igual: seu taxa é calculado por cadeias elif verificando faixas de idade, histórico de pedidos e níveis de taxa de faixas de preço. Faixas de imposto? Também elif. Custos de frete? Elif. O mundo inteiro da precificação roda nisso.'
       }},
 
       { type: 'heading', content: { en: '🧩 The sorting conveyor belt', pt: '🧩 A esteira classificadora' } },
@@ -1315,9 +1315,9 @@ print(f"Assigned to: {team}")` },
         explanation: { en: 'Only one branch of an if/elif chain ever runs. 85 matches the B test first, so C is never checked.', pt: 'Só um ramo de uma cadeia if/elif roda. 85 satisfaz o teste do B primeiro, então o C nem é verificado.' }
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Subscription fee brackets', pt: '🏗️ Cenário Real 1: Faixas de taxa de assinatura' } },
-      { type: 'code', code: `# Age-based car subscription fee (real industry pattern)
-age = int(input("Driver age: "))
+      { type: 'heading', content: { en: '🏗️ Real Scenario 1: Cinema ticket price brackets', pt: '🏗️ Cenário Real 1: Faixas de preço de ingresso de cinema' } },
+      { type: 'code', code: `# Cinema ticket price by age
+age = int(input("Ticket holder age: "))
 base = 1000
 
 if age < 21:
@@ -1339,9 +1339,9 @@ else:
 print(f"Bracket: {bracket}")
 print(f"Annual fee: \${fee}")` },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Concrete strength grading', pt: '🏗️ Cenário Real 2: Classificação de resistência de concreto' } },
-      { type: 'code', code: `# Project QC: grade concrete by test strength (MPa)
-strength = float(input("Test strength (MPa): "))
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Battery health grading', pt: '🏗️ Cenário Real 2: Classificação de resistência de concreto' } },
+      { type: 'code', code: `# Device check: grade a phone battery by health percentage
+strength = float(input("Battery health (%): "))
 
 if strength >= 40:
     print("Grade: C40 — structural columns ✅")
@@ -1443,7 +1443,7 @@ else:
       title: { en: '🟡 Fill: Fee Brackets', pt: '🟡 Preencha: Faixas de Taxa' },
       description: {
         en: 'Before you begin: this code calculates a car subscription fee based on the driver\'s age. Three blanks to fill.\n\nBlank 1 — after "age" in the first if: the youngest bracket is "under 21 years". The operator is: <\nFull line: if age < 21:\n\nBlank 2 — after "age <" in the first elif: the next bracket covers ages "under 26". Fill the number: 26\nFull line: elif age < 26:\n\nBlank 3 — the last branch catches everyone not matched above (age 60 and older). This is the catch-all keyword: else\nFull line: else:\n\nTest with age = 25  → should print "Fee: 1600.0" (1000 × 1.6)\nTest with age = 30  → should print "Fee: 1000.0" (1000 × 1.0)\nTest with age = 70  → should print "Fee: 1500.0" (1000 × 1.5)',
-        pt: 'Antes de começar: este código calcula um taxa de assinatura de carro baseado na idade do motorista. Três espaços para preencher.\n\nBlank 1 — após "age" no primeiro if: o menor bracket é "abaixo de 21 anos". O operador é: <\nLinha completa: if age < 21:\n\nBlank 2 — após "age <" no primeiro elif: o próximo bracket cobre "abaixo de 26". Preencha o número: 26\nLinha completa: elif age < 26:\n\nBlank 3 — o último ramo captura todos não capturados acima (60 anos ou mais). A palavra-chave é: else\nLinha completa: else:\n\nTeste com age = 25  → deve imprimir "Fee: 1600.0" (1000 × 1,6)\nTeste com age = 30  → deve imprimir "Fee: 1000.0" (1000 × 1,0)\nTeste com age = 70  → deve imprimir "Fee: 1500.0" (1000 × 1,5)'
+        pt: 'Antes de começar: este código calcula um preço de ingresso baseado na idade da pessoa. Três espaços para preencher.\n\nBlank 1 — após "age" no primeiro if: o menor bracket é "abaixo de 21 anos". O operador é: <\nLinha completa: if age < 21:\n\nBlank 2 — após "age <" no primeiro elif: o próximo bracket cobre "abaixo de 26". Preencha o número: 26\nLinha completa: elif age < 26:\n\nBlank 3 — o último ramo captura todos não capturados acima (60 anos ou mais). A palavra-chave é: else\nLinha completa: else:\n\nTeste com age = 25  → deve imprimir "Fee: 1600.0" (1000 × 1,6)\nTeste com age = 30  → deve imprimir "Fee: 1000.0" (1000 × 1,0)\nTeste com age = 70  → deve imprimir "Fee: 1500.0" (1000 × 1,5)'
       },
       starterCode: `age = int(input("Age: "))
 base = 1000
@@ -1643,10 +1643,10 @@ print(f"Total de indenizações: \${total_indenizacoes}")
 print(f"reembolso média: \${total_indenizacoes / pendentes}")`
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Material stock countdown', pt: '🏗️ Cenário Real 2: Contagem regressiva de estoque' } },
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Stockroom countdown', pt: '🏗️ Cenário Real 2: Contagem regressiva de estoque' } },
       { type: 'code', code: {
-        en: `# Site warehouse: use cement until stock runs low
-stock = 47                     # bags in the warehouse
+        en: `# Cafe stockroom: use milk cartons until stock runs low
+stock = 47                     # cartons in the stockroom
 day = 1
 
 while stock >= 12:             # 12 bags are used per day
@@ -2020,9 +2020,9 @@ print(f"Pagamento total: R\${total}")
 print(f"Média: R\${total / len(danos):.2f}")`,
       } },
 
-      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Multi-site review round', pt: '🏗️ Cenário Real 2: Ronda de inspeção multi-projeto' } },
-      { type: 'code', code: `# Friday review: visit every active site
-sites = ["Warehouse A", "Tower B", "Mall C", "School D"]
+      { type: 'heading', content: { en: '🏗️ Real Scenario 2: Course progress round-up', pt: '🏗️ Cenário Real 2: Ronda de inspeção multi-projeto' } },
+      { type: 'code', code: `# Weekly check: review every course module
+modules = ["Basics", "Loops", "Files", "Projects"]
 progress = [85, 42, 97, 60]        # % complete, same order!
 
 for i in range(len(sites)):        # loop by INDEX to pair two lists
