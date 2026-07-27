@@ -61,9 +61,9 @@ describe('Learning Engine V2.8 advanced Python and transparent exam contracts', 
   it('accepts harmless company-name spacing while keeping the complete required name', () => {
     const phaseOne = ALL_PHASES.find(phase => phase.id === 1)!
     const check = phaseOne.exam.testCases.find(testCase => testCase.id === 'tc1_1')!.checks[0]
-    expect(checkText('ClaimPro Insurance', check)).toBe(true)
-    expect(checkText('Claim Pro Insurance', check)).toBe(true)
-    expect(checkText('CLAIM-PRO INSURANCE', check)).toBe(true)
+    expect(checkText('MusicBox', check)).toBe(true)
+    expect(checkText('Music Box', check)).toBe(true)
+    expect(checkText('MUSIC-BOX', check)).toBe(true)
     expect(checkText('Claim Pro', check)).toBe(false)
   })
 })

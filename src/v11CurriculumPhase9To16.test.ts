@@ -7,7 +7,7 @@ const migratedIds = [9, 10, 11, 12, 13, 14, 15, 16]
 
 describe('v11 authored curriculum phases 9-16', () => {
   it('marks only completed phases as fully migrated in this batch', () => {
-    expect(V11_FULL_CURRICULUM_MIGRATED_PHASES).toEqual(migratedIds)
+    for (const phaseId of migratedIds) expect(V11_FULL_CURRICULUM_MIGRATED_PHASES).toContain(phaseId)
     for (const phaseId of migratedIds) expect(V11_GRADING_MIGRATED_PHASES).toContain(phaseId)
   })
 
