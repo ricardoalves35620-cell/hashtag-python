@@ -1257,8 +1257,8 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "redact_record",
       "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Return a new dictionary with secret values replaced by ***.\"\"\"\n    pass",
-      "publicAfterCode": "print(redact_record({\"name\": \"Ana\", \"token\": \"abc\"}, {\"token\"})[\"token\"])",
-      "publicExpected": "***",
+      "publicAfterCode": "print(redact_record({\"name\": \"Ana\", \"token\": \"abc\"}, {\"token\"}))",
+      "publicExpected": "{'name': 'Ana', 'token': '***'}",
       "hiddenAfterCode": "original = {\"password\": \"p\", \"id\": 3}\nprint(redact_record(original, {\"password\"}))\nprint(original[\"password\"])",
       "hiddenExpected": "p",
       "requirements": [
@@ -1275,10 +1275,10 @@ const specs: ConceptPhaseSpec[] = [
     "exam": {
       "functionName": "redact_record",
       "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Do not mutate the source and support multiple secret fields.\"\"\"\n    pass",
-      "publicAfterCode": "print(redact_record({\"a\": 1, \"secret\": 2}, {\"secret\"})[\"secret\"])",
-      "publicExpected": "***",
-      "hiddenAfterCode": "print(redact_record({\"token\": \"x\", \"password\": \"y\"}, {\"token\", \"password\"})[\"password\"])",
-      "hiddenExpected": "***",
+      "publicAfterCode": "print(redact_record({\"a\": 1, \"secret\": 2}, {\"secret\"}))",
+      "publicExpected": "{'a': 1, 'secret': '***'}",
+      "hiddenAfterCode": "print(redact_record({\"token\": \"x\", \"password\": \"y\"}, {\"token\", \"password\"})[\"password\"] == \"***\")",
+      "hiddenExpected": "True",
       "requirements": [
         {
           "kind": "function",
