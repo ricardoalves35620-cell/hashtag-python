@@ -1151,6 +1151,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "normalize_response",
       "starterCode": "def normalize_response(status, payload):\n    \"\"\"Normalize success and error responses into one stable shape.\"\"\"\n    pass",
       "publicAfterCode": "print(normalize_response(201, {\"id\": 7}))",
@@ -1169,6 +1170,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
+      "checkType": "contains",
       "functionName": "normalize_response",
       "starterCode": "def normalize_response(status, payload):\n    \"\"\"Treat only 2xx as success and use unknown for missing error text.\"\"\"\n    pass",
       "publicAfterCode": "print(normalize_response(204, {}))",
@@ -1255,6 +1257,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "redact_record",
       "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Return a new dictionary with secret values replaced by ***.\"\"\"\n    pass",
       "publicAfterCode": "print(redact_record({\"name\": \"Ana\", \"token\": \"abc\"}, {\"token\"}))",
@@ -1273,6 +1276,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
+      "checkType": "contains",
       "functionName": "redact_record",
       "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Do not mutate the source and support multiple secret fields.\"\"\"\n    pass",
       "publicAfterCode": "print(redact_record({\"a\": 1, \"secret\": 2}, {\"secret\"}))",
@@ -1359,6 +1363,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "release_ready",
       "starterCode": "def release_ready(checks):\n    \"\"\"Require types, tests, security and build to be exactly True.\"\"\"\n    pass",
       "publicAfterCode": "print(release_ready({\"types\": True, \"tests\": True, \"security\": True, \"build\": True}))",
@@ -1459,6 +1464,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "process_orders",
       "starterCode": "def process_orders(orders, tax_rate):\n    \"\"\"Validate orders and return subtotal, tax and total.\"\"\"\n    pass",
       "publicAfterCode": "print(process_orders([{\"quantity\": 2, \"unit_price\": 10}], 0.13))",
@@ -1473,6 +1479,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
+      "checkType": "contains",
       "functionName": "process_orders",
       "starterCode": "def process_orders(orders, tax_rate):\n    \"\"\"Reject negative rates, quantities or prices and round money to 2 decimals.\"\"\"\n    pass",
       "publicAfterCode": "print(process_orders([{\"quantity\": 3, \"unit_price\": 2.5}], 0.1))",

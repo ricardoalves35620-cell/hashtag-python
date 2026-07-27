@@ -439,6 +439,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "parse_command",
       "starterCode": "def parse_command(args):\n    \"\"\"Return command and optional value; empty args means help.\"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    print(parse_command([]))",
       "publicAfterCode": "print(parse_command([\"report\", \"july\"]))",
@@ -457,6 +458,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
+      "checkType": "contains",
       "functionName": "parse_command",
       "starterCode": "def parse_command(args):\n    \"\"\"Normalize the command to lowercase and preserve one optional value.\"\"\"\n    pass\n\nif __name__ == \"__main__\":\n    print(parse_command([]))",
       "publicAfterCode": "print(parse_command([\"REPORT\", \"july\"]))",
@@ -1123,6 +1125,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "monthly_summary",
       "starterCode": "def monthly_summary(transactions):\n    \"\"\"Return income, expense and balance totals.\"\"\"\n    pass",
       "publicAfterCode": "print(monthly_summary([{\"kind\": \"income\", \"amount\": 100}, {\"kind\": \"expense\", \"amount\": 35}]))",
@@ -1137,6 +1140,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
+      "checkType": "contains",
       "functionName": "monthly_summary",
       "starterCode": "def monthly_summary(transactions):\n    \"\"\"Validate kind and non-negative amount, then return totals.\"\"\"\n    pass",
       "publicAfterCode": "print(monthly_summary([{\"kind\": \"income\", \"amount\": 200}, {\"kind\": \"expense\", \"amount\": 50}]))",

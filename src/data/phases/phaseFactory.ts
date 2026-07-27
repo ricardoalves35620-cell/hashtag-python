@@ -2,6 +2,10 @@ import type { Bilingual, CodeRequirement, Phase, PhaseStage, CurriculumTrack } f
 
 export interface ChallengeSpec {
   functionName: string
+  /** How the printed output is compared. 'equals' (the default) requires the whole
+   *  normalised output to match. Use 'contains' when the expected value is one field
+   *  of a larger printed structure — otherwise a correct solution is marked wrong. */
+  checkType?: 'equals' | 'contains'
   starterCode: string
   publicAfterCode: string
   publicExpected: string
@@ -48,13 +52,14 @@ function lines(items: string[]) {
 
 function makeTests(prefix: string, challenge: ChallengeSpec) {
   const requirements = challenge.requirements || [{ kind: 'function', value: challenge.functionName } as CodeRequirement]
+  const checkType = challenge.checkType || 'equals'
   return [
     {
       id: `${prefix}-public`,
       description: { en: 'Works for the visible professional scenario', pt: 'Funciona no cenário profissional visível' },
       expectedOutput: { en: challenge.publicExpected, pt: challenge.publicExpected },
       inputs: [],
-      checks: [{ type: 'equals' as const, value: challenge.publicExpected, target: 'test_output' as const, textMode: 'normalized' as const }],
+      checks: [{ type: checkType, value: challenge.publicExpected, target: 'test_output' as const, textMode: 'normalized' as const }],
       points: 50,
       afterCode: challenge.publicAfterCode,
       codeRequirements: requirements,
@@ -65,7 +70,7 @@ function makeTests(prefix: string, challenge: ChallengeSpec) {
       description: { en: 'Generalizes to a different hidden scenario', pt: 'Generaliza para um cenário oculto diferente' },
       expectedOutput: { en: challenge.hiddenExpected, pt: challenge.hiddenExpected },
       inputs: [],
-      checks: [{ type: 'equals' as const, value: challenge.hiddenExpected, target: 'test_output' as const, textMode: 'normalized' as const }],
+      checks: [{ type: checkType, value: challenge.hiddenExpected, target: 'test_output' as const, textMode: 'normalized' as const }],
       points: 50,
       afterCode: challenge.hiddenAfterCode,
       codeRequirements: requirements,

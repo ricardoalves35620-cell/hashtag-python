@@ -279,6 +279,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "clean_records",
       "starterCode": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Normalize status, coerce amount, remove invalid and duplicate rows, sort by amount.\"\"\"\n    pass",
       "publicAfterCode": "print(clean_records([{\"amount\": \"10\", \"status\": \" Open \"}, {\"amount\": \"bad\", \"status\": \"x\"}]))",
@@ -298,6 +299,7 @@ const specs: ConceptPhaseSpec[] = [
       "timeoutMs": 90000
     },
     "exam": {
+      "checkType": "contains",
       "functionName": "clean_records",
       "starterCode": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Return a list of cleaned records without changing the source list.\"\"\"\n    pass",
       "publicAfterCode": "source=[{\"amount\": \"5\", \"status\": \" OPEN \"}]\nprint(clean_records(source), source)",
@@ -1011,6 +1013,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "build_vocabulary",
       "starterCode": "def build_vocabulary(texts):\n    \"\"\"Return <unk>:0 plus sorted unique lowercase whitespace tokens.\"\"\"\n    pass",
       "publicAfterCode": "print(build_vocabulary([\"Python local\", \"IA local\"]))",
@@ -1029,6 +1032,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "exam": {
+      "checkType": "contains",
       "functionName": "build_vocabulary",
       "starterCode": "def build_vocabulary(texts):\n    \"\"\"Use deterministic IDs independent of input order.\"\"\"\n    pass",
       "publicAfterCode": "print(build_vocabulary([\"b a\", \"a c\"]))",
@@ -1557,6 +1561,7 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
+      "checkType": "contains",
       "functionName": "answer_with_sources",
       "starterCode": "def answer_with_sources(question, passages):\n    \"\"\"Return up to two overlapping passages and their source IDs, or insufficient evidence.\"\"\"\n    pass",
       "publicAfterCode": "print(answer_with_sources(\"song title\", [{\"text\": \"song title is Bohemian Rhapsody\", \"source\": \"p1\"}]))",
