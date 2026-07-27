@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 import VSCodeBlock from './VSCodeBlock'
 import GlossaryText from './glossary/GlossaryText'
 import LearningCallout from './learning/LearningCallout'
 import type { LessonBlock as LessonBlockType, LessonCheckpoint, Lang } from '../data/types'
 import { resolveLocalizedCode } from '../lib/localization'
-import { personalize } from '../lib/learnerProfile'
+import { personalize, subscribeLearnerProfile, getLearnerProfileVersion } from '../lib/learnerProfile'
 import { shuffledIndices } from '../lib/assessmentIntegrity'
 
 interface Props {
@@ -50,6 +50,7 @@ function Checkpoint({ checkpoint, lang }: { checkpoint: LessonCheckpoint; lang: 
     () => shuffledIndices(checkpoint.options.length, 1, checkpoint.code),
     [checkpoint],
   )
+  useLearnerProfileVersion()
   const t = (b: { en: string; pt: string } | undefined) => personalize(b?.[lang] || b?.en || '')
 
   const prompt = checkpoint.question
@@ -110,7 +111,13 @@ function Checkpoint({ checkpoint, lang }: { checkpoint: LessonCheckpoint; lang: 
   )
 }
 
+/** Re-renders when the learner profile hydrates from the cloud or changes elsewhere. */
+export function useLearnerProfileVersion(): number {
+  return useSyncExternalStore(subscribeLearnerProfile, getLearnerProfileVersion, getLearnerProfileVersion)
+}
+
 export default function LessonBlock({ block, lang }: Props) {
+  useLearnerProfileVersion()
   const t = (b: { en: string; pt: string } | undefined) => personalize(b?.[lang] || b?.en || '')
 
   if (block.type === 'heading') {

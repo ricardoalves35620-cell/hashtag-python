@@ -14,7 +14,10 @@
  * The second rule is what makes this app-wide without editing 69 files.
  */
 
+import { getSupabase } from './supabase'
+
 const STORAGE_KEY = 'hp_learner_profile'
+const TABLE = 'learner_profiles'
 
 export interface LearnerProfile {
   name: string
@@ -70,15 +73,103 @@ export function loadLearnerProfile(): LearnerProfile {
 
 export function saveLearnerProfile(patch: Partial<LearnerProfile>): LearnerProfile {
   const next = sanitizeProfile({ ...loadLearnerProfile(), ...patch })
-  cached = next
-  if (typeof localStorage !== 'undefined') {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-    } catch {
-      // Storage full or blocked. Personalisation is cosmetic, so carry on.
-    }
-  }
+  writeLocal(next)
+  notify()
+  void pushToCloud(next)
   return next
+}
+
+function writeLocal(profile: LearnerProfile) {
+  cached = profile
+  if (typeof localStorage === 'undefined') return
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(profile))
+  } catch {
+    // Storage full or blocked. The cloud copy is the source of truth anyway.
+  }
+}
+
+// ── Cloud sync ───────────────────────────────────────────────────────────────
+// personalize() is called during render, so it has to stay synchronous. The cloud
+// row is the source of truth; localStorage is a cache hydrated on sign-in and
+// written through on change.
+
+async function pushToCloud(profile: LearnerProfile) {
+  try {
+    const supabase = getSupabase()
+    const { data } = await supabase.auth.getUser()
+    const userId = data.user?.id
+    if (!userId) return
+    await supabase.from(TABLE).upsert({
+      user_id: userId,
+      display_name: profile.name,
+      folder_name: profile.folder === DEFAULT_PROFILE.folder ? '' : profile.folder,
+      file_name: profile.file === DEFAULT_PROFILE.file ? '' : profile.file,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id' })
+  } catch {
+    // Offline or signed out. The local copy still works and syncs on the next save.
+  }
+}
+
+/** Pulls the signed-in learner's profile and refreshes the cache. Safe to call often. */
+export async function hydrateLearnerProfile(): Promise<LearnerProfile> {
+  try {
+    const supabase = getSupabase()
+    const { data: auth } = await supabase.auth.getUser()
+    const userId = auth.user?.id
+    if (!userId) return loadLearnerProfile()
+
+    const { data, error } = await supabase
+      .from(TABLE)
+      .select('display_name, folder_name, file_name')
+      .eq('user_id', userId)
+      .maybeSingle()
+    if (error || !data) return loadLearnerProfile()
+
+    const next = sanitizeProfile({
+      name: data.display_name || '',
+      folder: data.folder_name || DEFAULT_PROFILE.folder,
+      file: data.file_name || DEFAULT_PROFILE.file,
+    })
+    writeLocal(next)
+    notify()
+    return next
+  } catch {
+    return loadLearnerProfile()
+  }
+}
+
+// ── Change notification ──────────────────────────────────────────────────────
+// Components read the profile synchronously, so they need telling when hydration
+// finishes or another device's value arrives.
+
+let version = 0
+const listeners = new Set<() => void>()
+
+function notify() {
+  version += 1
+  listeners.forEach(listener => listener())
+}
+
+export function subscribeLearnerProfile(listener: () => void): () => void {
+  listeners.add(listener)
+  return () => { listeners.delete(listener) }
+}
+
+export function getLearnerProfileVersion(): number {
+  return version
+}
+
+// Hydrate once at startup, and again whenever the session changes, so signing in
+// on a second device picks up the names chosen on the first.
+if (typeof window !== 'undefined') {
+  void hydrateLearnerProfile()
+  try {
+    getSupabase().auth.onAuthStateChange(() => { void hydrateLearnerProfile() })
+  } catch {
+    // Supabase not configured in this environment.
+  }
 }
 
 /** Called by resetLearningProgress so a reset really does start over. */

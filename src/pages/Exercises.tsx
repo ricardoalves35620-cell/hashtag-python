@@ -21,6 +21,7 @@ import { scrollToTop } from '../lib/scroll'
 import { getExercisePedagogy } from '../lib/pedagogy'
 import { resolveLocalizedCode } from '../lib/localization'
 import { personalize } from '../lib/learnerProfile'
+import { useLearnerProfileVersion } from '../components/LessonBlock'
 import { getPrimaryExerciseInputs } from '../lib/exerciseContract'
 
 interface AttemptView {
@@ -33,6 +34,7 @@ interface AttemptView {
 }
 
 export default function Exercises() {
+  useLearnerProfileVersion()
   const { id } = useParams()
   const navigate = useNavigate()
   const { lang, learnerId, user, refreshProgress, recordLearningAttempt } = useApp()
