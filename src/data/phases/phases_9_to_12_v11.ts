@@ -253,8 +253,8 @@ for receita in receitas:
       ),
       heading('🏗️ Real scenario 2 — construction material grid', '🏗️ Cenário real 2 — grade de materiais da construção'),
       text(
-        'A site stores deliveries as [material, expected, received]. The program reports shortages without modifying the delivery sheet. Negative received quantities are invalid and should be rejected before the shortage is calculated. This adds a professional boundary: data structures do not remove the need for validation.',
-        'Uma obra armazena entregas como [material, esperado, recebido]. O programa informa faltas sem alterar a planilha de entrega. Quantidades recebidas negativas são inválidas e precisam ser rejeitadas antes do cálculo. Isso adiciona uma fronteira profissional: estruturas de dados não eliminam a necessidade de validação.',
+        'A library stores returns as [title, expected, received]. The program reports missing copies without modifying the returns sheet. Negative received quantities are invalid and should be rejected before the shortage is calculated. This adds a professional boundary: data structures do not remove the need for validation.',
+        'Uma biblioteca guarda devoluções como [titulo, esperado, recebido]. O programa informa faltas sem alterar a planilha de devoluções. Quantidades recebidas negativas são inválidas e precisam ser rejeitadas antes do cálculo. Isso adiciona uma fronteira profissional: estruturas de dados não eliminam a necessidade de validação.',
       ),
       code(
         `deliveries = [
@@ -348,8 +348,8 @@ for material, esperado, recebido in entregas:
     exercise(
       'p9-zero-approved-total',
       b('🔴 From scratch — calculate from structured rows', '🔴 Do zero — calcule com linhas estruturadas'),
-      b('Create approved_total(rows, deductible). Rows use [name, amount, status]. Sum max(amount - deductible, 0) only for approved rows.', 'Crie approved_total(rows, deductible). As linhas usam [nome, valor, status]. Some max(valor - franquia, 0) apenas para linhas aprovadas.'),
-      `def approved_total(rows, deductible):
+      b('A ticket resale board pays each seller the ticket price minus a fixed platform fee. Create approved_total(rows, platform_fee). Rows use [name, amount, status]. Sum max(amount - platform_fee, 0) only for approved rows.', 'Um quadro de revenda de ingressos paga a cada vendedor o preço do ingresso menos uma taxa fixa da plataforma. Crie approved_total(rows, platform_fee). As linhas usam [nome, valor, status]. Some max(valor - platform_fee, 0) apenas para linhas aprovadas.'),
+      `def approved_total(rows, platform_fee):
     # Write the complete solution.
     pass`,
       b('7700', '7700'),
@@ -364,8 +364,8 @@ for material, esperado, recebido in entregas:
       'independent',
       b('Combine row unpacking, filtering and accumulation.', 'Combinar desempacotamento, filtro e acumulação.'),
       b('Calculating totals from compact imported records.', 'Cálculo de totais a partir de registros compactos importados.'),
-      { en: ['Uses every parameter', 'Filters by status', 'Never adds a negative payout'], pt: ['Usa todos os parâmetros', 'Filtra pelo status', 'Nunca soma pagamento negativo'] },
-      { en: ['Subtracting deductible from pending rows', 'Returning after the first row', 'Hardcoding 7700'], pt: ['Subtrair franquia de linhas pendentes', 'Retornar após a primeira linha', 'Fixar 7700 no código'] },
+      { en: ['Uses every parameter', 'Filters by status', 'Never adds a negative amount'], pt: ['Usa todos os parâmetros', 'Filtra pelo status', 'Nunca soma valor negativo'] },
+      { en: ['Subtracting the fee from pending rows', 'Returning after the first row', 'Hardcoding 7700'], pt: ['Subtrair a taxa de linhas pendentes', 'Retornar após a primeira linha', 'Fixar 7700 no código'] },
     ),
     exercise(
       'p9-transfer',
@@ -941,34 +941,34 @@ for estudante in estudantes:
 
 print(relatorio)`,
       ),
-      heading('🏗️ Real scenario 2 — insurance intake queue', '🏗️ Cenário real 2 — fila de entrada de seguros'),
+      heading('🏗️ Real scenario 2 — bug tracker triage queue', '🏗️ Cenário real 2 — fila de triagem de um rastreador de bugs'),
       text(
-        'An intake queue contains administrative claim records. The program selects open high-priority records and creates a small operational view. The new list should not expose unnecessary fields. This is also a security habit: return only the information the next step needs.',
-        'Uma fila de entrada contém registros administrativos de sinistros. O programa seleciona registros abertos de alta prioridade e cria uma pequena visão operacional. A nova lista não deve expor campos desnecessários. Isso também é hábito de segurança: retorne apenas a informação necessária para a próxima etapa.',
+        'A bug tracker holds one record per reported issue. The program selects open high-priority issues and creates a small triage view. The new list should not expose unnecessary fields. This is also a security habit: return only the information the next step needs.',
+        'Um rastreador de bugs guarda um registro por problema relatado. O programa seleciona problemas abertos de alta prioridade e cria uma pequena visão de triagem. A nova lista não deve expor campos desnecessários. Isso também é hábito de segurança: retorne apenas a informação necessária para a próxima etapa.',
       ),
       code(
-        `claims = [
-    {"id": 101, "client": "Ana", "status": "open", "priority": 3, "notes": "..."},
-    {"id": 102, "client": "Beto", "status": "closed", "priority": 3, "notes": "..."},
-    {"id": 103, "client": "Caio", "status": "open", "priority": 1, "notes": "..."},
+        `issues = [
+    {"id": 101, "reporter": "Ana", "status": "open", "priority": 3, "notes": "..."},
+    {"id": 102, "reporter": "Beto", "status": "closed", "priority": 3, "notes": "..."},
+    {"id": 103, "reporter": "Caio", "status": "open", "priority": 1, "notes": "..."},
 ]
 
 queue = []
-for claim in claims:
-    if claim["status"] == "open" and claim["priority"] >= 3:
-        queue.append({"id": claim["id"], "client": claim["client"]})
+for issue in issues:
+    if issue["status"] == "open" and issue["priority"] >= 3:
+        queue.append({"id": issue["id"], "reporter": issue["reporter"]})
 
 print(queue)`,
-        `sinistros = [
-    {"id": 101, "cliente": "Ana", "status": "aberto", "prioridade": 3, "notas": "..."},
-    {"id": 102, "cliente": "Beto", "status": "fechado", "prioridade": 3, "notas": "..."},
-    {"id": 103, "cliente": "Caio", "status": "aberto", "prioridade": 1, "notas": "..."},
+        `tarefas = [
+    {"id": 101, "autor": "Ana", "status": "aberto", "prioridade": 3, "notas": "..."},
+    {"id": 102, "autor": "Beto", "status": "fechado", "prioridade": 3, "notas": "..."},
+    {"id": 103, "autor": "Caio", "status": "aberto", "prioridade": 1, "notas": "..."},
 ]
 
 fila = []
-for sinistro in sinistros:
-    if sinistro["status"] == "aberto" and sinistro["prioridade"] >= 3:
-        fila.append({"id": sinistro["id"], "cliente": sinistro["cliente"]})
+for tarefa in tarefas:
+    if tarefa["status"] == "aberto" and tarefa["prioridade"] >= 3:
+        fila.append({"id": tarefa["id"], "autor": tarefa["autor"]})
 
 print(fila)`,
       ),
