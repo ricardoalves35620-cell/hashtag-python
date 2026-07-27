@@ -181,7 +181,7 @@ export default function Exercises() {
   })[lang], [lang])
 
   const clearResult = () => {
-    setValidated(previous => ({ ...previous, [exercise.id]: false }))
+    setValidated(previous => ({ ...previous, [exercise.id]: previous[exercise.id] || false }))
     setValidationMessage('')
     setValidationChecks(previous => ({ ...previous, [exercise.id]: [] }))
     setErrorExplanation(null)
@@ -210,14 +210,14 @@ export default function Exercises() {
       const grade = await gradeExercise(exercise, phase.id, lang, codes[exercise.id] ?? resolveLocalizedCode(exercise.starterCode, lang), inputs)
       setOutput(grade.output || (grade.error ? '' : t.noOutput))
       setValidationChecks(previous => ({ ...previous, [exercise.id]: grade.checks }))
-      setValidated(previous => ({ ...previous, [exercise.id]: grade.passed }))
+      setValidated(previous => ({ ...previous, [exercise.id]: previous[exercise.id] || grade.passed }))
       if (grade.passed && learnerId) saveCompletedExercise(learnerId, phase.id, exercise.id)
       if (isFirstExercise && !observationRuns[exercise.id]) {
         setObservationRuns(previous => ({ ...previous, [exercise.id]: true }))
-        setValidated(previous => ({ ...previous, [exercise.id]: false }))
+        setValidated(previous => ({ ...previous, [exercise.id]: previous[exercise.id] || false }))
         setValidationMessage(t.observeDone)
       } else if (isFirstExercise && !codeChanged) {
-        setValidated(previous => ({ ...previous, [exercise.id]: false }))
+        setValidated(previous => ({ ...previous, [exercise.id]: previous[exercise.id] || false }))
         setValidationMessage(t.notChangedYet)
       } else {
         setValidationMessage(grade.message)
@@ -242,7 +242,7 @@ export default function Exercises() {
       }
     } catch (error) {
       setOutput(`❌ ${String(error)}`)
-      setValidated(previous => ({ ...previous, [exercise.id]: false }))
+      setValidated(previous => ({ ...previous, [exercise.id]: previous[exercise.id] || false }))
       setValidationChecks(previous => ({ ...previous, [exercise.id]: [] }))
     } finally {
       setRunning(false)

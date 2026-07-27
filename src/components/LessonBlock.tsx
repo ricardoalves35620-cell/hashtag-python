@@ -98,10 +98,9 @@ function Checkpoint({ checkpoint, lang }: { checkpoint: LessonCheckpoint; lang: 
               key={index}
               type="button"
               data-testid="checkpoint-option"
-              disabled={answered}
               onClick={() => setChosen(index)}
               className="w-full text-left rounded-xl px-3 py-2 text-sm"
-              style={{ background, border: `1px solid ${border}`, color, cursor: answered ? 'default' : 'pointer' }}
+              style={{ background, border: `1px solid ${border}`, color, cursor: 'pointer' }}
             >
               <code>{t(option)}</code>
             </button>
