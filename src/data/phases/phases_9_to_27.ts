@@ -3416,67 +3416,172 @@ export const phase25: Phase = {
   lesson: {
     title: { en: 'CRUD: How All Apps Manage Data', pt: 'CRUD: Como Todo App Gerencia Dados' },
     blocks: [
-      { type: 'heading', content: { en: '🌍 Every app you use is a CRUD system', pt: '🌍 Todo app que você usa é um sistema CRUD' } },
+      { type: 'heading', content: { en: '🌍 Four verbs, and almost nothing else', pt: '🌍 Quatro verbos, e quase nada mais' } },
       { type: 'text', content: {
-        en: 'WhatsApp: Create message, Read chat, Update status, Delete message.\nNetflix: Create account, Read library, Update watchlist, Delete history.\n\nCRUD = the 4 operations behind every app ever built.',
-        pt: 'WhatsApp: Criar mensagem, Ler chat, Atualizar status, Deletar mensagem.\nNetflix: Criar conta, Ler biblioteca, Atualizar lista, Deletar histórico.\n\nCRUD = as 4 operações por trás de todo app já construído.'
+        en: 'Send a message, read the chat, edit what you sent, delete it. Add a song to a playlist, look at the playlist, rename it, remove a track.\n\nStrip away the design and nearly every app you use does the same four things to stored data: create, read, update, delete. The four together are called CRUD, and they are the shape of most software written in the world.\n\nYou already know the pieces — a list, a dictionary, a loop, a function. What changes here is that they stop being exercises and start being a system.',
+        pt: 'Enviar uma mensagem, ler a conversa, editar o que você mandou, apagar. Adicionar uma música a uma playlist, ver a playlist, renomear, remover uma faixa.\n\nTire o design e quase todo app que você usa faz as mesmas quatro coisas com dados guardados: criar, ler, atualizar, apagar. As quatro juntas se chamam CRUD, e são a forma da maior parte do software escrito no mundo.\n\nVocê já conhece as peças — lista, dicionário, laço, função. O que muda aqui é que elas deixam de ser exercícios e viram um sistema.'
       }},
-      { type: 'heading', content: { en: '🆚 Messy vs Structured', pt: '🆚 Bagunçado vs Estruturado' } },
-      { type: 'code', code: {
-        en: `# ❌ MESSY: scattered data manipulation
-claims = []
-claims.append({"id": 1, "client": "Alice"})   # create
-print(claims[0])                                # read
-claims[0]["client"] = "Alicia"                  # update
-claims.pop(0)                                   # delete`,
-        pt: `# ❌ BAGUNÇADO: manipulação de dados espalhada
-sinistros = []
-sinistros.append({"id": 1, "cliente": "Alice"})   # criar
-print(sinistros[0])                                # ler
-sinistros[0]["cliente"] = "Alicia"                  # atualizar
-sinistros.pop(0)                                     # excluir`
-      } },
-      { type: 'code', code: `# ✅ CLEAN: named CRUD functions
-def create(db, client, damage):
-    db.append({"id": len(db)+1, "client": client, "damage": damage})
+      { type: 'heading', content: { en: '🧩 A filing cabinet with four actions', pt: '🧩 Um arquivo com quatro ações' } },
+      { type: 'text', content: {
+        en: 'A drawer of numbered folders. You can add a folder, look one up, change what is inside, or take one out. There is no fifth thing you can do to a filing cabinet, and there is no fifth thing most programs do to data.\n\nThe id on each folder is what makes the other three actions possible. Without it you can only ever say "the third one", and that changes the moment somebody removes a folder.',
+        pt: 'Uma gaveta de pastas numeradas. Você pode adicionar uma pasta, procurar uma, mudar o que tem dentro, ou tirar uma fora. Não existe uma quinta coisa a fazer com um arquivo, e não existe uma quinta coisa que a maioria dos programas faz com dados.\n\nO id em cada pasta é o que torna as outras três ações possíveis. Sem ele você só consegue dizer "a terceira", e isso muda no instante em que alguém tira uma pasta.'
+      }},
+
+      { type: 'heading', content: { en: '🆚 Scattered versus named', pt: '🆚 Espalhado versus nomeado' } },
+      { type: 'text', content: {
+        en: 'Both versions do the same four operations. The first spreads them through the program, so changing how a record is stored means hunting every line that touches it. The second gives each operation a name and one home.',
+        pt: 'As duas versões fazem as mesmas quatro operações. A primeira as espalha pelo programa, então mudar como um registro é guardado significa caçar cada linha que mexe nele. A segunda dá a cada operação um nome e um lugar só.'
+      }},
+      { type: 'code', code: `# Scattered: works today, painful tomorrow
+books = []
+books.append({"id": 1, "title": "Dune"})   # create
+print(books[0])                            # read
+books[0]["title"] = "Dune (1965)"          # update
+books.pop(0)                               # delete` },
+      { type: 'code', code: `# Named: each operation has one place to live
+def create(db, title):
+    db.append({"id": len(db) + 1, "title": title})
 
 def read_all(db):
-    for c in db: print(f"#{c['id']} {c['client']} \${c['damage']}")
+    for row in db:
+        print(f"#{row['id']} {row['title']}")
 
-def update(db, cid, new_damage):
-    for c in db:
-        if c["id"] == cid: c["damage"] = new_damage; return True
-    return False
+def update(db, row_id, title):
+    for row in db:
+        if row["id"] == row_id:
+            row["title"] = title
+            return True
+    return False            # nothing matched — say so
 
-def delete(db, cid):
-    db[:] = [c for c in db if c["id"] != cid]
+def delete(db, row_id):
+    db[:] = [row for row in db if row["id"] != row_id]
 
 db = []
-create(db, "Alice", 5230)
-create(db, "Bob",   1200)
-update(db, 1, 6000)
+create(db, "Dune")
+create(db, "Solaris")
+update(db, 1, "Dune (1965)")
 delete(db, 2)
-read_all(db)` }
+read_all(db)                # #1 Dune (1965)` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'def delete(db, row_id):\n    db = [row for row in db if row["id"] != row_id]\n\nbooks = [{"id": 1}, {"id": 2}]\ndelete(books, 1)\nprint(len(books))',
+        options: [
+          { en: '2 — nothing was deleted', pt: '2 — nada foi apagado' },
+          { en: '1 — the row was deleted', pt: '1 — a linha foi apagada' },
+          { en: '0 — everything was deleted', pt: '0 — tudo foi apagado' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'db = [...] builds a NEW list and points the local name at it. The caller\'s list is untouched, so the delete silently does nothing. db[:] = [...] replaces the contents of the existing list, which is what the caller can see.',
+          pt: 'db = [...] cria uma lista NOVA e aponta o nome local para ela. A lista de quem chamou não muda, então o delete não faz nada em silêncio. db[:] = [...] substitui o conteúdo da lista existente, que é o que quem chamou enxerga.'
+        }
+      } },
+
+      { type: 'heading', content: { en: '🐍 Create — and where the id comes from', pt: '🐍 Create — e de onde vem o id' } },
+      { type: 'text', content: {
+        en: 'Using len(db) + 1 as the next id is fine while nothing is ever deleted, and wrong the moment something is. Delete row 2 of three and the next create hands out id 3 again — now two rows share it.\n\nA counter that only ever goes up avoids that.',
+        pt: 'Usar len(db) + 1 como próximo id funciona enquanto nada é apagado, e quebra no instante em que algo é. Apague a linha 2 de três e o próximo create devolve o id 3 de novo — agora duas linhas têm o mesmo.\n\nUm contador que só cresce evita isso.'
+      }},
+      { type: 'code', code: `next_id = 1
+
+def create(db, title):
+    global next_id
+    db.append({"id": next_id, "title": title})
+    next_id += 1
+    return next_id - 1` },
+
+      { type: 'heading', content: { en: '🐍 Read — one, or many', pt: '🐍 Read — um, ou vários' } },
+      { type: 'text', content: {
+        en: 'Reading everything is a loop. Reading one is a search, and a search can fail — so decide now what "not found" looks like. Returning None is the usual answer, and the caller has to check it.',
+        pt: 'Ler tudo é um laço. Ler um é uma busca, e uma busca pode falhar — então decida agora como é o "não encontrado". Devolver None é a resposta usual, e quem chamou precisa verificar.'
+      }},
+      { type: 'code', code: `def find(db, row_id):
+    for row in db:
+        if row["id"] == row_id:
+            return row
+    return None              # explicit: nothing matched
+
+row = find(db, 99)
+if row is None:
+    print("No record with that id.")
+else:
+    print(row["title"])` },
+      { type: 'checkpoint', checkpoint: {
+        code: 'def find(db, row_id):\n    for row in db:\n        if row["id"] == row_id:\n            return row\n    return None\n\nbooks = [{"id": 1, "title": "Dune"}]\nprint(find(books, 99)["title"])',
+        options: [
+          { en: 'TypeError', pt: 'TypeError' },
+          { en: 'None', pt: 'None' },
+          { en: 'An empty line', pt: 'Uma linha vazia' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'find returns None, and None has no ["title"] — so Python raises TypeError. Returning None is correct; using the result without checking it is the mistake. Check first: if row is None.',
+          pt: 'find devolve None, e None não tem ["title"] — então o Python gera TypeError. Devolver None está certo; usar o resultado sem verificar é o erro. Verifique antes: if row is None.'
+        }
+      } },
+
+      { type: 'heading', content: { en: '🐍 Update and Delete — report what happened', pt: '🐍 Update e Delete — relate o que aconteceu' } },
+      { type: 'text', content: {
+        en: 'Both can be asked to act on something that is not there. Silence is the worst answer: the caller believes it worked. Return True or False, or a count, so the program above can react.',
+        pt: 'Os dois podem ser chamados para agir sobre algo que não existe. O silêncio é a pior resposta: quem chamou acredita que funcionou. Devolva True ou False, ou uma contagem, para o programa acima poder reagir.'
+      }},
+      { type: 'code', code: `def update(db, row_id, title):
+    row = find(db, row_id)
+    if row is None:
+        return False
+    row["title"] = title
+    return True
+
+def delete(db, row_id):
+    before = len(db)
+    db[:] = [row for row in db if row["id"] != row_id]
+    return before - len(db)      # how many were removed
+
+if not update(db, 99, "New title"):
+    print("Nothing to update.")
+print(delete(db, 99), "rows removed")` },
+
+      { type: 'heading', content: { en: '🏗️ Putting it together', pt: '🏗️ Juntando tudo' } },
+      { type: 'text', content: {
+        en: 'A working CRUD module is five short functions and one list:\n1. create — add a record and give it a stable id\n2. find — one record, or None\n3. read_all — every record\n4. update — change one, report whether it existed\n5. delete — remove one, report how many went\n\nWrite find first. Update and delete both use it, and a search you trust makes the other two three lines each.',
+        pt: 'Um módulo CRUD funcionando são cinco funções curtas e uma lista:\n1. create — adiciona um registro e dá a ele um id estável\n2. find — um registro, ou None\n3. read_all — todos os registros\n4. update — altera um e relata se ele existia\n5. delete — remove um e relata quantos saíram\n\nEscreva find primeiro. Update e delete usam ele, e uma busca confiável deixa os outros dois com três linhas cada.'
+      }},
+
+      { type: 'heading', content: { en: '⚠️ Common errors', pt: '⚠️ Erros comuns' } },
+      { type: 'text', content: {
+        en: '• Rebinding inside a function: db = [...] changes nothing for the caller. Use db[:] = [...].\n• len(db) + 1 as an id, after anything has been deleted.\n• Using a find() result without checking for None.\n• update and delete that stay silent when nothing matched.\n• Removing items from a list while looping over it — build a new list instead.',
+        pt: '• Reatribuir dentro da função: db = [...] não muda nada para quem chamou. Use db[:] = [...].\n• len(db) + 1 como id, depois que algo já foi apagado.\n• Usar o resultado de find() sem verificar None.\n• update e delete que ficam em silêncio quando nada foi encontrado.\n• Remover itens de uma lista enquanto percorre ela — construa uma lista nova.'
+      }},
+      { type: 'tip', content: {
+        en: '💡 Test in this order: create then read_all, create then find, update then find, delete then find. Each step checks the one before it.',
+        pt: '💡 Teste nesta ordem: create e read_all, create e find, update e find, delete e find. Cada passo confere o anterior.'
+      }},
+
+      { type: 'heading', content: { en: '📋 Recap', pt: '📋 Recapitulando' } },
+      { type: 'text', content: {
+        en: 'CRUD is create, read, update, delete — the shape of most software.\nEvery record needs a stable id, from a counter that only grows.\nfind returns the record or None, and callers must check.\nupdate and delete report what happened instead of failing quietly.\ndb[:] = [...] changes the caller\'s list; db = [...] does not.',
+        pt: 'CRUD é criar, ler, atualizar, apagar — a forma da maior parte do software.\nTodo registro precisa de um id estável, vindo de um contador que só cresce.\nfind devolve o registro ou None, e quem chama precisa verificar.\nupdate e delete relatam o que aconteceu em vez de falhar em silêncio.\ndb[:] = [...] muda a lista de quem chamou; db = [...] não.'
+      }}
     ]
   },
+
   exercises: [
     {
       id: 'ex25_recog',
       title: { en: '🟡 Complete the CRUD', pt: '🟡 Complete o CRUD' },
       description: {
-        en: 'The code already has some parts done. Your job is to fill in the blanks or fix the bug.\n\nStep 1: Read ALL the code first — create() and read_all() are complete; update() and delete() have one blank each.\nStep 2: In update(), the blank is inside c["___"] = new_damage — type damage, because you are updating the damage field\nStep 3: In delete(), the blank is inside if c["___"] != cid — type id, because you filter out the claim whose id matches cid\nStep 4: Run the code — Alice should have her damage updated to 7000 and Bob should be deleted\nStep 5: Run the code — you should see:\n1 Alice $7000',
-        pt: 'O código já tem algumas partes prontas. Seu trabalho é preencher as lacunas ou corrigir o bug.\n\nPasso 1: Leia TODO o código primeiro — create() e read_all() estão completas; update() e delete() têm uma lacuna cada.\nPasso 2: Em update(), a lacuna está em c["___"] = new_damage — digite damage, pois você está atualizando o campo damage\nPasso 3: Em delete(), a lacuna está em if c["___"] != cid — digite id, pois você filtra o sinistro cujo id corresponde a cid\nPasso 4: Execute o código — Alice deve ter seu damage atualizado para 7000 e Bob deve ser removido\nPasso 5: Execute o código — você deve ver:\n1 Alice $7000'
+        en: 'The code already has some parts done. Your job is to fill in the blanks or fix the bug.\n\nStep 1: Read ALL the code first — create() and read_all() are complete; update() and delete() have one blank each.\nStep 2: In update(), the blank is inside c["___"] = new_pages — type pages, because you are updating the pages field\nStep 3: In delete(), the blank is inside if c["___"] != cid — type id, because you filter out the record whose id matches cid\nStep 4: Run the code — Alice should have her pages updated to 7000 and Bob should be deleted\nStep 5: Run the code — you should see:\n1 Alice $7000',
+        pt: 'O código já tem algumas partes prontas. Seu trabalho é preencher as lacunas ou corrigir o bug.\n\nPasso 1: Leia TODO o código primeiro — create() e read_all() estão completas; update() e delete() têm uma lacuna cada.\nPasso 2: Em update(), a lacuna está em c["___"] = new_pages — digite pages, pois você está atualizando o campo pages\nPasso 3: Em delete(), a lacuna está em if c["___"] != cid — digite id, pois você filtra o registro cujo id corresponde a cid\nPasso 4: Execute o código — Alice deve ter seu pages atualizado para 7000 e Bob deve ser removido\nPasso 5: Execute o código — você deve ver:\n1 Alice $7000'
       },
-      starterCode: `def create(db, client, damage):
-    db.append({"id": len(db)+1, "client": client, "damage": damage})
+      starterCode: `def create(db, client, pages):
+    db.append({"id": len(db)+1, "client": client, "pages": pages})
 
 def read_all(db):
-    for c in db: print(c["id"], c["client"], "$"+str(c["damage"]))
+    for c in db: print(c["id"], c["client"], "$"+str(c["pages"]))
 
-def update(db, cid, new_damage):
+def update(db, cid, new_pages):
     for c in db:
         if c["id"] == cid:
-            c["___"] = new_damage   # fill: which key to update?
+            c["___"] = new_pages   # fill: which key to update?
             return True
     return False
 
@@ -3490,7 +3595,7 @@ update(db, 1, 7000)
 delete(db, 2)
 read_all(db)`,
       hints: [
-        { en: 'Update the "damage" key', pt: 'Atualize a chave "damage"' },
+        { en: 'Update the "pages" key', pt: 'Atualize a chave "pages"' },
         { en: 'Compare by "id" key in delete', pt: 'Compare pela chave "id" no delete' }
       ],
       sampleOutput: { en: '1 Alice $7000', pt: '1 Alice $7000' }
@@ -3499,18 +3604,18 @@ read_all(db)`,
       id: 'ex25_zero',
       title: { en: '🔴 Full CRUD Demo', pt: '🔴 Demo CRUD Completo' },
       description: {
-        en: 'Build this program from scratch. Every line goes into the blue editor.\n\nThe complete CRUD demo is already provided in the starter — read each part carefully, then run it as-is.\n\nWhat each function does:\ncreate(db, client, damage) — appends a new dict with auto-incremented id\nread_all(db) — prints every claim in the format "#id client $damage"\nupdate(db, cid, new_damage) — finds the claim with matching id and changes its damage\ndelete(db, cid) — removes the claim with matching id using list comprehension\n\nDemo sequence:\n1. Four claims are created: Alice $5230, Bob $1200, Carlos $8000, Diana $900\n2. print("Initial:"); read_all(db) — shows all 4\n3. update(db, 2, 9000) — Bob\'s damage becomes $9000\n4. delete(db, 4) — Diana is removed\n5. print("Final:"); read_all(db) — shows 3 remaining claims\n\nExpected output:\nInitial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000',
-        pt: 'Construa este programa do zero. Cada linha vai no editor azul.\n\nO demo CRUD completo já está fornecido no starter — leia cada parte com atenção e execute como está.\n\nO que cada função faz:\ncreate(db, client, damage) — adiciona um novo dict com id auto-incremental\nread_all(db) — imprime cada sinistro no formato "#id client $damage"\nupdate(db, cid, new_damage) — encontra o sinistro com id correspondente e altera seu damage\ndelete(db, cid) — remove o sinistro com id correspondente usando list comprehension\n\nSequência do demo:\n1. Quatro sinistros são criados: Alice $5230, Bob $1200, Carlos $8000, Diana $900\n2. print("Initial:"); read_all(db) — exibe todos os 4\n3. update(db, 2, 9000) — damage do Bob passa a $9000\n4. delete(db, 4) — Diana é removida\n5. print("Final:"); read_all(db) — exibe os 3 sinistros restantes\n\nSaída esperada:\nInitial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000'
+        en: 'Build this program from scratch. Every line goes into the blue editor.\n\nThe complete CRUD demo is already provided in the starter — read each part carefully, then run it as-is.\n\nWhat each function does:\ncreate(db, client, pages) — appends a new dict with auto-incremented id\nread_all(db) — prints every record in the format "#id client $pages"\nupdate(db, cid, new_pages) — finds the record with matching id and changes its pages\ndelete(db, cid) — removes the record with matching id using list comprehension\n\nDemo sequence:\n1. Four records are created: Alice $5230, Bob $1200, Carlos $8000, Diana $900\n2. print("Initial:"); read_all(db) — shows all 4\n3. update(db, 2, 9000) — Bob\'s pages becomes $9000\n4. delete(db, 4) — Diana is removed\n5. print("Final:"); read_all(db) — shows 3 remaining records\n\nExpected output:\nInitial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000',
+        pt: 'Construa este programa do zero. Cada linha vai no editor azul.\n\nO demo CRUD completo já está fornecido no starter — leia cada parte com atenção e execute como está.\n\nO que cada função faz:\ncreate(db, client, pages) — adiciona um novo dict com id auto-incremental\nread_all(db) — imprime cada registro no formato "#id client $pages"\nupdate(db, cid, new_pages) — encontra o registro com id correspondente e altera seu pages\ndelete(db, cid) — remove o registro com id correspondente usando list comprehension\n\nSequência do demo:\n1. Quatro registros são criados: Alice $5230, Bob $1200, Carlos $8000, Diana $900\n2. print("Initial:"); read_all(db) — exibe todos os 4\n3. update(db, 2, 9000) — pages do Bob passa a $9000\n4. delete(db, 4) — Diana é removida\n5. print("Final:"); read_all(db) — exibe os 3 registros restantes\n\nSaída esperada:\nInitial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000'
       },
-      starterCode: `def create(db, client, damage):
-    db.append({"id": len(db)+1, "client": client, "damage": damage})
+      starterCode: `def create(db, client, pages):
+    db.append({"id": len(db)+1, "client": client, "pages": pages})
 
 def read_all(db):
-    for c in db: print(f"#{c['id']} {c['client']} \${c['damage']}")
+    for c in db: print(f"#{c['id']} {c['client']} \${c['pages']}")
 
-def update(db, cid, new_damage):
+def update(db, cid, new_pages):
     for c in db:
-        if c["id"] == cid: c["damage"] = new_damage; return True
+        if c["id"] == cid: c["pages"] = new_pages; return True
     return False
 
 def delete(db, cid):
@@ -3537,18 +3642,18 @@ print("Final:"); read_all(db)`,
     { id: 'q25_4', question: { en: 'Auto-increment ID: id = len(db) + 1 gives:', pt: 'ID auto-incremental: id = len(db) + 1 dá:' }, options: [{ en: 'Next sequential ID', pt: 'Próximo ID sequencial' }, { en: 'Random ID', pt: 'ID aleatório' }, { en: 'Last ID', pt: 'Último ID' }, { en: 'First ID always', pt: 'Sempre o primeiro ID' }], correctIndex: 0, explanation: { en: 'len(db) = current count. +1 = next ID. Simple and works for sequential lists.', pt: 'len(db) = contagem atual. +1 = próximo ID. Simples e funciona para listas sequenciais.' } }
   ],
   exam: {
-    title: { en: 'Claims Management System', pt: 'Sistema de Gestão de Sinistros' },
-    scenario: { en: 'Build a full CRUD claims system and run a demo.', pt: 'Construa um sistema CRUD completo de sinistros e execute um demo.' },
-    requirements: { en: ['create/read_all/update/delete functions', 'Create 4 claims', 'Update #2 to 9000', 'Delete #4', 'Read final state'], pt: ['Funções create/read_all/update/delete', 'Criar 4 sinistros', 'Atualizar #2 para 9000', 'Deletar #4', 'Ler estado final'] },
-    starterCode: `def create(db, client, damage):
-    db.append({"id": len(db)+1, "client": client, "damage": damage})
+    title: { en: 'Records Management System', pt: 'Sistema de Gestão de Registros' },
+    scenario: { en: 'Build a full CRUD records system and run a demo.', pt: 'Construa um sistema CRUD completo de registros e execute um demo.' },
+    requirements: { en: ['create/read_all/update/delete functions', 'Create 4 records', 'Update #2 to 9000', 'Delete #4', 'Read final state'], pt: ['Funções create/read_all/update/delete', 'Criar 4 registros', 'Atualizar #2 para 9000', 'Deletar #4', 'Ler estado final'] },
+    starterCode: `def create(db, client, pages):
+    db.append({"id": len(db)+1, "client": client, "pages": pages})
 
 def read_all(db):
-    for c in db: print(f"#{c['id']} {c['client']} \${c['damage']}")
+    for c in db: print(f"#{c['id']} {c['client']} \${c['pages']}")
 
-def update(db, cid, new_damage):
+def update(db, cid, new_pages):
     for c in db:
-        if c["id"] == cid: c["damage"] = new_damage; return True
+        if c["id"] == cid: c["pages"] = new_pages; return True
 
 def delete(db, cid):
     db[:] = [c for c in db if c["id"] != cid]
