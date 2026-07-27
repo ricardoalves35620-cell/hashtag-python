@@ -2,6 +2,7 @@ import type { CodeRequirement, Exercise, Lang } from '../data/types'
 import { meetsCodeRequirement, normalizeAssessmentText, runCode, runExam, type PythonAnalysis, type TestResult } from './pyodide'
 import { findPythonPlaceholders } from './placeholders'
 import { personalize } from './learnerProfile'
+import { describeRequirement } from './requirementLanguage'
 
 export interface ValidationItem {
   id: string
@@ -216,8 +217,8 @@ export async function gradeExercise(
       label: requirementLabel(requirement, lang),
       passed: meetsCodeRequirement(run.analysis, requirement),
       hidden: true,
-      why: meetsCodeRequirement(run.analysis, requirement) ? undefined : (lang === 'en' ? `The required Python structure (${requirement.value}) was not found in executable code.` : `A estrutura Python exigida (${requirement.value}) não foi encontrada no código executável.`),
-      fix: meetsCodeRequirement(run.analysis, requirement) ? undefined : (lang === 'en' ? `Review the phase example and add ${requirement.value} as part of the solution logic.` : `Revise o exemplo da fase e adicione ${requirement.value} como parte da lógica da solução.`),
+      why: meetsCodeRequirement(run.analysis, requirement) ? undefined : (lang === 'en' ? `Your solution is missing ${describeRequirement(requirement.kind, String(requirement.value)).what.en}.` : `Falta na sua solução ${describeRequirement(requirement.kind, String(requirement.value)).what.pt}.`),
+      fix: meetsCodeRequirement(run.analysis, requirement) ? undefined : describeRequirement(requirement.kind, String(requirement.value)).how[lang],
       concept: requirementLabel(requirement, lang),
     })
   }

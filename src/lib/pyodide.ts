@@ -1,5 +1,6 @@
 import type { Check, CodeRequirement, TestCase } from '../data/types'
 import { identifierMatches } from './identifierAliases'
+import { describeRequirement } from './requirementLanguage'
 
 export interface PythonFunctionAnalysis {
   name: string
@@ -444,22 +445,22 @@ function buildFeedback(args: {
   }
 
   if (failedRequirement) {
-    const label = `${failedRequirement.kind}: ${failedRequirement.value}`
+    const described = describeRequirement(failedRequirement.kind, String(failedRequirement.value))
     return {
       en: {
-        summary: 'The output may look right, but a required Python structure is missing.',
-        whatWorked: ['Your code ran without a runtime error'],
-        issue: `Missing required structure: ${label}.`,
-        why: 'The exercise evaluates both the final output and the way the solution is built.',
-        fix: `Use the required ${failedRequirement.kind} “${failedRequirement.value}” in the solution, then submit again.`,
+        summary: 'The output is right, but this exercise also checks how you got there.',
+        whatWorked: ['Your code ran without a runtime error', 'The printed result matches what was asked'],
+        issue: `Your solution is missing ${described.what.en}.`,
+        why: 'Typing the answer directly produces the same output, but it stops working the moment the numbers change — so the exercise checks the method, not only the result.',
+        fix: described.how.en,
         concept: 'Program structure',
       },
       pt: {
-        summary: 'A saída pode parecer correta, mas falta uma estrutura obrigatória do Python.',
-        whatWorked: ['Seu código executou sem erro de execução'],
-        issue: `Estrutura obrigatória ausente: ${label}.`,
-        why: 'O exercício avalia tanto o resultado final quanto a forma como a solução foi construída.',
-        fix: `Use ${failedRequirement.kind} “${failedRequirement.value}” na solução e envie novamente.`,
+        summary: 'A saída está certa, mas este exercício também verifica como você chegou nela.',
+        whatWorked: ['Seu código executou sem erro de execução', 'O resultado impresso corresponde ao que foi pedido'],
+        issue: `Falta na sua solução ${described.what.pt}.`,
+        why: 'Digitar a resposta direto produz a mesma saída, mas deixa de funcionar assim que os números mudam — por isso o exercício verifica o método, não só o resultado.',
+        fix: described.how.pt,
         concept: 'Estrutura do programa',
       },
     }
