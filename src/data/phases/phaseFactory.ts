@@ -162,6 +162,22 @@ export function createConceptPhase(spec: ConceptPhaseSpec, siblings: ConceptPhas
         { type: 'heading', content: { en: 'Mental model', pt: 'Modelo mental' } },
         { type: 'text', content: spec.mentalModel },
         { type: 'code', code: spec.exampleCode },
+        {
+          type: 'checkpoint',
+          checkpoint: {
+            code: spec.exampleCode,
+            options: [
+              spec.exampleOutput,
+              ...distractorsFrom(siblings, spec, item => item.exampleOutput, [
+                { en: 'An error, because the code never runs', pt: 'Um erro, porque o código nunca roda' },
+                { en: 'Nothing at all', pt: 'Nada' },
+                { en: 'A different value on every run', pt: 'Um valor diferente a cada execução' },
+              ]),
+            ],
+            correctIndex: 0,
+            explanation: spec.mentalModel,
+          },
+        },
         { type: 'heading', content: { en: 'Professional workflow', pt: 'Fluxo profissional' } },
         { type: 'text', content: spec.workflow },
         { type: 'code', code: spec.professionalCode },

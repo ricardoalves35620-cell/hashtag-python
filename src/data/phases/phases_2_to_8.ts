@@ -1767,6 +1767,20 @@ print(clients)        # [..., 'Eva']
 print(sum(damages))   # 13950 — sum all numbers
 print(max(damages))   # 8000 — biggest` },
 
+      { type: 'checkpoint', checkpoint: {
+        code: 'clients = ["Alice", "Bob", "Carlos", "Diana"]\nprint(clients[1])',
+        options: [
+          { en: 'Bob', pt: 'Bob' },
+          { en: 'Alice', pt: 'Alice' },
+          { en: 'Carlos', pt: 'Carlos' },
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'Positions start at 0, so clients[0] is Alice and clients[1] is Bob. This off-by-one is the single most common list mistake — worth getting wrong here rather than in an exercise.',
+          pt: 'As posições começam em 0, então clients[0] é Alice e clients[1] é Bob. Esse erro de um índice é o mais comum com listas — melhor errar aqui do que em um exercício.'
+        }
+      } },
+
       { type: 'heading', content: { en: '🐍 Step 2 — the for loop', pt: '🐍 Passo 2 — o for loop' } },
       { type: 'code', code: {
         en: `clients = ["Alice", "Bob", "Carlos"]
@@ -1815,6 +1829,20 @@ for damage in damages:
 
 print(f"Total payout: \${total}")
 print(f"Big claims: {big_claims} of {len(damages)}")` },
+
+      { type: 'checkpoint', checkpoint: {
+        code: 'total = 0\nfor n in [10, 20, 30]:\n    total = n\nprint(total)',
+        options: [
+          { en: '30', pt: '30' },
+          { en: '60', pt: '60' },
+          { en: '10', pt: '10' },
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: 'This prints 30, not 60. The line says total = n, which REPLACES the value every turn instead of adding to it. An accumulator needs total += n. Spotting the difference is the whole skill.',
+          pt: 'Isto imprime 30, não 60. A linha diz total = n, que SUBSTITUI o valor a cada volta em vez de somar. Um acumulador precisa de total += n. Perceber essa diferença é a habilidade toda.'
+        }
+      } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Claims dashboard', pt: '🏗️ Cenário Real 1: Dashboard de sinistros' } },
       { type: 'code', code: {

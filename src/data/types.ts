@@ -6,7 +6,7 @@ export interface Bilingual {
 }
 
 export interface LessonBlock {
-  type: 'heading' | 'text' | 'code' | 'video' | 'tip' | 'warning'
+  type: 'heading' | 'text' | 'code' | 'video' | 'tip' | 'warning' | 'checkpoint'
   content?: Bilingual
   code?: string | Bilingual
   language?: string
@@ -14,6 +14,21 @@ export interface LessonBlock {
   videoTitle?: Bilingual
   videoDuration?: string
   alternate?: Bilingual
+  /** Checkpoint blocks only. A short "what does this print?" beat placed between
+   *  code blocks so the learner acts instead of only reading. Never scored — it
+   *  exists to surface a misunderstanding while it is still cheap to fix. */
+  checkpoint?: LessonCheckpoint
+}
+
+export interface LessonCheckpoint {
+  /** Snippet the learner reasons about. Keep it to a few lines. */
+  code: string
+  /** Defaults to "What does this print?" when omitted. */
+  question?: Bilingual
+  options: Bilingual[]
+  correctIndex: number
+  /** Shown after answering, whether right or wrong. */
+  explanation: Bilingual
 }
 
 export type ExerciseDifficulty = 'guided' | 'independent' | 'challenge'

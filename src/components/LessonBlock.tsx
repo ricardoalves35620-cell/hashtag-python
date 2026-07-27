@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import VSCodeBlock from './VSCodeBlock'
 import GlossaryText from './glossary/GlossaryText'
 import LearningCallout from './learning/LearningCallout'
-import type { LessonBlock as LessonBlockType, Lang } from '../data/types'
+import type { LessonBlock as LessonBlockType, LessonCheckpoint, Lang } from '../data/types'
 import { resolveLocalizedCode } from '../lib/localization'
+import { shuffledIndices } from '../lib/assessmentIntegrity'
 
 interface Props {
   block: LessonBlockType
@@ -37,6 +38,77 @@ function AlternateExplanation({ block, lang }: Props) {
   )
 }
 
+/** A short beat of doing, placed between code blocks. Not scored: a wrong answer
+ *  costs nothing but surfaces the misunderstanding immediately, which is the point. */
+function Checkpoint({ checkpoint, lang }: { checkpoint: LessonCheckpoint; lang: Lang }) {
+  const [chosen, setChosen] = useState<number | null>(null)
+  const answered = chosen !== null
+  const correct = chosen === checkpoint.correctIndex
+  // Without this the correct answer is always first, since specs author it at index 0.
+  const order = useMemo(
+    () => shuffledIndices(checkpoint.options.length, 1, checkpoint.code),
+    [checkpoint],
+  )
+  const t = (b: { en: string; pt: string } | undefined) => b?.[lang] || b?.en || ''
+
+  const prompt = checkpoint.question
+    ? t(checkpoint.question)
+    : lang === 'en' ? 'What does this print?' : 'O que isto imprime?'
+
+  return (
+    <div
+      className="rounded-2xl p-4 my-4"
+      style={{ background: 'var(--c-purple-f)', border: '1px solid var(--c-purple-dm)' }}
+      data-testid="lesson-checkpoint"
+    >
+      <div className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: 'var(--c-purple-l)' }}>
+        {lang === 'en' ? 'Your turn' : 'Sua vez'}
+      </div>
+
+      <VSCodeBlock code={checkpoint.code} />
+
+      <div className="text-sm font-medium mt-3 mb-2" style={{ color: 'var(--c-text)' }}>{prompt}</div>
+
+      <div className="flex flex-col gap-2">
+        {order.map(index => {
+          const option = checkpoint.options[index]
+          const isCorrect = index === checkpoint.correctIndex
+          const isChosen = chosen === index
+          let background = 'var(--c-bg)'
+          let border = 'var(--c-border)'
+          let color = 'var(--c-text2)'
+          if (answered && isCorrect) { background = 'rgba(22,101,52,0.18)'; border = '#166534'; color = '#86efac' }
+          else if (answered && isChosen) { background = 'rgba(239,68,68,0.12)'; border = 'rgba(239,68,68,0.4)'; color = '#fca5a5' }
+          return (
+            <button
+              key={index}
+              type="button"
+              data-testid="checkpoint-option"
+              disabled={answered}
+              onClick={() => setChosen(index)}
+              className="w-full text-left rounded-xl px-3 py-2 text-sm"
+              style={{ background, border: `1px solid ${border}`, color, cursor: answered ? 'default' : 'pointer' }}
+            >
+              <code>{t(option)}</code>
+            </button>
+          )
+        })}
+      </div>
+
+      {answered && (
+        <div className="text-sm leading-relaxed mt-3" style={{ color: 'var(--c-text2)' }}>
+          <span style={{ color: correct ? '#86efac' : '#fca5a5', fontWeight: 600 }}>
+            {correct
+              ? (lang === 'en' ? 'Correct. ' : 'Correto. ')
+              : (lang === 'en' ? 'Not quite. ' : 'Quase. ')}
+          </span>
+          <GlossaryText text={t(checkpoint.explanation)} lang={lang} />
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function LessonBlock({ block, lang }: Props) {
   const t = (b: { en: string; pt: string } | undefined) => b?.[lang] || b?.en || ''
 
@@ -59,6 +131,11 @@ export default function LessonBlock({ block, lang }: Props) {
 
   if (block.type === 'code') {
     return <VSCodeBlock code={resolveLocalizedCode(block.code, lang)} />
+  }
+
+  if (block.type === 'checkpoint') {
+    if (!block.checkpoint) return null
+    return <Checkpoint checkpoint={block.checkpoint} lang={lang} />
   }
 
   if (block.type === 'video') {
