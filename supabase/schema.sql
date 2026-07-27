@@ -1,4 +1,6 @@
 -- Run this in Supabase → SQL Editor
+-- Group access hardening lives in group-security.sql; run that first so
+-- private.is_group_member and public.join_family_group exist.
 
 -- 1. User progress table
 create table if not exists user_progress (
@@ -45,9 +47,12 @@ alter table family_members enable row level security;
 create policy "own progress" on user_progress
   for all using (auth.uid() = user_id);
 
--- family_groups: anyone can read groups (for joining), owners can write
-create policy "read groups" on family_groups
-  for select using (true);
+-- family_groups: members and owners only. Joining by invite code goes through
+-- public.join_family_group (see group-security.sql) so that a non-member never
+-- needs read access to this table.
+create policy "members read own group" on family_groups
+  for select to authenticated
+  using (created_by = auth.uid() or private.is_group_member(id));
 
 create policy "create groups" on family_groups
   for insert with check (auth.uid() = created_by);

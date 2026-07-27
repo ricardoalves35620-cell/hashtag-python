@@ -142,22 +142,18 @@ export default function Group() {
     setJoining(true)
     setError('')
     try {
-      const { data: group } = await getSupabase()
-        .from('family_groups')
-        .select('id')
-        .eq('invite_code', joinCode.trim().toUpperCase())
-        .maybeSingle()
-
-      if (!group) throw new Error(lang === 'en' ? 'Code not found.' : 'Código não encontrado.')
-
+      // Joining goes through a SECURITY DEFINER RPC. family_groups is readable only by
+      // members, so a non-member cannot look up a group by invite_code directly.
       const name = displayName || user.email?.split('@')[0] || 'User'
-      const { error: memberErr } = await getSupabase()
-        .from('family_members')
-        .insert({ group_id: group.id, user_id: user.id, display_name: name })
+      const { error: joinErr } = await getSupabase().rpc('join_family_group', {
+        code: joinCode.trim().toUpperCase(),
+        member_name: name,
+      })
 
-      if (memberErr) {
-        if (memberErr.code === '23505') throw new Error(lang === 'en' ? 'Already in this group.' : 'Já faz parte deste grupo.')
-        throw memberErr
+      if (joinErr) {
+        if (joinErr.code === '23505') throw new Error(lang === 'en' ? 'Already in this group.' : 'Já faz parte deste grupo.')
+        if (joinErr.code === 'P0002') throw new Error(lang === 'en' ? 'Code not found.' : 'Código não encontrado.')
+        throw joinErr
       }
 
       await loadGroup()
