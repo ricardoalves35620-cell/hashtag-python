@@ -67,3 +67,17 @@ create policy "see own group members" on family_members
 
 create policy "join group" on family_members
   for insert with check (auth.uid() = user_id);
+
+-- ── 5. Table privileges (defence in depth) ──
+-- RLS decides which ROWS are visible. Grants decide which VERBS are possible at all.
+-- Strip the blanket privileges first, then hand back only what the app actually uses.
+revoke all on table public.user_progress, public.family_groups, public.family_members from anon, authenticated;
+
+-- user_progress: read, upsert (insert + update) and delete for the reset feature.
+grant select, insert, update, delete on table public.user_progress to authenticated;
+
+-- family_groups: read own group, create a group. Joining goes through the RPC.
+grant select, insert on table public.family_groups to authenticated;
+
+-- family_members: read the member list, insert on join.
+grant select, insert on table public.family_members to authenticated;
