@@ -11,6 +11,7 @@ import {
   evaluateInstallSequence, INSTALL_SEQUENCE, validateInstallSequence, type BaseZeroModuleId, type InstallStep,
 } from '../lib/baseZero'
 import { markStepDone } from '../lib/progress'
+import { saveLearnerProfile } from '../lib/learnerProfile'
 import { getSkillsForPhase } from '../data/skills'
 import { createAssessmentSeed, shuffledIndices } from '../lib/assessmentIntegrity'
 
@@ -207,7 +208,7 @@ function ModuleChallenge({ moduleId, lang, completed, onComplete, setFeedback }:
       <p className="text-xs" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Create a folder for your Python work, and a Python file inside it. Any names you like — for example ProjetosPython and meu_primeiro.py.' : 'Crie uma pasta para seus trabalhos em Python e um arquivo Python dentro dela. Os nomes podem ser os que você quiser — por exemplo ProjetosPython e meu_primeiro.py.'}</p>
       <input value={folder} onChange={event => setFolder(event.target.value)} placeholder={lang === 'en' ? 'Folder name' : 'Nome da pasta'} className="w-full rounded-lg px-3 py-2.5 text-sm" style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }} />
       <input value={file} onChange={event => setFile(event.target.value)} placeholder={lang === 'en' ? 'File name with extension' : 'Nome do arquivo com extensão'} className="w-full rounded-lg px-3 py-2.5 text-sm" style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }} />
-      <button onClick={() => validateFileChallenge(folder, file) ? success(lang === 'en' ? 'That is a valid folder and a valid Python file.' : 'Essa é uma pasta válida e um arquivo Python válido.') : fail(lang === 'en' ? 'A folder name has no dot or slash, and a Python file must end in .py.' : 'O nome da pasta não tem ponto nem barra, e um arquivo Python precisa terminar em .py.')} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button>
+      <button onClick={() => validateFileChallenge(folder, file) ? (saveLearnerProfile({ folder, file }), success(lang === 'en' ? 'That is a valid folder and a valid Python file.' : 'Essa é uma pasta válida e um arquivo Python válido.')) : fail(lang === 'en' ? 'A folder name has no dot or slash, and a Python file must end in .py.' : 'O nome da pasta não tem ponto nem barra, e um arquivo Python precisa terminar em .py.')} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button>
     </div>
   )
 

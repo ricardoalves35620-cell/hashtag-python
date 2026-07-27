@@ -20,6 +20,7 @@ import { chooseNewestDraft, fetchRemoteDraft, loadLocalDraft, saveLocalDraft, sa
 import { scrollToTop } from '../lib/scroll'
 import { getExercisePedagogy } from '../lib/pedagogy'
 import { resolveLocalizedCode } from '../lib/localization'
+import { personalize } from '../lib/learnerProfile'
 import { getPrimaryExerciseInputs } from '../lib/exerciseContract'
 
 interface AttemptView {
@@ -261,7 +262,7 @@ export default function Exercises() {
 
         <Card padding="md">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div><h2 className="text-lg font-semibold text-ink">{exercise.title[lang]}</h2><p className="mt-1 text-sm leading-6 text-ink-secondary">{exercise.description[lang]}</p></div>
+            <div><h2 className="text-lg font-semibold text-ink">{personalize(exercise.title[lang])}</h2><p className="mt-1 text-sm leading-6 text-ink-secondary">{personalize(exercise.description[lang])}</p></div>
             <Badge data-testid="draft-status" variant={draftStatus === 'saved' ? 'success' : 'neutral'}>{draftStatus === 'saved' ? `✓ ${t.saved}` : draftStatus === 'local' ? `✓ ${t.local}` : t.ready}</Badge>
           </div>
           <ExerciseExpectedOutput exercise={exercise} lang={lang} />
@@ -334,7 +335,7 @@ export default function Exercises() {
 
         {(output || errorExplanation) && <Card data-testid="exercise-output" padding="none" className="overflow-hidden"><div className="border-b border-line px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted">{t.output}</div>{errorExplanation ? <div className="p-3"><ErrorExplainer explanation={errorExplanation} lang={lang} rawError={output} showRaw={showRawError} onToggleRaw={() => setShowRawError(value => !value)} /></div> : <pre className="max-h-72 overflow-auto whitespace-pre-wrap bg-[#0d1117] p-4 font-mono text-sm leading-6 text-[#7ee787]">{output}</pre>}</Card>}
 
-        {exercise.hints.length > 0 && <Card variant="subtle" padding="md"><Button variant="ghost" size="sm" disabled={(hintLevels[exercise.id] || 0) >= exercise.hints.length} onClick={() => setHintLevels(previous => ({ ...previous, [exercise.id]: Math.min((previous[exercise.id] || 0) + 1, exercise.hints.length) }))}>💡 {(hintLevels[exercise.id] || 0) === 0 ? t.hint : (hintLevels[exercise.id] || 0) < exercise.hints.length ? t.nextHint : t.allHints}</Button>{(hintLevels[exercise.id] || 0) > 0 && <div className="mt-3 space-y-2">{exercise.hints.slice(0, hintLevels[exercise.id] || 0).map((hint, index) => <Alert key={index} variant="info" title={lang === 'en' ? `Hint ${index + 1}` : `Dica ${index + 1}`}>{hint[lang]}</Alert>)}</div>}</Card>}
+        {exercise.hints.length > 0 && <Card variant="subtle" padding="md"><Button variant="ghost" size="sm" disabled={(hintLevels[exercise.id] || 0) >= exercise.hints.length} onClick={() => setHintLevels(previous => ({ ...previous, [exercise.id]: Math.min((previous[exercise.id] || 0) + 1, exercise.hints.length) }))}>💡 {(hintLevels[exercise.id] || 0) === 0 ? t.hint : (hintLevels[exercise.id] || 0) < exercise.hints.length ? t.nextHint : t.allHints}</Button>{(hintLevels[exercise.id] || 0) > 0 && <div className="mt-3 space-y-2">{exercise.hints.slice(0, hintLevels[exercise.id] || 0).map((hint, index) => <Alert key={index} variant="info" title={lang === 'en' ? `Hint ${index + 1}` : `Dica ${index + 1}`}>{personalize(hint[lang])}</Alert>)}</div>}</Card>}
 
         {(attempts[exercise.id] || []).length > 0 && <Card padding="md"><h3 className="font-semibold">{t.attempts}</h3><div className="mt-3 space-y-2">{attempts[exercise.id].map(item => <div key={item.id} className="flex items-center justify-between rounded-lg border border-line px-3 py-2 text-sm"><span>{item.time} · {item.passedChecks}/{item.checks}</span><Badge variant={item.passed ? 'success' : 'warning'}>{item.passed ? (lang === 'en' ? 'Passed' : 'Aprovado') : (lang === 'en' ? 'Review' : 'Revisar')}</Badge></div>)}</div></Card>}
 

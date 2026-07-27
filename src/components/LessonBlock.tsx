@@ -4,6 +4,7 @@ import GlossaryText from './glossary/GlossaryText'
 import LearningCallout from './learning/LearningCallout'
 import type { LessonBlock as LessonBlockType, LessonCheckpoint, Lang } from '../data/types'
 import { resolveLocalizedCode } from '../lib/localization'
+import { personalize } from '../lib/learnerProfile'
 import { shuffledIndices } from '../lib/assessmentIntegrity'
 
 interface Props {
@@ -49,7 +50,7 @@ function Checkpoint({ checkpoint, lang }: { checkpoint: LessonCheckpoint; lang: 
     () => shuffledIndices(checkpoint.options.length, 1, checkpoint.code),
     [checkpoint],
   )
-  const t = (b: { en: string; pt: string } | undefined) => b?.[lang] || b?.en || ''
+  const t = (b: { en: string; pt: string } | undefined) => personalize(b?.[lang] || b?.en || '')
 
   const prompt = checkpoint.question
     ? t(checkpoint.question)
@@ -110,7 +111,7 @@ function Checkpoint({ checkpoint, lang }: { checkpoint: LessonCheckpoint; lang: 
 }
 
 export default function LessonBlock({ block, lang }: Props) {
-  const t = (b: { en: string; pt: string } | undefined) => b?.[lang] || b?.en || ''
+  const t = (b: { en: string; pt: string } | undefined) => personalize(b?.[lang] || b?.en || '')
 
   if (block.type === 'heading') {
     return (
