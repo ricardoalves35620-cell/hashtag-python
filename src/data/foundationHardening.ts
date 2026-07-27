@@ -52,8 +52,36 @@ function meaningfulLines(value: string) {
     .filter(line => line.length >= 2 && !line.includes('...') && !line.includes('…'))
 }
 
+/** Turns a sample containing {{placeholders}} into a pattern, so the parts the learner
+ *  chooses are wildcards and only the fixed parts are enforced. */
+function samplePattern(text: string): string {
+  return text
+    .trim()
+    .split(/\{\{[^}]*\}\}/)
+    .map(part => part.replace(/[.*+?^${}()|[\]\\]/g, match => '\\' + match))
+    .join('.+')
+}
+
 function exerciseChecks(output: Bilingual): Check[] {
   const accepted = unique([output.en.trim(), output.pt.trim()].filter(Boolean))
+
+  // An exercise that invites "any name, any age" must not be graded against one
+  // specific name. Marking the varying part in the sample makes it a wildcard here,
+  // in the visible contract, and in the output-similarity check alike.
+  if (accepted.some(value => value.includes('{{'))) {
+    return [
+      { type: 'no_error' },
+      {
+        type: 'matches',
+        value: samplePattern(accepted[0]),
+        label: {
+          en: 'Produces the expected output, with your own values where the sample shows them',
+          pt: 'Produz a saída esperada, com os seus valores onde a amostra os indica',
+        },
+      },
+    ]
+  }
+
   return [
     { type: 'no_error' },
     accepted.length === 1

@@ -94,6 +94,9 @@ export interface Check {
   tolerance?: number
   /** Defaults to normalized for human-facing text checks; exact preserves accents and spacing. */
   textMode?: TextComparisonMode
+  /** What this check means, in the learner's words. Shown in the visible contract
+   *  instead of a raw pattern, which no beginner can read. */
+  label?: Bilingual
   /** Required when a partial contains check is intentionally used in v11-authored content. */
   justification?: Bilingual
 }

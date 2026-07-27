@@ -527,7 +527,7 @@ print(f"Active: {policy_active}")`,
         { en: 'Text: "Maria" | Number: 35 | Bool: True (capital T)', pt: 'Texto: "Maria" | Número: 35 | Bool: True (T maiúsculo)' },
         { en: 'Annual = monthly × 12 → use *', pt: 'Anual = mensal × 12 → use *' }
       ],
-      sampleOutput: { en: 'Client: Maria, age 35\nAnnual: 5400\nActive: True', pt: 'Client: Maria, age 35\nAnnual: 5400\nActive: True' }
+      sampleOutput: { en: 'Client: {{your name}}, age {{your age}}\nAnnual: 5400\nActive: True', pt: 'Client: {{seu nome}}, age {{sua idade}}\nAnnual: 5400\nActive: True' }
     },
     {
       id: 'ex3_zero',

@@ -18,6 +18,8 @@ function valuesOf(check: Check) {
 
 function describeCheck(check: Check, lang: Lang): { text: string; kind: ExerciseContractKind } | null {
   const values = valuesOf(check)
+  const label = (check as { label?: { en: string; pt: string } }).label
+  if (label) return { text: label[lang] || label.en, kind: 'required' as const }
   switch (check.type) {
     case 'contains':
       return values[0] ? { text: lang === 'pt' ? `Deve incluir: ${values[0]}` : `Must include: ${values[0]}`, kind: 'required' } : null
