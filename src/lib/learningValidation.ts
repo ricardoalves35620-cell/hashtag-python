@@ -186,7 +186,17 @@ export async function gradeExercise(
   ]
 
   if (!run.error) {
-    const similarity = outputSimilarity(exercise, lang, run.output)
+    // An exercise whose own tests never pin the output (only no_error, line_count,
+    // structural checks) is deliberately tolerant about presentation. The sample is
+    // then illustrative, and this heuristic must not impose a stricter standard than
+    // the author wrote — otherwise the app rejects answers that are genuinely correct.
+    const CONTENT_CHECKS = new Set(['equals', 'equals_any', 'contains', 'contains_any', 'matches', 'numeric_equals'])
+    const authorPinsOutput = (exercise.grading?.tests || []).some(test =>
+      (test.checks || []).some(check =>
+        CONTENT_CHECKS.has(String(check.type)) && (!check.target || check.target === 'test_output')))
+    const similarity = authorPinsOutput
+      ? outputSimilarity(exercise, lang, run.output)
+      : { passed: Boolean(run.output && run.output.trim()), detail: '' }
     checks.push({
       id: 'expected-output',
       label: lang === 'en' ? 'Produces the required result' : 'Produz o resultado solicitado',

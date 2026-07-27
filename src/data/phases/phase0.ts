@@ -55,11 +55,11 @@ export const phase0: Phase = {
       id: 'base0-hardware-report',
       title: { en: 'Build a tiny hardware report', pt: 'Monte um pequeno relatório de hardware' },
       description: { en: 'Create four variables named cpu, ram, storage and gpu, then print each one.', pt: 'Crie quatro variáveis chamadas cpu, ram, storage e gpu e depois imprima cada uma.' },
-      starterCode: '# Create the four variables below\n\n# Print a line for each resource\n',
+      starterCode: '# Create the four variables below, using exactly these names:\n# cpu, ram, storage, gpu\n\n# Print a line for each resource\n',
       hints: [{ en: 'Example: cpu = "executes instructions"', pt: 'Exemplo: cpu = "executa instruções"' }, { en: 'Use four print calls.', pt: 'Use quatro chamadas de print.' }],
       sampleOutput: {
         en: 'CPU: executes instructions\nRAM: temporary working data\nStorage: keeps files\nGPU: processes graphics',
-        pt: 'CPU: executa instruções\nRAM: guarda dados temporários\nArmazenamento: mantém arquivos\nGPU: processa gráficos',
+        pt: 'CPU: executa instruções\nRAM: guarda dados temporários\nStorage: mantém arquivos\nGPU: processa gráficos',
       },
       grading: {
         codeRequirements: [
