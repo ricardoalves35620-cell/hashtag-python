@@ -242,7 +242,16 @@ export function meetsCodeRequirement(analysis: PythonAnalysis | null, requiremen
   const minimum = requirement.minCount ?? 1
 
   switch (requirement.kind) {
-    case 'node': return (analysis.nodeCounts[requirement.value] ?? 0) >= minimum
+    case 'node': {
+      // total += 120 stores a value in a variable just as total = 120 does. Python
+      // calls them AugAssign and AnnAssign, but a learner asked to "store a value in a
+      // variable" has done exactly that — and the accumulator lesson teaches += .
+      const counts = analysis.nodeCounts
+      const found = requirement.value === 'Assign'
+        ? (counts.Assign ?? 0) + (counts.AugAssign ?? 0) + (counts.AnnAssign ?? 0)
+        : (counts[requirement.value] ?? 0)
+      return found >= minimum
+    }
     case 'call': return analysis.calls.some(call => call === requirement.value || call.endsWith(`.${requirement.value}`))
     // Names the learner chooses may be written in their own language; Python's own
     // vocabulary (call, import, node) below stays English by design.

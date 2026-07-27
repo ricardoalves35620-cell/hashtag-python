@@ -45,9 +45,12 @@ export function outputSimilarity(exercise: Exercise, lang: Lang, output: string)
   // "Running: {{file}}". Those lines are matched by pattern, so an exercise that tells
   // the learner to change a value does not then fail them for changing it.
   const lineMatches = (rawLine: string) => {
-    const line = rawLine.trim().toLowerCase()
+    // normalize() must be applied here too: it strips accents and quotes exactly as it
+    // does for the learner's output. Comparing a raw "Após" against a normalized "apos"
+    // fails every accented line, which in Portuguese is most of them.
+    const line = normalize(personalize(rawLine))
     if (!line) return true
-    if (!line.includes('{{')) return normalizedOutput.includes(personalize(line))
+    if (!line.includes('{{')) return normalizedOutput.includes(line)
     const pattern = line
       .split(/\{\{[^}]*\}\}/)
       .map(part => part.replace(/[.*+?^${}()|[\]\\]/g, match => '\\' + match))
