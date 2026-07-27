@@ -894,8 +894,22 @@ function authoredText(blocks: LessonBlock[]) {
   return blocks.filter(block => block.type !== 'code')
 }
 
+/**
+ * Code shown with the heading it belongs to. A flat list of snippets loses the label
+ * that says what each one demonstrates, and the learner sees five unexplained blocks
+ * in a row. Keeping the heading with its code restores that context and means a
+ * code-only section is never orphaned in the prose stream.
+ */
 function authoredCode(blocks: LessonBlock[]) {
-  return blocks.filter(block => block.type === 'code')
+  const out: LessonBlock[] = []
+  let pendingHeading: LessonBlock | null = null
+  for (const block of blocks) {
+    if (block.type === 'heading') { pendingHeading = block; continue }
+    if (block.type !== 'code') continue
+    if (pendingHeading) { out.push(pendingHeading); pendingHeading = null }
+    out.push(block)
+  }
+  return out
 }
 
 function authoredWarnings(blocks: LessonBlock[]) {
@@ -911,6 +925,26 @@ export function getPedagogicalBlueprintStatus(phase: Phase): { authored: boolean
   return { authored, blueprint: authored ? AUTHORED_BLUEPRINTS[phase.id] : genericBlueprint(phase) }
 }
 
+/**
+ * A section can contribute both code and prose to the same stage, which would print
+ * its heading twice. Keep the first occurrence and drop later repeats, and never
+ * leave a heading as the last block with nothing beneath it.
+ */
+function tidyUnitBlocks(blocks: LessonBlock[]): LessonBlock[] {
+  const seen = new Set<string>()
+  const kept: LessonBlock[] = []
+  for (const block of blocks) {
+    if (block.type === 'heading') {
+      const label = block.content?.en || ''
+      if (seen.has(label)) continue
+      seen.add(label)
+    }
+    kept.push(block)
+  }
+  while (kept.length && kept[kept.length - 1].type === 'heading') kept.pop()
+  return kept
+}
+
 export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
   const blueprint = getPedagogicalBlueprintStatus(phase).blueprint
   const blocks = phase.lesson.blocks
@@ -922,7 +956,7 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
   const concept = phase.title
   const miniProject = getMiniProjectForPhase(phase.id)
 
-  return [
+  const units: LessonUnit[] = [
     {
       id: 'challenge', kind: 'challenge', icon: '🎯',
       title: { en: '1. The challenge', pt: '1. O desafio' },
@@ -1053,6 +1087,8 @@ export function getPedagogicalJourney(phase: Phase): LessonUnit[] {
       checkpointPlaceholder: { en: 'New problem...\nSame reasoning...\nWhat changes...', pt: 'Novo problema...\nMesmo raciocínio...\nO que muda...' },
     },
   ]
+
+  return units.map(unit => ({ ...unit, blocks: tidyUnitBlocks(unit.blocks) }))
 }
 
 export function lessonReflectionKey(learnerId: string, phaseId: number, unitId: string) {
