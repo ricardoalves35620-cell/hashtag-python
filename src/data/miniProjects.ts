@@ -39,7 +39,7 @@ export interface MiniProject {
 
 export const MINI_PROJECTS: MiniProject[] = [
   {
-    id: 'amount-estimate',
+    id: 'damage-estimate',
     milestonePhaseId: 4,
     icon: '🎟️',
     title: { en: 'Event Budget Balance', pt: 'Saldo do Orçamento de Evento' },
@@ -97,7 +97,7 @@ export const MINI_PROJECTS: MiniProject[] = [
     ],
   },
   {
-    id: 'order-queue',
+    id: 'claim-queue',
     milestonePhaseId: 7,
     icon: '📦',
     title: { en: 'Shipment Queue Processor', pt: 'Processador de Fila de Remessas' },
@@ -276,7 +276,7 @@ print("Total:", approved_total)`,
     ],
   },
   {
-    id: 'foundation-order-desk',
+    id: 'foundation-claim-desk',
     milestonePhaseId: 27,
     icon: '🗂️',
     title: { en: 'Order Desk CLI', pt: 'Central de Pedidos CLI' },
@@ -428,19 +428,19 @@ while True:
     },
     tests: [
       {
-        id: 'order-desk-standard',
+        id: 'claim-desk-standard',
         title: { en: 'Two accepted orders', pt: 'Dois pedidos aceitos' },
         inputs: ['add', 'C-101', 'Ana', '1200', 'add', 'C-102', 'Bruno', '800', 'list', 'total', 'exit'],
         expectedOutput: ['ADDED=C-101', 'ADDED=C-102', 'ORDER=C-101|Ana|1200.00', 'ORDER=C-102|Bruno|800.00', 'TOTAL=2000.00', 'BYE'],
       },
       {
-        id: 'order-desk-validation',
+        id: 'claim-desk-validation',
         title: { en: 'Invalid amount and duplicate ID', pt: 'Valor inválido e ID duplicado' },
         inputs: ['add', 'C-201', 'Carla', 'oops', 'add', 'C-201', 'Carla', '500', 'add', 'C-201', 'Duplicado', '700', 'total', 'exit'],
         expectedOutput: ['INVALID_AMOUNT', 'ADDED=C-201', 'DUPLICATE_ID', 'TOTAL=500.00', 'BYE'],
       },
       {
-        id: 'order-desk-empty',
+        id: 'claim-desk-empty',
         title: { en: 'Empty registry', pt: 'Cadastro vazio' },
         inputs: ['list', 'total', 'exit'],
         expectedOutput: ['TOTAL=0.00', 'BYE'],
@@ -470,7 +470,7 @@ while True:
     ],
   },
   {
-    id: 'professional-orders-triage',
+    id: 'professional-claims-triage',
     milestonePhaseId: 39,
     icon: '🏗️',
     title: { en: 'Orders Triage Service', pt: 'Serviço de Triagem de Pedidos' },

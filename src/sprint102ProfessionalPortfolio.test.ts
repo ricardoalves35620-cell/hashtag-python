@@ -10,33 +10,33 @@ function source(path: string) {
 }
 
 function simulateTriage(inputs: string[]) {
-  const claims = new Map<string, { amount: number; priority: 'STANDARD' | 'ESCALATE' }>()
+  const orders = new Map<string, { amount: number; priority: 'STANDARD' | 'ESCALATE' }>()
   const output: string[] = []
 
   for (const raw of inputs) {
     if (raw.toUpperCase() === 'END') break
-    const [claimId = 'UNKNOWN', amountText = '', severityText = ''] = raw.split('|')
+    const [orderId = 'UNKNOWN', amountText = '', severityText = ''] = raw.split('|')
 
-    if (claims.has(claimId)) {
-      output.push(`DUPLICATE=${claimId}`)
+    if (orders.has(orderId)) {
+      output.push(`DUPLICATE=${orderId}`)
       continue
     }
 
     const amount = Number(amountText)
     const severity = Number(severityText)
-    if (!claimId || !Number.isFinite(amount) || amount <= 0 || !Number.isInteger(severity) || severity < 1 || severity > 10) {
-      output.push(`INVALID=${claimId || 'UNKNOWN'}`)
+    if (!orderId || !Number.isFinite(amount) || amount <= 0 || !Number.isInteger(severity) || severity < 1 || severity > 10) {
+      output.push(`INVALID=${orderId || 'UNKNOWN'}`)
       continue
     }
 
     const priority = severity >= 8 || amount >= 10_000 ? 'ESCALATE' : 'STANDARD'
-    claims.set(claimId, { amount, priority })
-    output.push(`CLAIM=${claimId}|${priority}|${amount.toFixed(2)}`)
+    orders.set(orderId, { amount, priority })
+    output.push(`ORDER=${orderId}|${priority}|${amount.toFixed(2)}`)
   }
 
-  const values = [...claims.values()]
-  const total = values.reduce((sum, claim) => sum + claim.amount, 0)
-  const escalated = values.filter(claim => claim.priority === 'ESCALATE').length
+  const values = [...orders.values()]
+  const total = values.reduce((sum, order) => sum + order.amount, 0)
+  const escalated = values.filter(order => order.priority === 'ESCALATE').length
   output.push(`SUMMARY=${values.length}|${total.toFixed(2)}|${escalated}`)
   return output
 }
@@ -48,7 +48,7 @@ describe('Sprint 10.2 professional portfolio', () => {
     expect(project?.tests).toHaveLength(3)
     expect(project?.requiredNodes).toEqual(expect.arrayContaining(['ClassDef', 'Try', 'While', 'AnnAssign']))
     expect(project?.requiredImports).toEqual(expect.arrayContaining(['dataclasses', 'logging']))
-    expect(project?.requiredFunctions).toEqual(expect.arrayContaining(['parse_claim', 'process_line', 'print_summary', 'main']))
+    expect(project?.requiredFunctions).toEqual(expect.arrayContaining(['parse_order', 'process_line', 'print_summary', 'main']))
     expect(project?.requiredCalls).toEqual(expect.arrayContaining(['logger.warning']))
     expect(project?.requireMainGuard).toBe(true)
   })

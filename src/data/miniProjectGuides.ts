@@ -43,7 +43,7 @@ export interface MiniProjectGuide {
 }
 
 export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
-  'amount-estimate': {
+  'damage-estimate': {
     mission: {
       en: 'Make a program that tells an event organizer how much money is still available.',
       pt: 'Faça um programa que diga quanto dinheiro ainda sprojeto para organizar um evento.',
@@ -116,7 +116,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     doNotChange: { en: 'Do not change the formula or the words printed in the result.', pt: 'Não altere a fórmula nem as palavras mostradas no resultado.' },
   },
 
-  'order-queue': {
+  'claim-queue': {
     mission: {
       en: 'Make a program that reads several shipment values and calculates their count, total and average.',
       pt: 'Faça um programa que leia vários valores de remessas e calcule quantidade, total e média.',
@@ -274,7 +274,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     doNotChange: { en: 'Do not change which status counts as approved or the output labels.', pt: 'Não altere qual status conta como aprovado nem os nomes da saída.' },
   },
 
-  'foundation-order-desk': {
+  'foundation-claim-desk': {
     mission: { en: 'Build a small text-menu program that saves records, lists them and adds their values.', pt: 'Monte um pequeno programa de menu que salva registros, lista e soma seus valores.' },
     story: { en: 'Think of a notebook controlled by commands. add writes a new record, list reads the notebook, total adds the money and exit closes it.', pt: 'Pense em um caderno controlado por comandos. add escreve um registro, list lê o caderno, total soma o dinheiro e exit fecha o programa.' },
     result: { en: 'The program must respond with exact labels so another program can understand every answer.', pt: 'O programa deve responder com palavras exatas para que outro programa entenda cada resposta.' },
@@ -330,9 +330,9 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
       outputs: [{ en: 'ADDED=C-1', pt: 'ADDED=C-1' }, { en: 'ORDER=C-1|Ana|500.00', pt: 'ORDER=C-1|Ana|500.00' }, { en: 'TOTAL=500.00', pt: 'TOTAL=500.00' }, { en: 'BYE', pt: 'BYE' }],
     },
     testPurposes: {
-      'order-desk-standard': { en: 'Checks normal adding, listing and totaling.', pt: 'Confere adicionar, listar e somar normalmente.' },
-      'order-desk-validation': { en: 'Checks invalid money and a repeated ID.', pt: 'Confere dinheiro inválido e ID repetido.' },
-      'order-desk-empty': { en: 'Checks commands when no record was added.', pt: 'Confere os comandos quando nenhum registro foi adicionado.' },
+      'claim-desk-standard': { en: 'Checks normal adding, listing and totaling.', pt: 'Confere adicionar, listar e somar normalmente.' },
+      'claim-desk-validation': { en: 'Checks invalid money and a repeated ID.', pt: 'Confere dinheiro inválido e ID repetido.' },
+      'claim-desk-empty': { en: 'Checks commands when no record was added.', pt: 'Confere os comandos quando nenhum registro foi adicionado.' },
     },
     improveIntro: { en: 'Choose one small boundary and make it easier to read. Keep every printed label unchanged.', pt: 'Escolha uma pequena parte e deixe mais fácil de ler. Mantenha todos os rótulos impressos.' },
     improveChoices: [
@@ -344,7 +344,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     doNotChange: { en: 'Do not change ADDED, ORDER, TOTAL, DUPLICATE_ID, INVALID_AMOUNT or BYE.', pt: 'Não altere ADDED, ORDER, TOTAL, DUPLICATE_ID, INVALID_AMOUNT nem BYE.' },
   },
 
-  'professional-orders-triage': {
+  'professional-claims-triage': {
     mission: { en: 'Read records, decide their priority and print a safe summary.', pt: 'Leia registros, decida a prioridade e mostre um resumo seguro.' },
     story: { en: 'Think of a sorting table. Each record arrives as id|amount|severity. Your program checks the form, chooses STANDARD or ESCALATE and stores valid records.', pt: 'Pense em uma mesa de triagem. Cada registro chega como id|valor|gravidade. O programa confere a ficha, escolhe STANDARD ou ESCALATE e guarda os registros válidos.' },
     result: { en: 'Print one result for each line and one final summary. Invalid or repeated records must not stop the program.', pt: 'Mostre um resultado para cada linha e um resumo final. Registros inválidos ou repetidos não podem parar o programa.' },
