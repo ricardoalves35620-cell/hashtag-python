@@ -31,7 +31,8 @@
     "audit:v11:gate": "tsx audit/v11-quality-gate.ts",
     "audit:v11:baseline": "tsx audit/v11-quality-gate.ts --write-baseline",
     "audit:budget": "node scripts/audit/check-bundle-budget.mjs",
-    "audit:budget:update": "node scripts/audit/check-bundle-budget.mjs --update"
+    "audit:budget:update": "node scripts/audit/check-bundle-budget.mjs --update",
+    "audit:local-ci": "bash scripts/audit/local-ci.sh"
   },
   "dependencies": {
     "@codemirror/commands": "^6.3.3",

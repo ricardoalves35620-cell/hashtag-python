@@ -371,11 +371,18 @@ test.describe('Store readiness — pre-submission smoke', () => {
 
     // Exercises.tsx:76 previously spread `previous` last, so a phantom completion
     // survived every reload. After the fix the server view must win.
+    //
+    // Assert the completion state itself, not whether Run happens to be clickable. The
+    // earlier version checked `toBeEnabled`, which conflates "not marked complete" with
+    // "the predict/change gate is satisfied" — and the gate resets on reload, so the
+    // test failed for a reason that had nothing to do with the rollback it exists to
+    // guard. A proxy that can fail for the wrong reason is worse than no assertion.
     await page.reload()
+    await expect(page.getByTestId('exercise-run-button')).toBeVisible({ timeout: 30_000 })
     await expect(
-      page.getByTestId('exercise-run-button'),
-      'the exercise should still be actionable after a failed save',
-    ).toBeEnabled({ timeout: 30_000 })
+      page.getByText(/Run this exercise successfully to continue|Execute este exercício corretamente para continuar/i),
+      'a progress write that the server rejected must not leave the exercise unlocked',
+    ).toBeVisible({ timeout: 30_000 })
   })
 
   // ───────────────────────────────────────────────────────────────────────────
