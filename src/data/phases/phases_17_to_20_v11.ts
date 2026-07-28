@@ -312,7 +312,7 @@ export const phase17: Phase = {
   exam: {
     title: b('Exam — shipment file loader', 'Exame — carregador de arquivo de remessas'),
     scenario: b('A logistics partner sends code|weight|status rows. Build load_shipments(path) that validates rows, rejects negative weight and returns a summary for active shipments.', 'Um parceiro envia linhas code|weight|status. Construa load_shipments(path), valide linhas, rejeite peso negativo e retorne resumo de remessas active.'),
-    requirements: { en: ['Open the UTF-8 path with with.', 'Skip blank rows.', 'Require exactly three fields.', 'Count active rows and sum active weight.', "Return {'active': N, 'weight': total}."], pt: ['Abra caminho UTF-8 com with.', 'Ignore linhas vazias.', 'Exija três campos.', 'Conte active e some peso active.', "Retorne {'active': N, 'weight': total}."] },
+    requirements: { en: ['Open the UTF-8 path with `with`.', 'Skip blank rows.', 'Require exactly three fields.', 'Count active rows and sum active weight.', "Return {'active': N, 'weight': total}."], pt: ['Abra caminho UTF-8 com with.', 'Ignore linhas vazias.', 'Exija três campos.', 'Conte active e some peso active.', "Retorne {'active': N, 'weight': total}."] },
     starterCode: 'def load_shipments(path):\n    pass',
     expectedOutput: b("{'active': 2, 'weight': 13.5}", "{'active': 2, 'weight': 13.5}"),
     testCases: [

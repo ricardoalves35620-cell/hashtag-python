@@ -201,7 +201,7 @@ print(n, "** 2 =", n ** 2)`,
       id: 'ex2_fill',
       title: { en: '🟡 Fill the Gap: Refund Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
       description: {
-        en: 'Goal:\nA two-step refund calculation is almost complete. Fill in the two missing operator symbols.\n\nBlank 1 — subtract the discount from the amount amount\n\nBlank 2 — multiply the result by 0.75 to apply a 75% cover rate\n\nExample, with amount = 8000 and discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0',
+        en: 'Goal:\nA two-step refund calculation is almost complete. Fill in the two missing operator symbols.\n\nBlank 1 — subtract the discount from the order amount\n\nBlank 2 — multiply the result by 0.75 to apply a 75% cover rate\n\nExample, with amount = 8000 and discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0',
         pt: 'Objetivo:\nUm cálculo de pagamento em duas etapas está quase completo. Preencha os dois símbolos de operador que faltam.\n\nBlank 1 — subtraia o desconto do valor do dano\n\nBlank 2 — multiplique o resultado por 0.75 para aplicar uma taxa de 75%\n\nExemplo, com amount = 8000 e discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0'
       },
       starterCode: `amount = 8000
@@ -685,7 +685,7 @@ print("=== NEW ORDER INTAKE ===")
 
 client = input("Client name: ")                 # text; no conversion needed
 phone = input("Phone: ")                        # keep as text because it may contain dashes
-amount = int(input("Amount amount: $"))         # number used in calculations
+amount = int(input("Order amount: $"))         # number used in calculations
 discount = int(input("Discount: $"))        # number used in calculations
 
 refund = amount - discount
@@ -751,7 +751,7 @@ n = float(input("Height: "))
 # Phone, ZIP code, ID numbers → keep as text!` },
 
       { type: 'tip', content: {
-        en: '💡 PRO TIP: the "will I do math with it?" test.\n• Amount amount → math → int/float\n• Age → math → int\n• Phone number → NO math → keep str\n• ZIP code → NO math → keep str\nConverting everything blindly is a rookie mistake.',
+        en: '💡 PRO TIP: the "will I do math with it?" test.\n• Order amount → math → int/float\n• Age → math → int\n• Phone number → NO math → keep str\n• ZIP code → NO math → keep str\nConverting everything blindly is a rookie mistake.',
         pt: '💡 DICA PRO: o teste "vou fazer matemática com isso?".\n• Valor do dano → matemática → int/float\n• Idade → matemática → int\n• Telefone → SEM matemática → mantém str\n• CEP → SEM matemática → mantém str\nConverter tudo cegamente é erro de iniciante.'
       }},
 
@@ -833,13 +833,13 @@ print(f"Phone: {phone}")`,
   exam: {
     title: { en: 'Interactive Order System', pt: 'Sistema Interativo de Pedidos' },
     scenario: {
-      en: 'Build the complete order intake: collect client data with proper types, calculate the refund with an 85% cover rate rate, and print a professional summary.',
+      en: 'Build the complete order intake: collect client data with proper types, calculate the refund with an 85% cover rate, and print a professional summary.',
       pt: 'Construa a entrada completa de pedido: colete dados com tipos corretos, calcule o pagamento com taxa de uma taxa de 85% e imprima um resumo profissional.'
     },
     requirements: {
       en: [
         'Ask client name (text)',
-        'Ask amount amount (convert to int)',
+        'Ask the order amount (convert to int)',
         'Ask discount (convert to int)',
         'Calculate: refund = (amount - discount) * 0.85',
         'Print name and refund in a summary'
@@ -1201,7 +1201,7 @@ else:
     },
     requirements: {
       en: [
-        'Ask amount amount and days since plan start',
+        'Ask the order amount and days since plan start',
         'If amount > 5000 AND days < 30 → print "INVESTIGATE"',
         'Else if amount > 10000 → print "NEEDS APPROVAL"',
         'Else → print "AUTO-APPROVED"'
@@ -1506,7 +1506,7 @@ print("Fee:", fee)`,
       pt: 'Construa a triagem completa de 4 níveis usada pelo departamento de pedidos. Cada nível tem SLA diferente. Ordene suas condições com cuidado!'
     },
     requirements: {
-      en: ['Ask amount amount', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'else → "LOW - 72 hours"'],
+      en: ['Ask the order amount', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'else → "LOW - 72 hours"'],
       pt: ['Pergunte o valor do dano', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'senão → "LOW - 72 hours"']
     },
     starterCode: `amount = int(input("Amount: $"))
@@ -1622,7 +1622,7 @@ total_refund = 0
 
 while count <= pending:
     print(f"--- Order {count} of {pending} ---")
-    amount = int(input("Amount amount: $"))
+    amount = int(input("Order amount: $"))
     refund = amount - 250
     total_refund += refund
     print(f"Refund: \${refund}")

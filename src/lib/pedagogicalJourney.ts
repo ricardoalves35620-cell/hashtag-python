@@ -155,7 +155,7 @@ const AUTHORED_BLUEPRINTS: Record<number, PhaseBlueprint> = {
   },
   4: {
     situation: {
-      en: 'A program must receive information that was not known when the code was written, such as a client name, amount amount, room size, or discount. The raw value arrives as text and may need conversion before use.',
+      en: 'A program must receive information that was not known when the code was written, such as a client name, order amount, room size, or discount. The raw value arrives as text and may need conversion before use.',
       pt: 'Um programa precisa receber informações que não eram conhecidas quando o código foi escrito, como nome do cliente, valor do dano, tamanho do cômodo ou desconto. O valor bruto chega como texto e pode precisar de conversão antes do uso.'
     },
     humanReasoning: {
