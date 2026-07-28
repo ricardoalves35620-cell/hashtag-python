@@ -30,9 +30,14 @@ jobs:
     # home for it, not secrets. The fallbacks keep forked PRs runnable: they satisfy
     # the shape check so the app boots, and the tests that genuinely need a backend
     # skip themselves when AUDIT_USER_* is absent.
+    #
+    # Reads vars first, then secrets. The anon key is publishable so a Variable is the
+    # right home, but "Variables" and "Secrets" are two tabs on the same settings page
+    # and a vars-only expression fails silently: the fallback fires, the build succeeds,
+    # and only the browser tests fail — a full CI round-trip later.
     env:
-      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || 'https://placeholder.supabase.co' }}
-      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || 'ci-placeholder-anon-key-not-a-real-credential' }}
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY || 'ci-placeholder-anon-key-not-a-real-credential' }}
 
     steps:
       - name: Check out repository
@@ -43,6 +48,15 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+
+      # A silent fallback cost one full CI round-trip. Say it out loud instead.
+      - name: Report Supabase configuration source
+        run: |
+          if [ "$VITE_SUPABASE_URL" = "https://placeholder.supabase.co" ]; then
+            echo "::warning title=Supabase config missing::Using CI placeholders. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY under Settings > Secrets and variables > Actions. Sign-in tests will fail."
+          else
+            echo "Supabase configuration found: ${VITE_SUPABASE_URL}"
+          fi
 
       - name: Install dependencies
         run: npm ci
