@@ -29,15 +29,36 @@ const AUDIT_PASSWORD = process.env.AUDIT_USER_PASSWORD?.trim()
 const HAS_CREDENTIALS = Boolean(AUDIT_EMAIL && AUDIT_PASSWORD)
 const SERVICE_WORKERS_ENABLED = process.env.HP_AUDIT_SERVICE_WORKERS === 'allow'
 
-/** Signs in through the real UI and waits for the authenticated shell. */
+/**
+ * Signs in through the real UI and waits for the authenticated shell.
+ *
+ * A rejected password used to surface as `waitForURL: Timeout 30000ms exceeded`, which
+ * says nothing about the cause and costs a CI round-trip per guess. The app renders the
+ * rejection on screen; this reads it and reports it, so a bad AUDIT_USER_PASSWORD looks
+ * like a bad AUDIT_USER_PASSWORD.
+ */
 async function signIn(page: Page): Promise<void> {
   await page.goto('/login')
   await page.getByRole('textbox', { name: /email/i }).fill(AUDIT_EMAIL as string)
   await page.locator('input[type="password"]').first().fill(AUDIT_PASSWORD as string)
-  await Promise.all([
-    page.waitForURL(url => !url.pathname.startsWith('/login'), { timeout: 30_000 }),
-    page.getByRole('button', { name: /^(entrar|sign in)$/i }).click(),
-  ])
+  await page.getByRole('button', { name: /^(entrar|sign in)$/i }).click()
+
+  const signedIn = page.waitForURL(url => !url.pathname.startsWith('/login'), { timeout: 30_000 })
+  const rejected = page
+    .getByText(/do not match|não conferem|invalid login credentials|credenciais inválidas/i)
+    .first()
+    .waitFor({ state: 'visible', timeout: 30_000 })
+    .then(() => 'rejected' as const)
+
+  const outcome = await Promise.race([signedIn.then(() => 'ok' as const), rejected])
+  if (outcome === 'rejected') {
+    throw new Error(
+      'Sign-in was rejected by the backend. AUDIT_USER_EMAIL / AUDIT_USER_PASSWORD do not ' +
+        'match an account on the Supabase project this build points at. Check the secrets ' +
+        'under Settings > Secrets and variables > Actions.',
+    )
+  }
+  await signedIn
 }
 
 /** Waits until a service worker has actually taken control of the page. */
