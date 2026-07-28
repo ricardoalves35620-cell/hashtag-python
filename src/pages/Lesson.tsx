@@ -21,8 +21,8 @@ import { scrollToTop } from '../lib/scroll'
 function professionalHabit(stage: string | undefined, lang: 'en' | 'pt') {
   const habits = {
     base: {
-      en: 'Predict the visible result before running. Change one thing, compare the new result, and use the first useful traceback line when something breaks.',
-      pt: 'Preveja o resultado visível antes de executar. Mude uma coisa, compare o novo resultado e use a primeira linha útil do traceback quando algo quebrar.',
+      en: 'Predict the visible result before running. Change one thing, compare the new result, and when something breaks, read the error message — it names the line it stopped on.',
+      pt: 'Preveja o resultado visível antes de executar. Mude uma coisa, compare o novo resultado e, quando algo quebrar, leia a mensagem de erro — ela indica a linha em que parou.',
     },
     professional: {
       en: 'Write the input, output and failure contract before implementation. Keep each function focused and make every business rule testable.',
@@ -251,6 +251,7 @@ export default function Lesson() {
                     rows={5}
                     className="w-full rounded-xl p-3 text-sm leading-relaxed resize-y"
                     style={{ background: 'var(--c-bg)', color: 'var(--c-text)', border: '1px solid var(--c-border)', minHeight: 120 }}
+                    aria-label={lang === 'en' ? 'Programmer Journal' : 'Diário do Programador'}
                     data-testid="lesson-reflection"
                   />
                   <div className="flex justify-between gap-3 mt-2 text-xs" style={{ color: 'var(--c-muted)' }}>

@@ -23,6 +23,7 @@ import {
   type ProjectTestStatus,
 } from '../lib/projectProgress'
 import { normalizeAssessmentText, preparePythonEngine, runCode } from '../lib/pyodide'
+import { isPythonUnavailable, runtimeUnavailableText } from '../lib/runtimeMessages'
 import { scrollToTop } from '../lib/scroll'
 import { markProjectDone } from '../lib/progress'
 import { getSupabase } from '../lib/supabase'
@@ -272,6 +273,15 @@ export default function MiniProject() {
       const result = await runCode(progress.code, progress.buildInputs)
       const text = result.error ? `ERROR: ${result.error}` : (result.output || t.noOutput)
       persist({ output: text, testResults: [], testedCode: '' })
+    } catch (error) {
+      // There was no catch here at all: preparePythonEngine() rejecting left the
+      // spinner stopping with no output and no message, so the Run button simply
+      // appeared to do nothing.
+      persist({
+        output: isPythonUnavailable(error) ? runtimeUnavailableText(lang) : `ERROR: ${String(error)}`,
+        testResults: [],
+        testedCode: '',
+      })
     } finally {
       setRunning(false)
     }
@@ -308,6 +318,10 @@ export default function MiniProject() {
         statuses.push({ id: test.id, passed, details })
       }
       persist({ testResults: statuses, testedCode: progress.code, output: statuses.map(status => `${status.passed ? '✓' : '✗'} ${status.id}: ${status.details}`).join('\n') }, true)
+    } catch (error) {
+      // Same missing catch as runBuild. Critically, testResults is left untouched
+      // so a runtime failure cannot be recorded as the project's tests failing.
+      setMessage(isPythonUnavailable(error) ? runtimeUnavailableText(lang) : `ERROR: ${String(error)}`)
     } finally {
       setRunning(false)
     }

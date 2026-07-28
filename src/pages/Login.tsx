@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getSupabase } from '../lib/supabase'
 import { useApp } from '../contexts/AppContext'
 import { Alert, Button, Card, Input } from '../components/ui'
+import { authErrorMessage } from '../lib/authError'
 
 type Mode = 'login' | 'register' | 'forgot'
 
@@ -17,13 +18,42 @@ function GoogleIcon() {
   )
 }
 
+/**
+ * iOS Safari discards the JavaScript heap of a backgrounded tab, so a learner who
+ * switches apps to fetch a confirmation code returns to an empty form.
+ *
+ * Only the fields that are safe to restore are kept: the email, the display name
+ * and which tab they were on. The PASSWORD IS NEVER STORED — writing it to web
+ * storage would leave a plaintext credential on a shared family device, which is a
+ * worse problem than the one being solved.
+ */
+const DRAFT_KEY = 'hp_login_draft_v1'
+
+interface LoginDraft {
+  mode?: Mode
+  email?: string
+  displayName?: string
+}
+
+function readLoginDraft(): LoginDraft {
+  if (typeof sessionStorage === 'undefined') return {}
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY)
+    const parsed = raw ? JSON.parse(raw) : null
+    return parsed && typeof parsed === 'object' ? parsed as LoginDraft : {}
+  } catch {
+    return {}
+  }
+}
+
 export default function Login() {
   const { lang, setLang, continueAsGuest } = useApp()
   const navigate = useNavigate()
-  const [mode, setMode] = useState<Mode>('login')
-  const [email, setEmail] = useState('')
+  const draft = useRef(readLoginDraft()).current
+  const [mode, setMode] = useState<Mode>(draft.mode ?? 'login')
+  const [email, setEmail] = useState(draft.email ?? '')
   const [password, setPassword] = useState('')
-  const [displayName, setDisplayName] = useState('')
+  const [displayName, setDisplayName] = useState(draft.displayName ?? '')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
@@ -48,18 +78,42 @@ export default function Login() {
 
   const reset = () => { setError(''); setSuccess('') }
 
+  // Written on change rather than on pagehide: iOS does not reliably fire unload
+  // events when it evicts a tab.
+  useEffect(() => {
+    if (typeof sessionStorage === 'undefined') return
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ mode, email, displayName } satisfies LoginDraft))
+    } catch {
+      // Private mode or quota. Losing the draft is acceptable; crashing is not.
+    }
+  }, [mode, email, displayName])
+
+  const clearDraft = () => {
+    try { sessionStorage.removeItem(DRAFT_KEY) } catch { /* nothing to clear */ }
+  }
+
+  // A ref lock, not just the `loading` state: two taps dispatched before React
+  // commits setLoading(true) would both pass a state check. Button.tsx already
+  // maps loading -> disabled, so this only closes the same-tick window.
+  const submitLock = useRef(false)
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
+    if (submitLock.current) return
+    submitLock.current = true
     reset()
     setLoading(true)
     try {
       if (mode === 'login') {
         const { error: authError } = await getSupabase().auth.signInWithPassword({ email, password })
         if (authError) throw authError
+        clearDraft()
         navigate('/')
       } else if (mode === 'register') {
         const { error: authError } = await getSupabase().auth.signUp({ email, password, options: { data: { display_name: displayName } } })
         if (authError) throw authError
+        clearDraft()
         navigate('/')
       } else {
         const { error: authError } = await getSupabase().auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` })
@@ -67,8 +121,11 @@ export default function Login() {
         setSuccess(t.resetSent)
       }
     } catch (caught: unknown) {
-      setError(caught instanceof Error ? caught.message : 'An error occurred')
+      // This used to render the raw Supabase error text, so a pt-BR learner was
+      // shown untranslated English for a wrong password or a rate limit.
+      setError(authErrorMessage(caught, lang))
     } finally {
+      submitLock.current = false
       setLoading(false)
     }
   }
@@ -79,7 +136,7 @@ export default function Login() {
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/`, queryParams: { prompt: 'select_account', access_type: 'online' } },
     })
-    if (authError) { setError(authError.message); setGoogleLoading(false) }
+    if (authError) { setError(authErrorMessage(authError, lang)); setGoogleLoading(false) }
   }
 
   return (

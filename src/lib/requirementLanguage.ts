@@ -84,7 +84,9 @@ export function describeRequirement(kind: string, value: string): RequirementLan
 
   if (kind === 'call') {
     return {
-      what: { en: `a call to ${value}()`, pt: `uma chamada a ${value}()` },
+      // "a call to print()" is how a programmer says it. On phase 0 this line is read
+      // by someone who has never seen the word "call" used this way.
+      what: { en: `that you use ${value}()`, pt: `que você use ${value}()` },
       how: { en: `Use ${value}() somewhere in your solution.`, pt: `Use ${value}() em algum ponto da sua solução.` },
     }
   }

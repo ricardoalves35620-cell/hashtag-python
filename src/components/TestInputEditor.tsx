@@ -50,7 +50,16 @@ function parseInputCalls(code: string): string[] {
 interface Props {
   code: string
   value: string          // newline-separated values (same format as before)
-  onChange: (value: string) => void
+  /**
+   * `origin` distinguishes a value the learner typed from one this component derived
+   * by re-parsing the code for input() prompts.
+   *
+   * The derived call fires on mount, before a saved draft has been restored. The
+   * parent used to treat it as a real edit: it stamped lastEditAt and wrote a draft
+   * built from whatever `codes` held at that moment — the starter. Opening any
+   * exercise whose starter calls input() therefore erased the learner's saved code.
+   */
+  onChange: (value: string, origin: 'derived' | 'user') => void
   lang: Lang
   suggestedInputs?: string[]
 }
@@ -89,7 +98,7 @@ export default function TestInputEditor({ code, value, onChange, lang, suggested
     }))
 
     setRows(newRows)
-    onChange(newRows.map(r => r.value).join('\n'))
+    onChange(newRows.map(r => r.value).join('\n'), 'derived')
   }, [code, suggestedInputs.join('\n')])
 
   const updateRow = (index: number, newValue: string) => {
@@ -99,7 +108,7 @@ export default function TestInputEditor({ code, value, onChange, lang, suggested
       updated = [...updated, { prompt: rows[0]?.prompt ?? '', value: '' }]
     }
     setRows(updated)
-    onChange(updated.map(r => r.value).join('\n').replace(/\n+$/, '')) // trim trailing newlines
+    onChange(updated.map(r => r.value).join('\n').replace(/\n+$/, ''), 'user') // trim trailing newlines
   }
 
   const t = {

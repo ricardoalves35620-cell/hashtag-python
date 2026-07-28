@@ -504,7 +504,8 @@ print("After paint:", total)`,
       hints: [
         { en: 'Add after the last print: total += 500 then print("After tiles:", total)', pt: 'Adicione após o último print: total += 500 e depois print("After tiles:", total)' },
         { en: 'New total: 3035 + 500 = 3535', pt: 'Novo total: 3035 + 500 = 3535' }
-      ]
+      ],
+      sampleOutput: { en: 'Start: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035\nAfter tiles: 3535', pt: 'Start: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035\nAfter tiles: 3535' }
     },
     {
       id: 'ex3_fill',
@@ -782,7 +783,8 @@ print("New type:", type(converted))
 print("Math now works:", converted * 2)`,
       hints: [
         { en: 'The raw type is str even though you typed digits — input() always returns text', pt: 'O tipo bruto é str mesmo digitando dígitos — input() sempre retorna texto' }
-      ]
+      ],
+      sampleOutput: { en: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>', pt: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>' }
     },
     {
       id: 'ex4_fill',
@@ -1131,8 +1133,8 @@ if int(palpite) == 10:
       id: 'ex5_guided',
       title: { en: '🟢 Guided: Trace the Decision', pt: '🟢 Guiado: Rastreie a Decisão' },
       description: {
-        en: 'Goal:\nRun the code, type a number when prompted, and trace the if/else decision. Test with a value above the threshold to see the if-block run and the else-block skip, then test with a value below to see the opposite. Finally, try the exact boundary value to see which branch catches it.\n\nExample, typing 8000:\nHIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---\n\nExample, typing 2000:\nStandard processing\nAuto-queue assigned\n--- check complete ---',
-        pt: 'Objetivo:\nExecute o código, digite um número quando solicitado e acompanhe a decisão do if/else. Teste com um valor acima do limite para ver o bloco if executar e o else ser pulado, depois teste com um valor abaixo para ver o oposto. Por fim, tente o valor exato do limite para ver qual ramo captura.\n\nExemplo, digitando 8000:\nHIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---\n\nExemplo, digitando 2000:\nStandard processing\nAuto-queue assigned\n--- check complete ---'
+        en: 'Goal:\nRun the code, type a number when prompted, and trace the if/else decision. Test with a value above the threshold to see the if-block run and the else-block skip, then test with a value below to see the opposite. Finally, try the exact boundary value to see which branch catches it.\n\nExample, typing 8000:\n🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---\n\nExample, typing 2000:\n🟢 Standard processing\nAuto-queue assigned\n--- check complete ---',
+        pt: 'Objetivo:\nExecute o código, digite um número quando solicitado e acompanhe a decisão do if/else. Teste com um valor acima do limite para ver o bloco if executar e o else ser pulado, depois teste com um valor abaixo para ver o oposto. Por fim, tente o valor exato do limite para ver qual ramo captura.\n\nExemplo, digitando 8000:\n🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---\n\nExemplo, digitando 2000:\n🟢 Standard processing\nAuto-queue assigned\n--- check complete ---'
       },
       starterCode: `amount = int(input("Amount: $"))
 
@@ -1146,7 +1148,8 @@ else:
 print("--- check complete ---")`,
       hints: [
         { en: 'The last print always runs — it is OUTSIDE the if/else block (no indentation)', pt: 'O último print sempre executa — está FORA do bloco if/else (sem indentação)' }
-      ]
+      ],
+      sampleOutput: { en: '🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---', pt: '🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---' }
     },
     {
       id: 'ex5_fill',
@@ -1431,8 +1434,8 @@ if dano > 1000:
       id: 'ex6_guided',
       title: { en: '🟢 Guided: Watch the Waterfall', pt: '🟢 Guiado: Veja a Cachoeira' },
       description: {
-        en: 'Goal:\nRun the code and type different values to trace the if/elif/else waterfall. Notice how only the first matching branch runs and the rest are skipped. Test with values in each range and try the exact boundary values to see which branch catches them.\n\nExample, typing 12000:\nCRITICAL — 2h SLA\n\nExample, typing 7000:\nURGENT — 4h SLA\n\nExample, typing 500:\nLOW — 72h SLA',
-        pt: 'Objetivo:\nExecute o código e digite valores diferentes para acompanhar a cascata do if/elif/else. Observe como apenas o primeiro ramo que atende à condição é executado e os demais são pulados. Teste com valores de cada faixa e tente os valores exatos dos limites para ver qual ramo os captura.\n\nExemplo, digitando 12000:\nCRITICAL — 2h SLA\n\nExemplo, digitando 7000:\nURGENT — 4h SLA\n\nExemplo, digitando 500:\nLOW — 72h SLA'
+        en: 'Goal:\nRun the code and type different values to trace the if/elif/else waterfall. Notice how only the first matching branch runs and the rest are skipped. Test with values in each range and try the exact boundary values to see which branch catches them.\n\nExample, typing 12000:\n🔴 CRITICAL — 2h SLA\n\nExample, typing 7000:\n🟠 URGENT — 4h SLA\n\nExample, typing 500:\n🟢 LOW — 72h SLA',
+        pt: 'Objetivo:\nExecute o código e digite valores diferentes para acompanhar a cascata do if/elif/else. Observe como apenas o primeiro ramo que atende à condição é executado e os demais são pulados. Teste com valores de cada faixa e tente os valores exatos dos limites para ver qual ramo os captura.\n\nExemplo, digitando 12000:\n🔴 CRITICAL — 2h SLA\n\nExemplo, digitando 7000:\n🟠 URGENT — 4h SLA\n\nExemplo, digitando 500:\n🟢 LOW — 72h SLA'
       },
       starterCode: `amount = int(input("Amount: $"))
 
@@ -1446,7 +1449,8 @@ else:
     print("🟢 LOW — 72h SLA")`,
       hints: [
         { en: '12000 stops at the first check; 7000 passes it and stops at the second; 500 falls all the way to else', pt: '12000 para na primeira verificação; 7000 passa e para na segunda; 500 cai até o else' }
-      ]
+      ],
+      sampleOutput: { en: '🔴 CRITICAL — 2h SLA', pt: '🔴 CRITICAL — 2h SLA' }
     },
     {
       id: 'ex6_fill',
@@ -2110,8 +2114,8 @@ print(total)              # 60 ✅
       id: 'ex8_guided',
       title: { en: '🟢 Guided: One Item Per Turn', pt: '🟢 Guiado: Um Item Por Vez' },
       description: {
-        en: 'Goal:\nRun the code and watch how a for loop processes each item in a list, one at a time. Observe that no counter is needed — the loop automatically visits every element. Then add a fourth item to the list before the loop, predict what changes in the output, and run to confirm.\n\nOutput:\nQueue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!',
-        pt: 'Objetivo:\nExecute o código e veja como um loop for processa cada item de uma lista, um por vez. Observe que não é preciso contador — o loop visita automaticamente cada elemento. Depois adicione um quarto item à lista antes do loop, preveja o que muda na saída e execute para confirmar.\n\nSaída:\nQueue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!'
+        en: 'Goal:\nRun the code and watch how a for loop processes each item in a list, one at a time. Observe that no counter is needed — the loop automatically visits every element. Then add a fourth item to the list before the loop, predict what changes in the output, and run to confirm.\n\nOutput before your change:\nQueue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!',
+        pt: 'Objetivo:\nExecute o código e veja como um loop for processa cada item de uma lista, um por vez. Observe que não é preciso contador — o loop visita automaticamente cada elemento. Depois adicione um quarto item à lista antes do loop, preveja o que muda na saída e execute para confirmar.\n\nSaída antes da sua alteração:\nQueue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!'
       },
       starterCode: `clients = ["Alice", "Bob", "Carlos"]
 print("Queue size:", len(clients))

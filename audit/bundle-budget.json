@@ -1,0 +1,5 @@
+{
+  "raw": 501369,
+  "gzip": 140013,
+  "note": "First-paint payload. Update deliberately, never to make CI green."
+}

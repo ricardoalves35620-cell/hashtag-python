@@ -17,6 +17,7 @@ import { saveExamScore } from '../lib/progress'
 import { loadExamDraft, saveExamDraft, clearExamDraft } from '../lib/examDraft'
 import LessonBlock from '../components/LessonBlock'
 import { analyzeCode, preparePythonEngine, runCode, runExam, type TestResult } from '../lib/pyodide'
+import { isPythonUnavailable, runtimeUnavailableText } from '../lib/runtimeMessages'
 import { validateExamStructure } from '../lib/learningValidation'
 import { getSkill, getSkillsForPhase } from '../data/skills'
 import { extractErrorCategory } from '../lib/learningEngine'
@@ -121,7 +122,8 @@ export default function Exam() {
         setErrorExplanation(null)
       }
     } catch (error) {
-      setTestOutput(`❌ Failed: ${error}`)
+      // An exam is high stakes: a blocked CDN must not read as the learner's failure.
+      setTestOutput(isPythonUnavailable(error) ? runtimeUnavailableText(lang) : `❌ Failed: ${error}`)
     } finally {
       setRunning(false)
       setPyodideLoading(false)

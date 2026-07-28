@@ -33,7 +33,14 @@ describe('Sprint 10.3 audit and learning-flow stabilization', () => {
 
   it('keeps fixed actions above navigation and hides navigation cleanly for the virtual keyboard', () => {
     const css = read('./index.css')
-    expect(css).toContain('bottom: calc(var(--app-nav-height) + max(var(--safe-bottom), .5rem))')
+    // The sticky actions must clear BOTH the bottom navigation and the virtual
+    // keyboard. The original rule only accounted for the nav, which left the primary
+    // CTA rendered underneath the keyboard on an iPhone SE.
+    expect(css).toContain('bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + max(var(--safe-bottom), .5rem))')
+    // The nav is translated off-screen while the keyboard is up, so its reserved
+    // height must collapse or the button floats above the keyboard instead of on it.
+    expect(css).toContain('.hp-app-shell--keyboard-open {')
+    expect(css).toContain('--app-nav-height: 0px')
     expect(css).toContain('.hp-app-shell--keyboard-open .hp-main__content')
     expect(css).not.toContain('.hp-app-shell--keyboard-open .hp-main-scroll')
     expect(css).toContain('--desktop-rail-width: 104px')

@@ -1,0 +1,4 @@
+src/data/phases/phases_9_to_27_stubs.ts is dead code — nothing imports it — and it
+held 350 claim / 311 damage / 254 payout references. Delete it after extracting:
+
+    git rm src/data/phases/phases_9_to_27_stubs.ts

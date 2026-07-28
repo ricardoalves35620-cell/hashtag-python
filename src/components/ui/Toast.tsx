@@ -54,9 +54,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="hp-toast-region" aria-live="polite" aria-relevant="additions removals">
+      {/* The region is a plain container, not a live region.
+          It previously carried aria-live="polite" while each toast inside carried
+          role="status" or role="alert" — nesting live regions inside one another
+          makes announcements inconsistent between screen readers, and an assertive
+          alert nested in a polite region can be downgraded or dropped. Each toast
+          owns its own politeness instead. */}
+      <div className="hp-toast-region">
         {toasts.map(toast => (
-          <div key={toast.id} className={cn('hp-toast', `hp-toast--${toast.tone}`)} role={toast.tone === 'danger' ? 'alert' : 'status'}>
+          <div
+            key={toast.id}
+            className={cn('hp-toast', `hp-toast--${toast.tone}`)}
+            role={toast.tone === 'danger' ? 'alert' : 'status'}
+            aria-live={toast.tone === 'danger' ? 'assertive' : 'polite'}
+          >
             <span className="hp-toast__icon" aria-hidden="true">{symbols[toast.tone ?? 'info']}</span>
             <div className="hp-toast__content">
               <strong>{toast.title}</strong>

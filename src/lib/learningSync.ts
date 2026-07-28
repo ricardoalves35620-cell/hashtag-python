@@ -1,6 +1,7 @@
 import { getSupabase } from './supabase'
 import { mergeLearningStates, type LearningState } from './learningEngine'
 import { emitSyncState } from './syncStatus'
+import { enqueueMutation } from './outbox'
 
 export async function fetchRemoteLearningState(userId: string): Promise<LearningState | null> {
   try {
@@ -71,7 +72,15 @@ export function scheduleLearningStateSync(userId: string, state: LearningState) 
       const merged = await syncLearningStateNow(userId, latest)
       window.dispatchEvent(new CustomEvent('hp:learning-state-synced', { detail: merged }))
     } catch {
-      pendingStates.set(userId, latest)
+      // Re-queuing into this in-memory Map armed no new timer, so nothing ever
+      // drained it — closing the tab lost the write outright. Hand it to the
+      // durable outbox instead, which replays on reconnect.
+      await enqueueMutation({
+        table: 'learning_states',
+        row: { user_id: userId, state: latest, updated_at: new Date(latest.updatedAt).toISOString() },
+        onConflict: 'user_id',
+        userId,
+      })
     }
   }, 650))
 }

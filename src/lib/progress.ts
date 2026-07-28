@@ -1,8 +1,11 @@
 import { getSupabase } from './supabase'
 import type { UserProgress } from '../data/types'
-import { ALL_PHASES } from '../data/phases'
 import { emitSyncState } from './syncStatus'
-import { getMiniProjectForPhase } from '../data/miniProjects'
+// Deliberately NOT ../data/phases or ../data/miniProjects. AppContext imports this
+// module, so anything imported here lands in the entry chunk — and those two would
+// put the entire 69-phase curriculum in front of the login screen. phaseIndex holds
+// just the ids and milestone flags, and phaseIndex.test.ts keeps it honest.
+import { PHASE_IDS, phaseHasMiniProject } from '../data/phaseIndex'
 
 const GUEST_ID = 'guest'
 
@@ -240,12 +243,12 @@ export async function fetchFamilyProgress(groupId: string) {
 }
 
 export function getPhaseStatus(progress: UserProgress[], phaseId: number): 'locked' | 'active' | 'done' {
-  const orderedIds = ALL_PHASES.map(phase => phase.id)
+  const orderedIds = PHASE_IDS
   const phaseIndex = orderedIds.indexOf(phaseId)
   if (phaseIndex === -1) return 'locked'
 
   const current = progress.find(row => row.phase_id === phaseId)
-  const currentHasProject = Boolean(getMiniProjectForPhase(phaseId))
+  const currentHasProject = phaseHasMiniProject(phaseId)
   const currentMastered = Boolean(current?.exam_passed && (!currentHasProject || current.project_done))
   if (currentMastered) return 'done'
 
@@ -261,9 +264,9 @@ export function getPhaseStatus(progress: UserProgress[], phaseId: number): 'lock
 export function getOverallProgress(progress: UserProgress[]): number {
   // Optional work must not hold the number down: a learner who skips every
   // mini-project can still reach 100%.
-  const mastered = ALL_PHASES.filter(phase => {
-    const row = progress.find(item => item.phase_id === phase.id)
+  const mastered = PHASE_IDS.filter(phaseId => {
+    const row = progress.find(item => item.phase_id === phaseId)
     return Boolean(row?.exam_passed)
   }).length
-  return ALL_PHASES.length > 0 ? Math.round((mastered / ALL_PHASES.length) * 100) : 0
+  return PHASE_IDS.length > 0 ? Math.round((mastered / PHASE_IDS.length) * 100) : 0
 }

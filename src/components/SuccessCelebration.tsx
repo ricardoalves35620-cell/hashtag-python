@@ -17,7 +17,14 @@ export default function SuccessCelebration({ active, label = 'Achievement unlock
   const [visible, setVisible] = useState(active)
 
   useEffect(() => {
-    if (!active) return
+    // Returning early when `active` goes false left `visible` true forever: the
+    // previous run's cleanup had already cancelled the only timer that would have
+    // hidden it, so the confetti overlay stayed on screen for the rest of the
+    // session. Hide immediately instead.
+    if (!active) {
+      setVisible(false)
+      return
+    }
     setVisible(true)
     const timer = window.setTimeout(() => setVisible(false), 1800)
     return () => window.clearTimeout(timer)

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { EditorView, basicSetup } from 'codemirror'
 import { python } from '@codemirror/lang-python'
 import { oneDark } from '@codemirror/theme-one-dark'
-import { EditorState } from '@codemirror/state'
+import { Annotation, EditorState } from '@codemirror/state'
 import { keymap } from '@codemirror/view'
 import { indentWithTab } from '@codemirror/commands'
 
@@ -12,6 +12,18 @@ interface Props {
   height?: string
   readOnly?: boolean
 }
+
+/**
+ * Marks a document change this component made itself, so the update listener can tell
+ * it apart from something the learner typed.
+ *
+ * CodeMirror reports docChanged for programmatic dispatches exactly as it does for
+ * keystrokes. Without this, every time the `value` prop changed — switching exercise
+ * tabs, restoring a saved draft — the editor announced the new text as a learner edit.
+ * The page persisted it, which meant opening an exercise you had already worked on
+ * saved the starter code over your solution before you could read it.
+ */
+const ExternalChange = Annotation.define<boolean>()
 
 export default function CodeEditor({ value, onChange, height = '300px', readOnly = false }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -30,9 +42,9 @@ export default function CodeEditor({ value, onChange, height = '300px', readOnly
         oneDark,
         keymap.of([indentWithTab]),
         EditorView.updateListener.of(update => {
-          if (update.docChanged) {
-            onChangeRef.current(update.state.doc.toString())
-          }
+          if (!update.docChanged) return
+          if (update.transactions.some(transaction => transaction.annotation(ExternalChange))) return
+          onChangeRef.current(update.state.doc.toString())
         }),
         EditorView.editable.of(!readOnly),
         EditorView.theme({
@@ -54,7 +66,8 @@ export default function CodeEditor({ value, onChange, height = '300px', readOnly
     const current = view.state.doc.toString()
     if (current !== value) {
       view.dispatch({
-        changes: { from: 0, to: current.length, insert: value }
+        changes: { from: 0, to: current.length, insert: value },
+        annotations: ExternalChange.of(true),
       })
     }
   }, [value])

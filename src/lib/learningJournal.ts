@@ -1,7 +1,10 @@
 import { getSupabase } from './supabase'
 import { readState, writeState } from './syncedStore'
 
-export interface JournalPreferences {
+// A type alias, not an interface. TypeScript gives type aliases an implicit index
+// signature but withholds one from interfaces, so `interface` here failed the
+// `T extends Record<string, unknown>` constraint on writeState() and broke `tsc`.
+export type JournalPreferences = {
   showJournal: boolean
   showDetailedExplanations: boolean
   showFlowcharts: boolean
@@ -28,7 +31,7 @@ const PROGRESS_PREFIX = 'hp_journey_progress_v1_'
  * through the shared synced store, which keeps a synchronous local cache and
  * writes through to the cloud.
  */
-export function loadJournalPreferences(learnerId?: string): JournalPreferences {
+export function loadJournalPreferences(learnerId?: string | null): JournalPreferences {
   if (learnerId) {
     const stored = readState<Partial<JournalPreferences>>(learnerId, PREF_KEY, {})
     if (Object.keys(stored).length) return { ...DEFAULTS, ...stored }
@@ -39,7 +42,7 @@ export function loadJournalPreferences(learnerId?: string): JournalPreferences {
   } catch { return DEFAULTS }
 }
 
-export function saveJournalPreferences(value: JournalPreferences, learnerId?: string) {
+export function saveJournalPreferences(value: JournalPreferences, learnerId?: string | null) {
   // Keep the legacy key so a learner who has not signed in yet loses nothing.
   try { localStorage.setItem(PREF_KEY, JSON.stringify(value)) } catch { /* storage blocked */ }
   if (learnerId) writeState<JournalPreferences>(learnerId, PREF_KEY, value)

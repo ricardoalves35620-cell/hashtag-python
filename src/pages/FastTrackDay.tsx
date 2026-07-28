@@ -13,6 +13,7 @@ import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
 import { FASTTRACK_DAYS } from '../data/fasttrack'
 import { preparePythonEngine, runCode } from '../lib/pyodide'
+import { isPythonUnavailable, runtimeUnavailableText } from '../lib/runtimeMessages'
 
 type Tab = 'lesson' | 'exercise'
 
@@ -89,7 +90,7 @@ export default function FastTrackDay() {
       }
       setHasRun(true)
     } catch (e) {
-      setOutput(`Error: ${e}`)
+      setOutput(isPythonUnavailable(e) ? runtimeUnavailableText(lang) : `Error: ${e}`)
     } finally {
       setRunning(false)
     }

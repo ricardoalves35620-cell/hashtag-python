@@ -7,6 +7,7 @@ import type { Theme } from '../contexts/AppContext'
 import EditorPreferences from '../components/EditorPreferences'
 import SyncStatusIndicator from '../components/SyncStatusIndicator'
 import { clearLocalLearningData, resetLearningProgress } from '../lib/resetLearningProgress'
+import { deleteAccount } from '../lib/deleteAccount'
 import LearningPreferences from '../components/LearningPreferences'
 
 const COUNTRY_CODES = [
@@ -48,6 +49,9 @@ export default function Profile() {
   const [error, setError] = useState('')
   const [showLogout, setShowLogout] = useState(false)
   const [showReset, setShowReset] = useState(false)
+  const [showDelete, setShowDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteConfirmation, setDeleteConfirmation] = useState('')
   const [resetting, setResetting] = useState(false)
   const [resetConfirmation, setResetConfirmation] = useState('')
 
@@ -81,6 +85,13 @@ export default function Profile() {
       language: 'Language',
       save: 'Save changes', saving: 'Saving...', saved: '✅ Saved!',
       logout: 'Sign out', logoutConfirm: 'Are you sure you want to sign out?',
+      deleteAccount: 'Delete my account',
+      deleteDescription: 'Permanently erase your account and every piece of learning data attached to it. This is different from resetting progress — the account itself stops existing and cannot be recovered.',
+      deleteTitle: 'Delete your account permanently?',
+      deleteWarning: 'Your profile, progress, code drafts, journal entries and exam history are erased from our servers. Challenges you created are removed. A family group you started stays for its other members. This cannot be undone.',
+      deleteType: 'Type DELETE to confirm',
+      deleteAction: 'Permanently delete my account', deleting: 'Deleting...',
+      deleteCancel: 'Keep my account', deleteDone: 'Account deleted.',
       cancel: 'Cancel', confirm: 'Sign out',
       guestTitle: 'Visitor profile', guestText: 'Your progress is stored only in this browser. Create an account to use synchronization and access it on other devices.', guestAction: 'Create account or sign in',
       learningData: 'Learning data', resetProgress: 'Reset all learning progress',
@@ -102,6 +113,13 @@ export default function Profile() {
       language: 'Idioma',
       save: 'Salvar alterações', saving: 'Salvando...', saved: '✅ Salvo!',
       logout: 'Sair', logoutConfirm: 'Tem certeza que deseja sair?',
+      deleteAccount: 'Excluir minha conta',
+      deleteDescription: 'Apague permanentemente sua conta e todos os dados de aprendizagem ligados a ela. Isso é diferente de resetar o progresso — a conta deixa de existir e não pode ser recuperada.',
+      deleteTitle: 'Excluir sua conta permanentemente?',
+      deleteWarning: 'Seu perfil, progresso, rascunhos de código, diário e histórico de provas são apagados dos nossos servidores. Desafios que você criou são removidos. Um grupo da família que você criou continua para os outros membros. Esta ação não pode ser desfeita.',
+      deleteType: 'Digite EXCLUIR para confirmar',
+      deleteAction: 'Excluir minha conta permanentemente', deleting: 'Excluindo...',
+      deleteCancel: 'Manter minha conta', deleteDone: 'Conta excluída.',
       cancel: 'Cancelar', confirm: 'Sair',
       guestTitle: 'Perfil visitante', guestText: 'Seu progresso fica apenas neste navegador. Crie uma conta para sincronizar e acessar em outros dispositivos.', guestAction: 'Criar conta ou entrar',
       learningData: 'Dados de aprendizagem', resetProgress: 'Resetar todo o progresso',
@@ -233,6 +251,24 @@ export default function Profile() {
       setError(e instanceof Error ? e.message : 'Could not reset learning progress')
     } finally {
       setResetting(false)
+    }
+  }
+
+  // ── Delete account (LGPD Art. 18, VI) ──
+  const handleDeleteAccount = async () => {
+    if (!user) return
+    const expected = lang === 'pt' ? 'EXCLUIR' : 'DELETE'
+    if (deleteConfirmation.trim().toUpperCase() !== expected) return
+    setDeleting(true)
+    setError('')
+    try {
+      await deleteAccount()
+      // The session is gone and every route is guarded, so a hard navigation is
+      // the only way to guarantee no stale in-memory state survives.
+      window.location.replace('/login')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not delete the account')
+      setDeleting(false)
     }
   }
 
@@ -495,6 +531,56 @@ export default function Profile() {
         >
           {t.logout}
         </button>
+
+        {/* Delete account — LGPD Art. 18, VI requires this to be reachable in-app,
+            not via a support request. */}
+        <button
+          onClick={() => setShowDelete(true)}
+          data-testid="delete-account-open"
+          style={{
+            width: '100%', padding: '12px', borderRadius: 12,
+            background: 'transparent',
+            color: '#f87171', fontSize: 14, fontWeight: 500,
+            border: '0.5px solid rgba(239,68,68,0.35)', cursor: 'pointer',
+            marginBottom: 8,
+          }}
+        >
+          {t.deleteAccount}
+        </button>
+
+        {showDelete && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 80, padding: 16 }} role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
+            <div style={{ width: '100%', maxWidth: 440, background: 'var(--c-card)', border: '1px solid #7f1d1d', borderRadius: 18, padding: 20 }}>
+              <div style={{ fontSize: 22, marginBottom: 8 }} aria-hidden="true">⚠️</div>
+              <h2 id="delete-account-title" style={{ fontSize: 18, color: 'var(--c-text)', fontWeight: 700, marginBottom: 8 }}>{t.deleteTitle}</h2>
+              <p style={{ fontSize: 13, color: 'var(--c-text2)', lineHeight: 1.6, marginBottom: 14 }}>{t.deleteWarning}</p>
+              <label style={labelStyle} htmlFor="delete-account-confirmation">{t.deleteType}</label>
+              <input
+                id="delete-account-confirmation"
+                value={deleteConfirmation}
+                onChange={event => setDeleteConfirmation(event.target.value)}
+                autoComplete="off"
+                style={{ ...inputStyle, marginBottom: 12 }}
+                data-testid="delete-account-confirmation"
+              />
+              <button
+                onClick={handleDeleteAccount}
+                data-testid="delete-account-confirm"
+                disabled={deleting || deleteConfirmation.trim().toUpperCase() !== (lang === 'pt' ? 'EXCLUIR' : 'DELETE')}
+                style={{ width: '100%', padding: 14, borderRadius: 12, background: '#dc2626', color: '#fff', fontSize: 14, fontWeight: 600, border: 'none', cursor: 'pointer', marginBottom: 8, opacity: deleting || deleteConfirmation.trim().toUpperCase() !== (lang === 'pt' ? 'EXCLUIR' : 'DELETE') ? 0.45 : 1 }}
+              >
+                {deleting ? t.deleting : t.deleteAction}
+              </button>
+              <button
+                onClick={() => { setShowDelete(false); setDeleteConfirmation('') }}
+                disabled={deleting}
+                style={{ width: '100%', padding: 12, borderRadius: 12, background: 'transparent', color: 'var(--c-muted)', fontSize: 14, border: '1px solid var(--c-border)', cursor: 'pointer' }}
+              >
+                {t.deleteCancel}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Logout confirm overlay */}
         {showReset && (

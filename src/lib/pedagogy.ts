@@ -37,8 +37,10 @@ function stageDefaults(phase: Phase, lang: Lang) {
   const values = {
     base: {
       mistakes: {
-        en: ['Changing several things before checking one prediction.', 'Ignoring the first useful traceback line.', 'Printing a fixed answer instead of calculating from variables.'],
-        pt: ['Alterar várias coisas antes de verificar uma previsão.', 'Ignorar a primeira linha útil do traceback.', 'Imprimir uma resposta fixa em vez de calcular com variáveis.'],
+        // The "base" stage is where someone meets code for the first time. Words like
+        // traceback belong here only once they have been introduced, and they have not.
+        en: ['Changing several things before checking one prediction.', 'Skipping the error message instead of reading which line it points at.', 'Printing a fixed answer instead of calculating from variables.'],
+        pt: ['Alterar várias coisas antes de verificar uma previsão.', 'Pular a mensagem de erro em vez de ler para qual linha ela aponta.', 'Imprimir uma resposta fixa em vez de calcular com variáveis.'],
       },
       context: {
         en: 'This practice builds the habit of predicting, testing one change and explaining the result with concrete evidence.',

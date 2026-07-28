@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 import BottomNav from './BottomNav'
 import { Button } from './ui'
-import { isVirtualKeyboardOpen } from '../lib/mobileViewport'
+import { isVirtualKeyboardOpen, keyboardInset } from '../lib/mobileViewport'
 import SyncStatusIndicator from './SyncStatusIndicator'
 
 interface Props {
@@ -27,13 +27,30 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
     const viewport = window.visualViewport
     if (!viewport) return
 
+    // Published on documentElement, not on the shell: the toast region is a sibling
+    // of the shell (ToastProvider renders it outside Layout), so a property set on
+    // the shell would never reach it.
+    const root = document.documentElement
+    let lastInset = -1
+
     const updateKeyboardState = () => {
-      setKeyboardOpen(isVirtualKeyboardOpen(
+      const open = isVirtualKeyboardOpen(
         window.innerHeight,
         viewport.height,
         document.activeElement,
         viewport.width,
-      ))
+      )
+      setKeyboardOpen(open)
+
+      const inset = open
+        ? keyboardInset(window.innerHeight, viewport.height, viewport.offsetTop)
+        : 0
+
+      // visualViewport 'scroll' fires continuously; only touch the DOM on a change.
+      if (inset !== lastInset) {
+        lastInset = inset
+        root.style.setProperty('--keyboard-inset', `${inset}px`)
+      }
     }
 
     viewport.addEventListener('resize', updateKeyboardState)
@@ -49,6 +66,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
       document.removeEventListener('focusin', updateKeyboardState)
       document.removeEventListener('focusout', updateKeyboardState)
       window.removeEventListener('orientationchange', updateKeyboardState)
+      root.style.removeProperty('--keyboard-inset')
     }
   }, [])
 

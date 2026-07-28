@@ -17,6 +17,10 @@
   color-scheme: dark;
 
   /* Safe areas */
+  /* How much of the viewport the virtual keyboard is covering. Layout.tsx measures
+     it from visualViewport and writes it here; 0 whenever no keyboard is up, so
+     every calc() below is a no-op in that case. */
+  --keyboard-inset: 0px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -675,14 +679,14 @@ input, textarea, select { font-size: 16px !important; }
   overflow-y: auto;
   overscroll-behavior-y: contain;
   scroll-padding-top: var(--space-4);
-  scroll-padding-bottom: calc(var(--app-nav-height) + max(var(--safe-bottom), var(--space-6)));
+  scroll-padding-bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + max(var(--safe-bottom), var(--space-6)));
   -webkit-overflow-scrolling: touch;
 }
 .hp-main__content {
   width: 100%;
   min-height: 100%;
   outline: none;
-  padding-bottom: calc(var(--app-nav-height) + max(var(--safe-bottom), var(--space-5)));
+  padding-bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + max(var(--safe-bottom), var(--space-5)));
 }
 
 /* Existing pages use a root p-4 wrapper. Normalize it without touching every route. */
@@ -944,11 +948,28 @@ input, textarea, select { font-size: 16px !important; }
 @keyframes hp-loading-pulse { 50% { transform: scale(1.04); box-shadow: var(--shadow-lg); } }
 @keyframes hp-loading-slide { from { transform: translateX(-120%); } to { transform: translateX(340%); } }
 
+/* Form controls the browser draws at its own default size.
+   A bare checkbox renders at 13x13 CSS px, which fails WCAG 2.2 SC 2.5.8
+   (Target Size Minimum, 24x24) and is awkward to hit on a phone. */
+.hp-checkbox {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  accent-color: var(--color-primary, #7c3aed);
+  cursor: pointer;
+}
+
+/* The language switch appears on every screen at 35x34. Nudge the whole
+   segmented control to a comfortable touch height without changing its look. */
+.hp-segmented__item {
+  min-height: 44px;
+}
+
 .hp-toast-region {
   position: fixed;
   z-index: 2500;
   right: max(var(--safe-right), var(--space-3));
-  bottom: calc(var(--app-nav-height) + max(var(--safe-bottom), var(--space-4)));
+  bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + max(var(--safe-bottom), var(--space-4)));
   width: min(25rem, calc(100vw - 2rem));
   display: grid;
   gap: var(--space-2);
@@ -1076,11 +1097,17 @@ input, textarea, select { font-size: 16px !important; }
   visibility: hidden;
   pointer-events: none;
 }
+/* The bottom nav is translated out of view while the keyboard is up, so its
+   reserved height must stop pushing sticky content upward. Scoped to the shell,
+   where .hp-main and the sticky actions live. */
+.hp-app-shell--keyboard-open {
+  --app-nav-height: 0px;
+}
 .hp-app-shell--keyboard-open .hp-main {
-  scroll-padding-bottom: var(--space-4);
+  scroll-padding-bottom: calc(var(--keyboard-inset) + var(--space-4));
 }
 .hp-app-shell--keyboard-open .hp-main__content {
-  padding-bottom: var(--space-4);
+  padding-bottom: calc(var(--keyboard-inset) + var(--space-4));
 }
 
 .hp-code-editor {
@@ -1627,7 +1654,7 @@ input, textarea, select { font-size: 16px !important; }
 .sticky-learning-actions {
   position: sticky;
   z-index: 20;
-  bottom: calc(var(--app-nav-height) + max(var(--safe-bottom), .5rem));
+  bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + max(var(--safe-bottom), .5rem));
   margin-top: var(--space-6);
   padding: var(--space-3);
   border: 1px solid color-mix(in srgb, var(--color-border-default) 82%, transparent);
@@ -1721,7 +1748,10 @@ input, textarea, select { font-size: 16px !important; }
   .learning-workspace__aside {
     position: sticky;
     top: calc(var(--safe-top) + 84px);
-    max-height: calc(100vh - var(--safe-top) - 104px);
+    /* dvh, not vh: on mobile Safari 100vh includes the area behind the URL
+       bar, so the rail overflowed the screen. Desktop-only rule, but the
+       breakpoint is width-based and tablets in landscape hit it. */
+    max-height: calc(100dvh - var(--safe-top) - 104px);
     overflow: auto;
   }
   .learning-stage-rail__track {
@@ -1752,7 +1782,7 @@ input, textarea, select { font-size: 16px !important; }
   .learning-stage-rail__marker { width: 30px; height: 30px; }
   .learning-stage-rail__title { font-size: .72rem; }
   .sticky-learning-actions {
-    bottom: calc(var(--app-nav-height) + max(var(--safe-bottom), .5rem));
+    bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + max(var(--safe-bottom), .5rem));
     margin-inline: calc(var(--space-1) * -1);
   }
   .sticky-learning-actions__buttons { grid-template-columns: 1fr; }

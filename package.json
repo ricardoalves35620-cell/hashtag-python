@@ -19,7 +19,7 @@
     "audit:visual": "playwright test",
     "audit": "npm run audit:content && npm run audit:visual",
     "audit:autopilot": "tsx audit/autopilot.ts",
-    "quality:gate": "npm run typecheck && npm run test && npm run build && npm run audit:content && npm run audit:curriculum && npm run audit:v11:gate && npm audit --audit-level=high",
+    "quality:gate": "npm run typecheck && npm run test && npm run build && npm run audit:content && npm run audit:curriculum && npm run audit:v11:gate && npm run audit:budget && npm audit --audit-level=high",
     "audit:state": "node scripts/audit/check-audit-state.mjs",
     "audit:slim": "node scripts/audit/create-slim-report.mjs",
     "audit:pedagogy": "tsx audit/curriculum-audit.ts",
@@ -29,7 +29,9 @@
     "audit:night": "powershell -ExecutionPolicy Bypass -File ./run-auditor-night.ps1 -Hours 8",
     "audit:v11": "tsx audit/v11-readiness.ts",
     "audit:v11:gate": "tsx audit/v11-quality-gate.ts",
-    "audit:v11:baseline": "tsx audit/v11-quality-gate.ts --write-baseline"
+    "audit:v11:baseline": "tsx audit/v11-quality-gate.ts --write-baseline",
+    "audit:budget": "node scripts/audit/check-bundle-budget.mjs",
+    "audit:budget:update": "node scripts/audit/check-bundle-budget.mjs --update"
   },
   "dependencies": {
     "@codemirror/commands": "^6.3.3",

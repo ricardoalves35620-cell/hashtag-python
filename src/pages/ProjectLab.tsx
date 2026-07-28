@@ -78,7 +78,7 @@ export default function ProjectLab() {
             <div className="rounded-lg p-3 mt-3 text-xs leading-relaxed" style={{ background: 'var(--c-purple-f)', color: 'var(--c-purple-l)' }}>{mission.explanation[lang]}</div>
             <label className="block text-xs mt-4 mb-2" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Type the command you would execute' : 'Digite o comando que executaria'}</label>
             <div className="flex gap-2">
-              <input value={command} onChange={event => setCommand(event.target.value)} onKeyDown={event => event.key === 'Enter' && submit()} className="flex-1 rounded-lg px-3 py-2 font-mono text-sm" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)', color: 'var(--c-text)' }} placeholder="$ ..." />
+              <input value={command} onChange={event => setCommand(event.target.value)} onKeyDown={event => event.key === 'Enter' && submit()} aria-label={lang === 'en' ? 'Terminal command' : 'Comando do terminal'} className="flex-1 rounded-lg px-3 py-2 font-mono text-sm" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)', color: 'var(--c-text)' }} placeholder="$ ..." />
               <button onClick={submit} className="rounded-lg px-4 text-sm font-medium text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Check' : 'Verificar'}</button>
             </div>
             {feedback && <div className="text-xs mt-3" style={{ color: feedback.startsWith('Correct') || feedback.startsWith('Correto') ? '#4ade80' : '#f8d477' }}>{feedback}</div>}

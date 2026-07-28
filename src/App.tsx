@@ -1,34 +1,48 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AppProvider, useApp } from './contexts/AppContext'
-import Login from './pages/Login'
-import Home from './pages/Home'
-import PhaseOverview from './pages/PhaseOverview'
-import Lesson from './pages/Lesson'
-import Exercises from './pages/Exercises'
-import Quiz from './pages/Quiz'
-import Exam from './pages/Exam'
-import Profile from './pages/Profile'
-import Group from './pages/Group'
-import FastTrackHome from './pages/FastTrackHome'
-import FastTrackDay from './pages/FastTrackDay'
-import Roadmap from './pages/Roadmap'
-import Onboarding from './pages/Onboarding'
-import ResetPassword from './pages/ResetPassword'
 import ConfigurationScreen from './components/ConfigurationScreen'
 import AppLoadingScreen from './components/AppLoadingScreen'
 import { ToastProvider } from './components/ui'
-import LearningProgress from './pages/LearningProgress'
-import Review from './pages/Review'
-import Diagnostic from './pages/Diagnostic'
-import BaseZero from './pages/BaseZero'
-import Visualizer from './pages/Visualizer'
-import ProjectLab from './pages/ProjectLab'
-import EngineeringLab from './pages/EngineeringLab'
-import AILab from './pages/AILab'
-import CareerReadiness from './pages/CareerReadiness'
-import MiniProject from './pages/MiniProject'
-import Portfolio from './pages/Portfolio'
 import { appConfiguration } from './lib/config'
+
+/**
+ * Routes load on demand.
+ *
+ * These were static imports, which put all 25 screens into one entry chunk — and
+ * because Lesson/Exercises/Quiz/Exam pull in ALL_PHASES, it dragged the 900 KB
+ * curriculum in with them. A learner opening the login screen was downloading the
+ * entire 69-phase curriculum, every lab, and the CodeMirror editor before they
+ * could type an email address. On the 3G connection this app is meant to support,
+ * that is the difference between a usable app and a blank screen.
+ *
+ * AppLoadingScreen is deliberately NOT lazy: it is the Suspense fallback.
+ */
+const Login = lazy(() => import('./pages/Login'))
+const Home = lazy(() => import('./pages/Home'))
+const PhaseOverview = lazy(() => import('./pages/PhaseOverview'))
+const Lesson = lazy(() => import('./pages/Lesson'))
+const Exercises = lazy(() => import('./pages/Exercises'))
+const Quiz = lazy(() => import('./pages/Quiz'))
+const Exam = lazy(() => import('./pages/Exam'))
+const Profile = lazy(() => import('./pages/Profile'))
+const Group = lazy(() => import('./pages/Group'))
+const FastTrackHome = lazy(() => import('./pages/FastTrackHome'))
+const FastTrackDay = lazy(() => import('./pages/FastTrackDay'))
+const Roadmap = lazy(() => import('./pages/Roadmap'))
+const Onboarding = lazy(() => import('./pages/Onboarding'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
+const LearningProgress = lazy(() => import('./pages/LearningProgress'))
+const Review = lazy(() => import('./pages/Review'))
+const Diagnostic = lazy(() => import('./pages/Diagnostic'))
+const BaseZero = lazy(() => import('./pages/BaseZero'))
+const Visualizer = lazy(() => import('./pages/Visualizer'))
+const ProjectLab = lazy(() => import('./pages/ProjectLab'))
+const EngineeringLab = lazy(() => import('./pages/EngineeringLab'))
+const AILab = lazy(() => import('./pages/AILab'))
+const CareerReadiness = lazy(() => import('./pages/CareerReadiness'))
+const MiniProject = lazy(() => import('./pages/MiniProject'))
+const Portfolio = lazy(() => import('./pages/Portfolio'))
 
 // Redirect to /login if not authenticated
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -99,7 +113,12 @@ export default function App() {
     <BrowserRouter>
       <AppProvider>
         <ToastProvider>
-          <AppRoutes />
+          {/* One boundary around the router: every route chunk resolves through it,
+              and the fallback matches the loading screen the auth guards already use,
+              so a cold route feels identical to a session still resolving. */}
+          <Suspense fallback={<AppLoadingScreen label="Loading..." />}>
+            <AppRoutes />
+          </Suspense>
         </ToastProvider>
       </AppProvider>
     </BrowserRouter>

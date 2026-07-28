@@ -30,6 +30,12 @@ export interface RunResult {
   analysis: PythonAnalysis | null
   timedOut: boolean
   durationMs: number
+  /**
+   * True when the Python runtime itself could not start — offline, a blocked CDN,
+   * a jsDelivr outage. This is NOT a mistake in the learner's code, and must never
+   * be graded, explained as a Python error, or recorded as a failed attempt.
+   */
+  runtimeUnavailable: boolean
 }
 
 interface RunPayload {
@@ -68,7 +74,15 @@ class PythonWorkerClient {
     return worker
   }
 
-  private handleMessage(message: { type: string; requestId: number; result?: unknown; error?: string }) {
+  private handleMessage(message: { type: string; requestId: number; result?: unknown; error?: string; stage?: PythonLoadStage; loaded?: number; total?: number }) {
+    if (message.type === 'progress') {
+      publishLoadProgress({
+        stage: message.stage ?? 'downloading',
+        loaded: message.loaded ?? 0,
+        total: message.total ?? 0,
+      })
+      return
+    }
     if (message.type === 'status') return
     const pending = this.pending.get(message.requestId)
     if (!pending) return
@@ -119,16 +133,31 @@ class PythonWorkerClient {
 
   async run(payload: RunPayload, timeoutMs = DEFAULT_EXECUTION_TIMEOUT_MS): Promise<RunResult> {
     const startedAt = performance.now()
+
+    // Starting the runtime and running the learner's code are separate failures and
+    // must not be conflated. Folding them together meant a blocked CDN produced
+    // `error: "Error: Failed to execute 'importScripts'..."`, which grading then
+    // scored as a failed attempt against the learner.
     try {
       await this.prepare()
-      const result = await this.request<Omit<RunResult, 'timedOut' | 'durationMs'>>('run', payload, timeoutMs)
-      return { ...result, timedOut: false, durationMs: Math.round(performance.now() - startedAt) }
+    } catch (error) {
+      return {
+        output: '', testOutput: '', analysis: null, error: null, testError: null,
+        timedOut: error instanceof PythonTimeoutError,
+        runtimeUnavailable: true,
+        durationMs: Math.round(performance.now() - startedAt),
+      }
+    }
+
+    try {
+      const result = await this.request<Omit<RunResult, 'timedOut' | 'durationMs' | 'runtimeUnavailable'>>('run', payload, timeoutMs)
+      return { ...result, timedOut: false, runtimeUnavailable: false, durationMs: Math.round(performance.now() - startedAt) }
     } catch (error) {
       const timedOut = error instanceof PythonTimeoutError
       return {
         output: '', testOutput: '', analysis: null,
         error: error instanceof Error ? `${error.name}: ${error.message}` : String(error),
-        testError: null, timedOut,
+        testError: null, timedOut, runtimeUnavailable: false,
         durationMs: Math.round(performance.now() - startedAt),
       }
     }
@@ -150,6 +179,78 @@ class PythonWorkerClient {
   }
 }
 
+/**
+ * First-run download progress for the Python runtime.
+ *
+ * The runtime is roughly 12 MB and is fetched the first time a learner runs code.
+ * loadPyodide() reports nothing, so this used to be a bare spinner — on a 3G
+ * connection, several silent minutes before the very first line of Python they
+ * ever write. The worker streams the two large assets and reports bytes.
+ */
+export type PythonLoadStage = 'idle' | 'downloading' | 'starting' | 'ready'
+
+export interface PythonLoadProgress {
+  stage: PythonLoadStage
+  loaded: number
+  total: number
+}
+
+let loadProgress: PythonLoadProgress = { stage: 'idle', loaded: 0, total: 0 }
+const progressListeners = new Set<(progress: PythonLoadProgress) => void>()
+
+function publishLoadProgress(next: PythonLoadProgress) {
+  loadProgress = next
+  progressListeners.forEach(listener => listener(next))
+}
+
+export function getPythonLoadProgress(): PythonLoadProgress {
+  return loadProgress
+}
+
+export function subscribePythonLoadProgress(listener: (progress: PythonLoadProgress) => void): () => void {
+  progressListeners.add(listener)
+  return () => { progressListeners.delete(listener) }
+}
+
+/** True once the runtime has been fetched, so the UI can stop explaining the wait. */
+export function isPythonReady(): boolean {
+  return loadProgress.stage === 'ready'
+}
+
+/**
+ * Whether it is polite to start the ~12 MB download before the learner asks.
+ *
+ * Downloading that much on a metered or 2G connection without being asked is
+ * hostile, so warm-up is opt-out on exactly those conditions and the learner can
+ * always trigger it explicitly by pressing Run.
+ */
+export function canWarmPythonAutomatically(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const connection = (navigator as Navigator & {
+    connection?: { saveData?: boolean; effectiveType?: string }
+  }).connection
+  if (!connection) return true
+  if (connection.saveData) return false
+  return !['slow-2g', '2g'].includes(connection.effectiveType ?? '')
+}
+
+/**
+ * The Python runtime could not be started at all.
+ *
+ * Raised by preparePythonEngine() so callers can tell "we could not load Python"
+ * apart from "your program raised an exception". The two need completely different
+ * messages: one is an infrastructure problem the learner may be able to retry, the
+ * other is a teachable moment about their code.
+ */
+export class PythonUnavailableError extends Error {
+  readonly cause?: unknown
+  constructor(cause?: unknown) {
+    super('The Python runtime could not be loaded.')
+    this.name = 'PythonUnavailableError'
+    this.cause = cause
+  }
+}
+
 export class PythonTimeoutError extends Error {
   constructor(message: string) {
     super(message)
@@ -160,7 +261,13 @@ export class PythonTimeoutError extends Error {
 const client = new PythonWorkerClient()
 
 export function preparePythonEngine(): Promise<void> {
-  return client.prepare()
+  // Callers show this to a learner. Rejecting with the browser's own
+  // "Failed to execute 'importScripts' on 'WorkerGlobalScope'" string put raw
+  // engine internals in the console-output panel, where it read as though the
+  // learner's own program had produced it.
+  return client.prepare().catch(error => {
+    throw error instanceof PythonUnavailableError ? error : new PythonUnavailableError(error)
+  })
 }
 
 export function restartPythonEngine() {

@@ -2,7 +2,23 @@ import type { ValidationItem } from '../lib/learningValidation'
 import type { Lang } from '../data/types'
 import { Alert, Badge, Card } from './ui'
 
-export default function ExerciseFeedback({ checks, lang }: { checks: ValidationItem[]; lang: Lang }) {
+export default function ExerciseFeedback({
+  checks,
+  lang,
+  /**
+   * True when the learner has already satisfied this exercise.
+   *
+   * The guided first exercise passes on "ran without an error" rather than on
+   * matching the published sample, because it asks the learner to CHANGE a value
+   * (see the cycleComplete comment in Exercises.tsx). The strict check list still
+   * reports the unmet ones, which meant the very first coding screen a beginner
+   * sees showed "✓ Validated", a 40% progress bar and "Why it failed" all at once.
+   *
+   * When the exercise is already satisfied, the remaining checks describe what the
+   * FINAL solution will need — they are a preview, not a failure.
+   */
+  satisfied = false,
+}: { checks: ValidationItem[]; lang: Lang; satisfied?: boolean }) {
   const passed = checks.filter(item => item.passed)
   const failed = checks.filter(item => !item.passed)
   if (!checks.length) return null
@@ -21,7 +37,24 @@ export default function ExerciseFeedback({ checks, lang }: { checks: ValidationI
         </Card>
       )}
 
-      {failed.map(check => (
+      {failed.length > 0 && satisfied && (
+        <Card variant="subtle" padding="md" data-testid="exercise-feedback-preview">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <strong>{lang === 'en' ? 'What the full solution still needs' : 'O que a solução completa ainda pede'}</strong>
+            <Badge variant="neutral">{lang === 'en' ? 'Not required yet' : 'Ainda não exigido'}</Badge>
+          </div>
+          <p className="mb-2 text-sm text-secondary">
+            {lang === 'en'
+              ? 'You have finished this step. These are the goals for the final version, not mistakes.'
+              : 'Você concluiu esta etapa. Estas são as metas da versão final, não erros.'}
+          </p>
+          <ul className="space-y-2 text-sm">
+            {failed.map(check => <li key={check.id} className="flex gap-2"><span aria-hidden="true">○</span><span>{check.label}</span></li>)}
+          </ul>
+        </Card>
+      )}
+
+      {!satisfied && failed.map(check => (
         <Card key={check.id} variant="danger" padding="md">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">

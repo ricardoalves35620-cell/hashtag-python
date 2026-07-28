@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import { EditorView, basicSetup } from 'codemirror'
 import { python } from '@codemirror/lang-python'
 import { oneDark } from '@codemirror/theme-one-dark'
-import { EditorState } from '@codemirror/state'
+import { Annotation, EditorSelection, EditorState } from '@codemirror/state'
 import { keymap } from '@codemirror/view'
 import { indentWithTab, insertTab, indentLess } from '@codemirror/commands'
 import { useApp } from '../contexts/AppContext'
@@ -54,6 +54,19 @@ const TOOLBAR_GROUPS = [
   },
 ]
 
+/**
+ * Marks a document change this component made itself, so the update listener can tell
+ * it apart from something the learner typed.
+ *
+ * CodeMirror reports docChanged for a programmatic dispatch exactly as it does for a
+ * keystroke. Without this, every time the `value` prop changed — switching exercise
+ * tabs, restoring a saved draft — the editor announced the incoming text as a learner
+ * edit. The page queued that as a draft, and because a queued draft is served ahead of
+ * localStorage, the restore that ran a moment later read back the starter code it had
+ * just written. Opening an exercise you had already solved destroyed your solution.
+ */
+const ExternalChange = Annotation.define<boolean>()
+
 export default function VSCodeEditor({
   value,
   onChange,
@@ -88,6 +101,7 @@ export default function VSCodeEditor({
       keymap.of([indentWithTab]),
       EditorView.updateListener.of(update => {
         if (!update.docChanged) return
+        if (update.transactions.some(transaction => transaction.annotation(ExternalChange))) return
         const nextValue = update.state.doc.toString()
         container.dataset.editorValue = nextValue
         onChangeRef.current(nextValue)
@@ -138,9 +152,24 @@ export default function VSCodeEditor({
 
     if (editorWrapMode === 'wrap') extensions.push(EditorView.lineWrapping)
 
-    const state = EditorState.create({ doc: value, extensions })
+    // This effect re-runs whenever font size, wrap mode, height or readOnly change,
+    // which destroys and rebuilds the EditorView. The document survives because it
+    // comes from `value`, but the caret, selection and scroll position did not — a
+    // learner who bumped the font size mid-exercise was thrown back to character 0.
+    const previous = viewRef.current
+    const carriedSelection = previous && previous.state.doc.toString() === value
+      ? previous.state.selection.toJSON()
+      : null
+    const carriedScrollTop = previous?.scrollDOM.scrollTop ?? 0
+
+    const state = EditorState.create({
+      doc: value,
+      selection: carriedSelection ? EditorSelection.fromJSON(carriedSelection) : undefined,
+      extensions,
+    })
     const view = new EditorView({ state, parent: container })
     viewRef.current = view
+    if (carriedScrollTop) view.scrollDOM.scrollTop = carriedScrollTop
 
     const handleProgrammaticCode = (event: Event) => {
       if (!(event instanceof CustomEvent) || typeof event.detail !== 'string') return
@@ -169,7 +198,7 @@ export default function VSCodeEditor({
     if (!view) return
     const current = view.state.doc.toString()
     if (current !== value) {
-      view.dispatch({ changes: { from: 0, to: current.length, insert: value } })
+      view.dispatch({ changes: { from: 0, to: current.length, insert: value }, annotations: ExternalChange.of(true) })
     }
   }, [value])
 

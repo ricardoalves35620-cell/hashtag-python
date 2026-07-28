@@ -65,13 +65,28 @@ function applyTheme(theme: Theme) {
   if (themeColor) themeColor.content = resolved === 'dark' ? '#090914' : '#f7f6fb'
 }
 
+/**
+ * Language for someone who has never chosen one.
+ *
+ * This used to be a flat 'en'. The app's own fallback screens (ConfigurationScreen,
+ * AppErrorBoundary) already default to 'pt', so a learner on a Brazilian phone could
+ * be told about a problem in Portuguese and then taught in English. The toggle on the
+ * login screen still wins, and a stored or account-level choice always wins over this.
+ */
+function initialLang(): Lang {
+  const saved = localStorage.getItem('hp_lang')
+  if (saved === 'en' || saved === 'pt') return saved
+  const preferred = (typeof navigator !== 'undefined' && (navigator.languages?.[0] || navigator.language)) || ''
+  return /^pt\b/i.test(preferred) ? 'pt' : 'en'
+}
+
 function getDisplayName(u: User | null): string {
   if (!u) return 'Student'
   return u.user_metadata?.display_name || u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'Student'
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => (localStorage.getItem('hp_lang') as Lang) || 'en')
+  const [lang, setLangState] = useState<Lang>(() => initialLang())
   const [theme, setThemeState] = useState<Theme>(() => (localStorage.getItem('hp_theme') as Theme) || 'dark')
   const [editorHeightMode, setEditorHeightModeState] = useState<EditorHeightMode>(() =>
     (localStorage.getItem('hp_editor_height') as EditorHeightMode) || 'auto'

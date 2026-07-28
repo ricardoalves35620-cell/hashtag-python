@@ -5,11 +5,62 @@ const PYODIDE_VERSION = '0.25.1'
 const PYODIDE_BASE = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`
 let pyodidePromise = null
 
+/* The runtime is ~12 MB on first use (8.6 MB wasm + 2.2 MB stdlib + 1.1 MB glue).
+ * loadPyodide() offers no progress signal, so on a slow connection the learner used
+ * to watch a bare spinner for minutes with no idea anything was happening, or how
+ * much longer. Streaming the two large assets ourselves gives real byte progress;
+ * the subsequent loadPyodide() call reads them straight back out of the HTTP cache
+ * (and out of CacheStorage, since the service worker keeps this URL prefix
+ * CacheFirst), so nothing is downloaded twice.
+ */
+const PRELOAD_ASSETS = [
+  { name: 'pyodide.asm.wasm', bytes: 9007199 },
+  { name: 'python_stdlib.zip', bytes: 2329450 },
+]
+
+function report(stage, loaded, total) {
+  self.postMessage({ type: 'progress', stage, loaded, total })
+}
+
+async function warmAssets() {
+  const total = PRELOAD_ASSETS.reduce((sum, asset) => sum + asset.bytes, 0)
+  let loaded = 0
+  report('downloading', 0, total)
+
+  for (const asset of PRELOAD_ASSETS) {
+    try {
+      const response = await fetch(`${PYODIDE_BASE}${asset.name}`)
+      if (!response.ok || !response.body) {
+        // Fall through: loadPyodide will fetch it normally.
+        loaded += asset.bytes
+        report('downloading', loaded, total)
+        continue
+      }
+      const reader = response.body.getReader()
+      for (;;) {
+        const { done, value } = await reader.read()
+        if (done) break
+        loaded += value.length
+        report('downloading', Math.min(loaded, total), total)
+      }
+    } catch {
+      // Progress is a convenience, never a hard dependency. If the streaming read
+      // fails, loadPyodide still gets its chance to report the real error.
+      loaded += asset.bytes
+      report('downloading', Math.min(loaded, total), total)
+    }
+  }
+  report('starting', total, total)
+}
+
 function loadEngine() {
   if (pyodidePromise) return pyodidePromise
   pyodidePromise = (async () => {
+    await warmAssets()
     self.importScripts(`${PYODIDE_BASE}pyodide.js`)
-    return self.loadPyodide({ indexURL: PYODIDE_BASE })
+    const pyodide = await self.loadPyodide({ indexURL: PYODIDE_BASE })
+    report('ready', 1, 1)
+    return pyodide
   })()
   return pyodidePromise
 }

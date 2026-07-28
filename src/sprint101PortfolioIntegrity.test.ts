@@ -47,7 +47,9 @@ describe('Sprint 10.1 foundation portfolio', () => {
 
   it('registers the private portfolio route', () => {
     const app = source('App.tsx')
-    expect(app).toContain("import Portfolio from './pages/Portfolio'")
+    // Route components load on demand, so this asserts the lazy import rather than
+    // a static one. The intent is unchanged: the portfolio route must be wired up.
+    expect(app).toContain("lazy(() => import('./pages/Portfolio'))")
     expect(app).toContain('path="/portfolio"')
     expect(app).toContain('<PrivateRoute><Portfolio /></PrivateRoute>')
   })

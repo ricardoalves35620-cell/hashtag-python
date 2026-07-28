@@ -22,6 +22,12 @@ export interface ExerciseGrade {
   error: string | null
   timedOut: boolean
   checks: ValidationItem[]
+  /**
+   * The Python runtime never started, so nothing about the learner's code was
+   * actually assessed. Callers must not record an attempt or show failed checks —
+   * this is an infrastructure problem, not a wrong answer.
+   */
+  runtimeUnavailable?: boolean
 }
 
 function normalize(value: string) {
@@ -209,6 +215,24 @@ export async function gradeExercise(
   }
 
   const run = await runCode(code, inputs, undefined, { timeoutMs: exercise.grading?.timeoutMs })
+
+  // Python never started — offline, blocked CDN, jsDelivr outage. Grading anything
+  // here would mark the learner wrong for a network problem and feed a false
+  // failure into their skill model.
+  if (run.runtimeUnavailable) {
+    return {
+      passed: false,
+      message: lang === 'en'
+        ? 'Python could not be loaded, so your code was not checked.'
+        : 'Não foi possível carregar o Python, então seu código não foi verificado.',
+      output: '',
+      error: null,
+      timedOut: run.timedOut,
+      checks: [],
+      runtimeUnavailable: true,
+    }
+  }
+
   const checks: ValidationItem[] = [
     {
       id: 'execution',
@@ -240,17 +264,34 @@ export async function gradeExercise(
     const usedCanonicalInputs = canonical.length === 0
       || (inputs.length === canonical.length && inputs.every((value, index) => value.trim() === canonical[index].trim()))
 
-    const similarity = authorPinsOutput && usedCanonicalInputs
+    // Whether the output was actually compared against anything.
+    const comparedToExpected = authorPinsOutput && usedCanonicalInputs
+    const similarity = comparedToExpected
       ? outputSimilarity(exercise, lang, run.output)
       : { passed: Boolean(run.output && run.output.trim()), detail: '' }
     checks.push({
       id: 'expected-output',
-      label: lang === 'en' ? 'Produces the required result' : 'Produz o resultado solicitado',
+      // When nothing pins the output — every observation exercise, and any run with
+      // the learner's own inputs — the fallback only asks whether anything was
+      // printed. Labelling that "Produces the required result" told a learner whose
+      // total was 3435 instead of 3535 that their result was required and correct.
+      // A check may be lenient; it may not claim to have verified what it never read.
+      label: comparedToExpected
+        ? (lang === 'en' ? 'Produces the required result' : 'Produz o resultado solicitado')
+        : (lang === 'en' ? 'The program produced visible output' : 'O programa produziu saída visível'),
       passed: similarity.passed,
       hidden: false,
-      detail: exercise.sampleOutput ? similarity.detail : undefined,
-      why: similarity.passed ? undefined : (lang === 'en' ? 'The program ran, but the visible result does not match the requested output.' : 'O programa executou, mas o resultado visível não corresponde à saída solicitada.'),
-      fix: similarity.passed ? undefined : (lang === 'en' ? 'Compare labels, values, line breaks and calculations with the expected output.' : 'Compare rótulos, valores, quebras de linha e cálculos com a saída esperada.'),
+      detail: exercise.sampleOutput && comparedToExpected ? similarity.detail : undefined,
+      why: similarity.passed
+        ? (comparedToExpected ? undefined : (lang === 'en'
+            ? 'This step is about observing what the code does, so the result was not compared with an expected output. Check it against the goal yourself.'
+            : 'Esta etapa é sobre observar o que o código faz, então o resultado não foi comparado com uma saída esperada. Confira você mesmo com o objetivo.'))
+        : (comparedToExpected
+            ? (lang === 'en' ? 'The program ran, but the visible result does not match the requested output.' : 'O programa executou, mas o resultado visível não corresponde à saída solicitada.')
+            : (lang === 'en' ? 'The program ran but printed nothing, so there is nothing to observe.' : 'O programa executou mas não imprimiu nada, então não há o que observar.')),
+      fix: similarity.passed ? undefined : (comparedToExpected
+        ? (lang === 'en' ? 'Compare labels, values, line breaks and calculations with the expected output.' : 'Compare rótulos, valores, quebras de linha e cálculos com a saída esperada.')
+        : (lang === 'en' ? 'Add a print() so you can see what the code is doing.' : 'Adicione um print() para ver o que o código está fazendo.')),
       concept: lang === 'en' ? 'Output and result' : 'Saída e resultado',
     })
   }
