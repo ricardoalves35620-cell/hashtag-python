@@ -55,6 +55,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        // The Python runtime is 12 MB and most first visits never run code, so it is
+        // fetched on demand and cached by the rule below rather than precached.
+        globIgnores: ['**/pyodide/**'],
         // A reload is a navigation request. Without a fallback the service worker has
         // nothing mapped to the URL, so offline the page fails to open at all — even
         // though every asset it needs is already precached.
@@ -94,11 +97,18 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/pyodide\/v0\.25\.1\/full\/.*$/i,
+            // Same origin, because importScripts() across origins returns an opaque
+            // response that CacheFirst refuses to store. Under the old CDN rule only
+            // three of the five runtime files cached, and offline execution silently
+            // relied on the browser's HTTP cache still holding the other two.
+            urlPattern: ({ url }) => url.pathname.startsWith('/pyodide/'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'pyodide-runtime-v0.25.1',
-              expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 90 }
+              // 90 days: the runtime is immutable for a given version, and the cache
+              // name carries the version, so a bump gets a fresh cache.
+              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 90 },
+              cacheableResponse: { statuses: [200] }
             }
           }
         ]

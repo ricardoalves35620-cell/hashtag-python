@@ -19,3 +19,6 @@ test-results/
 # Generated curriculum reports
 curriculum-audit-report/
 pedagogy-report/
+
+# Copied from the pinned pyodide devDependency by scripts/copy-pyodide.mjs
+public/pyodide/

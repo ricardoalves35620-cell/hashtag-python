@@ -2,7 +2,12 @@
  * The worker can be terminated by the UI when student code exceeds its time limit.
  */
 const PYODIDE_VERSION = '0.25.1'
-const PYODIDE_BASE = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`
+// Served from our own origin, not a CDN. importScripts() across origins produces an
+// opaque response, and the service worker's CacheFirst rule will not store one — so
+// two of the five runtime files never cached, and offline execution quietly depended
+// on the browser's ordinary HTTP cache still holding them. scripts/copy-pyodide.mjs
+// puts them in public/ before every build.
+const PYODIDE_BASE = `/pyodide/v${PYODIDE_VERSION}/full/`
 let pyodidePromise = null
 
 /* The runtime is ~12 MB on first use (8.6 MB wasm + 2.2 MB stdlib + 1.1 MB glue).
