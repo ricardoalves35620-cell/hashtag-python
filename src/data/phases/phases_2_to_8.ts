@@ -1517,8 +1517,8 @@ print("Fee:", fee)`,
       },
       starterCode: `# Movie rating classifier:`,
       hints: [
-        { en: 'score = int(input(...))  ← whole number, no decimals in scores', pt: 'score = int(input(...))  ← número inteiro, pontuações não têm decimais' },
-        { en: 'Waterfall order (highest first): if >= 90, elif >= 75, elif >= 60, else', pt: 'Ordem cachoeira (maior primeiro): if >= 90, elif >= 75, elif >= 60, else' }
+        { en: 'Store the score directly, e.g. score = 9.2 — the example in the task uses a decimal', pt: 'Guarde a nota diretamente, ex.: score = 9.2 — o exemplo do enunciado usa decimal' },
+        { en: 'Waterfall order (highest first): if score >= 9, elif score >= 7, elif score >= 5, else', pt: 'Ordem cachoeira (maior primeiro): if score >= 9, elif score >= 7, elif score >= 5, else' }
       ],
       sampleOutput: { en: '👍 Highly Recommended', pt: '👍 Muito Recomendado' }
     }

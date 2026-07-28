@@ -309,7 +309,7 @@ export async function gradeExercise(
   if (exercise.behaviour && !run.error) {
     let report: BehaviourReport | null = null
     try {
-      report = await gradeBehaviour(exercise.behaviour, code)
+      report = await gradeBehaviour(exercise.behaviour, code, lang)
     } catch {
       // A broken pilot must never block a learner. Silence here is deliberate.
       report = null

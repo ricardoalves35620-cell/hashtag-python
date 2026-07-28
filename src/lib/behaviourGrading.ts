@@ -1,4 +1,5 @@
 import type { BehaviourCase, BehaviourSpec, Lang } from '../data/types'
+import { resolveLocalizedCode } from './localization'
 import { runCode, type PythonAnalysis, type RunResult } from './pyodide'
 
 /**
@@ -22,6 +23,24 @@ import { runCode, type PythonAnalysis, type RunResult } from './pyodide'
  *
  * Everything runs in the Pyodide worker that already exists — offline, deterministic,
  * no API key, and the learner's code never leaves the device.
+ */
+
+/**
+ * WHERE THIS DOES NOT APPLY, learned by trying to widen the pilot across phase 6:
+ *
+ *   Observation exercises (ex6_guided). The task is "run it and try different values",
+ *   with no code change required. Comparing output to a reference would fail a learner
+ *   who added a print() while exploring — which is the behaviour the exercise is
+ *   trying to encourage.
+ *
+ *   Exercises with no input (ex6_zero). "Store a rating score" means the learner picks
+ *   the value, so there is exactly one behaviour and it is theirs. A reference storing
+ *   9.2 fails everyone who stored 8. An exercise needs an input the grader controls
+ *   before its behaviour can be compared to anything.
+ *
+ * Both are fixable by changing the exercise, not the grader — give ex6_zero an input()
+ * and it becomes a candidate. That is a curriculum decision, so it is recorded here
+ * rather than forced.
  */
 
 export type { BehaviourCase, BehaviourSpec }
@@ -73,13 +92,14 @@ async function runOnce(code: string, inputs: string[], timeoutMs?: number): Prom
   return runCode(code, inputs, undefined, { timeoutMs })
 }
 
-export async function gradeBehaviour(spec: BehaviourSpec, learnerCode: string): Promise<BehaviourReport> {
+export async function gradeBehaviour(spec: BehaviourSpec, learnerCode: string, lang: Lang = 'en'): Promise<BehaviourReport> {
+  const reference = resolveLocalizedCode(spec.reference, lang)
   const results: BehaviourCaseResult[] = []
   let analysis: PythonAnalysis | null = null
 
   for (const item of spec.cases) {
     const inputs = item.inputs ?? []
-    const expectedRun = await runOnce(spec.reference, inputs, spec.timeoutMs)
+    const expectedRun = await runOnce(reference, inputs, spec.timeoutMs)
 
     // A reference that cannot run is an authoring bug, not a learner mistake. Failing
     // the learner for it would be the worst possible outcome, so the case is skipped

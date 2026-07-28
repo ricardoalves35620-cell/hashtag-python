@@ -60,6 +60,35 @@ describe('the pilot cannot fail a learner', () => {
   })
 })
 
+describe('the pilot is scoped to exercises it can actually judge', () => {
+  const phase6 = (ALL_PHASES as any[]).find(phase => phase.id === 6)
+
+  it('leaves the observation exercise alone', () => {
+    // "Run it and try different values" invites exploration. Comparing output to a
+    // reference would fail a learner who added a print() while exploring.
+    const guided = phase6.exercises.find((e: any) => e.id === 'ex6_guided')
+    expect(guided.behaviour, 'an observation exercise has no single correct behaviour').toBeUndefined()
+  })
+
+  it('leaves the from-scratch exercise alone until it takes an input', () => {
+    // "Store a rating score" means the learner picks the value, so there is exactly one
+    // behaviour and it is theirs. A reference storing 9.2 fails everyone who stored 8.
+    const zero = phase6.exercises.find((e: any) => e.id === 'ex6_zero')
+    expect(zero.behaviour).toBeUndefined()
+  })
+
+  it('keeps ex6_zero internally consistent, since its hints contradicted its task', () => {
+    // Hint 2 gave 0-100 thresholds (>= 90, >= 75, >= 60) for a task scored out of 10,
+    // and hint 1 said int() for an example of 9.2 — int("9.2") raises ValueError. A
+    // learner following both got a crash, in the hardest exercise of the phase.
+    const zero = phase6.exercises.find((e: any) => e.id === 'ex6_zero')
+    const hints = zero.hints.map((h: any) => h.en).join(' ')
+    expect(hints).not.toMatch(/>=\s*90|>=\s*75|>=\s*60/)
+    expect(hints).not.toContain('int(input')
+    expect(hints).toMatch(/score >= 9/)
+  })
+})
+
 describe('the phase 6 pilot exercise', () => {
   const exercise = (ALL_PHASES as any[])
     .find(phase => phase.id === 6)

@@ -77,7 +77,12 @@ export interface BehaviourCase {
 }
 
 export interface BehaviourSpec {
-  reference: string
+  /**
+   * Bilingual when the program's own output differs by language — a Portuguese
+   * learner is asked to print 'Muito Recomendado', so an English reference would fail
+   * every correct Portuguese answer.
+   */
+  reference: string | Bilingual
   cases: BehaviourCase[]
   timeoutMs?: number
 }
