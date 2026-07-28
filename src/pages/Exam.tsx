@@ -11,6 +11,7 @@ import ExamExpectedOutput from '../components/ExamExpectedOutput'
 import { explainError } from '../lib/errorExplainer'
 import type { ErrorExplanation } from '../lib/errorExplainer'
 import { useApp } from '../contexts/AppContext'
+import { getMiniProjectForPhase } from '../data/miniProjects'
 import { ALL_PHASES } from '../data/phases'
 import { saveExamScore } from '../lib/progress'
 import { loadExamDraft, saveExamDraft, clearExamDraft } from '../lib/examDraft'
@@ -81,6 +82,7 @@ export default function Exam() {
       passed: '🎉 PASSED — Next phase unlocked!',
       failed: '❌ Not quite — review and try again',
       nextPhase: 'Go to next phase →', tryAgain: '← Try again',
+      projectOffer: 'Optional: build the mini-project for this phase', projectOfferText: 'A short project that puts this phase to work. It is optional — the next phase is already open either way.', buildProject: 'Build the mini-project →', skipProject: 'Skip for now',
       phase: 'Phase', minScore: 'Minimum 90% to pass',
       tip: '💡 Test your code with "Run my code" first, then submit when ready.',
       testResults: 'Automatic checks', passedLabel: 'passed', reviewPhase: 'Review this phase', demonstrated: 'You demonstrated mastery in', nextLearning: 'Next, you will learn', internalCheck: 'Automatic verification', excellent: 'Excellent — you mastered this content.', ready: 'Great work — you are ready to continue.', reviewRecommended: 'You passed. Review the failed checks before continuing.',
@@ -94,6 +96,7 @@ export default function Exam() {
       passed: '🎉 APROVADO — Próxima fase desbloqueada!',
       failed: '❌ Não foi dessa vez — revise e tente novamente',
       nextPhase: 'Ir para próxima fase →', tryAgain: '← Tentar novamente',
+      projectOffer: 'Opcional: construa o mini-projeto desta fase', projectOfferText: 'Um projeto curto que coloca esta fase em prática. É opcional — a próxima fase já está liberada de qualquer forma.', buildProject: 'Construir o mini-projeto →', skipProject: 'Deixar para depois',
       phase: 'Fase', minScore: 'Mínimo 90% para passar',
       tip: '💡 Teste com "Executar" primeiro, depois envie quando estiver pronto.',
       testResults: 'Verificações automáticas', passedLabel: 'passaram', reviewPhase: 'Revisar esta fase', demonstrated: 'Você demonstrou domínio em', nextLearning: 'Na próxima fase, você aprenderá', internalCheck: 'Verificação automática', excellent: 'Excelente — você dominou completamente este conteúdo.', ready: 'Muito bom — você está pronto para continuar.', reviewRecommended: 'Você passou. Revise as verificações que falharam antes de seguir.',
@@ -609,6 +612,20 @@ export default function Exam() {
                       <ExamFeedback key={result.id} result={result} lang={lang} />
                     ))}
                   </div>
+                </section>
+              )}
+
+              {passed && getMiniProjectForPhase(phase.id) && (
+                <section style={{ border: '1px solid var(--c-border)', borderRadius: 12, padding: 14, marginBottom: 10 }}>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--c-text)' }}>{t.projectOffer}</div>
+                  <p style={{ fontSize: 13, color: 'var(--c-text2)', margin: '6px 0 12px', lineHeight: 1.6 }}>{t.projectOfferText}</p>
+                  <button
+                    onClick={() => navigate(`/mini-project/${getMiniProjectForPhase(phase.id)!.id}`)}
+                    className="hp-secondary-button"
+                    style={{ width: '100%', padding: 12 }}
+                  >
+                    {t.buildProject}
+                  </button>
                 </section>
               )}
 

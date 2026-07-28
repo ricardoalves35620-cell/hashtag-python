@@ -252,15 +252,18 @@ export function getPhaseStatus(progress: UserProgress[], phaseId: number): 'lock
   if (phaseIndex === 0) return 'active'
   const previousPhaseId = orderedIds[phaseIndex - 1]
   const previous = progress.find(row => row.phase_id === previousPhaseId)
-  const previousHasProject = Boolean(getMiniProjectForPhase(previousPhaseId))
-  const previousMastered = Boolean(previous?.exam_passed && (!previousHasProject || previous.project_done))
-  return previousMastered ? 'active' : 'locked'
+  // A mini-project is OPTIONAL. Passing the exam is what unlocks the next phase;
+  // requiring the project as well left a learner who skipped it stuck behind a lock
+  // they were never told about. The project still counts towards mastering a phase.
+  return previous?.exam_passed ? 'active' : 'locked'
 }
 
 export function getOverallProgress(progress: UserProgress[]): number {
+  // Optional work must not hold the number down: a learner who skips every
+  // mini-project can still reach 100%.
   const mastered = ALL_PHASES.filter(phase => {
     const row = progress.find(item => item.phase_id === phase.id)
-    return Boolean(row?.exam_passed && (!getMiniProjectForPhase(phase.id) || row.project_done))
+    return Boolean(row?.exam_passed)
   }).length
   return ALL_PHASES.length > 0 ? Math.round((mastered / ALL_PHASES.length) * 100) : 0
 }

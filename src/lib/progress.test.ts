@@ -63,16 +63,18 @@ describe('phase progression', () => {
 })
 
 describe('mini-project mastery gates', () => {
-  it('keeps the phase after a milestone locked until the project is complete', () => {
+  it('treats the milestone project as optional for unlocking the next phase', () => {
     const milestone = 4
     const nextPhase = 5
     const passedWithoutProject: UserProgress = { ...row(milestone, true), project_done: false }
     const passedWithProject: UserProgress = { ...row(milestone, true), project_done: true }
 
     const previous = row(3, true)
+    // the project still decides whether the phase itself reads as mastered
     expect(getPhaseStatus([previous, passedWithoutProject], milestone)).toBe('active')
-    expect(getPhaseStatus([previous, passedWithoutProject], nextPhase)).toBe('locked')
     expect(getPhaseStatus([previous, passedWithProject], milestone)).toBe('done')
+    // but passing the exam is enough to open the next phase, with or without it
+    expect(getPhaseStatus([previous, passedWithoutProject], nextPhase)).toBe('active')
     expect(getPhaseStatus([previous, passedWithProject], nextPhase)).toBe('active')
   })
 })
