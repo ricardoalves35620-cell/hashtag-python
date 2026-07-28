@@ -39,7 +39,7 @@ export interface MiniProject {
 
 export const MINI_PROJECTS: MiniProject[] = [
   {
-    id: 'damage-estimate',
+    id: 'amount-estimate',
     milestonePhaseId: 4,
     icon: '🎟️',
     title: { en: 'Event Budget Balance', pt: 'Saldo do Orçamento de Evento' },
@@ -97,7 +97,7 @@ export const MINI_PROJECTS: MiniProject[] = [
     ],
   },
   {
-    id: 'claim-queue',
+    id: 'order-queue',
     milestonePhaseId: 7,
     icon: '📦',
     title: { en: 'Shipment Queue Processor', pt: 'Processador de Fila de Remessas' },
@@ -107,8 +107,8 @@ export const MINI_PROJECTS: MiniProject[] = [
       pt: 'Um centro de distribuição recebe uma quantidade conhecida de valores de remessas. Processe cada remessa e informe quantidade processada, valor total declarado e média.',
     },
     professionalContext: {
-      en: 'Batch processing appears in imports, billing, claims, reports, queues, and background jobs. The loop must change state and must finish.',
-      pt: 'Processamento em lote aparece em importações, cobranças, sinistros, relatórios, filas e tarefas em segundo plano. O loop precisa alterar o estado e terminar.',
+      en: 'Batch processing appears in imports, billing, orders, reports, queues, and background jobs. The loop must change state and must finish.',
+      pt: 'Processamento em lote aparece em importações, cprojetonças, pedidos, relatórios, filas e tarefas em segundo plano. O loop precisa alterar o estado e terminar.',
     },
     estimatedMinutes: 55,
     skills: [
@@ -276,17 +276,17 @@ print("Total:", approved_total)`,
     ],
   },
   {
-    id: 'foundation-claim-desk',
+    id: 'foundation-order-desk',
     milestonePhaseId: 27,
     icon: '🗂️',
-    title: { en: 'Claim Desk CLI', pt: 'Central de Sinistros CLI' },
+    title: { en: 'Order Desk CLI', pt: 'Central de Pedidos CLI' },
     subtitle: {
       en: 'Combine the whole Python foundation in one auditable command-line program.',
       pt: 'Combine toda a base de Python em um programa de terminal que pode ser auditado.',
     },
     scenario: {
-      en: 'A small claims team needs a terminal program to register claims, prevent duplicate identifiers, list records, calculate the total amount and survive invalid numeric input.',
-      pt: 'Uma pequena equipe de sinistros precisa de um programa de terminal para cadastrar sinistros, impedir identificadores duplicados, listar registros, calcular o valor total e sobreviver a entradas numéricas inválidas.',
+      en: 'A small orders team needs a terminal program to register orders, prevent duplicate identifiers, list records, calculate the total amount and survive invalid numeric input.',
+      pt: 'Uma pequena equipe de pedidos precisa de um programa de terminal para cadastrar pedidos, impedir identificadores duplicados, listar registros, calcular o valor total e sobreviver a entradas numéricas inválidas.',
     },
     professionalContext: {
       en: 'This project combines decomposition, functions, collections, loops, validation, exceptions and a stable output contract. It is the first portfolio evidence that you can turn a written problem into a tested program.',
@@ -302,63 +302,63 @@ print("Total:", approved_total)`,
     ],
     requirements: {
       en: [
-        'Keep claims in a list of dictionaries',
-        'Create functions to find, add, list and total claims',
+        'Keep orders in a list of dictionaries',
+        'Create functions to find, add, list and total orders',
         'Use a while loop for the command menu',
-        'Reject duplicate claim IDs',
+        'Reject duplicate order IDs',
         'Handle an invalid amount without crashing',
         'Print the stable labels required by the visible tests',
       ],
       pt: [
-        'Guarde os sinistros em uma lista de dicionários',
-        'Crie funções para localizar, adicionar, listar e totalizar sinistros',
+        'Guarde os pedidos em uma lista de dicionários',
+        'Crie funções para localizar, adicionar, listar e totalizar pedidos',
         'Use um loop while para o menu de comandos',
-        'Rejeite identificadores de sinistro duplicados',
+        'Rejeite identificadores de pedido duplicados',
         'Trate um valor inválido sem encerrar o programa',
         'Imprima os rótulos estáveis exigidos pelos testes visíveis',
       ],
     },
     inputContract: {
-      en: 'Commands arrive one per line. add is followed by claim ID, client and amount. list and total need no additional values. exit finishes the program.',
-      pt: 'Os comandos chegam um por linha. add é seguido por ID do sinistro, cliente e valor. list e total não precisam de valores adicionais. exit encerra o programa.',
+      en: 'Commands arrive one per line. add is followed by order ID, client and amount. list and total need no additional values. exit finishes the program.',
+      pt: 'Os comandos chegam um por linha. add é seguido por ID do pedido, cliente e valor. list e total não precisam de valores adicionais. exit encerra o programa.',
     },
     outputContract: {
-      en: 'Use ADDED=<id>, CLAIM=<id>|<client>|<amount>, TOTAL=<amount>, DUPLICATE_ID, INVALID_AMOUNT and BYE.',
-      pt: 'Use ADDED=<id>, CLAIM=<id>|<cliente>|<valor>, TOTAL=<valor>, DUPLICATE_ID, INVALID_AMOUNT e BYE.',
+      en: 'Use ADDED=<id>, ORDER=<id>|<client>|<amount>, TOTAL=<amount>, DUPLICATE_ID, INVALID_AMOUNT and BYE.',
+      pt: 'Use ADDED=<id>, ORDER=<id>|<cliente>|<valor>, TOTAL=<valor>, DUPLICATE_ID, INVALID_AMOUNT e BYE.',
     },
     ruleContract: {
-      en: 'An ID is unique. Invalid amounts are not added. The total is the sum of every accepted claim amount.',
-      pt: 'Um ID é único. Valores inválidos não são adicionados. O total é a soma dos valores de todos os sinistros aceitos.',
+      en: 'An ID is unique. Invalid amounts are not added. The total is the sum of every accepted order amount.',
+      pt: 'Um ID é único. Valores inválidos não são adicionados. O total é a soma dos valores de todos os pedidos aceitos.',
     },
     edgeCases: {
       en: 'Test an invalid amount, a duplicate ID and an empty or partially filled registry.',
       pt: 'Teste um valor inválido, um ID duplicado e um cadastro vazio ou parcialmente preenchido.',
     },
     starterCode: {
-      en: `# Portfolio project: Claim Desk CLI
+      en: `# Portfolio project: Order Desk CLI
 # Build the missing behavior from the contract before changing the output labels.
 
-claims = []
+orders = []
 
 
-def find_claim(claims, claim_id):
+def find_order(orders, order_id):
     # TODO: return the matching record or None
     return None
 
 
-def add_claim(claims, claim_id, client, amount_text):
+def add_order(orders, order_id, client, amount_text):
     # TODO: reject a duplicate ID
     # TODO: convert amount_text with try/except
     # TODO: append a dictionary when the data is valid
     return False
 
 
-def list_claims(claims):
-    # TODO: print one CLAIM= line for every record
+def list_orders(orders):
+    # TODO: print one ORDER= line for every record
     pass
 
 
-def total_claims(claims):
+def total_orders(orders):
     # TODO: return the sum of all amounts
     return 0.0
 
@@ -367,43 +367,43 @@ while True:
     command = input("Command: ").strip().lower()
 
     if command == "add":
-        claim_id = input("Claim ID: ").strip()
+        order_id = input("Order ID: ").strip()
         client = input("Client: ").strip()
         amount_text = input("Amount: ").strip()
-        add_claim(claims, claim_id, client, amount_text)
+        add_order(orders, order_id, client, amount_text)
     elif command == "list":
-        list_claims(claims)
+        list_orders(orders)
     elif command == "total":
-        print(f"TOTAL={total_claims(claims):.2f}")
+        print(f"TOTAL={total_orders(orders):.2f}")
     elif command == "exit":
         print("BYE")
         break
     else:
         print("UNKNOWN_COMMAND")`,
-      pt: `# Projeto de portfólio: Central de Sinistros CLI
+      pt: `# Projeto de portfólio: Central de Pedidos CLI
 # Construa o comportamento ausente a partir do contrato antes de alterar os rótulos de saída.
 
-claims = []
+orders = []
 
 
-def find_claim(claims, claim_id):
+def find_order(orders, order_id):
     # TODO: retorne o registro correspondente ou None
     return None
 
 
-def add_claim(claims, claim_id, client, amount_text):
+def add_order(orders, order_id, client, amount_text):
     # TODO: rejeite um ID duplicado
     # TODO: converta amount_text usando try/except
     # TODO: adicione um dicionário quando os dados forem válidos
     return False
 
 
-def list_claims(claims):
-    # TODO: imprima uma linha CLAIM= para cada registro
+def list_orders(orders):
+    # TODO: imprima uma linha ORDER= para cada registro
     pass
 
 
-def total_claims(claims):
+def total_orders(orders):
     # TODO: retorne a soma de todos os valores
     return 0.0
 
@@ -412,14 +412,14 @@ while True:
     command = input("Comando: ").strip().lower()
 
     if command == "add":
-        claim_id = input("ID do sinistro: ").strip()
+        order_id = input("ID do pedido: ").strip()
         client = input("Cliente: ").strip()
         amount_text = input("Valor: ").strip()
-        add_claim(claims, claim_id, client, amount_text)
+        add_order(orders, order_id, client, amount_text)
     elif command == "list":
-        list_claims(claims)
+        list_orders(orders)
     elif command == "total":
-        print(f"TOTAL={total_claims(claims):.2f}")
+        print(f"TOTAL={total_orders(orders):.2f}")
     elif command == "exit":
         print("BYE")
         break
@@ -428,19 +428,19 @@ while True:
     },
     tests: [
       {
-        id: 'claim-desk-standard',
-        title: { en: 'Two accepted claims', pt: 'Dois sinistros aceitos' },
+        id: 'order-desk-standard',
+        title: { en: 'Two accepted orders', pt: 'Dois pedidos aceitos' },
         inputs: ['add', 'C-101', 'Ana', '1200', 'add', 'C-102', 'Bruno', '800', 'list', 'total', 'exit'],
-        expectedOutput: ['ADDED=C-101', 'ADDED=C-102', 'CLAIM=C-101|Ana|1200.00', 'CLAIM=C-102|Bruno|800.00', 'TOTAL=2000.00', 'BYE'],
+        expectedOutput: ['ADDED=C-101', 'ADDED=C-102', 'ORDER=C-101|Ana|1200.00', 'ORDER=C-102|Bruno|800.00', 'TOTAL=2000.00', 'BYE'],
       },
       {
-        id: 'claim-desk-validation',
+        id: 'order-desk-validation',
         title: { en: 'Invalid amount and duplicate ID', pt: 'Valor inválido e ID duplicado' },
         inputs: ['add', 'C-201', 'Carla', 'oops', 'add', 'C-201', 'Carla', '500', 'add', 'C-201', 'Duplicado', '700', 'total', 'exit'],
         expectedOutput: ['INVALID_AMOUNT', 'ADDED=C-201', 'DUPLICATE_ID', 'TOTAL=500.00', 'BYE'],
       },
       {
-        id: 'claim-desk-empty',
+        id: 'order-desk-empty',
         title: { en: 'Empty registry', pt: 'Cadastro vazio' },
         inputs: ['list', 'total', 'exit'],
         expectedOutput: ['TOTAL=0.00', 'BYE'],
@@ -470,17 +470,17 @@ while True:
     ],
   },
   {
-    id: 'professional-claims-triage',
+    id: 'professional-orders-triage',
     milestonePhaseId: 39,
     icon: '🏗️',
-    title: { en: 'Claims Triage Service', pt: 'Serviço de Triagem de Sinistros' },
+    title: { en: 'Orders Triage Service', pt: 'Serviço de Triagem de Pedidos' },
     subtitle: {
       en: 'Build a maintainable command-line service with domain modeling, validation, logging and repeatable tests.',
       pt: 'Construa um serviço de terminal sustentável com modelagem de domínio, validação, logging e testes repetíveis.',
     },
     scenario: {
-      en: 'A claims operation receives one claim per line. The service must validate the record, reject duplicate IDs, classify priority, preserve accepted claims and produce an auditable summary.',
-      pt: 'Uma operação de sinistros recebe um registro por linha. O serviço precisa validar o registro, rejeitar IDs duplicados, classificar a prioridade, preservar os sinistros aceitos e produzir um resumo auditável.',
+      en: 'A orders operation receives one order per line. The service must validate the record, reject duplicate IDs, classify priority, preserve accepted orders and produce an auditable summary.',
+      pt: 'Uma operação de pedidos recebe um registro por linha. O serviço precisa validar o registro, rejeitar IDs duplicados, classificar a prioridade, preservar os pedidos aceitos e produzir um resumo auditável.',
     },
     professionalContext: {
       en: 'This project represents the boundary between raw external data and trusted domain objects. It combines dataclasses, type hints, focused functions, logging, exception handling, a thin CLI and a main guard.',
@@ -496,10 +496,10 @@ while True:
     ],
     requirements: {
       en: [
-        'Represent an accepted claim with a dataclass',
+        'Represent an accepted order with a dataclass',
         'Parse records in the format id|amount|severity',
         'Reject invalid amounts and severity values without crashing',
-        'Reject duplicate claim IDs',
+        'Reject duplicate order IDs',
         'Classify as ESCALATE when severity is at least 8 or amount is at least 10000',
         'Keep the command-line loop thin by delegating work to functions',
         'Configure and use the logging module',
@@ -507,10 +507,10 @@ while True:
         'Print the stable output contract used by the visible tests',
       ],
       pt: [
-        'Represente um sinistro aceito com uma dataclass',
+        'Represente um pedido aceito com uma dataclass',
         'Interprete registros no formato id|valor|gravidade',
         'Rejeite valores e gravidades inválidos sem encerrar o programa',
-        'Rejeite IDs de sinistro duplicados',
+        'Rejeite IDs de pedido duplicados',
         'Classifique como ESCALATE quando a gravidade for pelo menos 8 ou o valor for pelo menos 10000',
         'Mantenha o loop da CLI curto delegando trabalho para funções',
         'Configure e use o módulo logging',
@@ -523,8 +523,8 @@ while True:
       pt: 'Um registro por linha usando id|valor|gravidade. END encerra o lote.',
     },
     outputContract: {
-      en: 'Use CLAIM=<id>|<priority>|<amount>, DUPLICATE=<id>, INVALID=<id> and SUMMARY=<accepted>|<total>|<escalated>.',
-      pt: 'Use CLAIM=<id>|<prioridade>|<valor>, DUPLICATE=<id>, INVALID=<id> e SUMMARY=<aceitos>|<total>|<escalados>.',
+      en: 'Use ORDER=<id>|<priority>|<amount>, DUPLICATE=<id>, INVALID=<id> and SUMMARY=<accepted>|<total>|<escalated>.',
+      pt: 'Use ORDER=<id>|<prioridade>|<valor>, DUPLICATE=<id>, INVALID=<id> e SUMMARY=<aceitos>|<total>|<escalados>.',
     },
     ruleContract: {
       en: 'IDs are unique. Amount must be positive. Severity must be an integer from 1 to 10. ESCALATE applies when severity >= 8 or amount >= 10000; otherwise use STANDARD.',
@@ -535,19 +535,19 @@ while True:
       pt: 'Comprove o lote vazio, a entrada numérica inválida e o comportamento de ID duplicado além do caso normal.',
     },
     starterCode: {
-      en: `# Portfolio project: Claims Triage Service
+      en: `# Portfolio project: Orders Triage Service
 # Keep the output labels unchanged because they are the public service contract.
 
 from dataclasses import dataclass
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
-logger = logging.getLogger("claims-triage")
+logger = logging.getLogger("orders-triage")
 
 
 @dataclass(frozen=True)
-class Claim:
-    claim_id: str
+class Order:
+    order_id: str
     amount: float
     severity: int
     priority: str
@@ -558,48 +558,48 @@ def classify_priority(amount: float, severity: int) -> str:
     return "STANDARD"
 
 
-def parse_claim(line: str) -> Claim:
-    # TODO: split id|amount|severity, validate values and return Claim
+def parse_order(line: str) -> Order:
+    # TODO: split id|amount|severity, validate values and return Order
     raise NotImplementedError
 
 
-def process_line(line: str, claims: dict[str, Claim]) -> None:
-    # TODO: reject duplicates, parse safely, store the claim and print CLAIM=...
+def process_line(line: str, orders: dict[str, Order]) -> None:
+    # TODO: reject duplicates, parse safely, store the order and print ORDER=...
     pass
 
 
-def print_summary(claims: dict[str, Claim]) -> None:
+def print_summary(orders: dict[str, Order]) -> None:
     # TODO: print accepted count, total amount and escalated count
     pass
 
 
 def main() -> None:
-    claims: dict[str, Claim] = {}
+    orders: dict[str, Order] = {}
 
     while True:
-        line = input("Claim: ").strip()
+        line = input("Order: ").strip()
         if line.upper() == "END":
             break
-        process_line(line, claims)
+        process_line(line, orders)
 
-    print_summary(claims)
+    print_summary(orders)
 
 
 if __name__ == "__main__":
     main()`,
-      pt: `# Projeto de portfólio: Serviço de Triagem de Sinistros
+      pt: `# Projeto de portfólio: Serviço de Triagem de Pedidos
 # Não altere os rótulos de saída, pois eles são o contrato público do serviço.
 
 from dataclasses import dataclass
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
-logger = logging.getLogger("claims-triage")
+logger = logging.getLogger("orders-triage")
 
 
 @dataclass(frozen=True)
-class Claim:
-    claim_id: str
+class Order:
+    order_id: str
     amount: float
     severity: int
     priority: str
@@ -610,31 +610,31 @@ def classify_priority(amount: float, severity: int) -> str:
     return "STANDARD"
 
 
-def parse_claim(line: str) -> Claim:
-    # TODO: separe id|valor|gravidade, valide os dados e retorne Claim
+def parse_order(line: str) -> Order:
+    # TODO: separe id|valor|gravidade, valide os dados e retorne Order
     raise NotImplementedError
 
 
-def process_line(line: str, claims: dict[str, Claim]) -> None:
-    # TODO: rejeite duplicados, interprete com segurança, salve e imprima CLAIM=...
+def process_line(line: str, orders: dict[str, Order]) -> None:
+    # TODO: rejeite duplicados, interprete com segurança, salve e imprima ORDER=...
     pass
 
 
-def print_summary(claims: dict[str, Claim]) -> None:
+def print_summary(orders: dict[str, Order]) -> None:
     # TODO: mostre quantidade aceita, valor total e quantidade escalada
     pass
 
 
 def main() -> None:
-    claims: dict[str, Claim] = {}
+    orders: dict[str, Order] = {}
 
     while True:
-        line = input("Sinistro: ").strip()
+        line = input("Pedido: ").strip()
         if line.upper() == "END":
             break
-        process_line(line, claims)
+        process_line(line, orders)
 
-    print_summary(claims)
+    print_summary(orders)
 
 
 if __name__ == "__main__":
@@ -643,15 +643,15 @@ if __name__ == "__main__":
     tests: [
       {
         id: 'triage-standard',
-        title: { en: 'Standard and escalated claims', pt: 'Sinistros padrão e escalado' },
+        title: { en: 'Standard and escalated orders', pt: 'Pedidos padrão e escalado' },
         inputs: ['C-101|1200|3', 'C-102|15000|5', 'END'],
-        expectedOutput: ['CLAIM=C-101|STANDARD|1200.00', 'CLAIM=C-102|ESCALATE|15000.00', 'SUMMARY=2|16200.00|1'],
+        expectedOutput: ['ORDER=C-101|STANDARD|1200.00', 'ORDER=C-102|ESCALATE|15000.00', 'SUMMARY=2|16200.00|1'],
       },
       {
         id: 'triage-validation',
         title: { en: 'Invalid record and duplicate ID', pt: 'Registro inválido e ID duplicado' },
         inputs: ['C-201|500|9', 'C-201|700|2', 'C-202|oops|4', 'END'],
-        expectedOutput: ['CLAIM=C-201|ESCALATE|500.00', 'DUPLICATE=C-201', 'INVALID=C-202', 'SUMMARY=1|500.00|1'],
+        expectedOutput: ['ORDER=C-201|ESCALATE|500.00', 'DUPLICATE=C-201', 'INVALID=C-202', 'SUMMARY=1|500.00|1'],
       },
       {
         id: 'triage-empty',
@@ -662,7 +662,7 @@ if __name__ == "__main__":
     ],
     requiredNodes: ['ClassDef', 'Try', 'While', 'AnnAssign'],
     requiredImports: ['dataclasses', 'logging'],
-    requiredFunctions: ['classify_priority', 'parse_claim', 'process_line', 'print_summary', 'main'],
+    requiredFunctions: ['classify_priority', 'parse_order', 'process_line', 'print_summary', 'main'],
     requiredCalls: ['logger.warning'],
     requireMainGuard: true,
     refactorGoal: {
@@ -676,7 +676,7 @@ if __name__ == "__main__":
     refactorOptions: [
       { en: 'Keep parsing, domain rules, storage and presentation in separate functions.', pt: 'Mantenha interpretação, regras de domínio, armazenamento e apresentação em funções separadas.' },
       { en: 'Use precise type hints at every public boundary.', pt: 'Use type hints precisos em toda fronteira pública.' },
-      { en: 'Log rejected records without exposing sensitive claim details.', pt: 'Registre rejeições sem expor detalhes sensíveis do sinistro.' },
+      { en: 'Log rejected records without exposing sensitive order details.', pt: 'Registre rejeições sem expor detalhes sensíveis do pedido.' },
       { en: 'Make validation errors explicit and easy to test.', pt: 'Torne os erros de validação explícitos e fáceis de testar.' },
       { en: 'Keep main focused on orchestration rather than business rules.', pt: 'Mantenha main focada em orquestração, não em regras de negócio.' },
     ],
@@ -970,14 +970,14 @@ if __name__ == "__main__":
     id: 'data-ml-risk-pipeline',
     milestonePhaseId: 60,
     icon: '📈',
-    title: { en: 'Claim Risk Classification Pipeline', pt: 'Pipeline de Classificação de Risco de Sinistros' },
+    title: { en: 'Order Risk Classification Pipeline', pt: 'Pipeline de Classificação de Risco de Pedidos' },
     subtitle: {
       en: 'Build and evaluate a small classification pipeline without hiding the data flow behind a library.',
       pt: 'Construa e avalie um pequeno pipeline de classificação sem esconder o fluxo dos dados atrás de uma biblioteca.',
     },
     scenario: {
-      en: 'A claims analytics team has labeled historical records and a separate evaluation set. Build a reproducible pipeline that validates rows, fits preprocessing only on training data, learns class centroids, predicts the evaluation rows and reports honest metrics.',
-      pt: 'Uma equipe de análise de sinistros possui registros históricos rotulados e um conjunto separado de avaliação. Construa um pipeline reproduzível que valide linhas, ajuste o pré-processamento apenas nos dados de treino, aprenda centroides por classe, faça previsões e publique métricas honestas.',
+      en: 'A orders analytics team has labeled historical records and a separate evaluation set. Build a reproducible pipeline that validates rows, fits preprocessing only on training data, learns class centroids, predicts the evaluation rows and reports honest metrics.',
+      pt: 'Uma equipe de análise de pedidos possui registros históricos rotulados e um conjunto separado de avaliação. Construa um pipeline reproduzível que valide linhas, ajuste o pré-processamento apenas nos dados de treino, aprenda centroides por classe, faça previsões e publique métricas honestas.',
     },
     professionalContext: {
       en: 'A model is more than a prediction formula. Professional ML separates training from evaluation, prevents leakage, records the contract and reports what the metrics actually measure.',
@@ -1033,55 +1033,55 @@ if __name__ == "__main__":
       pt: 'Comprove avaliação vazia, linhas inválidas, atributos sem variação e treino que não contenha os dois rótulos.',
     },
     starterCode: {
-      en: `# Portfolio project: Claim Risk Classification Pipeline
+      en: `# Portfolio project: Order Risk Classification Pipeline
 from dataclasses import dataclass
 import math
 
 
 @dataclass(frozen=True)
-class ClaimRow:
+class OrderRow:
     split: str
-    claim_id: str
+    order_id: str
     amount: float
     days_open: float
     label: int
 
 
-def parse_record(line: str) -> ClaimRow:
+def parse_record(line: str) -> OrderRow:
     # TODO: parse SPLIT|id|amount|days_open|label
     # TODO: validate split, identifier, non-negative features and binary label
     raise NotImplementedError
 
 
-def fit_scaler(train_rows: list[ClaimRow]) -> dict[str, float]:
+def fit_scaler(train_rows: list[OrderRow]) -> dict[str, float]:
     # TODO: calculate min and max from TRAIN rows only
     # Use a span of 1.0 when a feature has no variation.
     return {"amount_min": 0.0, "amount_span": 1.0, "days_min": 0.0, "days_span": 1.0}
 
 
-def transform(row: ClaimRow, scaler: dict[str, float]) -> tuple[float, float]:
+def transform(row: OrderRow, scaler: dict[str, float]) -> tuple[float, float]:
     # TODO: apply the training scaler to one row
     return (0.0, 0.0)
 
 
-def fit_centroids(train_rows: list[ClaimRow], scaler: dict[str, float]) -> dict[int, tuple[float, float]]:
+def fit_centroids(train_rows: list[OrderRow], scaler: dict[str, float]) -> dict[int, tuple[float, float]]:
     # TODO: average the normalized vectors separately for labels 0 and 1
     return {}
 
 
-def predict(row: ClaimRow, scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> int:
+def predict(row: OrderRow, scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> int:
     # TODO: compare Euclidean distances to both centroids
     return 0
 
 
-def evaluate(test_rows: list[ClaimRow], scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> None:
+def evaluate(test_rows: list[OrderRow], scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> None:
     # TODO: print every PRED line and the final METRICS line
     pass
 
 
 def main() -> None:
-    train_rows: list[ClaimRow] = []
-    test_rows: list[ClaimRow] = []
+    train_rows: list[OrderRow] = []
+    test_rows: list[OrderRow] = []
 
     while True:
         line = input("Record: ").strip()
@@ -1091,8 +1091,8 @@ def main() -> None:
             row = parse_record(line)
         except ValueError:
             parts = line.split("|")
-            claim_id = parts[1].strip() if len(parts) > 1 and parts[1].strip() else "UNKNOWN"
-            print(f"INVALID={claim_id}")
+            order_id = parts[1].strip() if len(parts) > 1 and parts[1].strip() else "UNKNOWN"
+            print(f"INVALID={order_id}")
             continue
 
         if row.split == "TRAIN":
@@ -1116,49 +1116,49 @@ import math
 
 
 @dataclass(frozen=True)
-class ClaimRow:
+class OrderRow:
     split: str
-    claim_id: str
+    order_id: str
     amount: float
     days_open: float
     label: int
 
 
-def parse_record(line: str) -> ClaimRow:
+def parse_record(line: str) -> OrderRow:
     # TODO: interprete SPLIT|id|amount|days_open|label
     # TODO: valide divisão, identificador, atributos não negativos e rótulo binário
     raise NotImplementedError
 
 
-def fit_scaler(train_rows: list[ClaimRow]) -> dict[str, float]:
+def fit_scaler(train_rows: list[OrderRow]) -> dict[str, float]:
     # TODO: calcule mínimo e máximo usando somente as linhas TRAIN
     # Use span 1.0 quando um atributo não tiver variação.
     return {"amount_min": 0.0, "amount_span": 1.0, "days_min": 0.0, "days_span": 1.0}
 
 
-def transform(row: ClaimRow, scaler: dict[str, float]) -> tuple[float, float]:
+def transform(row: OrderRow, scaler: dict[str, float]) -> tuple[float, float]:
     # TODO: aplique a normalização de treino em uma linha
     return (0.0, 0.0)
 
 
-def fit_centroids(train_rows: list[ClaimRow], scaler: dict[str, float]) -> dict[int, tuple[float, float]]:
+def fit_centroids(train_rows: list[OrderRow], scaler: dict[str, float]) -> dict[int, tuple[float, float]]:
     # TODO: calcule a média dos vetores normalizados separadamente para rótulos 0 e 1
     return {}
 
 
-def predict(row: ClaimRow, scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> int:
+def predict(row: OrderRow, scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> int:
     # TODO: compare as distâncias euclidianas aos dois centroides
     return 0
 
 
-def evaluate(test_rows: list[ClaimRow], scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> None:
+def evaluate(test_rows: list[OrderRow], scaler: dict[str, float], centroids: dict[int, tuple[float, float]]) -> None:
     # TODO: imprima cada linha PRED e a linha final METRICS
     pass
 
 
 def main() -> None:
-    train_rows: list[ClaimRow] = []
-    test_rows: list[ClaimRow] = []
+    train_rows: list[OrderRow] = []
+    test_rows: list[OrderRow] = []
 
     while True:
         line = input("Registro: ").strip()
@@ -1168,8 +1168,8 @@ def main() -> None:
             row = parse_record(line)
         except ValueError:
             parts = line.split("|")
-            claim_id = parts[1].strip() if len(parts) > 1 and parts[1].strip() else "UNKNOWN"
-            print(f"INVALID={claim_id}")
+            order_id = parts[1].strip() if len(parts) > 1 and parts[1].strip() else "UNKNOWN"
+            print(f"INVALID={order_id}")
             continue
 
         if row.split == "TRAIN":
@@ -1854,17 +1854,17 @@ if __name__ == "__main__":
         title: { en: 'Grounded answer with one strong citation', pt: 'Resposta fundamentada com uma citação forte' },
         inputs: [
           'EMBED|water|1|0',
-          'EMBED|damage|0.9|0.1',
+          'EMBED|amount|0.9|0.1',
           'EMBED|fire|0|1',
           'EMBED|smoke|0.1|0.9',
-          'CHUNK|policy.md|1|Water damage is covered after the deductible.',
+          'CHUNK|policy.md|1|Water amount is covered after the discount.',
           'CHUNK|policy.md|2|Fire and smoke require emergency reporting.',
-          'QUERY|water damage',
+          'QUERY|water amount',
           'END',
         ],
         expectedOutput: [
           'RETRIEVED=policy.md#1|1.00',
-          'ANSWER=Water damage is covered after the deductible.',
+          'ANSWER=Water amount is covered after the discount.',
           'CITATIONS=policy.md#1',
         ],
       },

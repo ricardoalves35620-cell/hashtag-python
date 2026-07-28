@@ -112,7 +112,7 @@ export const ENGINEERING_LAB_CHALLENGES: ArchitectureChallenge[] = [
   {
     id: 'service-boundary',
     title: { en: 'Separate policy from infrastructure', pt: 'Separe política de infraestrutura' },
-    scenario: { en: 'A claim approval rule currently imports the web framework request and writes directly to the database.', pt: 'Uma regra de aprovação importa o request do framework e grava diretamente no banco.' },
+    scenario: { en: 'A order approval rule currently imports the web framework request and writes directly to the database.', pt: 'Uma regra de aprovação importa o request do framework e grava diretamente no banco.' },
     options: [
       { en: 'Move the approval rule into a pure domain function and inject a repository at the application boundary', pt: 'Mover a regra para função de domínio pura e injetar repositório na fronteira da aplicação' },
       { en: 'Pass the request object deeper into every class', pt: 'Passar o request mais fundo em todas as classes' },

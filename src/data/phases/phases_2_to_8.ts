@@ -85,11 +85,11 @@ print((10 + 20 + 30) / 3)   # ✅ 20.0 — correct average` },
         pt: 'Uma fatura freelance real, passo a passo:\n🔸 Total da fatura: R$5.230\n🔸 Depósito já pago: R$250\n🔸 Plataforma libera: 80% do restante\n🔸 Taxa de processamento: 2% do pagamento\n\nÉ EXATAMENTE assim que revisores calculam todo dia:'
       }},
       { type: 'code', code: `# Step-by-step subscription refund
-damage     = 5230
+amount     = 5230
 discount = 250
 
 # Step 1: subtract discount
-after_ded = damage - discount          # 4980
+after_ded = amount - discount          # 4980
 
 # Step 2: apply 80% cover rate
 gross_refund = after_ded * 0.80          # 3984.0
@@ -98,7 +98,7 @@ gross_refund = after_ded * 0.80          # 3984.0
 fee = gross_refund * 0.02                # 79.68
 net_refund = gross_refund - fee          # 3904.32
 
-print("Damage ordered:  $", damage)
+print("Amount ordered:  $", amount)
 print("After discount:$", after_ded)
 print("Gross refund:    $", gross_refund)
 print("Processing fee:  $", fee)
@@ -201,19 +201,19 @@ print(n, "** 2 =", n ** 2)`,
       id: 'ex2_fill',
       title: { en: '🟡 Fill the Gap: Refund Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
       description: {
-        en: 'Goal:\nComplete a two-step subscription refund calculation by replacing two missing operators.\n\nProgram requirements\n\n1. Fill the blanks\n- Blank 1 must apply the 300-dollar discount to the 8,000-dollar damage amount.\n- Blank 2 must apply the 75% coverage rate to the remaining amount.\n\n2. Display\n- Run the calculation and confirm the amount after the discount and the final refund.\n\nExample result:\nAfter discount: 7700\nFinal refund: 5775.0',
+        en: 'Goal:\nComplete a two-step subscription refund calculation by replacing two missing operators.\n\nProgram requirements\n\n1. Fill the blanks\n- Blank 1 must apply the 300-dollar discount to the 8,000-dollar amount amount.\n- Blank 2 must apply the 75% coverage rate to the remaining amount.\n\n2. Display\n- Run the calculation and confirm the amount after the discount and the final refund.\n\nExample result:\nAfter discount: 7700\nFinal refund: 5775.0',
         pt: 'Objetivo:\nComplete um cálculo de reembolso em duas etapas substituindo dois operadores ausentes.\n\nRequisitos do programa\n\n1. Preencher as lacunas\n- A lacuna 1 deve aplicar o desconto de 300 reais ao valor de dano de 8.000 reais.\n- A lacuna 2 deve aplicar a cobertura de 75% ao valor restante.\n\n2. Mostrar\n- Execute o cálculo e confirme o valor após o desconto e o reembolso final.\n\nExemplo de resultado:\nAfter discount: 7700\nFinal refund: 5775.0'
       },
-      starterCode: `damage = 8000
+      starterCode: `amount = 8000
 discount = 300
 
-after_ded = damage ___ discount     # fill: subtract
+after_ded = amount ___ discount     # fill: subtract
 refund = after_ded ___ 0.75           # fill: apply 75% cover rate
 
 print("After discount:", after_ded)
 print("Final refund:", refund)`,
       hints: [
-        { en: 'Blank 1: you need to take the discount away from the damage. The symbol for "take away" is minus: -', pt: 'Lacuna 1: você precisa tirar a desconto do valor do dano. O símbolo de "tirar" é menos: -' },
+        { en: 'Blank 1: you need to take the discount away from the amount. The symbol for "take away" is minus: -', pt: 'Lacuna 1: você precisa tirar a desconto do valor do dano. O símbolo de "tirar" é menos: -' },
         { en: 'Blank 2: 75% of a value means you multiply it by 0.75. The multiplication symbol in Python is: *', pt: 'Lacuna 2: 75% de um valor significa multiplicar por 0.75. O símbolo de multiplicação em Python é: *' }
       ],
       sampleOutput: { en: 'After discount: 7700\nFinal refund: 5775.0', pt: 'After discount: 7700\nFinal refund: 5775.0' }
@@ -685,16 +685,16 @@ print("=== NEW ORDER INTAKE ===")
 
 client = input("Client name: ")                 # text; no conversion needed
 phone = input("Phone: ")                        # keep as text because it may contain dashes
-damage = int(input("Damage amount: $"))         # number used in calculations
+amount = int(input("Amount amount: $"))         # number used in calculations
 discount = int(input("Discount: $"))        # number used in calculations
 
-refund = damage - discount
+refund = amount - discount
 
 print()
 print("=== ORDER SUMMARY ===")
 print(f"Client: {client}")
 print(f"Phone: {phone}")
-print(f"Damage: {damage}")
+print(f"Amount: {amount}")
 print(f"Refund: {refund}")`,
         pt: `# Cadastro completo do pedido: entradas de texto e de número
 print("=== NOVO PEDIDO ===")
@@ -751,7 +751,7 @@ n = float(input("Height: "))
 # Phone, ZIP code, ID numbers → keep as text!` },
 
       { type: 'tip', content: {
-        en: '💡 PRO TIP: the "will I do math with it?" test.\n• Damage amount → math → int/float\n• Age → math → int\n• Phone number → NO math → keep str\n• ZIP code → NO math → keep str\nConverting everything blindly is a rookie mistake.',
+        en: '💡 PRO TIP: the "will I do math with it?" test.\n• Amount amount → math → int/float\n• Age → math → int\n• Phone number → NO math → keep str\n• ZIP code → NO math → keep str\nConverting everything blindly is a rookie mistake.',
         pt: '💡 DICA PRO: o teste "vou fazer matemática com isso?".\n• Valor do dano → matemática → int/float\n• Idade → matemática → int\n• Telefone → SEM matemática → mantém str\n• CEP → SEM matemática → mantém str\nConverter tudo cegamente é erro de iniciante.'
       }},
 
@@ -839,9 +839,9 @@ print(f"Phone: {phone}")`,
     requirements: {
       en: [
         'Ask client name (text)',
-        'Ask damage amount (convert to int)',
+        'Ask amount amount (convert to int)',
         'Ask discount (convert to int)',
-        'Calculate: refund = (damage - discount) * 0.85',
+        'Calculate: refund = (amount - discount) * 0.85',
         'Print name and refund in a summary'
       ],
       pt: [
@@ -893,9 +893,9 @@ export const phase5: Phase = {
 
       { type: 'heading', content: { en: '🐍 The fundamentals', pt: '🐍 Os fundamentos' } },
       { type: 'code', code: {
-        en: `damage = 8000
+        en: `amount = 8000
 
-if damage > 5000:                  # condition + colon
+if amount > 5000:                  # condition + colon
     print("🔴 HIGH PRIORITY")      # indented = inside the if
     print("Send an experienced reviewer")  # still inside
 else:
@@ -944,16 +944,16 @@ print(x != 7)    # True   diferente`,
 
       { type: 'heading', content: { en: '🐍 Deeper: combining conditions with and / or / not', pt: '🐍 Aprofundando: combinando condições com and / or / not' } },
       { type: 'code', code: {
-        en: `damage = 7000
+        en: `amount = 7000
 days_since_plan = 15
 
 # AND — both conditions must be True
-if damage > 5000 and days_since_plan < 30:
+if amount > 5000 and days_since_plan < 30:
     print("⚠️ Large order submitted soon after plan start — investigate")
 
 # OR — at least one condition must be True
 region = "flood_zone"
-if region == "flood_zone" or damage > 10000:
+if region == "flood_zone" or amount > 10000:
     print("Requires senior review")
 
 # NOT — reverses the condition
@@ -997,10 +997,10 @@ if status == "aprovado":
       }},
       { type: 'code', code: {
         en: `print("=== FRAUD SCREENING ===")
-damage = int(input("Order amount: $"))
+amount = int(input("Order amount: $"))
 days = int(input("Days since plan start: "))
 
-if damage > 5000 and days < 30:
+if amount > 5000 and days < 30:
     print("🚨 FLAGGED: large order submitted soon after plan start")
     print("Route to the Special Investigations Unit")
 else:
@@ -1114,7 +1114,7 @@ if int(palpite) == 10:
       } },
 
       { type: 'tip', content: {
-        en: '💡 PRO TIP: read conditions out loud.\nif damage > 5000 and days < 30 →\n"IF damage is over five thousand AND days is under thirty"\nIf the sentence sounds wrong out loud, the logic is probably wrong too.',
+        en: '💡 PRO TIP: read conditions out loud.\nif amount > 5000 and days < 30 →\n"IF amount is over five thousand AND days is under thirty"\nIf the sentence sounds wrong out loud, the logic is probably wrong too.',
         pt: '💡 DICA PRO: leia condições em voz alta.\nif dano > 5000 and dias < 30 →\n"SE o dano é maior que cinco mil E os dias são menos que trinta"\nSe a frase soa errada em voz alta, a lógica provavelmente está errada também.'
       }},
 
@@ -1131,12 +1131,12 @@ if int(palpite) == 10:
       id: 'ex5_guided',
       title: { en: '🟢 Guided: Trace the Decision', pt: '🟢 Guiado: Rastreie a Decisão' },
       description: {
-        en: 'Goal:\nRun a completed if/else decision and trace which branch handles each damage value.\n\nProgram requirements\n\n1. Test the high-priority branch\n- Enter 8,000 and identify the messages produced by the true branch.\n\n2. Test the standard branch\n- Enter 2,000 and identify the messages produced by the false branch.\n\n3. Test the boundary\n- Run with 5,000 and 5,001 to determine exactly when high priority begins.\n- Confirm that the final check-complete message appears in every case.',
+        en: 'Goal:\nRun a completed if/else decision and trace which branch handles each amount value.\n\nProgram requirements\n\n1. Test the high-priority branch\n- Enter 8,000 and identify the messages produced by the true branch.\n\n2. Test the standard branch\n- Enter 2,000 and identify the messages produced by the false branch.\n\n3. Test the boundary\n- Run with 5,000 and 5,001 to determine exactly when high priority begins.\n- Confirm that the final check-complete message appears in every case.',
         pt: 'Objetivo:\nExecute uma decisão if/else completa e acompanhe qual caminho trata cada valor de dano.\n\nRequisitos do programa\n\n1. Testar a prioridade alta\n- Digite 8.000 e identifique as mensagens produzidas pelo caminho verdadeiro.\n\n2. Testar o processamento padrão\n- Digite 2.000 e identifique as mensagens produzidas pelo caminho falso.\n\n3. Testar o limite\n- Execute com 5.000 e 5.001 para descobrir exatamente quando começa a prioridade alta.\n- Confirme que a mensagem final de verificação aparece em todos os casos.'
       },
-      starterCode: `damage = int(input("Damage: $"))
+      starterCode: `amount = int(input("Amount: $"))
 
-if damage > 5000:
+if amount > 5000:
     print("🔴 HIGH PRIORITY")
     print("Expert reviewer assigned")
 else:
@@ -1152,19 +1152,19 @@ print("--- check complete ---")`,
       id: 'ex5_fill',
       title: { en: '🟡 Fill the Gap: Fraud Gate', pt: '🟡 Preencha: Portão de Fraude' },
       description: {
-        en: 'Goal:\nComplete the three blanks in a fraud-check condition for suspicious subscription orders.\n\nProgram requirements\n\n1. Apply the rule\n- Blank 1 compares whether the damage is greater than 5,000 dollars.\n- Blank 2 requires both parts of the rule to be true.\n- Blank 3 compares whether the plan began fewer than 30 days ago.\n\n2. Test both outcomes\n- A large, recent order must be flagged.\n- An order that fails either part of the rule must pass the check.\n\nExample result:\n🚨 FLAGGED for investigation',
+        en: 'Goal:\nComplete the three blanks in a fraud-check condition for suspicious subscription orders.\n\nProgram requirements\n\n1. Apply the rule\n- Blank 1 compares whether the amount is greater than 5,000 dollars.\n- Blank 2 requires both parts of the rule to be true.\n- Blank 3 compares whether the plan began fewer than 30 days ago.\n\n2. Test both outcomes\n- A large, recent order must be flagged.\n- An order that fails either part of the rule must pass the check.\n\nExample result:\n🚨 FLAGGED for investigation',
         pt: 'Objetivo:\nComplete as três lacunas de uma condição de verificação de fraude para pedidos suspeitos.\n\nRequisitos do programa\n\n1. Aplicar a regra\n- A lacuna 1 verifica se o dano é maior que 5.000 reais.\n- A lacuna 2 exige que as duas partes da regra sejam verdadeiras.\n- A lacuna 3 verifica se o plano começou há menos de 30 dias.\n\n2. Testar os dois resultados\n- Um pedido grande e recente deve ser sinalizado.\n- Um pedido que não cumpra qualquer uma das partes deve passar na verificação.\n\nExemplo de resultado:\n🚨 FLAGGED for investigation'
       },
-      starterCode: `damage = int(input("Damage: $"))
+      starterCode: `amount = int(input("Amount: $"))
 days = int(input("Days since plan start: "))
 
-if damage ___ 5000 ___ days ___ 30:    # fill: >, and, <
+if amount ___ 5000 ___ days ___ 30:    # fill: >, and, <
     print("🚨 FLAGGED for investigation")
 else:
     print("✅ Passed fraud check")`,
       hints: [
-        { en: 'Large: damage > 5000  |  Recent: days < 30  |  Both: and between them', pt: 'Grande: damage > 5000  |  Recente: days < 30  |  Ambos: and entre eles' },
-        { en: 'Full line: if damage > 5000 and days < 30:', pt: 'Linha completa: if damage > 5000 and days < 30:' }
+        { en: 'Large: amount > 5000  |  Recent: days < 30  |  Both: and between them', pt: 'Grande: amount > 5000  |  Recente: days < 30  |  Ambos: and entre eles' },
+        { en: 'Full line: if amount > 5000 and days < 30:', pt: 'Linha completa: if amount > 5000 and days < 30:' }
       ],
       sampleOutput: { en: '🚨 FLAGGED for investigation', pt: '🚨 FLAGGED for investigation' }
     },
@@ -1201,9 +1201,9 @@ else:
     },
     requirements: {
       en: [
-        'Ask damage amount and days since plan start',
-        'If damage > 5000 AND days < 30 → print "INVESTIGATE"',
-        'Else if damage > 10000 → print "NEEDS APPROVAL"',
+        'Ask amount amount and days since plan start',
+        'If amount > 5000 AND days < 30 → print "INVESTIGATE"',
+        'Else if amount > 10000 → print "NEEDS APPROVAL"',
         'Else → print "AUTO-APPROVED"'
       ],
       pt: [
@@ -1213,7 +1213,7 @@ else:
         'Senão → imprima "AUTO-APPROVED"'
       ]
     },
-    starterCode: `damage = int(input("Damage: $"))
+    starterCode: `amount = int(input("Amount: $"))
 days = int(input("Days since plan: "))
 
 # Build your decision logic:`,
@@ -1257,7 +1257,7 @@ export const phase6: Phase = {
       }},
 
       { type: 'checkpoint', checkpoint: {
-        code: 'damage = 12000\nif damage > 5000:\n    print("Urgent")\nelif damage > 10000:\n    print("Critical")',
+        code: 'amount = 12000\nif amount > 5000:\n    print("Urgent")\nelif amount > 10000:\n    print("Critical")',
         options: [
           { en: 'Urgent', pt: 'Urgent' },
           { en: 'Critical', pt: 'Critical' },
@@ -1268,9 +1268,9 @@ export const phase6: Phase = {
       } },
 
       { type: 'heading', content: { en: '🐍 Step 1 — you already know if/else', pt: '🐍 Passo 1 — você já sabe if/else' } },
-      { type: 'code', code: `damage = 4500
+      { type: 'code', code: `amount = 4500
 
-if damage > 5000:
+if amount > 5000:
     print("Urgent")
 else:
     print("Normal")   # everything else lands here
@@ -1278,11 +1278,11 @@ else:
 # Problem: real business has MORE than 2 categories!` },
 
       { type: 'heading', content: { en: '🐍 Step 2 — elif adds middle lanes', pt: '🐍 Passo 2 — elif adiciona faixas do meio' } },
-      { type: 'code', code: `damage = 4500
+      { type: 'code', code: `amount = 4500
 
-if damage > 10000:
+if amount > 10000:
     print("Critical")
-elif damage > 5000:      # checked ONLY if first was False
+elif amount > 5000:      # checked ONLY if first was False
     print("Urgent")
 else:
     print("Normal")
@@ -1291,17 +1291,17 @@ else:
 # 4500: >10000? No. >5000? No. → else → "Normal"` },
 
       { type: 'heading', content: { en: '🐍 Step 3 — full production system', pt: '🐍 Passo 3 — sistema completo de produção' } },
-      { type: 'code', code: `damage = 7200
+      { type: 'code', code: `amount = 7200
 
-if damage > 10000:
+if amount > 10000:
     priority = "Critical"
     sla_hours = 2
     team = "Senior reviewers"
-elif damage > 5000:
+elif amount > 5000:
     priority = "Urgent"
     sla_hours = 4
     team = "Standard reviewers"
-elif damage >= 1000:
+elif amount >= 1000:
     priority = "Normal"
     sla_hours = 24
     team = "Auto-queue"
@@ -1365,26 +1365,26 @@ else:
 
       { type: 'heading', content: { en: '⚠️ Common mistakes', pt: '⚠️ Erros comuns' } },
       { type: 'code', code: {
-        en: `damage = 8000
+        en: `amount = 8000
 
 # ❌ MISTAKE 1: placing a broad condition first
-if damage > 1000:            # 8000 > 1000? True → stops here
+if amount > 1000:            # 8000 > 1000? True → stops here
     print("Normal")           # wrong: it should be Urgent
-elif damage > 5000:
+elif amount > 5000:
     print("Urgent")           # never reached
 
 # ✅ FIX: place the most specific condition first
-if damage > 10000:
+if amount > 10000:
     print("Critical")
-elif damage > 5000:
+elif amount > 5000:
     print("Urgent")           # 8000 now reaches the correct branch
-elif damage > 1000:
+elif amount > 1000:
     print("Normal")
 
 # ❌ MISTAKE 2: using separate if statements instead of elif
-if damage > 5000:
+if amount > 5000:
     print("Urgent")           # prints
-if damage > 1000:
+if amount > 1000:
     print("Normal")           # also prints: separate ifs are independent
 
 # ✅ elif makes the branches exclusive: only one branch runs`,
@@ -1434,13 +1434,13 @@ if dano > 1000:
         en: 'Goal:\nRun a completed if/elif/else waterfall and identify the first matching priority band.\n\nProgram requirements\n\n1. Test different bands\n- Enter 12,000, 7,000 and 500 in separate runs.\n- For each value, identify which checks are skipped and which single branch produces the result.\n\n2. Test a boundary\n- Enter 5,000 and determine whether it belongs to URGENT or NORMAL.\n- Explain why later branches are not checked after a match.',
         pt: 'Objetivo:\nExecute uma cascata if/elif/else completa e identifique a primeira faixa de prioridade correspondente.\n\nRequisitos do programa\n\n1. Testar faixas diferentes\n- Digite 12.000, 7.000 e 500 em execuções separadas.\n- Para cada valor, identifique quais verificações são ignoradas e qual único caminho produz o resultado.\n\n2. Testar um limite\n- Digite 5.000 e determine se pertence a URGENT ou NORMAL.\n- Explique por que os caminhos posteriores não são verificados após uma correspondência.'
       },
-      starterCode: `damage = int(input("Damage: $"))
+      starterCode: `amount = int(input("Amount: $"))
 
-if damage > 10000:
+if amount > 10000:
     print("🔴 CRITICAL — 2h SLA")
-elif damage > 5000:
+elif amount > 5000:
     print("🟠 URGENT — 4h SLA")
-elif damage >= 1000:
+elif amount >= 1000:
     print("🟡 NORMAL — 24h SLA")
 else:
     print("🟢 LOW — 72h SLA")`,
@@ -1492,7 +1492,7 @@ print("Fee:", fee)`,
 
   quiz: [
     { id: 'q6_1', question: { en: 'Does elif order matter?', pt: 'A ordem do elif importa?' }, options: [{ en: 'Yes — top to bottom, FIRST True wins', pt: 'Sim — de cima para baixo, PRIMEIRO True vence' }, { en: 'No — all are checked', pt: 'Não — todos são verificados' }, { en: 'Only with numbers', pt: 'Só com números' }, { en: 'Python sorts automatically', pt: 'Python ordena sozinho' }], correctIndex: 0, explanation: { en: 'Python stops at the first True. Broad conditions first = specific ones never reached.', pt: 'Python para no primeiro True. Condições amplas primeiro = específicas nunca alcançadas.' } },
-    { id: 'q6_2', question: { en: 'damage = 8000\nif damage > 1000: print("A")\nelif damage > 5000: print("B")\nWhat prints?', pt: 'dano = 8000\nif dano > 1000: print("A")\nelif dano > 5000: print("B")\nO que será impresso?' }, options: [{ en: 'A — first condition matched, B is skipped', pt: 'A — primeira condição bateu, B é pulado' }, { en: 'B', pt: 'B' }, { en: 'A and B', pt: 'A e B' }, { en: 'Nothing', pt: 'Nada' }], correctIndex: 0, explanation: { en: '8000 > 1000 is True → "A" prints and the elif is never checked. Classic wrong-order bug!', pt: '8000 > 1000 é True → "A" imprime e o elif nunca é verificado. Clássico bug de ordem errada!' } },
+    { id: 'q6_2', question: { en: 'amount = 8000\nif amount > 1000: print("A")\nelif amount > 5000: print("B")\nWhat prints?', pt: 'dano = 8000\nif dano > 1000: print("A")\nelif dano > 5000: print("B")\nO que será impresso?' }, options: [{ en: 'A — first condition matched, B is skipped', pt: 'A — primeira condição bateu, B é pulado' }, { en: 'B', pt: 'B' }, { en: 'A and B', pt: 'A e B' }, { en: 'Nothing', pt: 'Nada' }], correctIndex: 0, explanation: { en: '8000 > 1000 is True → "A" prints and the elif is never checked. Classic wrong-order bug!', pt: '8000 > 1000 é True → "A" imprime e o elif nunca é verificado. Clássico bug de ordem errada!' } },
     { id: 'q6_3', question: { en: 'Two separate ifs (not elif) means:', pt: 'Dois ifs separados (não elif) significa:' }, options: [{ en: 'Independent checks — both can run', pt: 'Verificações independentes — ambos podem rodar' }, { en: 'Same as elif', pt: 'Igual ao elif' }, { en: 'Only the first runs', pt: 'Só o primeiro roda' }, { en: 'Syntax error', pt: 'Erro de sintaxe' }], correctIndex: 0, explanation: { en: 'Separate ifs are evaluated independently. elif makes branches EXCLUSIVE — only one runs.', pt: 'Ifs separados são avaliados independentemente. elif torna os ramos EXCLUSIVOS — só um roda.' } },
     { id: 'q6_4', question: { en: 'Is else required after elif?', pt: 'O else é obrigatório após elif?' }, options: [{ en: 'No — optional. Without it, no match = nothing happens', pt: 'Não — opcional. Sem ele, sem match = nada acontece' }, { en: 'Yes, always', pt: 'Sim, sempre' }, { en: 'Only with 3+ elifs', pt: 'Só com 3+ elifs' }, { en: 'Yes, in Python 3', pt: 'Sim, no Python 3' }], correctIndex: 0, explanation: { en: 'else is the optional catch-all. Skipping it is valid — sometimes "do nothing" is the right default.', pt: 'else é o captura-tudo opcional. Pular é válido — às vezes "não fazer nada" é o padrão certo.' } },
     { id: 'q6_5', question: { en: 'score=85: if score>=90:"A" elif score>=80:"B" elif score>=70:"C" →', pt: 'score=85: if score>=90:"A" elif score>=80:"B" elif score>=70:"C" →' }, options: [{ en: 'B — 85 fails >=90, passes >=80, stops', pt: 'B — 85 falha >=90, passa >=80, para' }, { en: 'C', pt: 'C' }, { en: 'B and C', pt: 'B e C' }, { en: 'A', pt: 'A' }], correctIndex: 0, explanation: { en: '85 >= 90? No. 85 >= 80? Yes → B, and the chain stops immediately.', pt: '85 >= 90? Não. 85 >= 80? Sim → B, e a cadeia para imediatamente.' } },
@@ -1506,10 +1506,10 @@ print("Fee:", fee)`,
       pt: 'Construa a triagem completa de 4 níveis usada pelo departamento de pedidos. Cada nível tem SLA diferente. Ordene suas condições com cuidado!'
     },
     requirements: {
-      en: ['Ask damage amount', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'else → "LOW - 72 hours"'],
+      en: ['Ask amount amount', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'else → "LOW - 72 hours"'],
       pt: ['Pergunte o valor do dano', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'senão → "LOW - 72 hours"']
     },
-    starterCode: `damage = int(input("Damage: $"))
+    starterCode: `amount = int(input("Amount: $"))
 
 # Build the 4-tier waterfall (highest first!):`,
     testCases: [
@@ -1622,8 +1622,8 @@ total_refund = 0
 
 while count <= pending:
     print(f"--- Order {count} of {pending} ---")
-    damage = int(input("Damage amount: $"))
-    refund = damage - 250
+    amount = int(input("Amount amount: $"))
+    refund = amount - 250
     total_refund += refund
     print(f"Refund: \${refund}")
     count += 1
@@ -1846,7 +1846,7 @@ print("Restock needed!")`,
       pt: 'Lote de fim de mês: processe 5 pedidos com R$300 de desconto cada, depois reporte total, média e quantos ficaram acima de R$3000 de pagamento.'
     },
     requirements: {
-      en: ['Loop exactly 5 times', 'Ask damage, subtract 300', 'Accumulate total', 'Count refunds above 3000', 'Print total, average and count'],
+      en: ['Loop exactly 5 times', 'Ask amount, subtract 300', 'Accumulate total', 'Count refunds above 3000', 'Print total, average and count'],
       pt: ['Loop exatamente 5 vezes', 'Pergunte dano, subtraia 300', 'Acumule total', 'Conte pagamentos acima de 3000', 'Imprima total, média e contagem']
     },
     starterCode: `total = 0
@@ -1895,7 +1895,7 @@ export const phase8: Phase = {
       { type: 'heading', content: { en: '🐍 Step 1 — create and access lists', pt: '🐍 Passo 1 — criar e acessar listas' } },
       { type: 'code', code: `# Square brackets create a list
 clients = ["Alice", "Bob", "Carlos", "Diana"]
-damages = [1200, 4500, 8000, 250]
+amounts = [1200, 4500, 8000, 250]
 
 # Access by POSITION — starts at 0!
 print(clients[0])     # Alice   (first)
@@ -1906,8 +1906,8 @@ print(clients[-1])    # Diana   (negative = from the end!)
 print(len(clients))   # 4 — how many items
 clients.append("Eva") # add to the end
 print(clients)        # [..., 'Eva']
-print(sum(damages))   # 13950 — sum all numbers
-print(max(damages))   # 8000 — biggest` },
+print(sum(amounts))   # 13950 — sum all numbers
+print(max(amounts))   # 8000 — biggest` },
 
       { type: 'checkpoint', checkpoint: {
         code: 'clients = ["Alice", "Bob", "Carlos", "Diana"]\nprint(clients[1])',
@@ -1958,19 +1958,19 @@ for i in range(3):        # 0, 1, 2
       } },
 
       { type: 'heading', content: { en: '🐍 Step 3 — loop + filter + accumulate', pt: '🐍 Passo 3 — loop + filtro + acumular' } },
-      { type: 'code', code: `damages = [1200, 4500, 8000, 250, 3100]
+      { type: 'code', code: `amounts = [1200, 4500, 8000, 250, 3100]
 total = 0
 big_orders = 0
 
-for damage in damages:
-    refund = damage - 250
+for amount in amounts:
+    refund = amount - 250
     total += refund               # accumulate
-    if damage > 3000:             # filter inside the loop!
+    if amount > 3000:             # filter inside the loop!
         big_orders += 1
-        print(f"⚠️ Big order: \${damage}")
+        print(f"⚠️ Big order: \${amount}")
 
 print(f"Total refund: \${total}")
-print(f"Big orders: {big_orders} of {len(damages)}")` },
+print(f"Big orders: {big_orders} of {len(amounts)}")` },
 
       { type: 'checkpoint', checkpoint: {
         code: 'total = 0\nfor n in [10, 20, 30]:\n    total = n\nprint(total)',
@@ -1989,25 +1989,25 @@ print(f"Big orders: {big_orders} of {len(damages)}")` },
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Orders dashboard', pt: '🏗️ Cenário Real 1: Dashboard de pedidos' } },
       { type: 'code', code: {
         en: `# Morning dashboard: process the overnight order queue
-damages = [5230, 1200, 8000, 450, 3100, 9200]
+amounts = [5230, 1200, 8000, 450, 3100, 9200]
 total = 0
 critical = 0
 
 print("=== MORNING QUEUE ===")
-for damage in damages:
-    refund = damage - 250
+for amount in amounts:
+    refund = amount - 250
     total += refund
-    if damage > 8000:
+    if amount > 8000:
         critical += 1
-        print(f"🔴 \${damage} → CRITICAL, escalating")
+        print(f"🔴 \${amount} → CRITICAL, escalating")
     else:
-        print(f"🟢 \${damage} → refund \${refund}")
+        print(f"🟢 \${amount} → refund \${refund}")
 
 print()
-print(f"Queue: {len(damages)} orders")
+print(f"Queue: {len(amounts)} orders")
 print(f"Critical: {critical}")
 print(f"Total refund: \${total}")
-print(f"Average: \${total / len(damages):.2f}")`,
+print(f"Average: \${total / len(amounts):.2f}")`,
         pt: `# Dashboard matinal: processe a fila de pedidos da madrugada
 danos = [5230, 1200, 8000, 450, 3100, 9200]
 total = 0
@@ -2093,7 +2093,7 @@ print(total)              # 60 ✅
       } },
 
       { type: 'tip', content: {
-        en: '💡 PRO TIP: name the loop variable as the SINGULAR of the list.\nfor client in clients / for damage in damages / for site in sites\nYour code reads like English and bugs become obvious: "for damage in clients" instantly looks wrong.',
+        en: '💡 PRO TIP: name the loop variable as the SINGULAR of the list.\nfor client in clients / for amount in amounts / for site in sites\nYour code reads like English and bugs become obvious: "for amount in clients" instantly looks wrong.',
         pt: '💡 DICA PRO: nomeie a variável do loop como o SINGULAR da lista.\nfor cliente in clientes / for dano in danos / for projeto in projetos\nSeu código lê como português e bugs ficam óbvios: "for dano in clientes" parece errado na hora.'
       }},
 
@@ -2128,17 +2128,17 @@ print("Queue complete!")`,
       id: 'ex8_fill',
       title: { en: '🟡 Fill: Filter + Accumulate', pt: '🟡 Preencha: Filtrar + Acumular' },
       description: {
-        en: 'Goal:\nComplete a dashboard that accumulates refunds and identifies large orders.\n\nProgram requirements\n\n1. Initialize\n- Blank 1 gives the running total its starting value before the loop.\n\n2. Process each order\n- For every damage value, calculate the refund after the fixed 250-dollar deduction.\n- Blank 2 adds each refund to the running total.\n- Blank 3 identifies damage values greater than 3,000 dollars.\n\n3. Display\n- Show each large order and the final refund total.\n\nExample result:\nBig order: 4500\nBig order: 8000\nTotal: 13350',
+        en: 'Goal:\nComplete a dashboard that accumulates refunds and identifies large orders.\n\nProgram requirements\n\n1. Initialize\n- Blank 1 gives the running total its starting value before the loop.\n\n2. Process each order\n- For every amount value, calculate the refund after the fixed 250-dollar deduction.\n- Blank 2 adds each refund to the running total.\n- Blank 3 identifies amount values greater than 3,000 dollars.\n\n3. Display\n- Show each large order and the final refund total.\n\nExample result:\nBig order: 4500\nBig order: 8000\nTotal: 13350',
         pt: 'Objetivo:\nComplete um painel que acumule reembolsos e identifique pedidos grandes.\n\nRequisitos do programa\n\n1. Inicializar\n- A lacuna 1 define o valor inicial do total antes do laço.\n\n2. Processar cada pedido\n- Para cada valor de dano, calcule o reembolso após a dedução fixa de 250 reais.\n- A lacuna 2 adiciona cada reembolso ao total acumulado.\n- A lacuna 3 identifica valores de dano maiores que 3.000 reais.\n\n3. Mostrar\n- Mostre cada pedido grande e o total final dos reembolsos.\n\nExemplo de resultado:\nBig order: 4500\nBig order: 8000\nTotal: 13350'
       },
-      starterCode: `damages = [1200, 4500, 8000, 650]
+      starterCode: `amounts = [1200, 4500, 8000, 650]
 total = ___                     # fill: accumulator start
 
-for damage in damages:
-    refund = damage - 250
+for amount in amounts:
+    refund = amount - 250
     total ___ refund            # fill: accumulate
-    if damage ___ 3000:         # fill: bigger than
-        print("Big order:", damage)
+    if amount ___ 3000:         # fill: bigger than
+        print("Big order:", amount)
 
 print("Total:", total)`,
       hints: [
@@ -2181,10 +2181,10 @@ print("Total:", total)`,
       pt: 'Construa o dashboard matinal: processe a fila da madrugada, aplique descontos, sinalize pedidos críticos e reporte estatísticas completas.'
     },
     requirements: {
-      en: ['Use the provided damages list', 'Loop applying $250 discount', 'Count orders above $5000', 'Print total refund, count of orders, count of big ones'],
+      en: ['Use the provided amounts list', 'Loop applying $250 discount', 'Count orders above $5000', 'Print total refund, count of orders, count of big ones'],
       pt: ['Use a lista de danos fornecida', 'Percorra aplicando R$250 de desconto', 'Conte pedidos acima de R$5000', 'Imprima pagamento total, quantidade de pedidos, quantidade de grandes']
     },
-    starterCode: `damages = [5230, 1200, 8000, 450, 3100, 9200]
+    starterCode: `amounts = [5230, 1200, 8000, 450, 3100, 9200]
 
 # Build your dashboard:`,
     testCases: [

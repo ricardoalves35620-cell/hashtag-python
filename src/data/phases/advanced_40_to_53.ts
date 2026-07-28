@@ -1024,7 +1024,7 @@ const specs: ConceptPhaseSpec[] = [
       "en": "Design schema from your data rules (what fields are required, what values are valid), use placeholders for values, wrap related writes in a transaction and add indexes only for measured query patterns.",
       "pt": "Projete schema pelas regras dos dados (quais campos são obrigatórios, quais valores são válidos), use placeholders, agrupe escritas em transação e adicione índices por consultas medidas."
     },
-    "exampleCode": "def build_claim_query(status, limit):\n    sql = \"SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?\"\n    return sql, (status, limit)\n\nprint(build_claim_query(\"open\", 10))",
+    "exampleCode": "def build_order_query(status, limit):\n    sql = \"SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?\"\n    return sql, (status, limit)\n\nprint(build_order_query(\"open\", 10))",
     "exampleOutput": {
       "en": "('SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?', ('open', 10))",
       "pt": "('SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?', ('open', 10))"
@@ -1051,30 +1051,30 @@ const specs: ConceptPhaseSpec[] = [
       ]
     },
     "practice": {
-      "functionName": "build_claim_query",
-      "starterCode": "def build_claim_query(status, limit):\n    \"\"\"Return parameterized SQL and a parameter tuple.\"\"\"\n    pass",
-      "publicAfterCode": "print(build_claim_query(\"open\", 10))",
+      "functionName": "build_order_query",
+      "starterCode": "def build_order_query(status, limit):\n    \"\"\"Return parameterized SQL and a parameter tuple.\"\"\"\n    pass",
+      "publicAfterCode": "print(build_order_query(\"open\", 10))",
       "publicExpected": "WHERE status = ?",
-      "hiddenAfterCode": "print(build_claim_query(\"closed\", 5)[1])",
+      "hiddenAfterCode": "print(build_order_query(\"closed\", 5)[1])",
       "hiddenExpected": "('closed', 5)",
       "requirements": [
         {
           "kind": "function",
-          "value": "build_claim_query"
+          "value": "build_order_query"
         }
       ]
     },
     "exam": {
-      "functionName": "build_claim_query",
-      "starterCode": "def build_claim_query(status, limit):\n    \"\"\"Never interpolate status into SQL text.\"\"\"\n    pass",
-      "publicAfterCode": "sql, params = build_claim_query(\"open\", 3)\nprint(sql)\nprint(params)",
+      "functionName": "build_order_query",
+      "starterCode": "def build_order_query(status, limit):\n    \"\"\"Never interpolate status into SQL text.\"\"\"\n    pass",
+      "publicAfterCode": "sql, params = build_order_query(\"open\", 3)\nprint(sql)\nprint(params)",
       "publicExpected": "LIMIT ?",
-      "hiddenAfterCode": "sql, params = build_claim_query(\"x' OR 1=1 --\", 2)\nprint(\"OR 1=1\" in sql, params)",
+      "hiddenAfterCode": "sql, params = build_order_query(\"x' OR 1=1 --\", 2)\nprint(\"OR 1=1\" in sql, params)",
       "hiddenExpected": "False",
       "requirements": [
         {
           "kind": "function",
-          "value": "build_claim_query"
+          "value": "build_order_query"
         }
       ]
     },

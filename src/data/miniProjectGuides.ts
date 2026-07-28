@@ -43,10 +43,10 @@ export interface MiniProjectGuide {
 }
 
 export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
-  'damage-estimate': {
+  'amount-estimate': {
     mission: {
       en: 'Make a program that tells an event organizer how much money is still available.',
-      pt: 'Faça um programa que diga quanto dinheiro ainda sobra para organizar um evento.',
+      pt: 'Faça um programa que diga quanto dinheiro ainda sprojeto para organizar um evento.',
     },
     story: {
       en: 'Imagine a school party. The organizer has a budget and has already promised to pay some expenses. Your program subtracts the expenses from the budget.',
@@ -85,7 +85,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     codeWords: [
       { code: 'budget', meaning: { en: 'all money available', pt: 'todo o dinheiro disponível' } },
       { code: 'expenses', meaning: { en: 'money already committed', pt: 'dinheiro já comprometido' } },
-      { code: 'remaining', meaning: { en: 'money left after subtraction', pt: 'dinheiro que sobra depois da subtração' } },
+      { code: 'remaining', meaning: { en: 'money left after subtraction', pt: 'dinheiro que sprojeto depois da subtração' } },
     ],
     buildHints: [
       { en: 'Replace the temporary value 0 with the subtraction budget - expenses.', pt: 'Troque o valor provisório 0 pela subtração budget - expenses.' },
@@ -108,7 +108,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
       pt: 'Não invente uma função nova. Deixe o mesmo programa mais fácil para outra pessoa ler.',
     },
     improveChoices: [
-      { title: { en: 'Use a clearer result name', pt: 'Usar um nome mais claro para o resultado' }, change: { en: 'Rename remaining to remaining_budget everywhere.', pt: 'Troque remaining por remaining_budget em todos os lugares.' }, example: { en: 'remaining = ... becomes remaining_budget = ...', pt: 'remaining = ... vira remaining_budget = ...' }, why: { en: 'The name explains what is remaining.', pt: 'O nome explica o que está sobrando.' } },
+      { title: { en: 'Use a clearer result name', pt: 'Usar um nome mais claro para o resultado' }, change: { en: 'Rename remaining to remaining_budget everywhere.', pt: 'Troque remaining por remaining_budget em todos os lugares.' }, example: { en: 'remaining = ... becomes remaining_budget = ...', pt: 'remaining = ... vira remaining_budget = ...' }, why: { en: 'The name explains what is remaining.', pt: 'O nome explica o que está sprojetondo.' } },
       { title: { en: 'Separate the three parts', pt: 'Separar as três partes' }, change: { en: 'Add short comments for input, calculation and output.', pt: 'Adicione comentários curtos para entrada, cálculo e saída.' }, example: { en: '# Input\n# Calculation\n# Output', pt: '# Entrada\n# Cálculo\n# Saída' }, why: { en: 'A reader finds each part faster.', pt: 'A pessoa encontra cada parte mais rápido.' } },
       { title: { en: 'Remove a repeated comment', pt: 'Remover um comentário repetido' }, change: { en: 'Remove one comment that only says the same thing as the next line.', pt: 'Remova um comentário que apenas repete o que a próxima linha já mostra.' }, example: { en: 'Remove “calculate the balance” when the line already says budget - expenses.', pt: 'Remova “calcule o saldo” quando a linha já mostra budget - expenses.' }, why: { en: 'Useful comments explain why, not the obvious.', pt: 'Comentários úteis explicam o motivo, não o óbvio.' } },
     ],
@@ -116,7 +116,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     doNotChange: { en: 'Do not change the formula or the words printed in the result.', pt: 'Não altere a fórmula nem as palavras mostradas no resultado.' },
   },
 
-  'claim-queue': {
+  'order-queue': {
     mission: {
       en: 'Make a program that reads several shipment values and calculates their count, total and average.',
       pt: 'Faça um programa que leia vários valores de remessas e calcule quantidade, total e média.',
@@ -274,7 +274,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     doNotChange: { en: 'Do not change which status counts as approved or the output labels.', pt: 'Não altere qual status conta como aprovado nem os nomes da saída.' },
   },
 
-  'foundation-claim-desk': {
+  'foundation-order-desk': {
     mission: { en: 'Build a small text-menu program that saves records, lists them and adds their values.', pt: 'Monte um pequeno programa de menu que salva registros, lista e soma seus valores.' },
     story: { en: 'Think of a notebook controlled by commands. add writes a new record, list reads the notebook, total adds the money and exit closes it.', pt: 'Pense em um caderno controlado por comandos. add escreve um registro, list lê o caderno, total soma o dinheiro e exit fecha o programa.' },
     result: { en: 'The program must respond with exact labels so another program can understand every answer.', pt: 'O programa deve responder com palavras exatas para que outro programa entenda cada resposta.' },
@@ -292,12 +292,12 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     ],
     outputItems: [
       { label: { en: 'ADDED', pt: 'ADDED' }, meaning: { en: 'The record was saved.', pt: 'O registro foi salvo.' }, example: { en: 'ADDED=C-1', pt: 'ADDED=C-1' } },
-      { label: { en: 'CLAIM', pt: 'CLAIM' }, meaning: { en: 'One saved record.', pt: 'Um registro salvo.' }, example: { en: 'CLAIM=C-1|Ana|500.00', pt: 'CLAIM=C-1|Ana|500.00' } },
+      { label: { en: 'ORDER', pt: 'ORDER' }, meaning: { en: 'One saved record.', pt: 'Um registro salvo.' }, example: { en: 'ORDER=C-1|Ana|500.00', pt: 'ORDER=C-1|Ana|500.00' } },
       { label: { en: 'TOTAL', pt: 'TOTAL' }, meaning: { en: 'Sum of accepted amounts.', pt: 'Soma dos valores aceitos.' }, example: { en: 'TOTAL=500.00', pt: 'TOTAL=500.00' } },
     ],
     understandAnswers: {
       inputs: { en: 'Commands and, after add, an ID, client and amount.', pt: 'Comandos e, depois de add, um ID, cliente e valor.' },
-      output: { en: 'Stable lines such as ADDED, CLAIM, TOTAL, DUPLICATE_ID, INVALID_AMOUNT and BYE.', pt: 'Linhas fixas como ADDED, CLAIM, TOTAL, DUPLICATE_ID, INVALID_AMOUNT e BYE.' },
+      output: { en: 'Stable lines such as ADDED, ORDER, TOTAL, DUPLICATE_ID, INVALID_AMOUNT and BYE.', pt: 'Linhas fixas como ADDED, ORDER, TOTAL, DUPLICATE_ID, INVALID_AMOUNT e BYE.' },
       rules: { en: 'IDs cannot repeat. Invalid amounts are not saved. total adds accepted records.', pt: 'IDs não podem repetir. Valores inválidos não são salvos. total soma os registros aceitos.' },
       edgeCase: { en: 'The program must not crash with invalid money or an empty list.', pt: 'O programa não pode quebrar com dinheiro inválido ou lista vazia.' },
     },
@@ -311,11 +311,11 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
       { en: 'IF command is exit, print BYE and stop.', pt: 'SE o comando for exit, mostrar BYE e parar.' },
     ],
     codeWords: [
-      { code: 'claims', meaning: { en: 'the list that stores accepted records', pt: 'a lista que guarda registros aceitos' } },
-      { code: 'find_claim', meaning: { en: 'looks for one ID', pt: 'procura um ID' } },
-      { code: 'add_claim', meaning: { en: 'validates and saves one record', pt: 'valida e salva um registro' } },
-      { code: 'list_claims', meaning: { en: 'prints every saved record', pt: 'mostra todos os registros salvos' } },
-      { code: 'total_claims', meaning: { en: 'adds all accepted amounts', pt: 'soma todos os valores aceitos' } },
+      { code: 'orders', meaning: { en: 'the list that stores accepted records', pt: 'a lista que guarda registros aceitos' } },
+      { code: 'find_order', meaning: { en: 'looks for one ID', pt: 'procura um ID' } },
+      { code: 'add_order', meaning: { en: 'validates and saves one record', pt: 'valida e salva um registro' } },
+      { code: 'list_orders', meaning: { en: 'prints every saved record', pt: 'mostra todos os registros salvos' } },
+      { code: 'total_orders', meaning: { en: 'adds all accepted amounts', pt: 'soma todos os valores aceitos' } },
     ],
     buildHints: [
       { en: 'Finish one function at a time. Test it mentally before moving to the next.', pt: 'Termine uma função por vez. Faça um teste mental antes de ir para a próxima.' },
@@ -327,24 +327,24 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
       title: { en: 'Small command story', pt: 'Pequena história de comandos' },
       inputs: [{ en: 'add → C-1 → Ana → 500', pt: 'add → C-1 → Ana → 500' }, { en: 'list', pt: 'list' }, { en: 'total', pt: 'total' }, { en: 'exit', pt: 'exit' }],
       happens: [{ en: 'The record is saved, listed and included in the total.', pt: 'O registro é salvo, listado e incluído no total.' }],
-      outputs: [{ en: 'ADDED=C-1', pt: 'ADDED=C-1' }, { en: 'CLAIM=C-1|Ana|500.00', pt: 'CLAIM=C-1|Ana|500.00' }, { en: 'TOTAL=500.00', pt: 'TOTAL=500.00' }, { en: 'BYE', pt: 'BYE' }],
+      outputs: [{ en: 'ADDED=C-1', pt: 'ADDED=C-1' }, { en: 'ORDER=C-1|Ana|500.00', pt: 'ORDER=C-1|Ana|500.00' }, { en: 'TOTAL=500.00', pt: 'TOTAL=500.00' }, { en: 'BYE', pt: 'BYE' }],
     },
     testPurposes: {
-      'claim-desk-standard': { en: 'Checks normal adding, listing and totaling.', pt: 'Confere adicionar, listar e somar normalmente.' },
-      'claim-desk-validation': { en: 'Checks invalid money and a repeated ID.', pt: 'Confere dinheiro inválido e ID repetido.' },
-      'claim-desk-empty': { en: 'Checks commands when no record was added.', pt: 'Confere os comandos quando nenhum registro foi adicionado.' },
+      'order-desk-standard': { en: 'Checks normal adding, listing and totaling.', pt: 'Confere adicionar, listar e somar normalmente.' },
+      'order-desk-validation': { en: 'Checks invalid money and a repeated ID.', pt: 'Confere dinheiro inválido e ID repetido.' },
+      'order-desk-empty': { en: 'Checks commands when no record was added.', pt: 'Confere os comandos quando nenhum registro foi adicionado.' },
     },
     improveIntro: { en: 'Choose one small boundary and make it easier to read. Keep every printed label unchanged.', pt: 'Escolha uma pequena parte e deixe mais fácil de ler. Mantenha todos os rótulos impressos.' },
     improveChoices: [
-      { title: { en: 'Simplify ID lookup', pt: 'Simplificar a busca por ID' }, change: { en: 'Make find_claim return one clear result and use it everywhere.', pt: 'Faça find_claim retornar um resultado claro e use a função em todos os lugares.' }, example: { en: 'existing = find_claim(claims, claim_id)', pt: 'existing = find_claim(claims, claim_id)' }, why: { en: 'Duplicate checking has one source of truth.', pt: 'A verificação de duplicados fica em um só lugar.' } },
+      { title: { en: 'Simplify ID lookup', pt: 'Simplificar a busca por ID' }, change: { en: 'Make find_order return one clear result and use it everywhere.', pt: 'Faça find_order retornar um resultado claro e use a função em todos os lugares.' }, example: { en: 'existing = find_order(orders, order_id)', pt: 'existing = find_order(orders, order_id)' }, why: { en: 'Duplicate checking has one source of truth.', pt: 'A verificação de duplicados fica em um só lugar.' } },
       { title: { en: 'Name the amount conversion', pt: 'Dar nome à conversão do valor' }, change: { en: 'Move text-to-float conversion into a small helper.', pt: 'Mova a conversão de texto para float para uma pequena função.' }, example: { en: 'def parse_amount(text): ...', pt: 'def parse_amount(text): ...' }, why: { en: 'The failure rule becomes easy to test.', pt: 'A regra de falha fica fácil de testar.' } },
-      { title: { en: 'Shorten the command loop', pt: 'Encurtar o loop de comandos' }, change: { en: 'Let the loop only read a command and call the correct function.', pt: 'Faça o loop apenas ler um comando e chamar a função certa.' }, example: { en: 'if command == "list": list_claims(claims)', pt: 'if command == "list": list_claims(claims)' }, why: { en: 'The menu becomes easier to scan.', pt: 'O menu fica mais fácil de acompanhar.' } },
+      { title: { en: 'Shorten the command loop', pt: 'Encurtar o loop de comandos' }, change: { en: 'Let the loop only read a command and call the correct function.', pt: 'Faça o loop apenas ler um comando e chamar a função certa.' }, example: { en: 'if command == "list": list_orders(orders)', pt: 'if command == "list": list_orders(orders)' }, why: { en: 'The menu becomes easier to scan.', pt: 'O menu fica mais fácil de acompanhar.' } },
     ],
     improveNoteExample: { en: 'I moved amount conversion into parse_amount so invalid-money behavior can be tested in one place.', pt: 'Eu movi a conversão do valor para parse_amount para testar dinheiro inválido em um só lugar.' },
-    doNotChange: { en: 'Do not change ADDED, CLAIM, TOTAL, DUPLICATE_ID, INVALID_AMOUNT or BYE.', pt: 'Não altere ADDED, CLAIM, TOTAL, DUPLICATE_ID, INVALID_AMOUNT nem BYE.' },
+    doNotChange: { en: 'Do not change ADDED, ORDER, TOTAL, DUPLICATE_ID, INVALID_AMOUNT or BYE.', pt: 'Não altere ADDED, ORDER, TOTAL, DUPLICATE_ID, INVALID_AMOUNT nem BYE.' },
   },
 
-  'professional-claims-triage': {
+  'professional-orders-triage': {
     mission: { en: 'Read records, decide their priority and print a safe summary.', pt: 'Leia registros, decida a prioridade e mostre um resumo seguro.' },
     story: { en: 'Think of a sorting table. Each record arrives as id|amount|severity. Your program checks the form, chooses STANDARD or ESCALATE and stores valid records.', pt: 'Pense em uma mesa de triagem. Cada registro chega como id|valor|gravidade. O programa confere a ficha, escolhe STANDARD ou ESCALATE e guarda os registros válidos.' },
     result: { en: 'Print one result for each line and one final summary. Invalid or repeated records must not stop the program.', pt: 'Mostre um resultado para cada linha e um resumo final. Registros inválidos ou repetidos não podem parar o programa.' },
@@ -361,17 +361,17 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
       { label: { en: 'END', pt: 'END' }, meaning: { en: 'Stops the input loop.', pt: 'Encerra o loop de entrada.' }, example: { en: 'END', pt: 'END' } },
     ],
     outputItems: [
-      { label: { en: 'CLAIM', pt: 'CLAIM' }, meaning: { en: 'Accepted ID, priority and amount.', pt: 'ID aceito, prioridade e valor.' }, example: { en: 'CLAIM=C-101|STANDARD|1200.00', pt: 'CLAIM=C-101|STANDARD|1200.00' } },
+      { label: { en: 'ORDER', pt: 'ORDER' }, meaning: { en: 'Accepted ID, priority and amount.', pt: 'ID aceito, prioridade e valor.' }, example: { en: 'ORDER=C-101|STANDARD|1200.00', pt: 'ORDER=C-101|STANDARD|1200.00' } },
       { label: { en: 'SUMMARY', pt: 'SUMMARY' }, meaning: { en: 'Accepted count, total and escalated count.', pt: 'Quantidade aceita, total e quantidade escalada.' }, example: { en: 'SUMMARY=2|16200.00|1', pt: 'SUMMARY=2|16200.00|1' } },
     ],
     understandAnswers: {
       inputs: { en: 'One id|amount|severity record per line, ending with END.', pt: 'Um registro id|valor|gravidade por linha, terminando com END.' },
-      output: { en: 'CLAIM, DUPLICATE, INVALID and SUMMARY lines.', pt: 'Linhas CLAIM, DUPLICATE, INVALID e SUMMARY.' },
+      output: { en: 'ORDER, DUPLICATE, INVALID and SUMMARY lines.', pt: 'Linhas ORDER, DUPLICATE, INVALID e SUMMARY.' },
       rules: { en: 'Validate values, reject repeated IDs and classify by severity or amount.', pt: 'Validar valores, rejeitar IDs repetidos e classificar por gravidade ou valor.' },
       edgeCase: { en: 'Empty, invalid and duplicate batches must still finish safely.', pt: 'Lotes vazios, inválidos e duplicados precisam terminar com segurança.' },
     },
     planSteps: [
-      { en: 'DEFINE the Claim form.', pt: 'DEFINIR a ficha Claim.' },
+      { en: 'DEFINE the Order form.', pt: 'DEFINIR a ficha Order.' },
       { en: 'CREATE a priority function.', pt: 'CRIAR uma função de prioridade.' },
       { en: 'CREATE a parser that validates one line.', pt: 'CRIAR um interpretador que valida uma linha.' },
       { en: 'CREATE a processor that checks duplicate IDs and stores valid records.', pt: 'CRIAR um processador que confere duplicados e salva registros válidos.' },
@@ -379,15 +379,15 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
       { en: 'PRINT the summary.', pt: 'MOSTRAR o resumo.' },
     ],
     codeWords: [
-      { code: 'Claim', meaning: { en: 'a trusted package of four related values', pt: 'um pacote confiável com quatro valores relacionados' } },
+      { code: 'Order', meaning: { en: 'a trusted package of four related values', pt: 'um pacote confiável com quatro valores relacionados' } },
       { code: 'classify_priority', meaning: { en: 'decides STANDARD or ESCALATE', pt: 'decide STANDARD ou ESCALATE' } },
-      { code: 'parse_claim', meaning: { en: 'turns raw text into a checked Claim', pt: 'transforma texto bruto em Claim validado' } },
+      { code: 'parse_order', meaning: { en: 'turns raw text into a checked Order', pt: 'transforma texto bruto em Order validado' } },
       { code: 'process_line', meaning: { en: 'handles one line and one possible failure', pt: 'trata uma linha e uma possível falha' } },
       { code: 'logger.warning', meaning: { en: 'records a warning for developers', pt: 'registra um aviso para desenvolvedores' } },
     ],
     buildHints: [
       { en: 'Finish classify_priority first. It has one simple rule.', pt: 'Termine classify_priority primeiro. Ela possui uma regra simples.' },
-      { en: 'Then make parse_claim either return a valid Claim or raise ValueError.', pt: 'Depois faça parse_claim retornar um Claim válido ou levantar ValueError.' },
+      { en: 'Then make parse_order either return a valid Order or raise ValueError.', pt: 'Depois faça parse_order retornar um Order válido ou levantar ValueError.' },
       { en: 'process_line catches the error, checks duplicates, saves and prints.', pt: 'process_line captura o erro, confere duplicados, salva e mostra.' },
       { en: 'main should only control the loop.', pt: 'main deve apenas controlar o loop.' },
     ],
@@ -395,7 +395,7 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
       title: { en: 'Two records', pt: 'Dois registros' },
       inputs: [{ en: 'C-101|1200|3', pt: 'C-101|1200|3' }, { en: 'C-102|15000|5', pt: 'C-102|15000|5' }, { en: 'END', pt: 'END' }],
       happens: [{ en: 'C-101 is STANDARD. C-102 is ESCALATE because 15000 is at least 10000.', pt: 'C-101 é STANDARD. C-102 é ESCALATE porque 15000 é pelo menos 10000.' }],
-      outputs: [{ en: 'CLAIM=C-101|STANDARD|1200.00', pt: 'CLAIM=C-101|STANDARD|1200.00' }, { en: 'CLAIM=C-102|ESCALATE|15000.00', pt: 'CLAIM=C-102|ESCALATE|15000.00' }, { en: 'SUMMARY=2|16200.00|1', pt: 'SUMMARY=2|16200.00|1' }],
+      outputs: [{ en: 'ORDER=C-101|STANDARD|1200.00', pt: 'ORDER=C-101|STANDARD|1200.00' }, { en: 'ORDER=C-102|ESCALATE|15000.00', pt: 'ORDER=C-102|ESCALATE|15000.00' }, { en: 'SUMMARY=2|16200.00|1', pt: 'SUMMARY=2|16200.00|1' }],
     },
     testPurposes: {
       'triage-standard': { en: 'Checks one normal and one escalated record.', pt: 'Confere um registro normal e um escalado.' },
@@ -404,12 +404,12 @@ export const MINI_PROJECT_GUIDES: Record<string, MiniProjectGuide> = {
     },
     improveIntro: { en: 'Make one function easier to trust. Keep the public output exactly the same.', pt: 'Deixe uma função mais fácil de confiar. Mantenha a saída pública exatamente igual.' },
     improveChoices: [
-      { title: { en: 'Clarify validation', pt: 'Deixar a validação clara' }, change: { en: 'Use small named checks inside parse_claim.', pt: 'Use pequenas verificações com nomes dentro de parse_claim.' }, example: { en: 'if not claim_id: raise ValueError("missing id")', pt: 'if not claim_id: raise ValueError("missing id")' }, why: { en: 'Each rejected rule is visible.', pt: 'Cada regra de rejeição fica visível.' } },
+      { title: { en: 'Clarify validation', pt: 'Deixar a validação clara' }, change: { en: 'Use small named checks inside parse_order.', pt: 'Use pequenas verificações com nomes dentro de parse_order.' }, example: { en: 'if not order_id: raise ValueError("missing id")', pt: 'if not order_id: raise ValueError("missing id")' }, why: { en: 'Each rejected rule is visible.', pt: 'Cada regra de rejeição fica visível.' } },
       { title: { en: 'Clarify the priority rule', pt: 'Deixar a prioridade clara' }, change: { en: 'Name the two reasons for escalation.', pt: 'Dê nomes aos dois motivos de escalada.' }, example: { en: 'high_severity = severity >= 8', pt: 'high_severity = severity >= 8' }, why: { en: 'The business rule reads like a sentence.', pt: 'A regra de negócio fica parecida com uma frase.' } },
-      { title: { en: 'Shorten orchestration', pt: 'Encurtar a orquestração' }, change: { en: 'Keep main limited to reading, stopping and calling process_line.', pt: 'Mantenha main limitada a ler, parar e chamar process_line.' }, example: { en: 'process_line(line, claims)', pt: 'process_line(line, claims)' }, why: { en: 'Business logic stays testable.', pt: 'A lógica de negócio continua testável.' } },
+      { title: { en: 'Shorten orchestration', pt: 'Encurtar a orquestração' }, change: { en: 'Keep main limited to reading, stopping and calling process_line.', pt: 'Mantenha main limitada a ler, parar e chamar process_line.' }, example: { en: 'process_line(line, orders)', pt: 'process_line(line, orders)' }, why: { en: 'Business logic stays testable.', pt: 'A lógica de negócio continua testável.' } },
     ],
     improveNoteExample: { en: 'I named the two escalation conditions so a reviewer can see why a record changes priority.', pt: 'Eu dei nome às duas condições de escalada para que uma pessoa veja por que o registro muda de prioridade.' },
-    doNotChange: { en: 'Do not change the priority numbers or the CLAIM, DUPLICATE, INVALID and SUMMARY formats.', pt: 'Não altere os números da prioridade nem os formatos CLAIM, DUPLICATE, INVALID e SUMMARY.' },
+    doNotChange: { en: 'Do not change the priority numbers or the ORDER, DUPLICATE, INVALID and SUMMARY formats.', pt: 'Não altere os números da prioridade nem os formatos ORDER, DUPLICATE, INVALID e SUMMARY.' },
   },
 
   'engineering-order-service': {

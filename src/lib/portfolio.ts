@@ -2,8 +2,8 @@ import type { MiniProject } from '../data/miniProjects'
 import type { MiniProjectProgress } from './projectProgress'
 
 export const PORTFOLIO_PROJECT_IDS = [
-  'foundation-claim-desk',
-  'professional-claims-triage',
+  'foundation-order-desk',
+  'professional-orders-triage',
   'engineering-order-service',
   'data-ml-risk-pipeline',
   'transformer-attention-inspector',
