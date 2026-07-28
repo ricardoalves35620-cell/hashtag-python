@@ -61,6 +61,22 @@ async function signIn(page: Page): Promise<void> {
   await signedIn
 }
 
+/**
+ * The first exercise of every phase disables Run until the learner has written a
+ * prediction and named one change (Exercises.tsx:112 — ten characters and three).
+ *
+ * That gate is deliberate, and it is why this test spent 20 seconds clicking a
+ * `disabled` button: the suite was written before the gate existed and had never once
+ * run with credentials to find out. Filling the fields is what a learner does, so it is
+ * what the test does.
+ */
+async function satisfyThinkingGate(page: Page): Promise<void> {
+  const prediction = page.getByTestId('exercise-prediction')
+  if (!(await prediction.count())) return
+  await prediction.fill('I expect the printed lines to follow the rule in the goal.')
+  await page.getByTestId('exercise-change-plan').fill('the threshold value')
+}
+
 /** Waits until a service worker has actually taken control of the page. */
 async function waitForServiceWorker(page: Page): Promise<void> {
   await page.waitForFunction(
@@ -323,7 +339,8 @@ test.describe('Store readiness — pre-submission smoke', () => {
 
   test('HP-C-04 · a failed completion does not stay marked complete', async ({ page }) => {
     test.skip(!HAS_CREDENTIALS, 'AUDIT_USER_EMAIL / AUDIT_USER_PASSWORD not configured')
-    test.setTimeout(120_000)
+    // Includes a cold Pyodide download on the runner.  
+    test.setTimeout(240_000)
 
     await signIn(page)
 
@@ -335,12 +352,22 @@ test.describe('Store readiness — pre-submission smoke', () => {
     await page.goto('/phase/5/exercises')
     const runButton = page.getByTestId('exercise-run-button')
     await expect(runButton).toBeVisible({ timeout: 30_000 })
+    await satisfyThinkingGate(page)
+    await expect(runButton, 'Run is gated behind the predict/change step on exercise 1').toBeEnabled({ timeout: 10_000 })
     await runButton.click()
+
+    // The first Run on a cold runner downloads ~12 MB of Python runtime before a single
+    // line executes, so nothing is written to user_progress for a long time. Waiting on
+    // the toast alone would time out on the download, not on the behaviour under test.
+    await expect(
+      page.getByTestId('exercise-feedback'),
+      'the run never produced a result, so no progress write was attempted',
+    ).toBeVisible({ timeout: 120_000 })
 
     await expect(
       page.locator('[role="status"], [role="alert"]').first(),
       'a rejected progress write must surface a toast, not fail silently',
-    ).toBeVisible({ timeout: 15_000 })
+    ).toBeVisible({ timeout: 20_000 })
 
     // Exercises.tsx:76 previously spread `previous` last, so a phantom completion
     // survived every reload. After the fix the server view must win.
