@@ -6,6 +6,7 @@ export type ExerciseDifficulty = 'guided' | 'independent' | 'challenge'
 
 export interface ExercisePedagogy {
   objective: string
+  objectiveRepeatsTask: boolean
   difficulty: ExerciseDifficulty
   estimatedMinutes: number
   skills: string[]
@@ -127,6 +128,9 @@ export function getExercisePedagogy(phase: Phase, exercise: Exercise, index: num
 
   return {
     objective: exercise.objective?.[lang] || exercise.description[lang],
+    // True when the objective is just the task text again. The audit still wants a
+    // meaningful objective; the UI should not print the same thing twice.
+    objectiveRepeatsTask: !exercise.objective?.[lang],
     difficulty,
     estimatedMinutes: exercise.estimatedMinutes || (difficulty === 'guided' ? 8 : difficulty === 'independent' ? 12 : 18),
     skills,

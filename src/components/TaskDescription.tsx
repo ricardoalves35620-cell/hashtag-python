@@ -42,7 +42,9 @@ function parse(text: string): Line[] {
     if (inExample) { out.push({ kind: 'output', text: line }); continue }
     if (LABEL.test(line)) { out.push({ kind: 'label', text: line.replace(/:\s*$/, '') }); continue }
     if (GROUP.test(line)) { out.push({ kind: 'group', text: line }); continue }
-    if (BULLET.test(line)) { out.push({ kind: 'bullet', text: line.replace(BULLET, '').trim() }); continue }
+    // Strip only the marker. BULLET ends in \S so it can tell a real bullet from a
+    // stray dash — using it to strip would eat the first letter of the sentence.
+    if (BULLET.test(line)) { out.push({ kind: 'bullet', text: line.replace(/^[-•]\s+/, '').trim() }); continue }
     out.push({ kind: 'prose', text: line })
   }
   return out

@@ -8,8 +8,12 @@ export default function LearningBrief({ brief, lang }: { brief: ExercisePedagogy
     <Card padding="md" className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-xs font-semibold uppercase tracking-wide text-muted">{lang === 'en' ? 'Learning objective' : 'Objetivo de aprendizagem'}</div>
-          <p className="mt-1 text-sm leading-6 text-ink-secondary">{brief.objective}</p>
+          {brief.objective && !brief.objectiveRepeatsTask ? (
+            <>
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">{lang === 'en' ? 'Learning objective' : 'Objetivo de aprendizagem'}</div>
+              <p className="mt-1 text-sm leading-6 text-ink-secondary">{brief.objective}</p>
+            </>
+          ) : null}
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge variant={brief.difficulty === 'challenge' ? 'warning' : brief.difficulty === 'guided' ? 'info' : 'neutral'}>{difficultyLabel(brief.difficulty, lang)}</Badge>
