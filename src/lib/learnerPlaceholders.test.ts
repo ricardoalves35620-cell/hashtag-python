@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { personalize, DEFAULT_PROFILE } from './learnerProfile'
 
@@ -18,7 +19,9 @@ import { personalize, DEFAULT_PROFILE } from './learnerProfile'
  *   2. a new surface renders authored text raw.
  */
 
-const SRC = new URL('..', import.meta.url).pathname
+// fileURLToPath, not URL.pathname: on Windows the latter yields "/C:/Users/..." and
+// join() then builds "C:\C:\Users\...", so this suite failed only off Linux.
+const SRC = fileURLToPath(new URL('..', import.meta.url))
 const KNOWN_TOKENS = ['file', 'folder', 'name']
 
 function walk(dir: string, out: string[] = []): string[] {
@@ -54,7 +57,7 @@ describe('placeholders authors can write', () => {
         if (token === 'placeholders') continue // a doc comment about the mechanism
         if (KNOWN_TOKENS.includes(token)) continue
         if (/\s/.test(token)) continue // natural-language wildcard, shown on purpose
-        unknown.add(`${match[0]} in ${file.slice(SRC.length)}`)
+        unknown.add(`${match[0]} in ${relative(SRC, file)}`)
       }
     }
     // A single-word token nobody substitutes reaches the learner verbatim. There is no
