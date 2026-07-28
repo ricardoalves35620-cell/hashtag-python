@@ -85,6 +85,10 @@ function simulateConsole(exercise: any, sample: string): string {
   return `${echoed}\n${sample}`
 }
 
+// An exercise whose task asks the learner to read input, but whose graded test
+// supplies none, feeds empty strings to input() — every correct answer then fails.
+const ASKS_INPUT = /\b(gather input|ask for|prompt the user|receber os dados|solicite|pergunt)\b/i
+
 const MAX = Number(process.argv[2] ?? 27)
 let broken = 0
 
@@ -93,6 +97,15 @@ for (const phase of ALL_PHASES.filter(p => p.id <= MAX).sort((a, b) => a.id - b.
     const sample = ex.sampleOutput?.en ? personalize(ex.sampleOutput.en) : undefined
     if (!sample) continue
     const console_ = simulateConsole(ex, sample)
+
+    if (ASKS_INPUT.test(`${ex.description?.en || ''} ${ex.description?.pt || ''}`)) {
+      for (const test of (ex.grading?.tests || [])) {
+        if (!(test.inputs || []).length && !(test as any).afterCode) {
+          console.log(`p${phase.id} ${ex.id} / ${test.id}: task asks for input but the test supplies none`)
+          broken++
+        }
+      }
+    }
 
     for (const test of (ex.grading?.tests || [])) {
       // Hidden tests deliberately use OTHER inputs and expect another result, so the

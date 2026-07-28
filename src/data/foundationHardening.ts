@@ -38,6 +38,11 @@ const SUGGESTED_INPUTS: Record<string, string[]> = {
   ex6_guided: ['15000'],
   ex6_fill: ['24'],
   ex23_zero: ['abc', '5000'],
+  // From-scratch exercises: the learner writes the input() calls, so the starter
+  // contains none and the count guard below cannot infer them. Values come from the
+  // example in each task description.
+  ex4_zero: ['Alex', '80.0', '6'],
+  ex5_zero: ['20'],
 }
 
 function unique<T>(values: T[]) {
@@ -131,6 +136,14 @@ function ensureExerciseGrading(phase: Phase, exercise: Exercise) {
   const inputs = exercise.suggestedInputs || SUGGESTED_INPUTS[exercise.id] || []
   const inputCount = (exercise.starterCode.match(/\binput\s*\(/g) || []).length
   if (inputCount > inputs.length) return
+
+  // A from-scratch exercise writes its own input() calls, so the starter count is 0
+  // and tells us nothing. If the TASK asks the learner to gather input and we have
+  // none to supply, a graded run would feed empty strings and fail every correct
+  // answer — so leave the grading alone rather than build a test that cannot pass.
+  const asksForInput = /\b(gather input|ask for|prompt the user|receber os dados|solicite|pergunt)\b/i
+    .test(`${exercise.description?.en || ''} ${exercise.description?.pt || ''}`)
+  if (asksForInput && inputs.length === 0) return
 
   exercise.suggestedInputs ||= inputs.length ? inputs : undefined
   exercise.grading = {
