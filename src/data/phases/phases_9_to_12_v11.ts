@@ -37,7 +37,7 @@ function exercise(
   id: string,
   title: Bilingual,
   description: Bilingual,
-  starterCode: string,
+  starterCode: string | Bilingual,
   sampleOutput: Bilingual,
   hints: Bilingual[],
   requirements: CodeRequirement[],
@@ -302,9 +302,11 @@ for material, esperado, recebido in entregas:
       'p9-guided-cell',
       b('🟢 Guided — read one cell safely', '🟢 Guiado — leia uma célula com segurança'),
       b('Goal:\nComplete the function cell_at so it returns the value found at the given row and column in a nested list (table).\n\nProgram requirements\n\n- Blank 1 — the row index\n- Blank 2 — the column index\n\nExample, accessing row 0 and column 1 in a table of colors:\nblue', 'Objetivo:\nComplete a função cell_at para que ela retorne o valor encontrado na linha e coluna indicadas de uma lista aninhada (tabela).\n\nRequisitos do programa\n\n- Lacuna 1 — o índice da linha\n- Lacuna 2 — o índice da coluna\n\nExemplo, acessando a linha 0 e coluna 1 de uma tabela de cores:\nblue'),
-      `def cell_at(table, row, column):
+      b(`def cell_at(table, row, column):
     # First select the row, then select the column.
-    return table[___][___]`,
+    return table[___][___]`, `def cell_at(table, row, column):
+    # Primeiro selecione a linha, depois selecione a coluna.
+    return table[___][___]`),
       b('blue', 'blue'),
       [
         b('Replace the first blank with row and the second with column.', 'Substitua a primeira lacuna por row e a segunda por column.'),
@@ -324,12 +326,17 @@ for material, esperado, recebido in entregas:
       'p9-complete-column',
       b('🟡 Complete — collect one column', '🟡 Complete — colete uma coluna'),
       b('Goal:\nFinish column_values so it returns a new list containing the value from one column across every row of the table. The original table must not be modified.\n\nProgram requirements\n\n- Blank — add the selected cell from the current row to the result list\n\nExample, collecting column 0 from a table with three rows:\n[\'Ana\', \'Beto\', \'Caio\']', 'Objetivo:\nTermine column_values para que ela retorne uma nova lista com o valor de uma coluna em cada linha da tabela. A tabela original não deve ser alterada.\n\nRequisitos do programa\n\n- Lacuna — adicione a célula selecionada da linha atual à lista de resultado\n\nExemplo, coletando a coluna 0 de uma tabela com três linhas:\n[\'Ana\', \'Beto\', \'Caio\']'),
-      `def column_values(table, column):
+      b(`def column_values(table, column):
     values = []
     for row in table:
         # Add the selected cell from this row.
         ___
-    return values`,
+    return values`, `def column_values(table, column):
+    values = []
+    for row in table:
+        # Some a célula selecionada desta linha.
+        ___
+    return values`),
       b("['Ana', 'Beto', 'Caio']", "['Ana', 'Beto', 'Caio']"),
       [
         b('Inside the loop, row is one inner list.', 'Dentro do loop, row é uma lista interna.'),

@@ -145,7 +145,24 @@ function auditPhase(phase: Phase) {
   auditBilingual(issues, phase, phase.description, 'description')
   auditBilingual(issues, phase, phase.lesson.title, 'lesson.title')
   phase.lesson.blocks.forEach((block, index) => {
-    if (block.type !== 'code' && block.type !== 'video') auditBilingual(issues, phase, block.content, `lesson.blocks[${index}].content`)
+    // A checkpoint block carries its text in `checkpoint`, not `content`, so demanding
+    // `content` reported every one of them as missing English AND Portuguese — five
+    // errors that failed the whole content audit while the blocks were perfectly fine.
+    // The bilingual text they DO have was never checked at all, which is the half of
+    // this that actually mattered.
+    if (block.type === 'checkpoint') {
+      const checkpoint = block.checkpoint
+      if (!checkpoint) {
+        push(issues, { severity: 'error', phaseId: phase.id, location: `lesson.blocks[${index}].checkpoint`, message: 'Checkpoint block has no checkpoint' })
+      } else {
+        if (checkpoint.question) auditBilingual(issues, phase, checkpoint.question, `lesson.blocks[${index}].checkpoint.question`)
+        auditBilingual(issues, phase, checkpoint.explanation, `lesson.blocks[${index}].checkpoint.explanation`)
+        checkpoint.options.forEach((option, optionIndex) =>
+          auditBilingual(issues, phase, option, `lesson.blocks[${index}].checkpoint.options[${optionIndex}]`))
+      }
+    } else if (block.type !== 'code' && block.type !== 'video') {
+      auditBilingual(issues, phase, block.content, `lesson.blocks[${index}].content`)
+    }
     if (block.alternate) auditBilingual(issues, phase, block.alternate, `lesson.blocks[${index}].alternate`)
     auditCode(issues, phase, block, index)
   })

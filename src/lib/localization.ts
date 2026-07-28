@@ -192,18 +192,27 @@ const phraseRules: Array<[RegExp, string]> = [
   [/\bafter\b/gi, 'depois'],
   [/\bonly\b/gi, 'somente'],
   [/\bmust\b/gi, 'deve'],
-  [/\bcan\b/gi, 'pode'],
+  [/\bcan\b(?![’'])/gi, 'pode'],
   [/\bworks\b/gi, 'funciona'],
   [/\bwork\b/gi, 'funcionar'],
   [/\bwrong\b/gi, 'errado'],
   [/\bright\b/gi, 'correto'],
 ]
 
+/**
+ * A comment line that is a runnable command documents syntax, not prose.
+ *
+ * Without this, [/\bBuild\b/gi, 'Construa'] rewrote `python -m build` to
+ * `python -m Construa` in phase 52 — an instruction that no longer runs.
+ */
+const COMMAND_LINE = /^\s*[$>]?\s*(python|python3|py|pip|pip3|npm|npx|pnpm|yarn|node|git|curl|wget|cd|ls|mkdir|export|source|docker|make|pytest|uvicorn|streamlit)\b/i
+
 function translateCommentToPt(comment: string): string {
   const leading = comment.match(/^\s*/)?.[0] || ''
   const trailing = comment.match(/\s*$/)?.[0] || ''
   const core = comment.trim()
   if (!core) return comment
+  if (COMMAND_LINE.test(core)) return comment
   const exact = exactPt[core]
   if (exact) return `${leading}${exact}${trailing}`
 

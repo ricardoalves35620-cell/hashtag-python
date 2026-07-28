@@ -37,7 +37,15 @@ export interface Exercise {
   id: string
   title: Bilingual
   description: Bilingual
-  starterCode: string
+  /**
+   * A plain string is English, and its # comments are machine-translated for pt by
+   * localization.ts — a dictionary that silently passes through whatever it does not
+   * know, which is why 53% of comments leaked English into pt mode.
+   *
+   * Prefer the bilingual form for anything new. It removes the translator from the
+   * path entirely: resolveLocalizedCode returns code[lang] verbatim.
+   */
+  starterCode: string | Bilingual
   hints: Bilingual[]
   sampleOutput?: Bilingual
   grading?: ExerciseGrading
@@ -123,7 +131,7 @@ export interface Exam {
   expectedOutput?: Bilingual
   scenario: Bilingual
   requirements: { en: string[]; pt: string[] }
-  starterCode: string
+  starterCode: string | Bilingual
   testCases: TestCase[]
 }
 

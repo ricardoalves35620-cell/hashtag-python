@@ -43,7 +43,7 @@ print("Name:", "Alice", "| Age:", 28) # Name: Alice | Age: 28
 # The comma adds a space automatically!` },
 
       { type: 'heading', content: { en: '🐍 Going deeper: quotes, comments, and lines', pt: '🐍 Aprofundando: aspas, comentários e linhas' } },
-      { type: 'code', code: `# Single or double quotes — both work
+      { type: 'code', code: { en: `# Single or double quotes — both work
 print('single quotes work')
 print("double quotes work")
 
@@ -58,7 +58,22 @@ print("this runs")   # this note is ignored
 # Empty print() creates a blank line
 print("Line 1")
 print()                      # blank line here
-print("Line 3")` },
+print("Line 3")`, pt: `# Aspas simples ou duplas — ambas funcionam
+print('aspas simples funcionam')
+print("aspas duplas funcionam")
+
+# Mas tenha cuidado quando o texto CONTÉM uma aspa:
+print("It's easy")          # ✅ duplas por fora, simples por dentro
+print('She said "hi"')      # ✅ simples por fora, duplas por dentro
+
+# Comentários: tudo depois de # é IGNORADO pelo Python
+print("this runs")   # esta observação é ignorada
+# print("esta linha NUNCA executa — a linha inteira é um comentário")
+
+# Um print() vazio cria uma linha em branco
+print("Line 1")
+print()                      # linha em branco aqui
+print("Line 3")` } },
 
       { type: 'checkpoint', checkpoint: {
         code: 'print("10 + 5")',
@@ -76,7 +91,7 @@ print("Line 3")` },
         en: 'You just joined MusicBox, a music streaming startup, as a dev intern.\nEvery morning the server starts and prints a status report so the team knows everything is running.\n\nThis is a REAL pattern — every server in production prints startup logs exactly like this:',
         pt: 'Você acabou de entrar na MusicBox, uma startup de streaming de música, como dev trainee.\nToda manhã o servidor inicia e imprime um relatório de status para que o time saiba que está tudo funcionando.\n\nEste é um padrão REAL — todo servidor em produção imprime logs de inicialização exatamente assim:'
       }},
-      { type: 'code', code: `# MusicBox startup report
+      { type: 'code', code: { en: `# MusicBox startup report
 print("=====================================")
 print("     MUSICBOX - SYSTEM START")
 print("=====================================")
@@ -86,7 +101,17 @@ print("New songs today:", 47)
 print("New playlists:", 12)
 print("Total updates:", 47 + 12)      # Python calculates: 59
 print()
-print("System ready. Good morning, team!")` },
+print("System ready. Good morning, team!")`, pt: `# Relatório de inicialização do MusicBox
+print("=====================================")
+print("     MUSICBOX - SYSTEM START")
+print("=====================================")
+print()
+print("Date:", "2026-07-11")
+print("New songs today:", 47)
+print("New playlists:", 12)
+print("Total updates:", 47 + 12)      # O Python calcula: 59
+print()
+print("System ready. Good morning, team!")` } },
 
       { type: 'checkpoint', checkpoint: {
         code: 'print("Songs:", 47)',
@@ -104,7 +129,7 @@ print("System ready. Good morning, team!")` },
         en: 'Now imagine you work at a coffee shop.\nEvery evening you print a sales summary so the owner knows the day\'s revenue.\nSame function, different business:',
         pt: 'Agora imagine que você trabalha numa cafeteria.\nToda tarde você imprime um resumo de vendas para que o dono saiba a receita do dia.\nMesma função, negócio diferente:'
       }},
-      { type: 'code', code: `# Coffee shop daily report
+      { type: 'code', code: { en: `# Coffee shop daily report
 print("--- DAILY SALES REPORT ---")
 print("Coffees sold:", 120)
 print("Pastries sold:", 85)
@@ -112,7 +137,15 @@ print("Juices sold:", 32)
 print()
 print("Coffee revenue: $", 120 * 5)    # 120 coffees × $5 = $600
 print("Pastry revenue: $", 85 * 4)     # 85 pastries × $4 = $340
-print("Total revenue: $", 120 * 5 + 85 * 4 + 32 * 6)` },
+print("Total revenue: $", 120 * 5 + 85 * 4 + 32 * 6)`, pt: `# Relatório diário da cafeteria
+print("--- DAILY SALES REPORT ---")
+print("Coffees sold:", 120)
+print("Pastries sold:", 85)
+print("Juices sold:", 32)
+print()
+print("Coffee revenue: $", 120 * 5)    # 120 cafés × $5 = $600
+print("Pastry revenue: $", 85 * 4)     # 85 salgados × $4 = $340
+print("Total revenue: $", 120 * 5 + 85 * 4 + 32 * 6)` } },
 
       { type: 'heading', content: { en: '⚠️ Common mistakes (everyone makes these)', pt: '⚠️ Erros comuns (todo mundo comete)' } },
       { type: 'code', code: {
@@ -192,11 +225,15 @@ print("This is my first program!")`,
         en: 'Goal:\nThe MusicBox startup report is almost ready. Fill in the three blanks.\n\nBlank 1 — the app name as text (needs quotes)\n\nBlank 2 — the number of new songs (no quotes — it is a number)\n\nBlank 3 — the same number as Blank 2, used in a sum\n\nExample output:\n=== SYSTEM START ===\nApp: MusicBox\nNew songs: 47\nNew playlists: 12\nTotal: 59',
         pt: 'Objetivo:\nO relatório de inicialização do MusicBox está quase pronto. Preencha as três lacunas.\n\nBlank 1 — o nome do app como texto (precisa de aspas)\n\nBlank 2 — o número de novas músicas (sem aspas — é um número)\n\nBlank 3 — o mesmo número da Lacuna 2, usado numa soma\n\nExemplo de saída:\n=== SYSTEM START ===\nApp: MusicBox\nNew songs: 47\nNew playlists: 12\nTotal: 59'
       },
-      starterCode: `print("=== SYSTEM START ===")
+      starterCode: { en: `print("=== SYSTEM START ===")
 print("App:", ___)              # fill: "MusicBox" (with quotes — it's text!)
 print("New songs:", ___)        # fill: 47 (no quotes — it's a number!)
 print("New playlists:", 12)
-print("Total:", ___ + 12)       # fill: 47 again (same number as line 3)`,
+print("Total:", ___ + 12)       # fill: 47 again (same number as line 3)`, pt: `print("=== SYSTEM START ===")
+print("App:", ___)              # preencha: "MusicBox" (com aspas — é texto!)
+print("New songs:", ___)        # preencha: 47 (sem aspas — é número!)
+print("New playlists:", 12)
+print("Total:", ___ + 12)       # preencha: 47 de novo (o mesmo número da linha 3)` },
       hints: [
         { en: 'App name is text → needs quotes: "MusicBox"', pt: 'Nome do app é texto → precisa de aspas: "MusicBox"' },
         { en: 'Numbers never use quotes: 47', pt: 'Números nunca usam aspas: 47' }
@@ -210,7 +247,7 @@ print("Total:", ___ + 12)       # fill: 47 again (same number as line 3)`,
         en: 'Goal:\nWrite a coffee shop report that prints exactly five lines: a title, the number of coffees sold, the price per coffee, the total revenue calculated by Python (80 multiplied by 5), and a closing message.\n\nProgram requirements\n\n1. Display\n- The report title\n- The number of coffees sold: 80\n- The price per coffee: 5\n- The total revenue: Python must calculate 80 times 5 for you\n- A closing message\n\nOutput:\n--- COFFEE SHOP REPORT ---\nCoffees sold: 80\nPrice per coffee: 5\nTotal revenue: 400\nReport complete!',
         pt: 'Objetivo:\nEscreva um relatório de cafeteria que imprima exatamente cinco linhas: um título, a quantidade de cafés vendidos, o preço por café, a receita total calculada pelo Python (80 multiplicado por 5) e uma mensagem de encerramento.\n\nRequisitos do programa\n\n1. Mostrar\n- O título do relatório\n- A quantidade de cafés vendidos: 80\n- O preço por café: 5\n- A receita total: o Python deve calcular 80 vezes 5 por você\n- Uma mensagem de encerramento\n\nSaída:\n--- COFFEE SHOP REPORT ---\nCoffees sold: 80\nPrice per coffee: 5\nTotal revenue: 400\nReport complete!'
       },
-      starterCode: `# Write your 5 print() lines below:`,
+      starterCode: { en: '# Write your 5 print() lines below:', pt: '# Escreva suas 5 linhas de print() abaixo:' },
       hints: [
         { en: 'Use * for multiplication: print("Total revenue:", 80 * 5)', pt: 'Use * para multiplicação: print("Total revenue:", 80 * 5)' },
         { en: 'Mix text and numbers with commas: print("Coffees sold:", 80)', pt: 'Misture texto e números com vírgulas: print("Coffees sold:", 80)' }
@@ -320,8 +357,9 @@ print("Total:", ___ + 12)       # fill: 47 again (same number as line 3)`,
         'Imprima o total (47 + 12, calculado pelo Python)'
       ]
     },
-    starterCode: `# MusicBox startup screen
-# Write your print() lines below:`,
+    starterCode: { en: `# MusicBox startup screen
+# Write your print() lines below:`, pt: `# Tela de inicialização do MusicBox
+# Escreva suas linhas de print() abaixo:` },
     testCases: [
       { id: 'tc1_1', description: { en: 'Shows app name', pt: 'Mostra nome do app' }, inputs: [], checks: [{ type: 'contains', value: 'MusicBox', textMode: 'compact' }], points: 20 },
       { id: 'tc1_2', description: { en: 'Shows section name', pt: 'Mostra nome da seção' }, inputs: [], checks: [{ type: 'contains', value: 'Top Charts', textMode: 'compact' }], points: 20 },

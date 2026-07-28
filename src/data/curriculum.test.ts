@@ -1,3 +1,4 @@
+import { resolveLocalizedCode } from '../lib/localization'
 import { describe, expect, it } from 'vitest'
 import { ALL_PHASES } from './phases'
 
@@ -26,7 +27,7 @@ describe('published curriculum integrity', () => {
   it('does not publish empty exercises', () => {
     for (const phase of ALL_PHASES) {
       for (const exercise of phase.exercises) {
-        expect(exercise.starterCode.trim().length, `${phase.id}:${exercise.id}`).toBeGreaterThan(0)
+        expect(resolveLocalizedCode(exercise.starterCode, 'en').trim().length, `${phase.id}:${exercise.id}`).toBeGreaterThan(0)
       }
     }
   })

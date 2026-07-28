@@ -1,3 +1,4 @@
+import { resolveLocalizedCode } from './lib/localization'
 import { describe, expect, it } from 'vitest'
 import { ALL_PHASES } from './data/phases'
 import { getPrimaryExerciseInputs, getVisibleExerciseContracts } from './lib/exerciseContract'
@@ -22,7 +23,7 @@ describe('visible exercise contracts', () => {
   it('provides concrete visible input values whenever starter code calls input()', () => {
     for (const phase of ALL_PHASES) {
       for (const exercise of phase.exercises) {
-        if (!INPUT_CALL.test(exercise.starterCode)) continue
+        if (!INPUT_CALL.test(resolveLocalizedCode(exercise.starterCode, 'en'))) continue
         expect(getPrimaryExerciseInputs(exercise).length, `phase ${phase.id} exercise ${exercise.id} calls input() without public values`).toBeGreaterThan(0)
       }
     }

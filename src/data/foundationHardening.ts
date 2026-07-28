@@ -1,3 +1,4 @@
+import { resolveLocalizedCode } from '../lib/localization'
 import type { Bilingual, Check, CodeRequirement, Exercise, Phase, TestCase } from './types'
 
 const PHASE_REQUIREMENTS: Record<number, CodeRequirement[]> = {
@@ -134,7 +135,7 @@ function ensureProgressiveHints(exercise: Exercise, phase: Phase, index: number)
 function ensureExerciseGrading(phase: Phase, exercise: Exercise) {
   if (exercise.grading?.tests?.length || !exercise.sampleOutput) return
   const inputs = exercise.suggestedInputs || SUGGESTED_INPUTS[exercise.id] || []
-  const inputCount = (exercise.starterCode.match(/\binput\s*\(/g) || []).length
+  const inputCount = (resolveLocalizedCode(exercise.starterCode, 'en').match(/\binput\s*\(/g) || []).length
   if (inputCount > inputs.length) return
 
   // A from-scratch exercise writes its own input() calls, so the starter count is 0

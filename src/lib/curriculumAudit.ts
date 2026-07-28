@@ -1,3 +1,4 @@
+import { resolveLocalizedCode } from './localization'
 import type { Bilingual, Exercise, Phase, QuizQuestion, TestCase } from '../data/types'
 import { MINI_PROJECTS, getMiniProjectForPhase } from '../data/miniProjects'
 import { PHASE_GROUPS, inferPhaseStage } from '../data/phaseCatalog'
@@ -425,7 +426,7 @@ function auditPractice(phase: Phase, issues: CurriculumIssue[], strengths: strin
       ))
     }
 
-    if (/\binput\s*\(/.test(exercise.starterCode) && getPrimaryExerciseInputs(exercise).length === 0) {
+    if (/\binput\s*\(/.test(resolveLocalizedCode(exercise.starterCode, 'en')) && getPrimaryExerciseInputs(exercise).length === 0) {
       issues.push(issue(
         phase.id,
         'blocking',
