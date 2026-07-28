@@ -128,7 +128,7 @@ export const phase13: Phase = {
     exercise(
       "p13-guided-label",
       b("🟢 Guided — create a reusable label function", "🟢 Guiado — crie uma função reutilizável de rótulo"),
-      b("Complete clean_label so it strips surrounding spaces, converts the text to title case and returns the result.", "Complete clean_label para remover espaços externos, converter o texto para formato de título e retornar o resultado."),
+      b('Goal:\nComplete clean_label.\n\nProgram requirements\n\n1. Build the result\n- It strips surrounding spaces, converts the text to title case and returns the result.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nNorth Zone', 'Objetivo:\nComplete clean_label.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Remova espaços externos, converter o texto para formato de título e retornar o resultado.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nNorth Zone'),
       "def clean_label(label):\n    cleaned = label.___().___()\n    return ___",
       b("North Zone", "North Zone"),
       [b("Call strip before title.", "Chame strip antes de title."), b("Return the local variable rather than printing it.", "Retorne a variável local em vez de imprimi-la."), b("Use the parameter; do not hardcode the visible label.", "Use o parâmetro; não fixe o rótulo visível.")],
@@ -144,7 +144,7 @@ export const phase13: Phase = {
     exercise(
       "p13-complete-total",
       b("🟡 Complete — calculate an order total", "🟡 Complete — calcule o total de um pedido"),
-      b("Finish order_total(prices). Reject a negative price and return the rounded sum.", "Termine order_total(prices). Rejeite preço negativo e retorne a soma arredondada."),
+      b('Goal:\nFinish order_total(prices).\n\nProgram requirements\n\n1. Build the result\n- Return the rounded sum.\n\n2. Validate\n- Reject a negative price.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n35.5', 'Objetivo:\nTermine order_total(prices).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne a soma arredondada.\n\n2. Validar\n- Rejeite preço negativo.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n35.5'),
       "def order_total(prices):\n    if any(price < 0 for price in prices):\n        raise ValueError(\"negative price\")\n    total = ___\n    return ___",
       b("35.5", "35.5"),
       [b("sum(prices) calculates the total.", "sum(prices) calcula o total."), b("Use round(total, 2).", "Use round(total, 2)."), b("An empty list should return 0.", "Uma lista vazia deve retornar 0.")],
@@ -160,7 +160,7 @@ export const phase13: Phase = {
     exercise(
       "p13-zero-status",
       b("🔴 From scratch — classify a sensor reading", "🔴 Do zero — classifique uma leitura de sensor"),
-      b("Write reading_status(value). Return \"low\" below 0, \"normal\" from 0 through 100 and \"high\" above 100.", "Escreva reading_status(value). Retorne \"low\" abaixo de 0, \"normal\" de 0 até 100 e \"high\" acima de 100."),
+      b('Goal:\nWrite reading_status(value).\n\nProgram requirements\n\n1. Build the result\n- Return "low" below 0, "normal" from 0 through 100 and "high" above 100.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nnormal', 'Objetivo:\nEscreva reading_status(value).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne "low" abaixo de 0, "normal" de 0 até 100 e "high" acima de 100.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nnormal'),
       "def reading_status(value):\n    pass",
       b("normal", "normal"),
       [b("Use if, elif or early returns.", "Use if, elif ou retornos antecipados."), b("Test boundaries -1, 0, 100 and 101.", "Teste os limites -1, 0, 100 e 101."), b("Every path must return a string.", "Todo caminho precisa retornar uma string.")],
@@ -176,7 +176,7 @@ export const phase13: Phase = {
     exercise(
       "p13-transfer",
       b("🟣 Challenge — compose two functions", "🟣 Desafio — componha duas funções"),
-      b("Write net_hours(entries) and workload_label(hours). net_hours receives [planned, blocked] pairs, rejects negative values and returns total planned minus blocked. workload_label returns \"light\", \"balanced\" or \"heavy\" for totals below 20, through 40, or above 40.", "Escreva net_hours(entries) e workload_label(hours). net_hours recebe pares [planejado, bloqueado], rejeita negativos e retorna o total planejado menos o bloqueado. workload_label retorna \"light\", \"balanced\" ou \"heavy\" para totais abaixo de 20, até 40 ou acima de 40."),
+      b('Goal:\nWrite net_hours(entries) and workload_label(hours). net_hours receives [planned, blocked] pairs, rejects negative values and returns total planned minus blocked. workload_label returns "light", "balanced" or "heavy" for totals below 20, through 40, or above 40.\n\nProgram requirements\n\n1. Build the result\n- Follow the function contract stated in the goal.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n36\nbalanced', 'Objetivo:\nEscreva net_hours(entries) e workload_label(hours). net_hours recebe pares [planejado, bloqueado], rejeita negativos e retorna o total planejado menos o bloqueado. workload_label retorna "light", "balanced" ou "heavy" para totais abaixo de 20, até 40 ou acima de 40.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Siga o contrato da função apresentado no objetivo.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n36\nbalanced'),
       "def net_hours(entries):\n    pass\n\ndef workload_label(hours):\n    pass",
       b("36\nbalanced", "36\nbalanced"),
       [b("Validate every planned and blocked value first.", "Valide primeiro cada valor planejado e bloqueado."), b("Accumulate planned - blocked.", "Acumule planejado - bloqueado."), b("Call workload_label with the returned total.", "Chame workload_label com o total retornado.")],
@@ -280,7 +280,7 @@ export const phase14: Phase = {
     exercise(
       "p14-guided-greeting",
       b("🟢 Guided — add a safe default", "🟢 Guiado — adicione um padrão seguro"),
-      b("Complete greet(name, language=\"en\") so omitted language returns an English greeting and language=\"pt\" returns Portuguese.", "Complete greet(name, language=\"en\") para que idioma omitido retorne saudação em inglês e language=\"pt\" retorne português."),
+      b('Goal:\nComplete greet(name, language="en").\n\nProgram requirements\n\n1. Build the result\n- When the language is omitted.\n- Return an English greeting.\n- When language is "pt".\n- Return a Portuguese greeting.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nHello, Ana', 'Objetivo:\nComplete greet(name, language="en").\n\nRequisitos do programa\n\n1. Montar o resultado\n- Quando o idioma for omitido.\n- Retorne uma saudação em inglês.\n- Quando language for "pt".\n- Retorne uma saudação em português.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nHello, Ana'),
       "def greet(name, language=___):\n    clean = name.strip()\n    if language == \"pt\":\n        return f\"Olá, {clean}\"\n    return f\"Hello, {clean}\"",
       b("Hello, Ana", "Hello, Ana"),
       [b("The default string is \"en\".", "A string padrão é \"en\"."), b("Keep the default in the signature.", "Mantenha o padrão na assinatura."), b("Return the message; do not print inside.", "Retorne a mensagem; não imprima dentro.")],
@@ -296,7 +296,7 @@ export const phase14: Phase = {
     exercise(
       "p14-complete-fee",
       b("🟡 Complete — positional and keyword price options", "🟡 Complete — opções posicionais e nomeadas de preço"),
-      b("Finish service_fee(amount, rate=0.05, *, minimum=0). Validate non-negative inputs and return the greater of amount * rate and minimum.", "Termine service_fee(amount, rate=0.05, *, minimum=0). Valide entradas não negativas e retorne o maior entre amount * rate e minimum."),
+      b('Goal:\nFinish service_fee(amount, rate=0.05, *, minimum=0).\n\nProgram requirements\n\n1. Build the result\n- Calculate the percentage-based fee.\n- Return whichever is greater: that fee or the minimum fee.\n\n2. Validate\n- Validate that every input is non-negative.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n5.0', 'Objetivo:\nTermine service_fee(amount, rate=0.05, *, minimum=0).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Calcule a taxa percentual.\n- Retorne o maior valor entre essa taxa e a taxa mínima.\n\n2. Validar\n- Valide que todas as entradas sejam não negativas.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n5.0'),
       "def service_fee(amount, rate=0.05, *, minimum=0):\n    if amount < 0 or rate < 0 or minimum < 0:\n        raise ValueError(\"negative fee value\")\n    calculated = ___\n    return round(___, 2)",
       b("5.0", "5.0"),
       [b("calculated = amount * rate", "calculated = amount * rate"), b("Use max(calculated, minimum).", "Use max(calculated, minimum)."), b("minimum must be passed by keyword.", "minimum precisa ser passado por nome.")],
@@ -312,7 +312,7 @@ export const phase14: Phase = {
     exercise(
       "p14-zero-tags",
       b("🔴 From scratch — avoid a mutable default", "🔴 Do zero — evite padrão mutável"),
-      b("Write collect_tag(tag, tags=None). Create a fresh list when tags is None, append a stripped lowercase tag and return the list.", "Escreva collect_tag(tag, tags=None). Crie lista nova quando tags for None, adicione tag limpa em minúsculas e retorne a lista."),
+      b('Goal:\nWrite collect_tag(tag, tags=None).\n\nProgram requirements\n\n1. Build the result\n- Create a fresh list when tags is None, append a stripped lowercase tag.\n- Return the list.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[\'python\']', 'Objetivo:\nEscreva collect_tag(tag, tags=None).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Crie lista nova quando tags for None, adicione tag limpa em minúsculas.\n- Retorne a lista.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[\'python\']'),
       "def collect_tag(tag, tags=None):\n    pass",
       b("['python']", "['python']"),
       [b("Use if tags is None.", "Use if tags is None."), b("Create tags = [] inside that branch.", "Crie tags = [] dentro desse ramo."), b("Append tag.strip().lower().", "Adicione tag.strip().lower().")],
@@ -328,7 +328,7 @@ export const phase14: Phase = {
     exercise(
       "p14-transfer",
       b("🟣 Challenge — design a readable export API", "🟣 Desafio — projete uma API de exportação legível"),
-      b("Write export_name(base, extension=\"csv\", *, compressed=False). Strip base, reject an empty base or unsupported extension, and return base.extension or base.extension.gz.", "Escreva export_name(base, extension=\"csv\", *, compressed=False). Limpe base, rejeite base vazio ou extensão não suportada e retorne base.extension ou base.extension.gz."),
+      b('Goal:\nWrite export_name(base, extension="csv", *, compressed=False).\n\nProgram requirements\n\n1. Build the result\n- Strip base.\n- Return base.extension or base.extension.gz.\n\n2. Validate\n- Reject an empty base or unsupported extension.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nreport.csv.gz', 'Objetivo:\nEscreva export_name(base, extension="csv", *, compressed=False).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Limpe base.\n- Retorne base.extension ou base.extension.gz.\n\n2. Validar\n- Rejeite base vazio ou extensão não suportada.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nreport.csv.gz'),
       "def export_name(base, extension=\"csv\", *, compressed=False):\n    pass",
       b("report.csv.gz", "report.csv.gz"),
       [b("Allowed extensions are csv and json.", "Extensões permitidas são csv e json."), b("Build suffix = \".gz\" if compressed else \"\".", "Monte suffix = \".gz\" if compressed else \"\"."), b("compressed must stay keyword-only.", "compressed deve continuar apenas nomeado.")],
@@ -432,7 +432,7 @@ export const phase15: Phase = {
     exercise(
       "p15-guided-doc",
       b("🟢 Guided — add a real docstring", "🟢 Guiado — adicione uma docstring real"),
-      b("Complete the first statement of normalize_code with a docstring containing the phrase \"Return a normalized code\".", "Complete a primeira instrução de normalize_code com docstring contendo a frase \"Return a normalized code\"."),
+      b('Goal:\nComplete the first statement of normalize_code.\n\nProgram requirements\n\n1. Build the result\n- A docstring containing the phrase "Return a normalized code".\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nTrue\nAB-10', 'Objetivo:\nComplete a primeira instrução de normalize_code.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Docstring contendo a frase "Return a normalized code".\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nTrue\nAB-10'),
       "def normalize_code(value):\n    ___\n    return value.strip().upper()",
       b("True\nAB-10", "True\nAB-10"),
       [b("Use triple quotes inside the function.", "Use aspas triplas dentro da função."), b("The docstring must be the first statement.", "A docstring deve ser a primeira instrução."), b("Keep the exact English phrase requested.", "Mantenha a frase exata em inglês solicitada.")],
@@ -448,7 +448,7 @@ export const phase15: Phase = {
     exercise(
       "p15-complete-contract",
       b("🟡 Complete — document parameters and returns", "🟡 Complete — documente parâmetros e retorno"),
-      b("Complete rectangle_area. Its docstring must include Args: and Returns:, and the function must reject negative dimensions.", "Complete rectangle_area. A docstring precisa incluir Args: e Returns:, e a função deve rejeitar dimensões negativas."),
+      b('Goal:\nComplete rectangle_area.\n\nProgram requirements\n\n1. Validate\n- Its docstring must include Args: and Returns:, and the function must reject negative dimensions.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nTrue\n12', 'Objetivo:\nComplete rectangle_area.\n\nRequisitos do programa\n\n1. Validar\n- A docstring precisa incluir Args: e Returns:, e a função deve rejeitar dimensões negativas.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nTrue\n12'),
       "def rectangle_area(width, height):\n    \"\"\"Return the area of a rectangle.\n\n    ___:\n        width: Non-negative width.\n        height: Non-negative height.\n\n    ___:\n        The numeric area.\n    \"\"\"\n    if width < 0 or height < 0:\n        raise ValueError(\"negative dimension\")\n    return width * height",
       b("True\n12", "True\n12"),
       [b("The missing headings are Args and Returns.", "Os títulos ausentes são Args e Returns."), b("Keep each heading followed by a colon.", "Mantenha cada título seguido de dois-pontos."), b("Do not remove validation.", "Não remova a validação.")],
@@ -464,7 +464,7 @@ export const phase15: Phase = {
     exercise(
       "p15-zero-errors",
       b("🔴 From scratch — document an error contract", "🔴 Do zero — documente um contrato de erro"),
-      b("Write average_score(scores) with a complete docstring containing \"Raises:\" and \"empty scores\". Raise ValueError(\"empty scores\") for [], otherwise return the rounded mean.", "Escreva average_score(scores) com docstring completa contendo \"Raises:\" e \"empty scores\". Gere ValueError(\"empty scores\") para [], senão retorne média arredondada."),
+      b('Goal:\nWrite average_score(scores) with a complete docstring containing "Raises:" and "empty scores".\n\nProgram requirements\n\n1. Validate\n- Raise ValueError("empty scores") for [], otherwise return the rounded mean.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nTrue\n80.0', 'Objetivo:\nEscreva average_score(scores) com docstring completa contendo "Raises:" e "empty scores".\n\nRequisitos do programa\n\n1. Validar\n- Gere ValueError("empty scores") para [], senão retorne média arredondada.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nTrue\n80.0'),
       "def average_score(scores):\n    pass",
       b("True\n80.0", "True\n80.0"),
       [b("Write the docstring before validation.", "Escreva docstring antes da validação."), b("Use if not scores.", "Use if not scores."), b("Use sum(scores) / len(scores).", "Use sum(scores) / len(scores).")],
@@ -480,7 +480,7 @@ export const phase15: Phase = {
     exercise(
       "p15-transfer",
       b("🟣 Challenge — contract plus executable example", "🟣 Desafio — contrato mais exemplo executável"),
-      b("Write format_distance(km) with a docstring containing the exact example line format_distance(1.5) and return values like \"1.50 km\". Reject negative km.", "Escreva format_distance(km) com docstring contendo a linha exata format_distance(1.5) e retorne valores como \"1.50 km\". Rejeite km negativo."),
+      b('Goal:\nWrite format_distance(km) with a docstring containing the exact example line format_distance(1.5) and return values like "1.50 km".\n\nProgram requirements\n\n1. Validate\n- Reject negative km.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nTrue\n1.50 km', 'Objetivo:\nEscreva format_distance(km) com docstring contendo a linha exata format_distance(1.5) e retorne valores como "1.50 km".\n\nRequisitos do programa\n\n1. Validar\n- Rejeite km negativo.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nTrue\n1.50 km'),
       "def format_distance(km):\n    pass",
       b("True\n1.50 km", "True\n1.50 km"),
       [b("Include an Example: section.", "Inclua seção Example:."), b("The exact call text must appear in __doc__.", "O texto exato da chamada deve aparecer em __doc__."), b("Use f\"{km:.2f} km\".", "Use f\"{km:.2f} km\".")],
@@ -587,7 +587,7 @@ export const phase16: Phase = {
     exercise(
       "p16-guided-update",
       b("🟢 Guided — update state without a global", "🟢 Guiado — atualize estado sem global"),
-      b("Complete add_points(current, earned). Reject negative earned points and return the new total.", "Complete add_points(current, earned). Rejeite pontos earned negativos e retorne o novo total."),
+      b('Goal:\nComplete add_points(current, earned).\n\nProgram requirements\n\n1. Build the result\n- Return the new total.\n\n2. Validate\n- Reject negative earned points.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n125', 'Objetivo:\nComplete add_points(current, earned).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne o novo total.\n\n2. Validar\n- Rejeite valores negativos em earned.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n125'),
       "def add_points(current, earned):\n    if earned < 0:\n        raise ValueError(\"negative points\")\n    new_total = ___ + ___\n    return ___",
       b("125", "125"),
       [b("Use both parameters in the addition.", "Use ambos os parâmetros na soma."), b("Return new_total.", "Retorne new_total."), b("Do not create or edit a global score.", "Não crie nem altere score global.")],
@@ -603,7 +603,7 @@ export const phase16: Phase = {
     exercise(
       "p16-complete-shadow",
       b("🟡 Complete — understand shadowing", "🟡 Complete — entenda sombreamento"),
-      b("Finish local_status so it creates and returns a local uppercase value without changing the global status.", "Termine local_status para criar e retornar valor local em maiúsculas sem mudar o status global."),
+      b('Goal:\nFinish local_status.\n\nProgram requirements\n\n1. Build the result\n- It creates and returns a local uppercase value without changing the global status.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nREADY\nglobal', 'Objetivo:\nTermine local_status.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Crie e retornar valor local em maiúsculas sem mudar o status global.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nREADY\nglobal'),
       "status = \"global\"\n\ndef local_status(value):\n    status = value.___()\n    return ___",
       b("READY\nglobal", "READY\nglobal"),
       [b("Call upper on value.", "Chame upper em value."), b("Return the local status.", "Retorne status local."), b("Do not use global status.", "Não use global status.")],
@@ -619,7 +619,7 @@ export const phase16: Phase = {
     exercise(
       "p16-zero-balance",
       b("🔴 From scratch — process transactions explicitly", "🟢 Do zero — processe transações explicitamente"),
-      b("Write apply_changes(start, changes). Each change is numeric. Return start plus all changes, reject a non-numeric change with ValueError(\"invalid change\"), and do not mutate global state.", "Escreva apply_changes(start, changes). Cada mudança é numérica. Retorne start mais todas as mudanças, rejeite não numérica com ValueError(\"invalid change\") e não altere estado global."),
+      b('Goal:\nWrite apply_changes(start, changes).\n\nProgram requirements\n\n1. Build the result\n- Each change is numeric.\n- Apply every numeric change to the starting value.\n- Do not modify global state.\n\n2. Validate\n- Reject a non-numeric change with ValueError("invalid change").\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n125', 'Objetivo:\nEscreva apply_changes(start, changes).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Cada mudança é numérica.\n- Aplique todas as mudanças numéricas ao valor inicial.\n- Não altere o estado global.\n\n2. Validar\n- Rejeite uma mudança não numérica com ValueError("invalid change").\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n125'),
       "def apply_changes(start, changes):\n    pass",
       b("125", "125"),
       [b("Create a local total = start.", "Crie total local = start."), b("Loop through changes and validate each item.", "Percorra changes e valide cada item."), b("Return total after the loop.", "Retorne total após o loop.")],
@@ -635,7 +635,7 @@ export const phase16: Phase = {
     exercise(
       "p16-transfer",
       b("🟣 Challenge — create a closure", "🟣 Desafio — crie uma closure"),
-      b("Write make_prefix(prefix). Strip prefix, reject an empty value, and return an inner function label(value) that returns \"prefix: value\".", "Escreva make_prefix(prefix). Limpe prefix, rejeite vazio e retorne função interna label(value) que devolve \"prefix: value\"."),
+      b('Goal:\nWrite make_prefix(prefix).\n\nProgram requirements\n\n1. Build the result\n- Strip prefix.\n- Return an inner function label(value) that returns "prefix: value".\n\n2. Validate\n- Reject an empty value.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nINFO: started', 'Objetivo:\nEscreva make_prefix(prefix).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Limpe prefix.\n- Retorne função interna label(value) que devolve "prefix: value".\n\n2. Validar\n- Rejeite vazio.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nINFO: started'),
       "def make_prefix(prefix):\n    pass",
       b("INFO: started", "INFO: started"),
       [b("Validate and normalize prefix in the outer function.", "Valide e normalize prefix na função externa."), b("Define label(value) inside make_prefix.", "Defina label(value) dentro de make_prefix."), b("Return label without calling it.", "Retorne label sem chamá-la.")],

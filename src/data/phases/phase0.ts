@@ -26,7 +26,10 @@ export const phase0: Phase = {
     {
       id: 'base0-first-output',
       title: { en: 'Guided: your first output', pt: 'Guiado: sua primeira saída' },
-      description: { en: 'Run the code and connect the program file to the output it produces.', pt: 'Execute o código e conecte o arquivo do programa à saída que ele produz.' },
+      description: {
+        en: 'Goal:\nRun a completed Python program and connect the stored file name to the output it produces.\n\nProgram requirements\n\n1. Before running\n- Predict the two lines the program will display.\n\n2. Run and observe\n- Confirm which output comes from the stored file name and which output is fixed text.\n\n3. Test a change\n- Change only the file-name text, run again, and identify the part of the output that changes.\n\nExample result:\nRunning: {{file}}\nPython is ready',
+        pt: 'Objetivo:\nExecute um programa Python completo e relacione o nome de arquivo armazenado com a saída produzida.\n\nRequisitos do programa\n\n1. Antes de executar\n- Preveja as duas linhas que o programa mostrará.\n\n2. Executar e observar\n- Confirme qual parte da saída vem do nome de arquivo armazenado e qual parte é texto fixo.\n\n3. Testar uma mudança\n- Altere somente o texto do nome do arquivo, execute novamente e identifique o que mudou na saída.\n\nExemplo de resultado:\nRunning: {{file}}\nPython is ready'
+      },
       starterCode: 'file_name = "meu_primeiro.py"\nprint("Running:", file_name)\nprint("Python is ready")',
       hints: [
         { en: 'Before running, predict the two lines you expect to see. This turns execution into a test of your reasoning.', pt: 'Antes de executar, preveja as duas linhas que espera ver. Isso transforma a execução em um teste do seu raciocínio.' },
@@ -42,7 +45,10 @@ export const phase0: Phase = {
     {
       id: 'base0-fill-extension',
       title: { en: 'Complete the digital vocabulary', pt: 'Complete o vocabulário digital' },
-      description: { en: 'Replace the blanks with the correct extension and storage location.', pt: 'Substitua as lacunas pela extensão e pelo local de armazenamento corretos.' },
+      description: {
+        en: 'Goal:\nComplete the digital vocabulary program by replacing its two blanks.\n\nProgram requirements\n\n1. Fill the blanks\n- Blank 1 must contain the standard extension used by Python files.\n- Blank 2 must contain the place where files remain available for long-term use.\n- Both answers are text values.\n\n2. Display\n- Run the program and confirm that each completed term appears on its own line.\n\nExample result:\n.py\nstorage',
+        pt: 'Objetivo:\nComplete o programa de vocabulário digital substituindo as duas lacunas.\n\nRequisitos do programa\n\n1. Preencher as lacunas\n- A lacuna 1 deve conter a extensão padrão dos arquivos Python.\n- A lacuna 2 deve conter o local onde os arquivos permanecem disponíveis por longo prazo.\n- As duas respostas são valores de texto.\n\n2. Mostrar\n- Execute o programa e confirme que cada termo aparece em uma linha separada.\n\nExemplo de resultado:\n.py\narmazenamento'
+      },
       starterCode: 'python_extension = ___\nlong_term_files = ___\nprint(python_extension)\nprint(long_term_files)',
       hints: [{ en: 'Both answers are text and need quotes.', pt: 'As duas respostas são textos e precisam de aspas.' }, { en: 'Python files end in .py. Files remain in storage.', pt: 'Arquivos Python terminam em .py. Arquivos permanecem no armazenamento.' }],
       sampleOutput: { en: '.py\nstorage', pt: '.py\narmazenamento' },
@@ -54,7 +60,10 @@ export const phase0: Phase = {
     {
       id: 'base0-hardware-report',
       title: { en: 'Build a tiny hardware report', pt: 'Monte um pequeno relatório de hardware' },
-      description: { en: 'Create four variables named cpu, ram, storage and gpu, then print each one.', pt: 'Crie quatro variáveis chamadas cpu, ram, storage e gpu e depois imprima cada uma.' },
+      description: {
+        en: 'Goal:\nCreate a short hardware report that explains the role of four computer resources.\n\nProgram requirements\n\n1. Create the data\n- Use the exact variable names cpu, ram, storage and gpu.\n- Store a short explanation of each resource in its matching variable.\n\n2. Display\n- Show one labelled line for CPU, RAM, Storage and GPU in that order.\n\nExample result:\nCPU: executes instructions\nRAM: temporary working data\nStorage: keeps files\nGPU: processes graphics',
+        pt: 'Objetivo:\nCrie um pequeno relatório de hardware que explique a função de quatro recursos do computador.\n\nRequisitos do programa\n\n1. Criar os dados\n- Use exatamente os nomes de variável cpu, ram, storage e gpu.\n- Guarde uma explicação curta de cada recurso na variável correspondente.\n\n2. Mostrar\n- Mostre uma linha identificada para CPU, RAM, Storage e GPU, nessa ordem.\n\nExemplo de resultado:\nCPU: executa instruções\nRAM: guarda dados temporários\nStorage: mantém arquivos\nGPU: processa gráficos'
+      },
       starterCode: '# Create the four variables below, using exactly these names:\n# cpu, ram, storage, gpu\n\n# Print a line for each resource\n',
       hints: [{ en: 'Example: cpu = "executes instructions"', pt: 'Exemplo: cpu = "executa instruções"' }, { en: 'Use four print calls.', pt: 'Use quatro chamadas de print.' }],
       sampleOutput: {
@@ -79,11 +88,8 @@ export const phase0: Phase = {
   ],
   exam: {
     title: { en: 'Digital readiness report', pt: 'Relatório de preparo digital' },
-    scenario: { en: 'Create a small Python program proving that you understand files and computer resources.', pt: 'Crie um pequeno programa Python provando que entende arquivos e recursos do computador.' },
-    requirements: {
-      en: ['Create variables file_name, cpu, ram, storage and gpu.', 'file_name must end in .py.', 'Print a five-line report using the variables.'],
-      pt: ['Crie as variáveis file_name, cpu, ram, storage e gpu.', 'file_name deve terminar em .py.', 'Imprima um relatório de cinco linhas usando as variáveis.'],
-    },
+    scenario: { en: 'Create a digital readiness report that verifies system components and file configuration.', pt: 'Crie um relatório de preparo digital que verifique os componentes do sistema e a configuração de arquivos.' },
+    requirements: { en: ['Store a Python filename ending in .py in a variable', 'Store description text for CPU, RAM, storage, and GPU resources', 'A five-line summary showing the filename and each hardware component status'], pt: ['Guarde um nome de arquivo Python terminado em .py em uma variável', 'Guarde o texto descritivo para os recursos de CPU, RAM, armazenamento e GPU', 'Um resumo de cinco linhas mostrando o nome do arquivo e o status de cada componente de hardware'] },
     starterCode: '# Base Zero final report\nfile_name = ""\ncpu = ""\nram = ""\nstorage = ""\ngpu = ""\n\n# Print five informative lines below\n',
     testCases: [
       { id: 'structure', description: { en: 'Defines the required variables', pt: 'Define as variáveis obrigatórias' }, inputs: [], checks: [{ type: 'no_error' }], codeRequirements: [{ kind: 'assignment', value: 'file_name' }, { kind: 'assignment', value: 'cpu' }, { kind: 'assignment', value: 'ram' }, { kind: 'assignment', value: 'storage' }, { kind: 'assignment', value: 'gpu' }], points: 40 },

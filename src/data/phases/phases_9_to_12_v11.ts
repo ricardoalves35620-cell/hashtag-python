@@ -301,7 +301,7 @@ for material, esperado, recebido in entregas:
     exercise(
       'p9-guided-cell',
       b('🟢 Guided — read one cell safely', '🟢 Guiado — leia uma célula com segurança'),
-      b('Complete cell_at so it returns the value at the requested row and column.', 'Complete cell_at para retornar o valor da linha e coluna solicitadas.'),
+      b('Goal:\nComplete cell_at.\n\nProgram requirements\n\n1. Build the result\n- It returns the value at the requested row and column.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nblue', 'Objetivo:\nComplete cell_at.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne o valor da linha e coluna solicitadas.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nblue'),
       `def cell_at(table, row, column):
     # First select the row, then select the column.
     return table[___][___]`,
@@ -323,7 +323,7 @@ for material, esperado, recebido in entregas:
     exercise(
       'p9-complete-column',
       b('🟡 Complete — collect one column', '🟡 Complete — colete uma coluna'),
-      b('Finish column_values. It must return a new list containing one selected column from every row.', 'Termine column_values. Ela deve retornar uma nova lista com a coluna selecionada de cada linha.'),
+      b('Goal:\nFinish column_values.\n\nProgram requirements\n\n1. Build the result\n- It must return a new list containing one selected column from every row.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[\'Ana\', \'Beto\', \'Caio\']', 'Objetivo:\nTermine column_values.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Ela deve retornar uma nova lista com a coluna selecionada de cada linha.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[\'Ana\', \'Beto\', \'Caio\']'),
       `def column_values(table, column):
     values = []
     for row in table:
@@ -348,7 +348,7 @@ for material, esperado, recebido in entregas:
     exercise(
       'p9-zero-approved-total',
       b('🔴 From scratch — calculate from structured rows', '🔴 Do zero — calcule com linhas estruturadas'),
-      b('A ticket resale board pays each seller the ticket price minus a fixed platform fee. Create approved_total(rows, platform_fee). Rows use [name, amount, status]. Sum max(amount - platform_fee, 0) only for approved rows.', 'Um quadro de revenda de ingressos paga a cada vendedor o preço do ingresso menos uma taxa fixa da plataforma. Crie approved_total(rows, platform_fee). As linhas usam [nome, valor, status]. Some max(valor - platform_fee, 0) apenas para linhas aprovadas.'),
+      b('Goal:\nA ticket resale board pays each seller the ticket price minus a fixed platform fee.\n\nProgram requirements\n\n1. Build the result\n- Create approved_total(rows, platform_fee).\n- Rows use [name, amount, status].\n- For approved rows only, subtract the platform fee from the amount without allowing a negative contribution to the total.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n7700', 'Objetivo:\nUm quadro de revenda de ingressos paga a cada vendedor o preço do ingresso menos uma taxa fixa da plataforma.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Crie approved_total(rows, platform_fee).\n- As linhas usam [nome, valor, status].\n- Somente para linhas aprovadas, desconte a taxa da plataforma sem permitir uma contribuição negativa ao total.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n7700'),
       `def approved_total(rows, platform_fee):
     # Write the complete solution.
     pass`,
@@ -370,7 +370,7 @@ for material, esperado, recebido in entregas:
     exercise(
       'p9-transfer',
       b('🟣 Challenge — transpose a rectangular grid', '🟣 Desafio — transponha uma grade retangular'),
-      b('Write transpose_grid(grid). Rows become columns. Return [] for an empty grid and raise ValueError("ragged grid") when row lengths differ.', 'Escreva transpose_grid(grid). Linhas viram colunas. Retorne [] para grade vazia e gere ValueError("ragged grid") quando os tamanhos das linhas forem diferentes.'),
+      b('Goal:\nWrite transpose_grid(grid).\n\nProgram requirements\n\n1. Build the result\n- Rows become columns.\n\n2. Validate\n- Return [] for an empty grid and raise ValueError("ragged grid") when row lengths differ.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[[1, 4], [2, 5], [3, 6]]', 'Objetivo:\nEscreva transpose_grid(grid).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Linhas viram colunas.\n\n2. Validar\n- Retorne [] para grade vazia e gere ValueError("ragged grid") quando os tamanhos das linhas forem diferentes.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[[1, 4], [2, 5], [3, 6]]'),
       `def transpose_grid(grid):
     # Validate the shape, then build a new nested list.
     pass`,
@@ -646,7 +646,7 @@ print(atualizado["confirmado"])   # True`,
     exercise(
       'p10-guided-label',
       b('🟢 Guided — read named fields', '🟢 Guiado — leia campos nomeados'),
-      b('Complete product_label to return "SKU - name" using dictionary keys.', 'Complete product_label para retornar "SKU - nome" usando chaves do dicionário.'),
+      b('Goal:\nComplete product_label.\n\nProgram requirements\n\n1. Build the result\n- Return "SKU - name" using dictionary keys.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\nKB-10 - Keyboard', 'Objetivo:\nComplete product_label.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne "SKU - nome" usando chaves do dicionário.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\nKB-10 - Keyboard'),
       `def product_label(product):
     return product[___] + " - " + product[___]`,
       b('KB-10 - Keyboard', 'KB-10 - Keyboard'),
@@ -663,7 +663,7 @@ print(atualizado["confirmado"])   # True`,
     exercise(
       'p10-complete-stock',
       b('🟡 Complete — return an updated copy', '🟡 Complete — retorne uma cópia atualizada'),
-      b('Finish sell_units. It must reject negative sold values, keep the original dictionary unchanged and never let stock go below zero.', 'Termine sell_units. Ela deve rejeitar venda negativa, manter o dicionário original intacto e nunca deixar o estoque abaixo de zero.'),
+      b('Goal:\nFinish sell_units.\n\nProgram requirements\n\n1. Build the result\n- Keep the original dictionary unchanged.\n- Never let stock go below zero.\n\n2. Validate\n- It must reject negative sold values.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n{\'sku\': \'A1\', \'stock\': 2}', 'Objetivo:\nTermine sell_units.\n\nRequisitos do programa\n\n1. Validar\n- Ela deve rejeitar venda negativa, manter o dicionário original intacto e nunca deixar o estoque abaixo de zero.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n{\'sku\': \'A1\', \'stock\': 2}'),
       `def sell_units(product, sold):
     if sold < 0:
         raise ValueError("negative sale")
@@ -687,7 +687,7 @@ print(item)`, b("{'sku': 'B2', 'stock': 0}\n{'sku': 'B2', 'stock': 2}", "{'sku':
     exercise(
       'p10-zero-required',
       b('🔴 From scratch — validate a dictionary contract', '🔴 Do zero — valide um contrato de dicionário'),
-      b('Write calculate_total(order). Required keys are quantity and unit_price. Discount is optional and defaults to zero. Raise ValueError("missing keys") when required data is absent and ValueError("negative value") for negative numeric data.', 'Escreva calculate_total(order). As chaves obrigatórias são quantity e unit_price. Discount é opcional e vale zero por padrão. Gere ValueError("missing keys") quando faltar dado obrigatório e ValueError("negative value") para dado numérico negativo.'),
+      b('Goal:\nWrite calculate_total(order).\n\nProgram requirements\n\n1. Build the result\n- Discount is optional and defaults to zero.\n\n2. Validate\n- Required keys are quantity and unit_price.\n- Raise ValueError("missing keys") when required data is absent and ValueError("negative value") for negative numeric data.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n45.0', 'Objetivo:\nEscreva calculate_total(order).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Discount é opcional e vale zero por padrão.\n\n2. Validar\n- As chaves obrigatórias são quantity e unit_price.\n- Gere ValueError("missing keys") quando faltar dado obrigatório e ValueError("negative value") para dado numérico negativo.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n45.0'),
       `def calculate_total(order):
     pass`,
       b('45.0', '45.0'),
@@ -707,7 +707,7 @@ except ValueError as error:
     exercise(
       'p10-transfer',
       b('🟣 Challenge — merge settings with an allow-list', '🟣 Desafio — combine configurações com lista permitida'),
-      b('Write merge_settings(base, changes, allowed). Return a copied dictionary with only allowed keys applied. Raise ValueError("unknown setting") when changes contains any key outside allowed.', 'Escreva merge_settings(base, changes, allowed). Retorne uma cópia com apenas chaves permitidas aplicadas. Gere ValueError("unknown setting") quando changes contiver chave fora de allowed.'),
+      b('Goal:\nWrite merge_settings(base, changes, allowed).\n\nProgram requirements\n\n1. Build the result\n- Return a copied dictionary with only allowed keys applied.\n\n2. Validate\n- Raise ValueError("unknown setting") when changes contains any key outside allowed.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n{\'language\': \'pt\', \'theme\': \'dark\'}', 'Objetivo:\nEscreva merge_settings(base, changes, allowed).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne uma cópia com apenas chaves permitidas aplicadas.\n\n2. Validar\n- Gere ValueError("unknown setting") quando changes contiver chave fora de allowed.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n{\'language\': \'pt\', \'theme\': \'dark\'}'),
       `def merge_settings(base, changes, allowed):
     pass`,
       b("{'language': 'pt', 'theme': 'dark'}", "{'language': 'pt', 'theme': 'dark'}"),
@@ -993,7 +993,7 @@ print(fila)`,
     exercise(
       'p11-guided-active',
       b('🟢 Guided — select names from records', '🟢 Guiado — selecione nomes dos registros'),
-      b('Complete active_names to return the name from every record whose active field is True.', 'Complete active_names para retornar o nome de todo registro cujo campo active é True.'),
+      b('Goal:\nComplete active_names.\n\nProgram requirements\n\n1. Build the result\n- Return the name from every record whose active field is True.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[\'Ana\', \'João\']', 'Objetivo:\nComplete active_names.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne o nome de todo registro cujo campo active é True.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[\'Ana\', \'João\']'),
       `def active_names(records):
     names = []
     for record in records:
@@ -1014,7 +1014,7 @@ print(fila)`,
     exercise(
       'p11-complete-inventory',
       b('🟡 Complete — aggregate record fields', '🟡 Complete — agregue campos dos registros'),
-      b('Finish inventory_value. Reject negative price or stock and return the total price * stock across all products.', 'Termine inventory_value. Rejeite preço ou estoque negativo e retorne o total de preço * estoque de todos os produtos.'),
+      b('Goal:\nFinish inventory_value.\n\nProgram requirements\n\n1. Build the result\n- Return the combined inventory value across all products.\n\n2. Validate\n- Reject negative price or stock.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n80', 'Objetivo:\nTermine inventory_value.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne o valor total do estoque de todos os produtos.\n\n2. Validar\n- Rejeite preço ou estoque negativo.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n80'),
       `def inventory_value(products):
     total = 0
     for product in products:
@@ -1039,7 +1039,7 @@ except ValueError as error:
     exercise(
       'p11-zero-index',
       b('🔴 From scratch — build a unique index', '🔴 Do zero — crie um índice único'),
-      b('Write index_by_id(records). Return a dictionary mapping each id to an independent copy of its record. Raise ValueError("duplicate id") when an id repeats.', 'Escreva index_by_id(records). Retorne um dicionário que mapeia cada id para uma cópia independente do registro. Gere ValueError("duplicate id") quando um id repetir.'),
+      b('Goal:\nWrite index_by_id(records).\n\nProgram requirements\n\n1. Build the result\n- Return a dictionary mapping each id to an independent copy of its record.\n\n2. Validate\n- Raise ValueError("duplicate id") when an id repeats.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n{1: {\'id\': 1, \'name\': \'Ana\'}, 2: {\'id\': 2, \'name\': \'Beto\'}}', 'Objetivo:\nEscreva index_by_id(records).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne um dicionário que mapeia cada id para uma cópia independente do registro.\n\n2. Validar\n- Gere ValueError("duplicate id") quando um id repetir.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n{1: {\'id\': 1, \'name\': \'Ana\'}, 2: {\'id\': 2, \'name\': \'Beto\'}}'),
       `def index_by_id(records):
     pass`,
       b("{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}", "{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}"),
@@ -1059,7 +1059,7 @@ except ValueError as error:
     exercise(
       'p11-transfer',
       b('🟣 Challenge — group records without losing order', '🟣 Desafio — agrupe registros sem perder a ordem'),
-      b('Write group_titles_by_category(items). Return a dictionary whose keys are categories in first-seen order and values are title lists in input order. Required keys are category and title.', 'Escreva group_titles_by_category(items). Retorne um dicionário cujas chaves são categorias na ordem da primeira aparição e valores são listas de títulos na ordem de entrada. As chaves obrigatórias são category e title.'),
+      b('Goal:\nWrite group_titles_by_category(items).\n\nProgram requirements\n\n1. Build the result\n- Return a dictionary whose keys are categories in first-seen order and values are title lists in input order.\n\n2. Validate\n- Required keys are category and title.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n{\'game\': [\'Portal\', \'Celeste\'], \'movie\': [\'Coco\']}', 'Objetivo:\nEscreva group_titles_by_category(items).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne um dicionário cujas chaves são categorias na ordem da primeira aparição e valores são listas de títulos na ordem de entrada.\n\n2. Validar\n- As chaves obrigatórias são category e title.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n{\'game\': [\'Portal\', \'Celeste\'], \'movie\': [\'Coco\']}'),
       `def group_titles_by_category(items):
     pass`,
       b("{'game': ['Portal', 'Celeste'], 'movie': ['Coco']}", "{'game': ['Portal', 'Celeste'], 'movie': ['Coco']}"),
@@ -1294,7 +1294,7 @@ print(horas_longas)  # [1.25, 2.0]`,
     exercise(
       'p12-guided-even-squares',
       b('🟢 Guided — transform and filter numbers', '🟢 Guiado — transforme e filtre números'),
-      b('Complete even_squares with one list comprehension that returns the square of every even number.', 'Complete even_squares com uma compreensão de lista que retorna o quadrado de todo número par.'),
+      b('Goal:\nComplete even_squares.\n\nProgram requirements\n\n1. Build the result\n- One list comprehension that returns the square of every even number.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[4, 16, 36]', 'Objetivo:\nComplete even_squares.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Uma compreensão de lista que retorna o quadrado de todo número par.\n\n2. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[4, 16, 36]'),
       `def even_squares(values):
     return [___ for value in values if ___]`,
       b('[4, 16, 36]', '[4, 16, 36]'),
@@ -1311,7 +1311,7 @@ print(horas_longas)  # [1.25, 2.0]`,
     exercise(
       'p12-complete-names',
       b('🟡 Complete — normalize non-empty names', '🟡 Complete — normalize nomes não vazios'),
-      b('Finish clean_names. Strip surrounding spaces, discard blank names and return lowercase values while preserving accents.', 'Termine clean_names. Remova espaços externos, descarte nomes vazios e retorne valores em minúsculas preservando acentos.'),
+      b('Goal:\nFinish clean_names.\n\nProgram requirements\n\n1. Build the result\n- Strip surrounding spaces, discard blank names.\n- Return lowercase values while preserving accents.\n\n2. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[\'ana\', \'joão\']', 'Objetivo:\nTermine clean_names.\n\nRequisitos do programa\n\n1. Montar o resultado\n- Retorne valores em minúsculas preservando acentos.\n\n2. Validar\n- Remova espaços externos, descarte nomes vazios.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[\'ana\', \'joão\']'),
       `def clean_names(names):
     return [
         name.___().___()
@@ -1332,7 +1332,7 @@ print(horas_longas)  # [1.25, 2.0]`,
     exercise(
       'p12-zero-products',
       b('🔴 From scratch — select and project records', '🔴 Do zero — selecione e projete registros'),
-      b('Write available_labels(products). Use one list comprehension to return "sku:name" for records with stock > 0. Raise ValueError("negative stock") before the comprehension if any stock is negative.', 'Escreva available_labels(products). Use uma compreensão para retornar "sku:name" de registros com stock > 0. Gere ValueError("negative stock") antes da compreensão se qualquer estoque for negativo.'),
+      b('Goal:\nWrite available_labels(products).\n\nProgram requirements\n\n1. Build the result\n- Use one list comprehension to return "sku:name" for records whose stock is positive.\n\n2. Validate\n- Raise ValueError("negative stock") before the comprehension if any stock is negative.\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[\'A:Mouse\', \'C:Café\']', 'Objetivo:\nEscreva available_labels(products).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Use uma compreensão para retornar "sku:name" dos registros com estoque positivo.\n\n2. Validar\n- Gere ValueError("negative stock") antes da compreensão se qualquer estoque for negativo.\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[\'A:Mouse\', \'C:Café\']'),
       `def available_labels(products):
     pass`,
       b("['A:Mouse', 'C:Café']", "['A:Mouse', 'C:Café']"),
@@ -1352,7 +1352,7 @@ except ValueError as error:
     exercise(
       'p12-transfer',
       b('🟣 Challenge — flatten and filter a grid', '🟣 Desafio — achate e filtre uma grade'),
-      b('Write positive_cells(grid). Use one nested list comprehension to flatten the grid and return only values greater than zero. Every cell must be int or float; otherwise raise ValueError("non-numeric cell").', 'Escreva positive_cells(grid). Use uma compreensão aninhada para achatar a grade e retornar apenas valores maiores que zero. Toda célula deve ser int ou float; caso contrário gere ValueError("non-numeric cell").'),
+      b('Goal:\nWrite positive_cells(grid).\n\nProgram requirements\n\n1. Build the result\n- Use one nested list comprehension to flatten the grid.\n- Return only values greater than zero.\n\n2. Validate\n- Every cell must be int or float.\n- Otherwise raise ValueError("non-numeric cell").\n\n3. Verify\n- Return the requested value in the required shape.\n- Test with the provided example and at least one different valid case.\n\nExample result:\n[1, 3, 5]', 'Objetivo:\nEscreva positive_cells(grid).\n\nRequisitos do programa\n\n1. Montar o resultado\n- Use uma compreensão aninhada para achatar a grade e retornar apenas valores maiores que zero.\n\n2. Validar\n- Toda célula deve ser int ou float; caso contrário gere ValueError("non-numeric cell").\n\n3. Conferir\n- Retorne o valor solicitado no formato exigido.\n- Teste com o exemplo fornecido e pelo menos um caso válido diferente.\n\nExemplo de resultado:\n[1, 3, 5]'),
       `def positive_cells(grid):
     pass`,
       b('[1, 3, 5]', '[1, 3, 5]'),

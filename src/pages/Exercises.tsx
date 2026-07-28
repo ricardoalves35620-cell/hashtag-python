@@ -6,6 +6,7 @@ import TestInputEditor from '../components/TestInputEditor'
 import ErrorExplainer from '../components/ErrorExplainer'
 import ExerciseFeedback from '../components/ExerciseFeedback'
 import ExerciseExpectedOutput from '../components/ExerciseExpectedOutput'
+import TaskDescription from '../components/TaskDescription'
 import LearningBrief from '../components/LearningBrief'
 import { Alert, Badge, Button, Card, Progress } from '../components/ui'
 import { explainError, type ErrorExplanation } from '../lib/errorExplainer'
@@ -287,7 +288,7 @@ export default function Exercises() {
 
         <Card padding="md">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div><h2 className="text-lg font-semibold text-ink">{personalize(exercise.title[lang])}</h2><p className="mt-1 text-sm leading-6 text-ink-secondary whitespace-pre-line">{personalize(exercise.description[lang])}</p></div>
+            <div><h2 className="text-lg font-semibold text-ink">{personalize(exercise.title[lang])}</h2><TaskDescription text={personalize(exercise.description[lang])} lang={lang} /></div>
             <Badge data-testid="draft-status" variant={draftStatus === 'saved' ? 'success' : 'neutral'}>{draftStatus === 'saved' ? `✓ ${t.saved}` : draftStatus === 'local' ? `✓ ${t.local}` : t.ready}</Badge>
           </div>
           <ExerciseExpectedOutput exercise={exercise} lang={lang} />

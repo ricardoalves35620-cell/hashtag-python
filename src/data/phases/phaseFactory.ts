@@ -194,8 +194,8 @@ export function createConceptPhase(spec: ConceptPhaseSpec, siblings: ConceptPhas
         id: `p${spec.id}-observe`,
         title: { en: 'Predict, run, change and explain', pt: 'Preveja, execute, mude e explique' },
         description: {
-          en: 'Read every line first. Record your prediction, run the code, change one meaningful value or operator, run again, and explain why the result changed.',
-          pt: 'Leia cada linha primeiro. Registre sua previsão, execute, mude um valor ou operador relevante, execute novamente e explique por que o resultado mudou.'
+          en: 'Goal:\nStudy the completed example, predict its result, test one controlled change and explain the evidence.\n\nProgram requirements\n\n1. Before running\n- Read every line in order.\n- Write down the exact output you expect from the original values.\n\n2. Run and compare\n- Execute the program and compare the actual result with your prediction.\n- Use the first difference to correct your reasoning.\n\n3. Change and explain\n- Change one meaningful value or operator only.\n- Predict the new result before running again.\n- Explain why that single change produced the new output.',
+          pt: 'Objetivo:\nEstude o exemplo completo, preveja o resultado, teste uma única mudança controlada e explique a evidência.\n\nRequisitos do programa\n\n1. Antes de executar\n- Leia todas as linhas na ordem.\n- Anote a saída exata que você espera com os valores originais.\n\n2. Executar e comparar\n- Execute o programa e compare o resultado real com a sua previsão.\n- Use a primeira diferença para corrigir seu raciocínio.\n\n3. Mudar e explicar\n- Mude apenas um valor ou operador relevante.\n- Preveja o novo resultado antes de executar de novo.\n- Explique por que essa única mudança produziu a nova saída.'
         },
         starterCode: spec.exampleCode,
         hints: [
@@ -208,8 +208,8 @@ export function createConceptPhase(spec: ConceptPhaseSpec, siblings: ConceptPhas
         id: `p${spec.id}-practice`,
         title: { en: 'Implement the core behavior', pt: 'Implemente o comportamento central' },
         description: {
-          en: `Complete ${spec.practice.functionName} so it works for visible and hidden data. Do not hard-code the example.`,
-          pt: `Complete ${spec.practice.functionName} para funcionar com dados visíveis e ocultos. Não fixe a resposta do exemplo.`
+          en: `Goal:\nComplete ${spec.practice.functionName} so it satisfies the contract described above.\n\nProgram requirements\n\n1. Implement the behavior\n- Use the function signature and data structures already provided.\n- Return the result described by the contract rather than printing a fixed answer.\n\n2. Handle the full contract\n- Respect required validation, edge cases, ordering and output shape.\n- Make the function work for both visible and hidden inputs.\n\n3. Verify\n- Test the visible case and at least one different case.\n- Do not hard-code any example value.`,
+          pt: `Objetivo:\nComplete ${spec.practice.functionName} para cumprir o contrato descrito acima.\n\nRequisitos do programa\n\n1. Implementar o comportamento\n- Use a assinatura da função e as estruturas de dados já fornecidas.\n- Retorne o resultado descrito pelo contrato em vez de imprimir uma resposta fixa.\n\n2. Cumprir o contrato inteiro\n- Respeite validações, casos limite, ordenação e o formato da saída.\n- Faça a função funcionar com dados visíveis e ocultos.\n\n3. Verificar\n- Teste o caso visível e pelo menos um caso diferente.\n- Não fixe nenhum valor do exemplo.`
         },
         starterCode: spec.practice.starterCode,
         hints: [
@@ -227,8 +227,8 @@ export function createConceptPhase(spec: ConceptPhaseSpec, siblings: ConceptPhas
         id: `p${spec.id}-transfer`,
         title: { en: 'Transfer to a new situation', pt: 'Transfira para uma situação nova' },
         description: {
-          en: `Apply the same idea to a different problem. Complete ${spec.transfer.functionName}. Reusing the previous solution unchanged will not pass.`,
-          pt: `Aplique a mesma ideia a outro problema. Complete ${spec.transfer.functionName}. Reaproveitar a solução anterior sem mudanças não passa.`
+          en: `Goal:\nApply the same idea to a different problem by completing ${spec.transfer.functionName}.\n\nProgram requirements\n\n1. Find what is shared\n- Name what this problem has in common with the previous one before writing code.\n\n2. Implement for the new situation\n- Follow the contract shown in the starter code.\n- Reusing the previous solution unchanged will not pass.\n\n3. Verify\n- Test with data that differs from the example.`,
+          pt: `Objetivo:\nAplique a mesma ideia a outro problema completando ${spec.transfer.functionName}.\n\nRequisitos do programa\n\n1. Encontrar o que é comum\n- Diga o que este problema tem em comum com o anterior antes de escrever código.\n\n2. Implementar para a nova situação\n- Siga o contrato mostrado no código inicial.\n- Reaproveitar a solução anterior sem mudanças não passa.\n\n3. Verificar\n- Teste com dados diferentes do exemplo.`
         },
         starterCode: spec.transfer.starterCode,
         difficulty: 'challenge' as const,

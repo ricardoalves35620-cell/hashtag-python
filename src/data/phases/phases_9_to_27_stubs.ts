@@ -2411,7 +2411,10 @@ print(random.random())               # float 0.0–1.0` },
     {
       id: 'ex21_fill',
       title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
-      description: { en: 'Complete the random claim selector.', pt: 'Complete o seletor aleatório.' },
+      description: {
+        en: 'Goal:\nComplete two blanks in a program that makes random selections.\n\nProgram requirements\n\n1. Choose a client\n- Blank 1 is the random-module function that selects one item from the client list.\n\n2. Generate a value\n- Blank 2 is the random-module function that creates a whole number from 500 through 10,000, including both limits.\n\n3. Display\n- Show the selected client and the simulated repair value.\n\nExample output; random values may differ:\nAudit: Carlos\nSimulated repair value: $ 4782',
+        pt: 'Objetivo:\nComplete duas lacunas em um programa que faz escolhas aleatórias.\n\nRequisitos do programa\n\n1. Escolher um cliente\n- A lacuna 1 é a função do módulo random que seleciona um item da lista de clientes.\n\n2. Gerar um valor\n- A lacuna 2 é a função do módulo random que cria um número inteiro de 500 até 10.000, incluindo os dois limites.\n\n3. Mostrar\n- Mostre o cliente selecionado e o valor simulado do reparo.\n\nExemplo de saída; os valores aleatórios podem ser diferentes:\nAudit: Carlos\nSimulated repair value: $ 4782'
+      },
       starterCode: `import random
 
 clients = ["Alice", "Bob", "Carlos", "Diana", "Eduardo"]
@@ -2430,7 +2433,10 @@ print("Simulated damage: $", damage)`,
     {
       id: 'ex21_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
-      description: { en: 'Simulate 5 random claims:\n• Damage $500–$12000\n• $250 deductible\n• Flag HIGH if damage > $5000\n• Print all + count high-risk', pt: 'Simule 5 sinistros aleatórios:\n• Dano R$500–R$12000\n• R$250 franquia\n• Sinalizar HIGH se dano > R$5000\n• Imprimir todos + contagem alto risco' },
+      description: {
+        en: 'Goal:\nRun a seeded quote simulation and explain how reproducible random values are processed.\n\nProgram requirements\n\n1. Read and predict\n- The program simulates five repair quotes using the fixed seed 42.\n- Each quote receives a random repair value from 500 through 12,000.\n\n2. Process\n- Apply the fixed 250-dollar credit to each repair value.\n- Classify values above 5,000 as HIGH and count how many meet that rule.\n\n3. Run and verify\n- Run the completed starter code and compare its quote sequence and high-risk count with the expected result.\n\nExample result:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2',
+        pt: 'Objetivo:\nExecute uma simulação de orçamentos com semente fixa e explique como valores aleatórios reproduzíveis são processados.\n\nRequisitos do programa\n\n1. Ler e prever\n- O programa simula cinco orçamentos usando a semente fixa 42.\n- Cada orçamento recebe um valor aleatório de reparo entre 500 e 12.000.\n\n2. Processar\n- Aplique o crédito fixo de 250 reais a cada valor de reparo.\n- Classifique valores acima de 5.000 como HIGH e conte quantos atendem à regra.\n\n3. Executar e conferir\n- Execute o código completo e compare a sequência de orçamentos e a contagem de alto risco com o resultado esperado.\n\nExemplo de resultado:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2'
+      },
       starterCode: `import random
 random.seed(42)
 
@@ -2526,7 +2532,10 @@ print(f"After 5 years: \${amount:.2f}")` },
     {
       id: 'ex22_fill',
       title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
-      description: { en: 'Complete the circular area calculator.', pt: 'Complete a calculadora de área circular.' },
+      description: {
+        en: 'Goal:\nComplete two blanks in a geometry program that calculates a circle area and then its square root.\n\nProgram requirements\n\n1. Calculate the area\n- Blank 1 is the constant from the math module that represents pi.\n- Use the fixed radius of 5.\n\n2. Calculate the square root\n- Blank 2 is the math-module function that returns the square root of the area.\n\n3. Display\n- Show both values rounded to two decimal places.\n\nExample result:\nArea: 78.54\nSide: 8.86',
+        pt: 'Objetivo:\nComplete duas lacunas em um programa de geometria que calcula a área de um círculo e depois sua raiz quadrada.\n\nRequisitos do programa\n\n1. Calcular a área\n- A lacuna 1 é a constante do módulo math que representa pi.\n- Use o raio fixo de 5.\n\n2. Calcular a raiz quadrada\n- A lacuna 2 é a função do módulo math que retorna a raiz quadrada da área.\n\n3. Mostrar\n- Mostre os dois valores com duas casas decimais.\n\nExemplo de resultado:\nArea: 78.54\nSide: 8.86'
+      },
       starterCode: `import math
 
 radius = 5
@@ -2543,7 +2552,10 @@ print(f"Side: {side:.2f}")`,
     {
       id: 'ex22_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
-      description: { en: 'Build compound interest calculator:\n• $10,000 at 8% for 5 years\n• A = P * (1+r)^t\n• Round UP to next dollar', pt: 'Construa calculadora de juros compostos:\n• R$10.000 a 8% por 5 anos\n• A = P * (1+r)^t\n• Arredonde PARA CIMA' },
+      description: {
+        en: 'Goal:\nRun a completed compound-interest calculator and connect each math operation to the final investment value.\n\nProgram requirements\n\n1. Use the provided values\n- Start with 10,000 dollars, an annual rate of 8% and a period of 5 years.\n\n2. Calculate\n- Apply compound growth for the full period.\n- Round the result upward to the next whole dollar.\n\n3. Run and observe\n- Display the precise amount with two decimal places and the rounded-up amount.\n\nExample result:\nAfter 5 years: $14693.28\nRounded up: $14694',
+        pt: 'Objetivo:\nExecute uma calculadora de juros compostos completa e relacione cada operação matemática ao valor final do investimento.\n\nRequisitos do programa\n\n1. Usar os valores fornecidos\n- Comece com 10.000 reais, taxa anual de 8% e período de 5 anos.\n\n2. Calcular\n- Aplique o crescimento composto durante todo o período.\n- Arredonde o resultado para cima até o próximo valor inteiro.\n\n3. Executar e observar\n- Mostre o valor exato com duas casas decimais e o valor arredondado para cima.\n\nExemplo de resultado:\nAfter 5 years: $14693.28\nRounded up: $14694'
+      },
       starterCode: `import math
 
 principal = 10000
@@ -2641,7 +2653,10 @@ finally:
     {
       id: 'ex23_recog',
       title: { en: '🟡 Recognize the Problem', pt: '🟡 Reconheça o Problema' },
-      description: { en: 'Add try/except around each crash-prone line.', pt: 'Adicione try/except em cada linha propensa a crash.' },
+      description: {
+        en: 'Goal:\nRun three completed error-handling examples and identify the exception caught in each case.\n\nProgram requirements\n\n1. Predict\n- Determine which conversion causes a ValueError.\n- Determine which calculation causes a ZeroDivisionError.\n- Determine which dictionary lookup causes a KeyError.\n\n2. Run and verify\n- Execute the code and confirm that all three errors are caught without stopping the program.\n\n3. Explore\n- Change the invalid text conversion to a valid number and observe how the first block behaves.\n\nExample result:\nValueError caught\nZeroDivisionError caught\nKeyError caught',
+        pt: 'Objetivo:\nExecute três exemplos completos de tratamento de erros e identifique a exceção capturada em cada caso.\n\nRequisitos do programa\n\n1. Prever\n- Determine qual conversão causa ValueError.\n- Determine qual cálculo causa ZeroDivisionError.\n- Determine qual acesso ao dicionário causa KeyError.\n\n2. Executar e conferir\n- Execute o código e confirme que os três erros são capturados sem interromper o programa.\n\n3. Explorar\n- Troque o texto inválido da primeira conversão por um número válido e observe o comportamento do primeiro bloco.\n\nExemplo de resultado:\nValueError caught\nZeroDivisionError caught\nKeyError caught'
+      },
       starterCode: `# Wrap each in try/except with the correct exception:
 
 try:
@@ -2665,7 +2680,10 @@ except KeyError:
     {
       id: 'ex23_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
-      description: { en: 'Build robust claim intake:\n• Loop until valid number entered\n• Reject negatives\n• Print confirmed payout', pt: 'Construa entrada robusta:\n• Loop até número válido\n• Rejeitar negativos\n• Imprimir payout confirmado' },
+      description: {
+        en: 'Goal:\nRun a completed input loop that keeps asking until it receives a valid positive order amount.\n\nProgram requirements\n\n1. Test invalid input\n- Enter text that cannot become a whole number and confirm that the program reports the error and asks again.\n- Enter zero or a negative number and confirm that it is also rejected.\n\n2. Test valid input\n- Enter a positive whole-number amount.\n- Confirm that the loop stops only after valid input is accepted.\n\n3. Display\n- Show the confirmed total after the fixed 250-dollar deduction.\n\nExample result:\nInvalid: ... — try again\nConfirmed total: $ 4750',
+        pt: 'Objetivo:\nExecute um laço de entrada completo que continue perguntando até receber um valor positivo válido.\n\nRequisitos do programa\n\n1. Testar entrada inválida\n- Digite um texto que não possa ser convertido em número inteiro e confirme que o programa informa o erro e pergunta novamente.\n- Digite zero ou um número negativo e confirme que também é rejeitado.\n\n2. Testar entrada válida\n- Digite um valor inteiro positivo.\n- Confirme que o laço termina somente depois que uma entrada válida é aceita.\n\n3. Mostrar\n- Mostre o total confirmado após a dedução fixa de 250 reais.\n\nExemplo de resultado:\nInválido: ... — tente novamente\nTotal confirmado: $ 4750'
+      },
       starterCode: `damage = None
 
 while damage is None:
@@ -2772,7 +2790,10 @@ for h in history: print(" ", h)` }
     {
       id: 'ex24_recog',
       title: { en: '🟡 Identify the Gap', pt: '🟡 Identifique a Lacuna' },
-      description: { en: 'The calculate() below is missing validation. Add the missing checks.', pt: 'O calculate() abaixo está sem validação. Adicione as verificações faltantes.' },
+      description: {
+        en: 'Goal:\nComplete the missing validation in a four-operation calculator.\n\nProgram requirements\n\n1. Handle supported operations\n- Keep addition, subtraction, multiplication and division working as provided.\n\n2. Add validation\n- Reject division when the right-hand value is zero.\n- Reject any operator outside the four supported operations.\n- Use ValueError so the existing error handlers can report both failures.\n\n3. Verify\n- Run the two provided invalid cases and confirm that each produces the required error message.\n\nExample result:\nError: Cannot divide by zero\nError: Unknown: %',
+        pt: 'Objetivo:\nComplete a validação ausente em uma calculadora com quatro operações.\n\nRequisitos do programa\n\n1. Tratar operações aceitas\n- Mantenha adição, subtração, multiplicação e divisão funcionando como já fornecido.\n\n2. Adicionar validação\n- Rejeite a divisão quando o valor da direita for zero.\n- Rejeite qualquer operador fora das quatro operações aceitas.\n- Use ValueError para que os tratadores existentes informem as duas falhas.\n\n3. Conferir\n- Execute os dois casos inválidos fornecidos e confirme que cada um produz a mensagem de erro exigida.\n\nExemplo de resultado:\nError: Cannot divide by zero\nError: Unknown: %'
+      },
       starterCode: `def calculate(x, op, y):
     if op == "+": return x + y
     elif op == "-": return x - y
@@ -2800,7 +2821,10 @@ except ValueError as e:
     {
       id: 'ex24_zero',
       title: { en: '🔴 Build the Full Calculator', pt: '🔴 Construa a Calculadora Completa' },
-      description: { en: 'Build calculator with:\n• calculate() function\n• history list\n• error handling\n• Test with 3 calculations', pt: 'Construa calculadora com:\n• Função calculate()\n• Lista de histórico\n• Tratamento de erros\n• Teste com 3 cálculos' },
+      description: {
+        en: 'Goal:\nRun a completed calculator that records only successful calculations in its history.\n\nProgram requirements\n\n1. Process the tests\n- Run addition for 10 and 5, division for 20 and 4, and an invalid division of 8 by zero.\n- Handle each calculation independently so one failure does not stop later reporting.\n\n2. Build the history\n- Store only successful calculation entries.\n- Do not add the failed division to the history.\n\n3. Display\n- Show each result or error as it occurs, followed by the successful history entries.\n\nExample result:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0',
+        pt: 'Objetivo:\nExecute uma calculadora completa que registre no histórico somente os cálculos bem-sucedidos.\n\nRequisitos do programa\n\n1. Processar os testes\n- Execute a adição de 10 e 5, a divisão de 20 por 4 e uma divisão inválida de 8 por zero.\n- Trate cada cálculo separadamente para que uma falha não interrompa o relatório.\n\n2. Montar o histórico\n- Guarde somente os cálculos bem-sucedidos.\n- Não inclua a divisão inválida no histórico.\n\n3. Mostrar\n- Mostre cada resultado ou erro no momento em que ocorrer e, depois, as entradas válidas do histórico.\n\nExemplo de resultado:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15.0'
+      },
       starterCode: `def calculate(x, op, y):
     """Perform arithmetic. Raises ValueError on invalid input."""
     if op == "+": return x + y
@@ -2925,7 +2949,10 @@ read_all(db)` }
     {
       id: 'ex25_recog',
       title: { en: '🟡 Complete the CRUD', pt: '🟡 Complete o CRUD' },
-      description: { en: 'create() and read_all() are done. Complete update() and delete().', pt: 'create() e read_all() estão prontas. Complete update() e delete().' },
+      description: {
+        en: 'Goal:\nComplete two blanks in a CRUD demonstration so update and delete affect the correct fields.\n\nProgram requirements\n\n1. Complete update\n- The blank in update identifies the record field whose value changes to the new page count.\n\n2. Complete delete\n- The blank in delete identifies the field compared with the requested record id.\n\n3. Verify\n- After the demo runs, Alice must remain with a page value of 7,000 and Bob must be removed.\n\nExample result:\n1 Alice $7000',
+        pt: 'Objetivo:\nComplete duas lacunas em uma demonstração CRUD para que atualização e exclusão usem os campos corretos.\n\nRequisitos do programa\n\n1. Completar a atualização\n- A lacuna de update identifica o campo do registro que receberá a nova quantidade de páginas.\n\n2. Completar a exclusão\n- A lacuna de delete identifica o campo comparado com o id solicitado.\n\n3. Conferir\n- Depois da execução, Alice deve permanecer com 7.000 páginas e Bob deve ser removido.\n\nExemplo de resultado:\n1 Alice $7000'
+      },
       starterCode: `def create(db, client, damage):
     db.append({"id": len(db)+1, "client": client, "damage": damage})
 
@@ -2957,7 +2984,10 @@ read_all(db)`,
     {
       id: 'ex25_zero',
       title: { en: '🔴 Full CRUD Demo', pt: '🔴 Demo CRUD Completo' },
-      description: { en: 'Build and run a full CRUD demo:\n• Create 4 claims\n• Read all\n• Update claim #2\n• Delete claim #4\n• Read final state', pt: 'Construa e execute um demo CRUD completo:\n• Criar 4 sinistros\n• Ler todos\n• Atualizar sinistro #2\n• Deletar sinistro #4\n• Ler estado final' },
+      description: {
+        en: 'Goal:\nRun a completed CRUD demonstration that creates, reads, updates and deletes records.\n\nProgram requirements\n\n1. Create and read\n- Create the four provided records and display the initial database.\n\n2. Update and delete\n- Change Bob\'s page value from 1,200 to 9,000.\n- Remove the record for Diana.\n\n3. Display the final state\n- Show the three remaining records in their original order with the updated value.\n\nExample result:\nInitial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000',
+        pt: 'Objetivo:\nExecute uma demonstração CRUD completa que crie, leia, atualize e exclua registros.\n\nRequisitos do programa\n\n1. Criar e ler\n- Crie os quatro registros fornecidos e mostre o banco de dados inicial.\n\n2. Atualizar e excluir\n- Altere a quantidade de páginas de Bob de 1.200 para 9.000.\n- Remova o registro de Diana.\n\n3. Mostrar o estado final\n- Mostre os três registros restantes na ordem original, incluindo o valor atualizado.\n\nExemplo de resultado:\nInicial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000'
+      },
       starterCode: `def create(db, client, damage):
     db.append({"id": len(db)+1, "client": client, "damage": damage})
 
@@ -3067,7 +3097,10 @@ print(f"Critical: {critical} claims")` },
     {
       id: 'ex26_recog',
       title: { en: '🟡 Add Missing Statistics', pt: '🟡 Adicione Estatísticas Faltantes' },
-      description: { en: 'Basic stats done. Add median and critical count.', pt: 'Estatísticas básicas prontas. Adicione mediana e contagem crítica.' },
+      description: {
+        en: 'Goal:\nComplete two blanks in a sales analysis so it reports the median and the number of critical days.\n\nProgram requirements\n\n1. Calculate the median\n- Use the middle position of the sorted eight-value sales list for the missing index.\n\n2. Count critical days\n- Complete the comparison that counts sales values above 5,000 dollars.\n\n3. Display\n- Show the average rounded to a whole dollar, the median and the critical count.\n\nExample result:\nAverage: $4038\nMedian: $3100\nCritical: 3',
+        pt: 'Objetivo:\nComplete duas lacunas em uma análise de vendas para informar a mediana e a quantidade de dias críticos.\n\nRequisitos do programa\n\n1. Calcular a mediana\n- Use a posição central da lista ordenada com oito valores para completar o índice ausente.\n\n2. Contar dias críticos\n- Complete a comparação que conta valores de vendas acima de 5.000 reais.\n\n3. Mostrar\n- Mostre a média arredondada para valor inteiro, a mediana e a contagem crítica.\n\nExemplo de resultado:\nAverage: $4038\nMedian: $3100\nCritical: 3'
+      },
       starterCode: `claims = [5230, 1200, 8000, 450, 3100, 9200, 620, 4500]
 
 total   = sum(claims)
@@ -3090,7 +3123,10 @@ print(f"Critical: {critical}")`,
     {
       id: 'ex26_zero',
       title: { en: '🔴 Full Data Report', pt: '🔴 Relatório Completo' },
-      description: { en: 'Analyze 10 claims:\n• total, average, min, max, median\n• Count Critical/Urgent/Normal\n• Top 3 highest\n• Total payout ($250 deductible)', pt: 'Analise 10 sinistros:\n• total, média, mín, máx, mediana\n• Contagem Crítico/Urgente/Normal\n• Top 3 maiores\n• Total payout (R$250 franquia)' },
+      description: {
+        en: 'Goal:\nRun a completed data report for the provided sales values and interpret every statistic.\n\nProgram requirements\n\n1. Calculate summary values\n- Find the total, average, minimum, maximum and median.\n\n2. Calculate business measures\n- Find the net total after a 250-dollar deduction from every sale.\n- Count critical, urgent and normal sales using the provided ranges.\n- Identify the three largest values.\n\n3. Display\n- Show the complete formatted report with all statistics.\n\nExample result:\n=== REPORT ===\nTotal: $42,400',
+        pt: 'Objetivo:\nExecute um relatório de dados completo para os valores de vendas fornecidos e interprete cada estatística.\n\nRequisitos do programa\n\n1. Calcular os valores-resumo\n- Encontre total, média, mínimo, máximo e mediana.\n\n2. Calcular medidas do negócio\n- Encontre o total líquido após uma dedução de 250 reais em cada venda.\n- Conte vendas críticas, urgentes e normais usando as faixas fornecidas.\n- Identifique os três maiores valores.\n\n3. Mostrar\n- Mostre o relatório formatado completo com todas as estatísticas.\n\nExemplo de resultado:\n=== RELATÓRIO ===\nTotal: $42.400'
+      },
       starterCode: `claims = [5230,1200,8000,450,3100,9200,620,4500,7800,2300]
 
 total    = sum(claims)
@@ -3210,7 +3246,10 @@ def analyze(db):
     {
       id: 'ex27_recog',
       title: { en: '🟡 Complete the System Functions', pt: '🟡 Complete as Funções do Sistema' },
-      description: { en: 'create_claim() is done. Complete update_status() and delete_claim().', pt: 'create_claim() está pronta. Complete update_status() e delete_claim().' },
+      description: {
+        en: 'Goal:\nComplete three blanks so the claims system updates and deletes records by the correct fields.\n\nProgram requirements\n\n1. Complete update_status\n- The first blank identifies the field used to find a claim by its id.\n- The second blank identifies the field that receives the new status.\n\n2. Complete delete_claim\n- The third blank identifies the field used to remove the matching claim.\n\n3. Verify\n- The final database must contain only Alice with id 1, damage 5,230 and status approved.\n\nExample result:\n{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}',
+        pt: 'Objetivo:\nComplete três lacunas para que o sistema de sinistros atualize e exclua registros pelos campos corretos.\n\nRequisitos do programa\n\n1. Completar update_status\n- A primeira lacuna identifica o campo usado para localizar um sinistro pelo id.\n- A segunda lacuna identifica o campo que recebe o novo status.\n\n2. Completar delete_claim\n- A terceira lacuna identifica o campo usado para remover o sinistro correspondente.\n\n3. Conferir\n- O banco final deve conter somente Alice, com id 1, dano 5.230 e status approved.\n\nExemplo de resultado:\n{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}'
+      },
       starterCode: `from datetime import datetime
 
 def create_claim(db, client, damage):
@@ -3241,7 +3280,10 @@ for c in db: print(c)`,
     {
       id: 'ex27_zero',
       title: { en: '🔴 Build the Full System', pt: '🔴 Construa o Sistema Completo' },
-      description: { en: 'Build complete claims system:\n• CRUD + priority + error handling + analysis\n• 5 claims demo\n• Update 2, delete 1\n• Print final state + stats', pt: 'Construa sistema completo:\n• CRUD + prioridade + erros + análise\n• Demo com 5 sinistros\n• Atualizar 2, deletar 1\n• Imprimir estado final + estatísticas' },
+      description: {
+        en: 'Goal:\nRun a completed claims system that validates, creates, updates, deletes and summarizes records.\n\nProgram requirements\n\n1. Create claims\n- Create the five provided claims.\n- Reject the claim whose damage is not positive.\n- For valid claims, calculate payout, assign priority and record the current date.\n\n2. Update and delete\n- Approve the claims for Alice and Carlos.\n- Remove the claim for Diana.\n\n3. Display and analyze\n- Show the remaining claims.\n- Show the number of claims, total damage and total payout.\n\nExample result:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved',
+        pt: 'Objetivo:\nExecute um sistema de sinistros completo que valide, crie, atualize, exclua e resuma registros.\n\nRequisitos do programa\n\n1. Criar sinistros\n- Crie os cinco sinistros fornecidos.\n- Rejeite o sinistro cujo dano não seja positivo.\n- Para sinistros válidos, calcule o pagamento, atribua a prioridade e registre a data atual.\n\n2. Atualizar e excluir\n- Aprove os sinistros de Alice e Carlos.\n- Remova o sinistro de Diana.\n\n3. Mostrar e analisar\n- Mostre os sinistros restantes.\n- Mostre a quantidade de sinistros, o dano total e o pagamento total.\n\nExemplo de resultado:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved'
+      },
       starterCode: `from datetime import datetime
 
 def create_claim(db, client, damage, ded=250):
