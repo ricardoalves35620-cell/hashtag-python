@@ -20,6 +20,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
+    # The app refuses to boot without a valid Supabase URL and a key of at least 20
+    # characters (src/lib/config.ts) — it renders ConfigurationScreen instead. Without
+    # these the production build still succeeds and every browser test then fails
+    # against a configuration screen, which reads as a broken app rather than a
+    # missing variable.
+    #
+    # The anon key is publishable by design, so repository *variables* are the right
+    # home for it, not secrets. The fallbacks keep forked PRs runnable: they satisfy
+    # the shape check so the app boots, and the tests that genuinely need a backend
+    # skip themselves when AUDIT_USER_* is absent.
+    env:
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY || 'ci-placeholder-anon-key-not-a-real-credential' }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
@@ -47,9 +61,45 @@ jobs:
           HP_AUDIT_CONTENT_OUTPUT: playwright-report/content-audit.json
         run: npm run audit:content
 
-
       - name: Learning Engine curriculum audit
         run: npm run audit:curriculum
+
+      # This gate exists in the quality:gate npm script but was never invoked by
+      # this workflow, so curriculum regressions reached main unchallenged.
+      #
+      # NON-BLOCKING ON PURPOSE, and this is temporary. As of 2026-07-28 the gate
+      # reports 256 issues against the 2026-07-15 baseline — most of them
+      # exact-check-regression, including Phases 1-8 dropping from 2 exact output
+      # checks to 0. Making it blocking today would turn every PR red; silently
+      # re-baselining would erase the evidence that the checks disappeared.
+      #
+      # Triage first, then delete continue-on-error. Do NOT re-baseline just to
+      # get a green tick.
+      - name: v11 regression gate (reporting only — see comment)
+        continue-on-error: true
+        run: npm run audit:v11:gate
+
+      # Guards the first-paint payload. Route splitting was silently lost once
+      # already, taking first paint from ~500 kB to 2.6 MB with nothing failing.
+      - name: First-paint budget
+        run: npm run audit:budget
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # The ONLY job in this repository that runs with service workers enabled.
+      # playwright.config.ts defaults to `block` and nightly-deep-audit.yml sets
+      # it explicitly, which is why every service-worker defect shipped unnoticed.
+      - name: Store-readiness smoke (service workers ENABLED)
+        env:
+          HP_AUDIT_SERVICE_WORKERS: allow
+          HP_AUDIT_DEPTH: smoke
+          HP_AUDIT_RETRIES: '0'
+          # Absent on forks and on repositories that have not set them. The suite
+          # skips the signed-in tests cleanly rather than failing.
+          AUDIT_USER_EMAIL: ${{ secrets.AUDIT_USER_EMAIL }}
+          AUDIT_USER_PASSWORD: ${{ secrets.AUDIT_USER_PASSWORD }}
+        run: npx playwright test tests/audit/store-readiness.smoke.spec.ts --project=desktop-chromium
 
       - name: Dependency audit
         run: npm audit --audit-level=high
@@ -61,6 +111,9 @@ jobs:
           name: quality-evidence-${{ github.run_number }}
           path: |
             playwright-report/content-audit.json
+            playwright-report/results.json
+            playwright-report/v11-quality-gate.json
+            audit/bundle-budget.json
             curriculum-audit-report
           if-no-files-found: warn
           retention-days: 14
