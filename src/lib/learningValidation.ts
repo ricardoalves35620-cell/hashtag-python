@@ -3,6 +3,7 @@ import { meetsCodeRequirement, normalizeAssessmentText, runCode, runExam, type P
 import { findPythonPlaceholders } from './placeholders'
 import { personalize } from './learnerProfile'
 import { describeRequirement } from './requirementLanguage'
+import { describeFailure, gradeBehaviour, type BehaviourReport } from './behaviourGrading'
 
 export interface ValidationItem {
   id: string
@@ -294,6 +295,44 @@ export async function gradeExercise(
         : (lang === 'en' ? 'Add a print() so you can see what the code is doing.' : 'Adicione um print() para ver o que o código está fazendo.')),
       concept: lang === 'en' ? 'Output and result' : 'Saída e resultado',
     })
+  }
+
+  // ── behavioural grading, PILOT ────────────────────────────────────────────
+  //
+  // Runs alongside the existing checks and does NOT decide whether the learner passes.
+  // The point of the pilot is the disagreement log: every case where the two graders
+  // differ is either a bad reference or a bad authored expectation, and both are worth
+  // knowing before this replaces anything.
+  //
+  // Reported as an ordinary ValidationItem so the feedback panel, the skill model and
+  // the attempt recorder need no changes. `hidden` keeps it out of the pass ratio.
+  if (exercise.behaviour && !run.error) {
+    let report: BehaviourReport | null = null
+    try {
+      report = await gradeBehaviour(exercise.behaviour, code)
+    } catch {
+      // A broken pilot must never block a learner. Silence here is deliberate.
+      report = null
+    }
+
+    if (report && !report.runtimeUnavailable && report.results.length > 0) {
+      const failed = report.results.filter(item => !item.passed)
+      checks.push({
+        id: 'behaviour-pilot',
+        label: lang === 'en'
+          ? 'Works on every case, not only the example'
+          : 'Funciona em todos os casos, não só no exemplo',
+        passed: report.passed,
+        hidden: true,
+        why: failed.length ? describeFailure(failed[0], lang) : undefined,
+        fix: failed.length
+          ? (lang === 'en'
+            ? 'Check the boundary values, not just the example in the task.'
+            : 'Confira os valores de limite, não apenas o exemplo do enunciado.')
+          : undefined,
+        concept: lang === 'en' ? 'Correctness across inputs' : 'Correção em vários casos',
+      })
+    }
   }
 
   const requirements = exercise.grading?.codeRequirements || PHASE_REQUIREMENTS[phaseId] || []

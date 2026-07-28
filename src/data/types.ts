@@ -57,6 +57,29 @@ export interface Exercise {
   commonMistakes?: { en: string[]; pt: string[] }
   workplaceContext?: Bilingual
   suggestedInputs?: string[]
+  /** Pilot: graded by running a reference over several inputs. See behaviourGrading.ts. */
+  behaviour?: BehaviourSpec
+}
+
+/**
+ * Grading by behaviour rather than by matching one authored string.
+ *
+ * `reference` is a correct solution. It is never shown to the learner — it is executed,
+ * and what it prints becomes the expected value for that case. Nothing here is an
+ * expectation an author typed, so nothing here can be a typo the learner is failed for.
+ */
+export interface BehaviourCase {
+  /** Values fed to input(), in order. */
+  inputs?: string[]
+  label: Bilingual
+  /** Visible cases may be shown in the contract and named in feedback. The rest stay hidden. */
+  visible?: boolean
+}
+
+export interface BehaviourSpec {
+  reference: string
+  cases: BehaviourCase[]
+  timeoutMs?: number
 }
 
 export interface ExerciseGrading {

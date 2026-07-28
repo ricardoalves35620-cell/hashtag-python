@@ -1472,6 +1472,36 @@ ___:                        # fill: catches everyone else
     fee = base * 1.5
 
 print("Fee:", fee)`,
+      // PILOT — behavioural grading. Phase 6 was chosen because it is boundary-heavy,
+      // which is exactly where comparing one authored string is weakest: `<` and `<=`
+      // produce identical output on every value except the boundary itself.
+      //
+      // The reference is executed, not read. Its printed output IS the expected value,
+      // so there is no authored expectation left to be wrong.
+      behaviour: {
+        reference: `age = int(input("Age: "))
+base = 1000
+
+if age < 21:
+    fee = base * 2.2
+elif age < 26:
+    fee = base * 1.6
+elif age < 60:
+    fee = base * 1.0
+else:
+    fee = base * 1.5
+
+print("Fee:", fee)`,
+        cases: [
+          { inputs: ['25'], label: { en: 'the example in the task', pt: 'o exemplo do enunciado' }, visible: true },
+          { inputs: ['20'], label: { en: 'inside the youngest bracket', pt: 'dentro da faixa mais jovem' } },
+          { inputs: ['21'], label: { en: 'exactly 21 — the first boundary', pt: 'exatamente 21 — o primeiro limite' } },
+          { inputs: ['26'], label: { en: 'exactly 26 — the second boundary', pt: 'exatamente 26 — o segundo limite' } },
+          { inputs: ['59'], label: { en: 'just under 60', pt: 'logo abaixo de 60' } },
+          { inputs: ['60'], label: { en: 'exactly 60 — the last boundary', pt: 'exatamente 60 — o último limite' } },
+          { inputs: ['70'], label: { en: 'above every bracket', pt: 'acima de todas as faixas' } },
+        ],
+      },
       hints: [
         { en: 'Youngest: age < 21', pt: 'Mais jovem: age < 21' },
         { en: 'The catch-all is else:', pt: 'O captura-tudo é else:' }
