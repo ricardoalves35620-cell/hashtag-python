@@ -146,8 +146,8 @@ print(random.randint(1, 100))    # and again, identical` },
       id: 'ex21_fill',
       title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
       description: {
-        en: 'Goal:\nComplete two blanks in a program that makes random selections.\n\nProgram requirements\n\n1. Choose a client\n- Blank 1 is the random-module function that selects one item from the client list.\n\n2. Generate a value\n- Blank 2 is the random-module function that creates a whole number from 500 through 10,000, including both limits.\n\n3. Display\n- Show the selected client and the simulated repair value.\n\nExample output; random values may differ:\nAudit: Carlos\nSimulated repair value: $ 4782',
-        pt: 'Objetivo:\nComplete duas lacunas em um programa que faz escolhas aleatórias.\n\nRequisitos do programa\n\n1. Escolher um cliente\n- A lacuna 1 é a função do módulo random que seleciona um item da lista de clientes.\n\n2. Gerar um valor\n- A lacuna 2 é a função do módulo random que cria um número inteiro de 500 até 10.000, incluindo os dois limites.\n\n3. Mostrar\n- Mostre o cliente selecionado e o valor simulado do reparo.\n\nExemplo de saída; os valores aleatórios podem ser diferentes:\nAudit: Carlos\nSimulated repair value: $ 4782'
+        en: 'Goal:\nThis exercise teaches how to use random.choice() to pick one item from a list and random.randint() to generate a random integer in a range.\n\nThe starter code has 2 blanks for you to fill.\n\nBlank 1 — use the name of the function from the random module that picks one item from a list\nBlank 2 — use the name of the function from the random module that generates a random integer between two bounds, inclusive\n\nThe program picks a random client name from a list and generates a random repair value between 500 and 10000.\n\nExample output (values vary because the selection is random):\nAudit: Carlos\nSimulated repair value: $ 4782',
+        pt: 'Objetivo:\nEste exercício ensina como usar random.choice() para escolher um item de uma lista e random.randint() para gerar um inteiro aleatório dentro de um intervalo.\n\nO código inicial tem 2 lacunas para você preencher.\n\nLacuna 1 — use o nome da função do módulo random que escolhe um item de uma lista\nLacuna 2 — use o nome da função do módulo random que gera um inteiro aleatório entre dois limites, incluindo ambos\n\nO programa escolhe um nome de cliente aleatório de uma lista e gera um valor de reparo aleatório entre 500 e 10000.\n\nExemplo de saída (os valores variam porque a seleção é aleatória):\nAudit: Carlos\nSimulated repair value: $ 4782'
       },
       starterCode: `import random
 
@@ -168,8 +168,8 @@ print("Simulated repair value: $", repair_value)`,
       id: 'ex21_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
       description: {
-        en: 'Goal:\nRun a seeded quote simulation and explain how reproducible random values are processed.\n\nProgram requirements\n\n1. Read and predict\n- The program simulates five repair quotes using the fixed seed 42.\n- Each quote receives a random repair value from 500 through 12,000.\n\n2. Process\n- Apply the fixed 250-dollar credit to each repair value.\n- Classify values above 5,000 as HIGH and count how many meet that rule.\n\n3. Run and verify\n- Run the completed starter code and compare its quote sequence and high-risk count with the expected result.\n\nExample result:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2',
-        pt: 'Objetivo:\nExecute uma simulação de orçamentos com semente fixa e explique como valores aleatórios reproduzíveis são processados.\n\nRequisitos do programa\n\n1. Ler e prever\n- O programa simula cinco orçamentos usando a semente fixa 42.\n- Cada orçamento recebe um valor aleatório de reparo entre 500 e 12.000.\n\n2. Processar\n- Aplique o crédito fixo de 250 reais a cada valor de reparo.\n- Classifique valores acima de 5.000 como HIGH e conte quantos atendem à regra.\n\n3. Executar e conferir\n- Execute o código completo e compare a sequência de orçamentos e a contagem de alto risco com o resultado esperado.\n\nExemplo de resultado:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2'
+        en: 'Goal:\nBuild a repair-quote simulation that runs 5 rounds. Use a fixed seed of 42 so every run produces the same results.\n\nProgram requirements\n\n1. Simulate\n- For each round, generate a random repair value between 500 and 12000\n- Apply a 250 credit to get the quote amount\n- Classify the repair as "HIGH" when the value exceeds 5000, otherwise "normal"\n- Count how many repairs are classified as high risk\n\n2. Display\n- For each round, show the quote number, the repair value, the quote amount after credit and the risk level\n- At the end, show how many repairs were high risk\n\nExample output:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2',
+        pt: 'Objetivo:\nConstrua uma simulação de orçamentos de reparo que executa 5 rodadas. Use uma seed fixa de 42 para que toda execução produza os mesmos resultados.\n\nRequisitos do programa\n\n1. Simular\n- Para cada rodada, gere um valor de reparo aleatório entre 500 e 12000\n- Aplique um crédito de 250 para obter o valor do orçamento\n- Classifique o reparo como "HIGH" quando o valor ultrapassa 5000, senão "normal"\n- Conte quantos reparos são classificados como alto risco\n\n2. Mostrar\n- Para cada rodada, exiba o número do orçamento, o valor do reparo, o valor do orçamento após o crédito e o nível de risco\n- Ao final, exiba quantos reparos foram de alto risco\n\nExemplo de saída:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2'
       },
       starterCode: `import random
 random.seed(42)
@@ -360,8 +360,8 @@ print(f"Price: {price}")` },
       id: 'ex22_fill',
       title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
       description: {
-        en: 'Goal:\nComplete two blanks in a geometry program that calculates a circle area and then its square root.\n\nProgram requirements\n\n1. Calculate the area\n- Blank 1 is the constant from the math module that represents pi.\n- Use the fixed radius of 5.\n\n2. Calculate the square root\n- Blank 2 is the math-module function that returns the square root of the area.\n\n3. Display\n- Show both values rounded to two decimal places.\n\nExample result:\nArea: 78.54\nSide: 8.86',
-        pt: 'Objetivo:\nComplete duas lacunas em um programa de geometria que calcula a área de um círculo e depois sua raiz quadrada.\n\nRequisitos do programa\n\n1. Calcular a área\n- A lacuna 1 é a constante do módulo math que representa pi.\n- Use o raio fixo de 5.\n\n2. Calcular a raiz quadrada\n- A lacuna 2 é a função do módulo math que retorna a raiz quadrada da área.\n\n3. Mostrar\n- Mostre os dois valores com duas casas decimais.\n\nExemplo de resultado:\nArea: 78.54\nSide: 8.86'
+        en: 'Goal:\nThis exercise teaches how to use math.pi (the mathematical constant pi) and math.sqrt() (square root function) from the math library.\n\nThe starter code has 2 blanks for you to fill.\n\nBlank 1 — use the name of the pi constant from the math module to compute the area of a circle with radius 5\nBlank 2 — use the name of the function from the math module that computes the square root of the area\n\nThe program calculates the area of a circle and then finds the side length of a square with the same area. Both results are shown with two decimal places.\n\nExample output:\nArea: 78.54\nSide: 8.86',
+        pt: 'Objetivo:\nEste exercício ensina como usar math.pi (a constante matemática pi) e math.sqrt() (função de raiz quadrada) da biblioteca math.\n\nO código inicial tem 2 lacunas para você preencher.\n\nLacuna 1 — use o nome da constante pi do módulo math para calcular a área de um círculo com raio 5\nLacuna 2 — use o nome da função do módulo math que calcula a raiz quadrada da área\n\nO programa calcula a área de um círculo e depois encontra o lado de um quadrado com a mesma área. Ambos os resultados são exibidos com duas casas decimais.\n\nExemplo de saída:\nArea: 78.54\nSide: 8.86'
       },
       starterCode: `import math
 
@@ -380,8 +380,8 @@ print(f"Side: {side:.2f}")`,
       id: 'ex22_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
       description: {
-        en: 'Goal:\nRun a completed compound-interest calculator and connect each math operation to the final investment value.\n\nProgram requirements\n\n1. Use the provided values\n- Start with 10,000 dollars, an annual rate of 8% and a period of 5 years.\n\n2. Calculate\n- Apply compound growth for the full period.\n- Round the result upward to the next whole dollar.\n\n3. Run and observe\n- Display the precise amount with two decimal places and the rounded-up amount.\n\nExample result:\nAfter 5 years: $14693.28\nRounded up: $14694',
-        pt: 'Objetivo:\nExecute uma calculadora de juros compostos completa e relacione cada operação matemática ao valor final do investimento.\n\nRequisitos do programa\n\n1. Usar os valores fornecidos\n- Comece com 10.000 reais, taxa anual de 8% e período de 5 anos.\n\n2. Calcular\n- Aplique o crescimento composto durante todo o período.\n- Arredonde o resultado para cima até o próximo valor inteiro.\n\n3. Executar e observar\n- Mostre o valor exato com duas casas decimais e o valor arredondado para cima.\n\nExemplo de resultado:\nAfter 5 years: $14693.28\nRounded up: $14694'
+        en: 'Goal:\nBuild a compound interest calculator that shows the final amount after a number of years and also rounds it up to the next whole dollar.\n\nProgram requirements\n\n1. Calculate\n- Start with a principal of 10000\n- Apply an annual rate of 8% for 5 years using the compound interest formula\n- Round the result up to the next whole dollar\n\n2. Display\n- The exact amount with two decimal places\n- The rounded-up value\n\nExample output:\nAfter 5 years: $14693.28\nRounded up: $14694',
+        pt: 'Objetivo:\nConstrua uma calculadora de juros compostos que mostra o valor final após alguns anos e também arredonda para o próximo dólar inteiro.\n\nRequisitos do programa\n\n1. Calcular\n- Comece com um principal de 10000\n- Aplique uma taxa anual de 8% durante 5 anos usando a fórmula de juros compostos\n- Arredonde o resultado para cima para o próximo dólar inteiro\n\n2. Mostrar\n- O valor exato com duas casas decimais\n- O valor arredondado para cima\n\nExemplo de saída:\nAfter 5 years: $14693.28\nRounded up: $14694'
       },
       starterCode: `import math
 
@@ -582,8 +582,8 @@ except ValueError as error:
       id: 'ex23_recog',
       title: { en: '🟡 Recognize the Problem', pt: '🟡 Reconheça o Problema' },
       description: {
-        en: 'Goal:\nRun three completed error-handling examples and identify the exception caught in each case.\n\nProgram requirements\n\n1. Predict\n- Determine which conversion causes a ValueError.\n- Determine which calculation causes a ZeroDivisionError.\n- Determine which dictionary lookup causes a KeyError.\n\n2. Run and verify\n- Execute the code and confirm that all three errors are caught without stopping the program.\n\n3. Explore\n- Change the invalid text conversion to a valid number and observe how the first block behaves.\n\nExample result:\nValueError caught\nZeroDivisionError caught\nKeyError caught',
-        pt: 'Objetivo:\nExecute três exemplos completos de tratamento de erros e identifique a exceção capturada em cada caso.\n\nRequisitos do programa\n\n1. Prever\n- Determine qual conversão causa ValueError.\n- Determine qual cálculo causa ZeroDivisionError.\n- Determine qual acesso ao dicionário causa KeyError.\n\n2. Executar e conferir\n- Execute o código e confirme que os três erros são capturados sem interromper o programa.\n\n3. Explorar\n- Troque o texto inválido da primeira conversão por um número válido e observe o comportamento do primeiro bloco.\n\nExemplo de resultado:\nValueError caught\nZeroDivisionError caught\nKeyError caught'
+        en: 'Goal:\nObserve three separate try/except blocks, each designed to catch a different type of error.\n\nProgram requirements\n\n1. What to observe\n- The first block catches the error raised when trying to convert non-numeric text to an integer\n- The second block catches the error raised when dividing by zero\n- The third block catches the error raised when accessing a dictionary key that does not exist\n\nRun the code as-is and notice which exception name is used in each except clause.\n\nExample output:\nValueError caught\nZeroDivisionError caught\nKeyError caught',
+        pt: 'Objetivo:\nObserve três blocos try/except separados, cada um projetado para capturar um tipo diferente de erro.\n\nRequisitos do programa\n\n1. O que observar\n- O primeiro bloco captura o erro levantado ao tentar converter texto não numérico em inteiro\n- O segundo bloco captura o erro levantado ao dividir por zero\n- O terceiro bloco captura o erro levantado ao acessar uma chave de dicionário que não existe\n\nExecute o código como está e observe qual nome de exceção é usado em cada cláusula except.\n\nExemplo de saída:\nValueError caught\nZeroDivisionError caught\nKeyError caught'
       },
       starterCode: `# Wrap each in try/except with the correct exception:
 
@@ -609,8 +609,8 @@ except KeyError:
       id: 'ex23_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
       description: {
-        en: 'Goal:\nRun a completed input loop that keeps asking until it receives a valid positive order amount.\n\nProgram requirements\n\n1. Test invalid input\n- Enter text that cannot become a whole number and confirm that the program reports the error and asks again.\n- Enter zero or a negative number and confirm that it is also rejected.\n\n2. Test valid input\n- Enter a positive whole-number amount.\n- Confirm that the loop stops only after valid input is accepted.\n\n3. Display\n- Show the confirmed total after the fixed 250-dollar deduction.\n\nExample result:\nInvalid: ... — try again\nConfirmed total: $ 4750',
-        pt: 'Objetivo:\nExecute um laço de entrada completo que continue perguntando até receber um valor positivo válido.\n\nRequisitos do programa\n\n1. Testar entrada inválida\n- Digite um texto que não possa ser convertido em número inteiro e confirme que o programa informa o erro e pergunta novamente.\n- Digite zero ou um número negativo e confirme que também é rejeitado.\n\n2. Testar entrada válida\n- Digite um valor inteiro positivo.\n- Confirme que o laço termina somente depois que uma entrada válida é aceita.\n\n3. Mostrar\n- Mostre o total confirmado após a dedução fixa de 250 reais.\n\nExemplo de resultado:\nInválido: ... — tente novamente\nTotal confirmado: $ 4750'
+        en: 'Goal:\nBuild a program that repeatedly asks for an order amount until the user enters a valid positive integer. The program must handle all types of invalid input gracefully.\n\nProgram requirements\n\n1. Gather input\n- Ask for the order amount in dollars\n\n2. Validate\n- Convert the input to an integer\n- Reject the value if it is not a positive number — this should not crash the program\n- On any invalid input, show an error message and ask again\n\n3. Display\n- Once a valid amount is received, subtract a 250 credit and show the confirmed total\n\nExample output:\nInvalid: ... — try again\nConfirmed total: $ 4750',
+        pt: 'Objetivo:\nConstrua um programa que pergunta repetidamente o valor do pedido até o usuário digitar um inteiro positivo válido. O programa deve tratar todos os tipos de entrada inválida com elegância.\n\nRequisitos do programa\n\n1. Receber os dados\n- Pergunte o valor do pedido em dólares\n\n2. Validar\n- Converta a entrada para inteiro\n- Rejeite o valor se não for um número positivo — isso não deve travar o programa\n- Em caso de entrada inválida, exiba uma mensagem de erro e pergunte novamente\n\n3. Mostrar\n- Quando um valor válido for recebido, subtraia um crédito de 250 e exiba o total confirmado\n\nExemplo de saída:\nInvalid: ... — try again\nConfirmed total: $ 4750'
       },
       starterCode: `amount = None
 
@@ -813,8 +813,8 @@ for line in history:
       id: 'ex24_recog',
       title: { en: '🟡 Identify the Gap', pt: '🟡 Identifique a Lacuna' },
       description: {
-        en: 'Goal:\nComplete the missing validation in a four-operation calculator.\n\nProgram requirements\n\n1. Handle supported operations\n- Keep addition, subtraction, multiplication and division working as provided.\n\n2. Add validation\n- Reject division when the right-hand value is zero.\n- Reject any operator outside the four supported operations.\n- Use ValueError so the existing error handlers can report both failures.\n\n3. Verify\n- Run the two provided invalid cases and confirm that each produces the required error message.\n\nExample result:\nError: Cannot divide by zero\nError: Unknown: %',
-        pt: 'Objetivo:\nComplete a validação ausente em uma calculadora com quatro operações.\n\nRequisitos do programa\n\n1. Tratar operações aceitas\n- Mantenha adição, subtração, multiplicação e divisão funcionando como já fornecido.\n\n2. Adicionar validação\n- Rejeite a divisão quando o valor da direita for zero.\n- Rejeite qualquer operador fora das quatro operações aceitas.\n- Use ValueError para que os tratadores existentes informem as duas falhas.\n\n3. Conferir\n- Execute os dois casos inválidos fornecidos e confirme que cada um produz a mensagem de erro exigida.\n\nExemplo de resultado:\nError: Cannot divide by zero\nError: Unknown: %'
+        en: 'Goal:\nThe calculator function handles addition, subtraction, multiplication and division but is missing two important validations. Read the code first, then add the missing checks.\n\nProgram requirements\n\n1. What to add\n- Inside the division branch, check for division by zero and raise ValueError with the message "Cannot divide by zero"\n- After all the operator branches, add a default branch that raises ValueError for any unknown operator\n\nThe test code already has try/except blocks that will catch the ValueError and display the error message.\n\nExample output:\nError: Cannot divide by zero\nError: Unknown: %',
+        pt: 'Objetivo:\nA função calculadora trata adição, subtração, multiplicação e divisão, mas falta duas validações importantes. Leia o código primeiro e depois adicione as verificações que faltam.\n\nRequisitos do programa\n\n1. O que adicionar\n- Dentro do ramo de divisão, verifique se há divisão por zero e gere ValueError com a mensagem "Cannot divide by zero"\n- Após todos os ramos de operador, adicione um ramo padrão que gere ValueError para qualquer operador desconhecido\n\nO código de teste já tem blocos try/except que capturarão o ValueError e exibirão a mensagem de erro.\n\nExemplo de saída:\nError: Cannot divide by zero\nError: Unknown: %'
       },
       starterCode: `def calculate(x, op, y):
     if op == "+": return x + y
@@ -844,8 +844,8 @@ except ValueError as e:
       id: 'ex24_zero',
       title: { en: '🔴 Build the Full Calculator', pt: '🔴 Construa a Calculadora Completa' },
       description: {
-        en: 'Goal:\nRun a completed calculator that records only successful calculations in its history.\n\nProgram requirements\n\n1. Process the tests\n- Run addition for 10 and 5, division for 20 and 4, and an invalid division of 8 by zero.\n- Handle each calculation independently so one failure does not stop later reporting.\n\n2. Build the history\n- Store only successful calculation entries.\n- Do not add the failed division to the history.\n\n3. Display\n- Show each result or error as it occurs, followed by the successful history entries.\n\nExample result:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0',
-        pt: 'Objetivo:\nExecute uma calculadora completa que registre no histórico somente os cálculos bem-sucedidos.\n\nRequisitos do programa\n\n1. Processar os testes\n- Execute a adição de 10 e 5, a divisão de 20 por 4 e uma divisão inválida de 8 por zero.\n- Trate cada cálculo separadamente para que uma falha não interrompa o relatório.\n\n2. Montar o histórico\n- Guarde somente os cálculos bem-sucedidos.\n- Não inclua a divisão inválida no histórico.\n\n3. Mostrar\n- Mostre cada resultado ou erro no momento em que ocorrer e, depois, as entradas válidas do histórico.\n\nExemplo de resultado:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15.0'
+        en: 'Goal:\nBuild a calculator that performs arithmetic on pairs of numbers and keeps a history of successful operations.\n\nProgram requirements\n\n1. Calculate\n- Perform the requested operation on the two operands\n- Support addition, subtraction, multiplication and division\n- Reject division by zero by raising ValueError\n- Reject unknown operators by raising ValueError\n\n2. Process test cases\n- Run each of the three test cases inside a try/except block\n- On success, record the operation in the history list and display the result\n- On error, display the error message\n\n3. Display history\n- After all test cases, show the label "History:" followed by every successful operation\n\nExample output:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0',
+        pt: 'Objetivo:\nConstrua uma calculadora que realiza operações aritméticas em pares de números e mantém um histórico das operações bem-sucedidas.\n\nRequisitos do programa\n\n1. Calcular\n- Execute a operação solicitada nos dois operandos\n- Suporte adição, subtração, multiplicação e divisão\n- Rejeite divisão por zero gerando ValueError\n- Rejeite operadores desconhecidos gerando ValueError\n\n2. Processar casos de teste\n- Execute cada um dos três casos de teste dentro de um bloco try/except\n- Em caso de sucesso, registre a operação na lista de histórico e exiba o resultado\n- Em caso de erro, exiba a mensagem de erro\n\n3. Mostrar histórico\n- Após todos os casos de teste, exiba o rótulo "History:" seguido de cada operação bem-sucedida\n\nExemplo de saída:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0'
       },
       starterCode: `def calculate(x, op, y):
     """Perform arithmetic. Raises ValueError on invalid input."""
@@ -1077,8 +1077,8 @@ print(delete(db, 99), "rows removed")` },
       id: 'ex25_recog',
       title: { en: '🟡 Complete the CRUD', pt: '🟡 Complete o CRUD' },
       description: {
-        en: 'Goal:\nComplete two blanks in a CRUD demonstration so update and delete affect the correct fields.\n\nProgram requirements\n\n1. Complete update\n- The blank in update identifies the record field whose value changes to the new page count.\n\n2. Complete delete\n- The blank in delete identifies the field compared with the requested record id.\n\n3. Verify\n- After the demo runs, Alice must remain with a page value of 7,000 and Bob must be removed.\n\nExample result:\n1 Alice $7000',
-        pt: 'Objetivo:\nComplete duas lacunas em uma demonstração CRUD para que atualização e exclusão usem os campos corretos.\n\nRequisitos do programa\n\n1. Completar a atualização\n- A lacuna de update identifica o campo do registro que receberá a nova quantidade de páginas.\n\n2. Completar a exclusão\n- A lacuna de delete identifica o campo comparado com o id solicitado.\n\n3. Conferir\n- Depois da execução, Alice deve permanecer com 7.000 páginas e Bob deve ser removido.\n\nExemplo de resultado:\n1 Alice $7000'
+        en: 'Goal:\nThe starter code implements a CRUD system for client records with four functions. create() and read_all() are already complete. update() has one blank for the dictionary key whose value is being changed. delete() has one blank for the dictionary key used to compare and filter out a record.\n\nFill in each blank, then run the code. Alice’s record should show 7000 pages, and Bob’s record should be removed.\n\nExample:\n1 Alice $7000',
+        pt: 'Objetivo:\nO código inicial implementa um sistema CRUD para registros de clientes com quatro funções. create() e read_all() já estão completas. update() tem uma lacuna para a chave do dicionário cujo valor está sendo alterado. delete() tem uma lacuna para a chave do dicionário usada para comparar e filtrar um registro.\n\nPreencha cada lacuna e execute o código. O registro de Alice deve mostrar 7000 páginas, e o registro de Bob deve ser removido.\n\nExemplo:\n1 Alice $7000'
       },
       starterCode: `def create(db, client, pages):
     db.append({"id": len(db)+1, "client": client, "pages": pages})
@@ -1112,8 +1112,8 @@ read_all(db)`,
       id: 'ex25_zero',
       title: { en: '🔴 Full CRUD Demo', pt: '🔴 Demo CRUD Completo' },
       description: {
-        en: 'Goal:\nRun a completed CRUD demonstration that creates, reads, updates and deletes records.\n\nProgram requirements\n\n1. Create and read\n- Create the four provided records and display the initial database.\n\n2. Update and delete\n- Change Bob\'s page value from 1,200 to 9,000.\n- Remove the record for Diana.\n\n3. Display the final state\n- Show the three remaining records in their original order with the updated value.\n\nExample result:\nInitial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000',
-        pt: 'Objetivo:\nExecute uma demonstração CRUD completa que crie, leia, atualize e exclua registros.\n\nRequisitos do programa\n\n1. Criar e ler\n- Crie os quatro registros fornecidos e mostre o banco de dados inicial.\n\n2. Atualizar e excluir\n- Altere a quantidade de páginas de Bob de 1.200 para 9.000.\n- Remova o registro de Diana.\n\n3. Mostrar o estado final\n- Mostre os três registros restantes na ordem original, incluindo o valor atualizado.\n\nExemplo de resultado:\nInicial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000'
+        en: 'Goal:\nRun the provided CRUD demo as-is. The program creates four client records, displays them all, updates one record’s pages value, deletes another record, and displays the remaining records.\n\nProgram requirements\n\n1. Create records for Alice (5230 pages), Bob (1200), Carlos (8000) and Diana (900)\n2. Display all four records\n3. Update Bob’s pages to 9000\n4. Remove Diana’s record\n5. Display the three remaining records\n\nExample:\nInitial:\n#1 Alice $5230\n#2 Bob $1200\n#3 Carlos $8000\n#4 Diana $900\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000',
+        pt: 'Objetivo:\nExecute o demo CRUD fornecido como está. O programa cria quatro registros de clientes, exibe todos, atualiza o valor de páginas de um registro, exclui outro e exibe os registros restantes.\n\nRequisitos do programa\n\n1. Crie registros para Alice (5230 páginas), Bob (1200), Carlos (8000) e Diana (900)\n2. Exiba todos os quatro registros\n3. Atualize as páginas de Bob para 9000\n4. Remova o registro de Diana\n5. Exiba os três registros restantes\n\nExemplo:\nInitial:\n#1 Alice $5230\n#2 Bob $1200\n#3 Carlos $8000\n#4 Diana $900\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000'
       },
       starterCode: `def create(db, client, pages):
     db.append({"id": len(db)+1, "client": client, "pages": pages})
@@ -1346,8 +1346,8 @@ for category, value in totals.items():
       id: 'ex26_recog',
       title: { en: '🟡 Add Missing Statistics', pt: '🟡 Adicione Estatísticas Faltantes' },
       description: {
-        en: 'Goal:\nComplete two blanks in a sales analysis so it reports the median and the number of critical days.\n\nProgram requirements\n\n1. Calculate the median\n- Use the middle position of the sorted eight-value sales list for the missing index.\n\n2. Count critical days\n- Complete the comparison that counts sales values above 5,000 dollars.\n\n3. Display\n- Show the average rounded to a whole dollar, the median and the critical count.\n\nExample result:\nAverage: $4038\nMedian: $3100\nCritical: 3',
-        pt: 'Objetivo:\nComplete duas lacunas em uma análise de vendas para informar a mediana e a quantidade de dias críticos.\n\nRequisitos do programa\n\n1. Calcular a mediana\n- Use a posição central da lista ordenada com oito valores para completar o índice ausente.\n\n2. Contar dias críticos\n- Complete a comparação que conta valores de vendas acima de 5.000 reais.\n\n3. Mostrar\n- Mostre a média arredondada para valor inteiro, a mediana e a contagem crítica.\n\nExemplo de resultado:\nAverage: $4038\nMedian: $3100\nCritical: 3'
+        en: 'Goal:\nThe starter code calculates statistics from a sales list. The total and average are already done. There are two blanks left: one for the expression that gives the middle index of the sorted list to find the median, and one for the comparison operator that counts sales above 5000 as critical.\n\nFill in each blank, then run the code.\n\nExample:\nAverage: $4038\nMedian: $3100\nCritical: 3',
+        pt: 'Objetivo:\nO código inicial calcula estatísticas a partir de uma lista de vendas. O total e a média já estão prontos. Faltam duas lacunas: uma para a expressão que dá o índice do meio da lista ordenada para encontrar a mediana, e outra para o operador de comparação que conta vendas acima de 5000 como críticas.\n\nPreencha cada lacuna e execute o código.\n\nExemplo:\nAverage: $4038\nMedian: $3100\nCritical: 3'
       },
       starterCode: `sales = [5230, 1200, 8000, 450, 3100, 9200, 620, 4500]
 
@@ -1372,8 +1372,8 @@ print(f"Critical: {critical}")`,
       id: 'ex26_zero',
       title: { en: '🔴 Full Data Report', pt: '🔴 Relatório Completo' },
       description: {
-        en: 'Goal:\nRun a completed data report for the provided sales values and interpret every statistic.\n\nProgram requirements\n\n1. Calculate summary values\n- Find the total, average, minimum, maximum and median.\n\n2. Calculate business measures\n- Find the net total after a 250-dollar deduction from every sale.\n- Count critical, urgent and normal sales using the provided ranges.\n- Identify the three largest values.\n\n3. Display\n- Show the complete formatted report with all statistics.\n\nExample result:\n=== REPORT ===\nTotal: $42,400',
-        pt: 'Objetivo:\nExecute um relatório de dados completo para os valores de vendas fornecidos e interprete cada estatística.\n\nRequisitos do programa\n\n1. Calcular os valores-resumo\n- Encontre total, média, mínimo, máximo e mediana.\n\n2. Calcular medidas do negócio\n- Encontre o total líquido após uma dedução de 250 reais em cada venda.\n- Conte vendas críticas, urgentes e normais usando as faixas fornecidas.\n- Identifique os três maiores valores.\n\n3. Mostrar\n- Mostre o relatório formatado completo com todas as estatísticas.\n\nExemplo de resultado:\n=== RELATÓRIO ===\nTotal: $42.400'
+        en: 'Goal:\nRun the provided data report as-is. The program takes a list of daily sales and produces a full statistical summary.\n\nProgram requirements\n\n1. Calculate the total and average of all sales\n2. Find the minimum, maximum and median values\n3. Calculate the net total after a 250 deduction per sale\n4. Count sales in three ranges: critical (above 8000), urgent (3000 to 8000) and normal (below 3000)\n5. Identify the three largest sales\n\nExample, for 10 daily sales:\n=== REPORT ===\nTotal: $42,400 | Avg: $4,240\nMin: $450 | Max: $9200 | Median: $4500\nNet total: $39,900\nCritical:1 Urgent:5 Normal:4\nTop 3: [9200, 8000, 7800]',
+        pt: 'Objetivo:\nExecute o relatório de dados fornecido como está. O programa recebe uma lista de vendas diárias e produz um resumo estatístico completo.\n\nRequisitos do programa\n\n1. Calcule o total e a média de todas as vendas\n2. Encontre o valor mínimo, máximo e a mediana\n3. Calcule o total líquido após dedução de 250 por venda\n4. Conte vendas em três faixas: critical (acima de 8000), urgent (3000 a 8000) e normal (abaixo de 3000)\n5. Identifique as três maiores vendas\n\nExemplo, para 10 vendas diárias:\n=== REPORT ===\nTotal: $42,400 | Avg: $4,240\nMin: $450 | Max: $9200 | Median: $4500\nNet total: $39,900\nCritical:1 Urgent:5 Normal:4\nTop 3: [9200, 8000, 7800]'
       },
       starterCode: `sales = [5230,1200,8000,450,3100,9200,620,4500,7800,2300]
 
@@ -1439,7 +1439,7 @@ print(f"Top 3: {top3}")`,
 
 export const phase27: Phase = {
   id: 27,
-  title: { en: 'Foundation Capstone: Claims System', pt: 'Capstone da Base: Sistema de Sinistros' },
+  title: { en: 'Foundation Capstone: Orders System', pt: 'Capstone da Base: Sistema de Pedidos' },
   description: { en: 'Combine the published Python foundations in a structured terminal project.', pt: 'Combine os fundamentos publicados de Python em um projeto estruturado de terminal.' },
   icon: '🏆',
   libraries: [],
@@ -1453,23 +1453,23 @@ export const phase27: Phase = {
       }},
       { type: 'heading', content: { en: '🆚 Script vs Production System', pt: '🆚 Script vs Sistema de Produção' } },
       { type: 'code', code: `# ❌ SCRIPT: works once, brittle
-damage = 5230
-print(damage - 250)` },
+amount = 5230
+print(amount - 250)` },
       { type: 'code', code: `# ✅ SYSTEM: structured, persistent, robust
 from datetime import datetime
 
-def create_claim(db, client, damage, ded=250):
-    """Create claim with full metadata."""
-    if damage <= 0: raise ValueError("Must be positive")
-    priority = ("Critical" if damage > 10000
-                else "Urgent" if damage > 5000
+def create_order(db, client, amount, ded=250):
+    """Create order with full metadata."""
+    if amount <= 0: raise ValueError("Must be positive")
+    priority = ("Critical" if amount > 10000
+                else "Urgent" if amount > 5000
                 else "Normal")
     db.append({
         "id":       len(db) + 1,
         "client":   client,
-        "damage":   damage,
+        "amount":   amount,
         "ded":      ded,
-        "payout":   damage - ded,
+        "total":   amount - ded,
         "priority": priority,
         "status":   "open",
         "date":     datetime.now().strftime("%Y-%m-%d")
@@ -1477,7 +1477,7 @@ def create_claim(db, client, damage, ded=250):
 
 def read_all(db):
     for c in db:
-        print(f"#{c['id']} {c['client']} \${c['damage']} [{c['priority']}] {c['status']}")
+        print(f"#{c['id']} {c['client']} \${c['amount']} [{c['priority']}] {c['status']}")
 
 def update_status(db, cid, status):
     for c in db:
@@ -1485,9 +1485,9 @@ def update_status(db, cid, status):
 
 def analyze(db):
     if not db: return
-    total  = sum(c["damage"] for c in db)
-    payout = sum(c["payout"] for c in db)
-    print(f"Total: \${total:,} | Net total: \${payout:,} | Claims: {len(db)}")` }
+    total  = sum(c["amount"] for c in db)
+    total = sum(c["total"] for c in db)
+    print(f"Total: \${total:,} | Net total: \${total:,} | Orders: {len(db)}")` }
     ]
   },
   exercises: [
@@ -1495,13 +1495,13 @@ def analyze(db):
       id: 'ex27_recog',
       title: { en: '🟡 Complete the System Functions', pt: '🟡 Complete as Funções do Sistema' },
       description: {
-        en: 'Goal:\nComplete three blanks so the claims system updates and deletes records by the correct fields.\n\nProgram requirements\n\n1. Complete update_status\n- The first blank identifies the field used to find a claim by its id.\n- The second blank identifies the field that receives the new status.\n\n2. Complete delete_claim\n- The third blank identifies the field used to remove the matching claim.\n\n3. Verify\n- The final database must contain only Alice with id 1, damage 5,230 and status approved.\n\nExample result:\n{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}',
-        pt: 'Objetivo:\nComplete três lacunas para que o sistema de sinistros atualize e exclua registros pelos campos corretos.\n\nRequisitos do programa\n\n1. Completar update_status\n- A primeira lacuna identifica o campo usado para localizar um sinistro pelo id.\n- A segunda lacuna identifica o campo que recebe o novo status.\n\n2. Completar delete_claim\n- A terceira lacuna identifica o campo usado para remover o sinistro correspondente.\n\n3. Conferir\n- O banco final deve conter somente Alice, com id 1, dano 5.230 e status approved.\n\nExemplo de resultado:\n{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}'
+        en: 'Goal:\nThe starter code implements a orders system with three functions. create_order() is already complete. update_status() has two blanks -- the dictionary key used to find a order by id, and the dictionary key being updated with the new status. delete_order() has one blank -- the dictionary key used to filter out the order with the matching id.\n\nFill in the three blanks, then run the code. Alice’s order should have its status changed to approved, and Bob’s order should be removed.\n\nExample:\n{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}',
+        pt: 'Objetivo:\nO código inicial implementa um sistema de pedidos com três funções. create_order() já está completa. update_status() tem duas lacunas -- a chave do dicionário usada para encontrar um pedido por id, e a chave do dicionário sendo atualizada com o novo status. delete_order() tem uma lacuna -- a chave do dicionário usada para filtrar o pedido com o id correspondente.\n\nPreencha as três lacunas e execute o código. O pedido de Alice deve ter seu status alterado para approved, e o pedido de Bob deve ser removido.\n\nExemplo:\n{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}'
       },
       starterCode: `from datetime import datetime
 
-def create_claim(db, client, damage):
-    db.append({"id": len(db)+1, "client": client, "damage": damage, "status": "open"})
+def create_order(db, client, amount):
+    db.append({"id": len(db)+1, "client": client, "amount": amount, "status": "open"})
 
 def update_status(db, cid, new_status):
     for c in db:
@@ -1510,66 +1510,66 @@ def update_status(db, cid, new_status):
             return True
     return False
 
-def delete_claim(db, cid):
+def delete_order(db, cid):
     db[:] = [c for c in db if c["___"] != cid]  # fill: filter by id
 
 db = []
-create_claim(db, "Alice", 5230)
-create_claim(db, "Bob",   1200)
+create_order(db, "Alice", 5230)
+create_order(db, "Bob",   1200)
 update_status(db, 1, "approved")
-delete_claim(db, 2)
+delete_order(db, 2)
 for c in db: print(c)`,
       hints: [
         { en: 'All three blanks use the "id" key', pt: 'Os três espaços usam a chave "id"' },
         { en: 'The status blank uses the "status" key', pt: 'O espaço de status usa a chave "status"' }
       ],
-      sampleOutput: { en: '{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}', pt: '{"id": 1, "client": "Alice", "damage": 5230, "status": "approved"}' }
+      sampleOutput: { en: '{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}', pt: '{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}' }
     },
     {
       id: 'ex27_zero',
       title: { en: '🔴 Build the Full System', pt: '🔴 Construa o Sistema Completo' },
       description: {
-        en: 'Goal:\nRun a completed claims system that validates, creates, updates, deletes and summarizes records.\n\nProgram requirements\n\n1. Create claims\n- Create the five provided claims.\n- Reject the claim whose damage is not positive.\n- For valid claims, calculate payout, assign priority and record the current date.\n\n2. Update and delete\n- Approve the claims for Alice and Carlos.\n- Remove the claim for Diana.\n\n3. Display and analyze\n- Show the remaining claims.\n- Show the number of claims, total damage and total payout.\n\nExample result:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved',
-        pt: 'Objetivo:\nExecute um sistema de sinistros completo que valide, crie, atualize, exclua e resuma registros.\n\nRequisitos do programa\n\n1. Criar sinistros\n- Crie os cinco sinistros fornecidos.\n- Rejeite o sinistro cujo dano não seja positivo.\n- Para sinistros válidos, calcule o pagamento, atribua a prioridade e registre a data atual.\n\n2. Atualizar e excluir\n- Aprove os sinistros de Alice e Carlos.\n- Remova o sinistro de Diana.\n\n3. Mostrar e analisar\n- Mostre os sinistros restantes.\n- Mostre a quantidade de sinistros, o dano total e o pagamento total.\n\nExemplo de resultado:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved'
+        en: 'Goal:\nRun the provided orders system as-is. The program creates orders, updates statuses, deletes records and displays statistics.\n\nProgram requirements\n\n1. Create five orders for Alice (12000 amount), Bob (3500), Carlos (7800), Diana (900) and Eduardo (-1)\n2. The negative amount for Eduardo should trigger an error message\n3. Approve Alice’s and Carlos’s orders\n4. Remove Diana’s order\n5. Display the remaining three orders with their priority and status\n6. Display total orders, total amount and total total\n\nExample:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550',
+        pt: 'Objetivo:\nExecute o sistema de pedidos fornecido como está. O programa cria pedidos, atualiza status, exclui registros e exibe estatísticas.\n\nRequisitos do programa\n\n1. Crie cinco pedidos para Alice (dano 12000), Bob (3500), Carlos (7800), Diana (900) e Eduardo (-1)\n2. O dano negativo de Eduardo deve acionar uma mensagem de erro\n3. Aprove os pedidos de Alice e Carlos\n4. Remova o pedido de Diana\n5. Exiba os três pedidos restantes com prioridade e status\n6. Exiba o total de pedidos, o dano total e o total total\n\nExemplo:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550'
       },
       starterCode: `from datetime import datetime
 
-def create_claim(db, client, damage, ded=250):
-    if damage <= 0: raise ValueError("Must be positive")
-    priority = "Critical" if damage > 10000 else "Urgent" if damage > 5000 else "Normal"
-    db.append({"id": len(db)+1, "client": client, "damage": damage,
-               "payout": damage-ded, "priority": priority, "status": "open",
+def create_order(db, client, amount, ded=250):
+    if amount <= 0: raise ValueError("Must be positive")
+    priority = "Critical" if amount > 10000 else "Urgent" if amount > 5000 else "Normal"
+    db.append({"id": len(db)+1, "client": client, "amount": amount,
+               "total": amount-ded, "priority": priority, "status": "open",
                "date": datetime.now().strftime("%Y-%m-%d")})
 
 def read_all(db):
     for c in db:
-        print(f"#{c['id']} {c['client']} \${c['damage']} [{c['priority']}] {c['status']}")
+        print(f"#{c['id']} {c['client']} \${c['amount']} [{c['priority']}] {c['status']}")
 
 def update_status(db, cid, status):
     for c in db:
         if c["id"] == cid: c["status"] = status; return True
 
-def delete_claim(db, cid):
+def delete_order(db, cid):
     db[:] = [c for c in db if c["id"] != cid]
 
 def analyze(db):
-    total = sum(c["damage"] for c in db)
-    payout = sum(c["payout"] for c in db)
-    print(f"Claims:{len(db)} | Damage:\${total:,} | Payout:\${payout:,}")
+    total = sum(c["amount"] for c in db)
+    total = sum(c["total"] for c in db)
+    print(f"Orders:{len(db)} | Amount:\${total:,} | Total:\${total:,}")
 
 db = []
 try:
-    create_claim(db, "Alice",  12000)
-    create_claim(db, "Bob",     3500)
-    create_claim(db, "Carlos",  7800)
-    create_claim(db, "Diana",    900)
-    create_claim(db, "Eduardo",   -1)  # should error
+    create_order(db, "Alice",  12000)
+    create_order(db, "Bob",     3500)
+    create_order(db, "Carlos",  7800)
+    create_order(db, "Diana",    900)
+    create_order(db, "Eduardo",   -1)  # should error
 except ValueError as e:
     print(f"Error: {e}")
 
 update_status(db, 1, "approved")
 update_status(db, 3, "approved")
-delete_claim(db, 4)
+delete_order(db, 4)
 
 print("=== SYSTEM ==="); read_all(db)
 print("=== STATS ==="); analyze(db)`,
@@ -1579,52 +1579,52 @@ print("=== STATS ==="); analyze(db)`,
   ],
   quiz: [
     { id: 'q27_1', question: { en: 'What handles "Must be positive" validation cleanly?', pt: 'O que trata "Must be positive" de forma limpa?' }, options: [{ en: 'raise ValueError inside function', pt: 'raise ValueError dentro da função' }, { en: 'if/else with print', pt: 'if/else com print' }, { en: 'return False', pt: 'return False' }, { en: 'assert statement', pt: 'instrução assert' }], correctIndex: 0, explanation: { en: 'raise ValueError lets the caller catch it with try/except. The function signals bad input and stops.', pt: 'raise ValueError deixa o chamador capturar com try/except. A função sinaliza entrada ruim e para.' } },
-    { id: 'q27_2', question: { en: 'Why store date as string in the claim dict?', pt: 'Por que armazenar data como string no dict?' }, options: [{ en: 'Strings are JSON-serializable; datetime objects are not', pt: 'Strings são serializáveis em JSON; objetos datetime não são' }, { en: 'Strings are faster', pt: 'Strings são mais rápidas' }, { en: 'Datetime can\'t be in dicts', pt: 'Datetime não pode estar em dicts' }, { en: 'No reason', pt: 'Sem razão' }], correctIndex: 0, explanation: { en: 'json.dump() can\'t serialize datetime. Convert first: datetime.now().strftime("%Y-%m-%d").', pt: 'json.dump() não serializa datetime. Converta antes: datetime.now().strftime("%Y-%m-%d").' } },
+    { id: 'q27_2', question: { en: 'Why store date as string in the order dict?', pt: 'Por que armazenar data como string no dict?' }, options: [{ en: 'Strings are JSON-serializable; datetime objects are not', pt: 'Strings são serializáveis em JSON; objetos datetime não são' }, { en: 'Strings are faster', pt: 'Strings são mais rápidas' }, { en: 'Datetime can\'t be in dicts', pt: 'Datetime não pode estar em dicts' }, { en: 'No reason', pt: 'Sem razão' }], correctIndex: 0, explanation: { en: 'json.dump() can\'t serialize datetime. Convert first: datetime.now().strftime("%Y-%m-%d").', pt: 'json.dump() não serializa datetime. Converta antes: datetime.now().strftime("%Y-%m-%d").' } },
     { id: 'q27_3', question: { en: 'What makes this a "system" vs a "script"?', pt: 'O que faz isso ser "sistema" vs "script"?' }, options: [{ en: 'Functions, validation, error handling, reusability', pt: 'Funções, validação, tratamento de erros, reusabilidade' }, { en: 'More lines of code', pt: 'Mais linhas de código' }, { en: 'Using import statements', pt: 'Usar instruções import' }, { en: 'Running in terminal', pt: 'Rodar em terminal' }], correctIndex: 0, explanation: { en: 'A system has clear structure, handles errors, validates data, and can be extended. A script solves one problem once.', pt: 'Um sistema tem estrutura clara, trata erros, valida dados e pode ser expandido. Um script resolve um problema uma vez.' } },
     { id: 'q27_4', question: { en: 'What does completing this capstone prove?', pt: 'O que concluir este capstone comprova?' }, options: [{ en: 'Strong command of the current foundations and readiness for professional Python', pt: 'Bom domínio da base atual e preparo para Python profissional' }, { en: 'Mastery of every Python domain', pt: 'Domínio de todas as áreas de Python' }, { en: 'Ability to train a large language model from scratch', pt: 'Capacidade de treinar um grande modelo de linguagem do zero' }, { en: 'No need for further study', pt: 'Não precisar estudar mais' }], correctIndex: 0, explanation: { en: 'This project proves foundation mastery. Testing, architecture, databases, advanced Python and specializations come next.', pt: 'Este projeto comprova domínio da base. Testes, arquitetura, bancos, Python avançado e especializações vêm depois.' } }
   ],
   exam: {
-    title: { en: 'Final Capstone: Complete Claims System', pt: 'Capstone Final: Sistema Completo' },
-    scenario: { en: 'Build and demonstrate a structured claims system combining the published foundation phases.', pt: 'Construa e demonstre um sistema estruturado de sinistros combinando as fases de base publicadas.' },
-    requirements: { en: ['Full CRUD', 'Priority classification', 'Error handling', 'Statistical analysis', '5+ claims in demo', 'No crashes'], pt: ['CRUD completo', 'Classificação de prioridade', 'Tratamento de erros', 'Análise estatística', '5+ sinistros no demo', 'Sem crashes'] },
+    title: { en: 'Final Capstone: Complete Orders System', pt: 'Capstone Final: Sistema Completo' },
+    scenario: { en: 'Build and demonstrate a structured orders system combining the published foundation phases.', pt: 'Construa e demonstre um sistema estruturado de pedidos combinando as fases de base publicadas.' },
+    requirements: { en: ['Full CRUD', 'Priority classification', 'Error handling', 'Statistical analysis', '5+ orders in demo', 'No crashes'], pt: ['CRUD completo', 'Classificação de prioridade', 'Tratamento de erros', 'Análise estatística', '5+ pedidos no demo', 'Sem crashes'] },
     starterCode: `from datetime import datetime
 
-def create_claim(db, client, damage, ded=250):
-    if damage <= 0: raise ValueError("Must be positive")
-    priority = "Critical" if damage > 10000 else "Urgent" if damage > 5000 else "Normal"
-    db.append({"id": len(db)+1, "client": client, "damage": damage,
-               "payout": damage-ded, "priority": priority, "status": "open",
+def create_order(db, client, amount, ded=250):
+    if amount <= 0: raise ValueError("Must be positive")
+    priority = "Critical" if amount > 10000 else "Urgent" if amount > 5000 else "Normal"
+    db.append({"id": len(db)+1, "client": client, "amount": amount,
+               "total": amount-ded, "priority": priority, "status": "open",
                "date": datetime.now().strftime("%Y-%m-%d")})
 
 def read_all(db):
     for c in db:
-        print(f"#{c['id']} {c['client']} \${c['damage']} [{c['priority']}] {c['status']}")
+        print(f"#{c['id']} {c['client']} \${c['amount']} [{c['priority']}] {c['status']}")
 
 def update_status(db, cid, status):
     for c in db:
         if c["id"] == cid: c["status"] = status; return True
 
-def delete_claim(db, cid):
+def delete_order(db, cid):
     db[:] = [c for c in db if c["id"] != cid]
 
 def analyze(db):
-    total = sum(c["damage"] for c in db)
-    payout = sum(c["payout"] for c in db)
-    print(f"Claims:{len(db)} | Total:\${total:,} | Payout:\${payout:,}")
+    total = sum(c["amount"] for c in db)
+    total = sum(c["total"] for c in db)
+    print(f"Orders:{len(db)} | Total:\${total:,} | Total:\${total:,}")
 
 db = []
 try:
-    create_claim(db, "Alice",  12000)
-    create_claim(db, "Bob",     3500)
-    create_claim(db, "Carlos",  7800)
-    create_claim(db, "Diana",    900)
-    create_claim(db, "Eduardo", 5500)
+    create_order(db, "Alice",  12000)
+    create_order(db, "Bob",     3500)
+    create_order(db, "Carlos",  7800)
+    create_order(db, "Diana",    900)
+    create_order(db, "Eduardo", 5500)
 except ValueError as e:
     print("Error:", e)
 
 update_status(db, 1, "approved")
 update_status(db, 3, "approved")
-delete_claim(db, 4)
+delete_order(db, 4)
 
 print("=== FINAL ==="); read_all(db)
 print("=== STATS ==="); analyze(db)`,
@@ -1632,7 +1632,7 @@ print("=== STATS ==="); analyze(db)`,
       { id: 'tc27_1', description: { en: 'Alice Critical approved', pt: 'Alice Critical aprovada' }, inputs: [], checks: [{ type: 'matches', value: '(critical|cr[ií]tico)' }], points: 20 },
       { id: 'tc27_2', description: { en: 'Alice status approved', pt: 'Status Alice approved' }, inputs: [], checks: [{ type: 'matches', value: '(approved|aprovado)' }], points: 20 },
       { id: 'tc27_3', description: { en: 'Stats total shown', pt: 'Total de stats mostrado' }, inputs: [], checks: [{ type: 'contains', value: 'Total' }], points: 20 },
-      { id: 'tc27_4', description: { en: 'Payout shown', pt: 'Payout mostrado' }, inputs: [], checks: [{ type: 'matches', value: '(payout|pagamento)' }], points: 20 },
+      { id: 'tc27_4', description: { en: 'Total shown', pt: 'Total mostrado' }, inputs: [], checks: [{ type: 'matches', value: '(total|pagamento)' }], points: 20 },
       { id: 'tc27_5', description: { en: 'No crash', pt: 'Sem crash' }, inputs: [], checks: [{ type: 'no_error', value: '' }], points: 20 }
     ]
   }

@@ -42,7 +42,7 @@ for (const [, id, en, pt] of blocks) {
   for (const [label, text] of [['EN', trimmedEn], ['PT', trimmedPt]] as const) {
     // '***' appears as a redacted value in some exercises, so require markdown bold
     // to actually wrap something before flagging it.
-    if (/\*\*\S[\s\S]*?\S\*\*|^#{1,6}\s|`/m.test(text)) problems.push(`${id} (${label}): contains markdown syntax`)
+    if (/\*\*\S[^\n]*?\S\*\*|^#{1,6}\s|`/m.test(text)) problems.push(`${id} (${label}): contains markdown syntax`)
     if (/\b(Line|Linha)\s*\d+\s*[:\-]/.test(text)) problems.push(`${id} (${label}): dictates line by line`)
     if (/\b[a-z_]{2,}\s*=\s*(input|float|int|str)\s*\(/.test(text)) problems.push(`${id} (${label}): shows an assignment`)
     if (/print\s*\(\s*f?["']/.test(text)) problems.push(`${id} (${label}): shows a print statement`)
