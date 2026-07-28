@@ -19,6 +19,7 @@ function isLearningKey(key: string) {
     || key === 'hp_learner_profile'
     || key.startsWith('hp_exercise_done_')
     || isSyncedStateKey(key)
+    || key === 'hp_learning_preferences_v1'
     || key.startsWith('hp_lesson_reflection_')
     || key === 'hp_ft_done'
     || key.startsWith('hp_project_lab_')

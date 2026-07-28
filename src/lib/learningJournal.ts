@@ -1,4 +1,5 @@
 import { getSupabase } from './supabase'
+import { readState, writeState } from './syncedStore'
 
 export interface JournalPreferences {
   showJournal: boolean
@@ -19,15 +20,29 @@ const DEFAULTS: JournalPreferences = {
 const PREF_KEY = 'hp_learning_preferences_v1'
 const PROGRESS_PREFIX = 'hp_journey_progress_v1_'
 
-export function loadJournalPreferences(): JournalPreferences {
+/**
+ * Learning preferences follow the learner, not the browser.
+ *
+ * These were written to localStorage alone, so changing them on one device left
+ * every other device — and any cleared cache — back on the defaults. They now go
+ * through the shared synced store, which keeps a synchronous local cache and
+ * writes through to the cloud.
+ */
+export function loadJournalPreferences(learnerId?: string): JournalPreferences {
+  if (learnerId) {
+    const stored = readState<Partial<JournalPreferences>>(learnerId, PREF_KEY, {})
+    if (Object.keys(stored).length) return { ...DEFAULTS, ...stored }
+  }
   try {
     const raw = localStorage.getItem(PREF_KEY)
     return raw ? { ...DEFAULTS, ...JSON.parse(raw) } : DEFAULTS
   } catch { return DEFAULTS }
 }
 
-export function saveJournalPreferences(value: JournalPreferences) {
-  localStorage.setItem(PREF_KEY, JSON.stringify(value))
+export function saveJournalPreferences(value: JournalPreferences, learnerId?: string) {
+  // Keep the legacy key so a learner who has not signed in yet loses nothing.
+  try { localStorage.setItem(PREF_KEY, JSON.stringify(value)) } catch { /* storage blocked */ }
+  if (learnerId) writeState<JournalPreferences>(learnerId, PREF_KEY, value)
 }
 
 function journeyKey(learnerId: string, phaseId: number) {

@@ -63,7 +63,7 @@ export default function Lesson() {
   const requestedUnit = Number(searchParams.get('unit') || '0')
   const [reflection, setReflection] = useState('')
   const [visitedUnits, setVisitedUnits] = useState<string[]>([])
-  const [journalVisible, setJournalVisible] = useState(() => loadJournalPreferences().showJournal)
+  const [journalVisible, setJournalVisible] = useState(() => loadJournalPreferences(learnerId).showJournal)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const journalSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -81,7 +81,7 @@ export default function Lesson() {
     const stored = loadJourneyProgress(learnerId, phase.id)
     const visited = markJourneyUnitVisited(learnerId, phase.id, unit.id)
     setVisitedUnits(Array.from(new Set([...stored, ...visited])))
-    setJournalVisible(loadJournalPreferences().showJournal)
+    setJournalVisible(loadJournalPreferences(learnerId).showJournal)
 
     if (learnerId !== 'guest') {
       void hydrateJourneyProgress(learnerId, phase.id).then(setVisitedUnits)

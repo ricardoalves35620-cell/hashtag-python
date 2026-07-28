@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { loadJournalPreferences, saveJournalPreferences, type JournalPreferences } from '../lib/learningJournal'
 import type { Lang } from '../data/types'
+import { useApp } from '../contexts/AppContext'
+import { subscribeState, getStateVersion } from '../lib/syncedStore'
 
 export default function LearningPreferences({ lang }: { lang: Lang }) {
-  const [prefs, setPrefs] = useState<JournalPreferences>(() => loadJournalPreferences())
-  useEffect(() => saveJournalPreferences(prefs), [prefs])
+  const { learnerId } = useApp()
+  // Re-read when the cloud copy lands, so opening the page on a second device
+  // shows what was chosen on the first.
+  useSyncExternalStore(subscribeState, getStateVersion, getStateVersion)
+  const [prefs, setPrefs] = useState<JournalPreferences>(() => loadJournalPreferences(learnerId))
+  useEffect(() => { setPrefs(loadJournalPreferences(learnerId)) }, [learnerId])
+  useEffect(() => saveJournalPreferences(prefs, learnerId), [prefs, learnerId])
   const copy = lang === 'pt' ? {
     title: 'Como você prefere aprender', desc: 'Estas opções personalizam a experiência. Nenhuma reflexão opcional bloqueia seu progresso.',
     showJournal: 'Mostrar Diário do Programador', showDetailedExplanations: 'Mostrar explicações detalhadas',
