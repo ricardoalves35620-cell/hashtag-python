@@ -96,6 +96,9 @@ export default function Exercises() {
   const codeChanged = (codes[exercise.id] ?? starterCode).trim() !== starterCode.trim()
   const thinkingReady = (predictions[exercise.id] || '').trim().length >= 10 && (changePlans[exercise.id] || '').trim().length >= 3
   const allValidated = phase.exercises.every(item => validated[item.id])
+  const outstanding = phase.exercises
+    .map((item, index) => (validated[item.id] ? null : index + 1))
+    .filter((n): n is number => n !== null)
   const checks = validationChecks[exercise.id] || []
   const passedChecks = checks.filter(check => check.passed).length
   const draftKey = `${learnerId || 'anonymous'}:${phase.id}:${exercise.id}`
@@ -178,7 +181,7 @@ export default function Exercises() {
     en: {
       exercise: 'Exercise', run: 'Run and validate', running: 'Running your code', loading: 'Preparing Python',
       hint: 'Reveal first hint', nextHint: 'Reveal next hint', allHints: 'All hints revealed', output: 'Console output', complete: 'All validated — go to knowledge check',
-      next: 'Next exercise', phase: 'Phase', sampleOutput: 'Expected output', lockedNext: 'Run this exercise successfully to continue.',
+      next: 'Next exercise', phase: 'Phase', sampleOutput: 'Expected output', lockedNext: 'Run this exercise successfully to continue.', stillToDo: 'Still to finish',
       validated: 'Validated', reset: 'Restore starter code', saved: 'Saved across devices', local: 'Saved on this device', attempts: 'Recent attempts',
       noOutput: 'The program finished without printing anything.', ready: 'Ready to run', progress: 'Validation progress',
       thinkTitle: 'Think before running', predict: 'What do you predict this code will do?', plan: 'What one value, operator or line will you change after the first run?', thinkHelp: 'The first exercise is a predict → run → modify → run challenge. Merely pressing Run is not enough.', observeDone: 'Observation complete. Now make the planned code change and run again.', notChangedYet: 'The code is still exactly as it started. Edit the value you planned to change — then run again.',
@@ -187,7 +190,7 @@ export default function Exercises() {
     pt: {
       exercise: 'Exercício', run: 'Executar e validar', running: 'Executando seu código', loading: 'Preparando o Python',
       hint: 'Revelar primeira dica', nextHint: 'Revelar próxima dica', allHints: 'Todas as dicas reveladas', output: 'Saída do console', complete: 'Todos validados — ir para verificação',
-      next: 'Próximo exercício', phase: 'Fase', sampleOutput: 'Saída esperada', lockedNext: 'Execute este exercício corretamente para continuar.',
+      next: 'Próximo exercício', phase: 'Fase', sampleOutput: 'Saída esperada', lockedNext: 'Execute este exercício corretamente para continuar.', stillToDo: 'Ainda falta',
       validated: 'Validado', reset: 'Restaurar código inicial', saved: 'Salvo entre dispositivos', local: 'Salvo neste aparelho', attempts: 'Tentativas recentes',
       noOutput: 'O programa terminou sem imprimir nada.', ready: 'Pronto para executar', progress: 'Progresso da validação',
       thinkTitle: 'Pense antes de executar', predict: 'O que você prevê que este código fará?', plan: 'Qual valor, operador ou linha você mudará depois da primeira execução?', thinkHelp: 'O primeiro exercício agora segue prever → executar → modificar → executar. Apenas apertar Executar não é suficiente.', observeDone: 'Observação concluída. Agora faça a alteração planejada no código e execute novamente.', notChangedYet: 'O código continua exatamente como começou. Edite o valor que você planejou mudar — depois execute de novo.',
@@ -366,7 +369,7 @@ export default function Exercises() {
 
         {(attempts[exercise.id] || []).length > 0 && <Card padding="md"><h3 className="font-semibold">{t.attempts}</h3><div className="mt-3 space-y-2">{attempts[exercise.id].map(item => <div key={item.id} className="flex items-center justify-between rounded-lg border border-line px-3 py-2 text-sm"><span>{item.time} · {item.passedChecks}/{item.checks}</span><Badge variant={item.passed ? 'success' : 'warning'}>{item.passed ? (lang === 'en' ? 'Passed' : 'Aprovado') : (lang === 'en' ? 'Review' : 'Revisar')}</Badge></div>)}</div></Card>}
 
-        <div>{activeEx < phase.exercises.length - 1 ? <Button fullWidth size="lg" variant={currentValidated ? 'secondary' : 'ghost'} disabled={!currentValidated} onClick={() => changeExercise(activeEx + 1)}>{currentValidated ? `${t.next} →` : `🔒 ${t.lockedNext}`}</Button> : <Button fullWidth size="lg" disabled={!allValidated} onClick={handleComplete}>{allValidated ? `${t.complete} →` : `🔒 ${t.lockedNext}`}</Button>}</div>
+        <div>{activeEx < phase.exercises.length - 1 ? <Button fullWidth size="lg" variant={currentValidated ? 'secondary' : 'ghost'} disabled={!currentValidated} onClick={() => changeExercise(activeEx + 1)}>{currentValidated ? `${t.next} →` : `🔒 ${t.lockedNext}`}</Button> : <Button fullWidth size="lg" disabled={!allValidated} onClick={handleComplete}>{allValidated ? `${t.complete} →` : (currentValidated && outstanding.length ? `🔒 ${t.stillToDo}: ${outstanding.map(n => `${lang === 'en' ? 'exercise' : 'exercício'} ${n}`).join(', ')}` : `🔒 ${t.lockedNext}`)}</Button>}</div>
       </div>
     </Layout>
   )
