@@ -184,7 +184,7 @@ export default function Exercises() {
       next: 'Next exercise', phase: 'Phase', sampleOutput: 'Expected output', lockedNext: 'Run this exercise successfully to continue.', stillToDo: 'Still to finish',
       validated: 'Validated', reset: 'Restore starter code', saved: 'Saved across devices', local: 'Saved on this device', attempts: 'Recent attempts',
       noOutput: 'The program finished without printing anything.', ready: 'Ready to run', progress: 'Validation progress',
-      thinkTitle: 'Think before running', predict: 'What do you predict this code will do?', plan: 'What one value, operator or line will you change after the first run?', thinkHelp: 'The first exercise is a predict → run → modify → run challenge. Merely pressing Run is not enough.', observeDone: 'Observation complete. Now make the planned code change and run again.', notChangedYet: 'The code is still exactly as it started. Edit the value you planned to change — then run again.',
+      observeComplete: 'Cycle complete — you predicted, ran it, changed one thing and saw the effect.', thinkTitle: 'Think before running', predict: 'What do you predict this code will do?', plan: 'What one value, operator or line will you change after the first run?', thinkHelp: 'The first exercise is a predict → run → modify → run challenge. Merely pressing Run is not enough.', observeDone: 'Observation complete. Now make the planned code change and run again.', notChangedYet: 'The code is still exactly as it started. Edit the value you planned to change — then run again.',
       unlockTitle: 'Complete these two short steps to enable Run', predictionMissing: 'Write a prediction with at least 10 characters.', planMissing: 'Describe one change with at least 3 characters.', readyToRun: 'Prediction and change plan completed. Run is enabled.'
     },
     pt: {
@@ -193,7 +193,7 @@ export default function Exercises() {
       next: 'Próximo exercício', phase: 'Fase', sampleOutput: 'Saída esperada', lockedNext: 'Execute este exercício corretamente para continuar.', stillToDo: 'Ainda falta',
       validated: 'Validado', reset: 'Restaurar código inicial', saved: 'Salvo entre dispositivos', local: 'Salvo neste aparelho', attempts: 'Tentativas recentes',
       noOutput: 'O programa terminou sem imprimir nada.', ready: 'Pronto para executar', progress: 'Progresso da validação',
-      thinkTitle: 'Pense antes de executar', predict: 'O que você prevê que este código fará?', plan: 'Qual valor, operador ou linha você mudará depois da primeira execução?', thinkHelp: 'O primeiro exercício agora segue prever → executar → modificar → executar. Apenas apertar Executar não é suficiente.', observeDone: 'Observação concluída. Agora faça a alteração planejada no código e execute novamente.', notChangedYet: 'O código continua exatamente como começou. Edite o valor que você planejou mudar — depois execute de novo.',
+      observeComplete: 'Ciclo completo — você previu, executou, mudou uma coisa e viu o efeito.', thinkTitle: 'Pense antes de executar', predict: 'O que você prevê que este código fará?', plan: 'Qual valor, operador ou linha você mudará depois da primeira execução?', thinkHelp: 'O primeiro exercício agora segue prever → executar → modificar → executar. Apenas apertar Executar não é suficiente.', observeDone: 'Observação concluída. Agora faça a alteração planejada no código e execute novamente.', notChangedYet: 'O código continua exatamente como começou. Edite o valor que você planejou mudar — depois execute de novo.',
       unlockTitle: 'Conclua estes dois passos curtos para liberar Executar', predictionMissing: 'Escreva uma previsão com pelo menos 10 caracteres.', planMissing: 'Descreva uma alteração com pelo menos 3 caracteres.', readyToRun: 'Previsão e plano preenchidos. O botão Executar está liberado.'
     }
   })[lang], [lang])
@@ -237,6 +237,16 @@ export default function Exercises() {
       } else if (isFirstExercise && !codeChanged) {
         setValidated(previous => ({ ...previous, [exercise.id]: previous[exercise.id] || false }))
         setValidationMessage(t.notChangedYet)
+      } else if (isFirstExercise) {
+        // This exercise asks the learner to CHANGE a value and run again, so its
+        // output is SUPPOSED to differ from the published sample. Judging it against
+        // that sample made it impossible by design: leave the code alone and it says
+        // "not changed yet"; change it and the comparison fails. Completing the
+        // cycle without a runtime error is the pass condition.
+        const cycleComplete = !grade.error
+        setValidated(previous => ({ ...previous, [exercise.id]: previous[exercise.id] || cycleComplete }))
+        if (cycleComplete && learnerId) saveCompletedExercise(learnerId, phase.id, exercise.id)
+        setValidationMessage(cycleComplete ? t.observeComplete : grade.message)
       } else {
         setValidationMessage(grade.message)
       }
