@@ -2,7 +2,13 @@ import { resolveLocalizedCode } from '../lib/localization'
 import type { Bilingual, Check, CodeRequirement, Exercise, Phase, TestCase } from './types'
 
 const PHASE_REQUIREMENTS: Record<number, CodeRequirement[]> = {
-  1: [{ kind: 'call', value: 'print', minCount: 3 }],
+  // Phase 1's only requirement was `print` three times, which a program that prints
+  // the answers as literals satisfies exactly. Both phase 1 tasks state the
+  // arithmetic — the starter shows `___ + 12`, and ex1_zero says "the total revenue
+  // calculated by Python (80 multiplied by 5)" — so requiring one operation asks
+  // for nothing the learner was not already told to do, and no correct answer can
+  // fail it. cheat-resistance.py is what found the hole.
+  1: [{ kind: 'call', value: 'print', minCount: 3 }, { kind: 'node', value: 'BinOp' }],
   2: [{ kind: 'node', value: 'BinOp', minCount: 2 }],
   3: [{ kind: 'node', value: 'Assign', minCount: 2 }],
   4: [{ kind: 'call', value: 'input' }],

@@ -253,9 +253,23 @@ export async function gradeExercise(
     // then illustrative, and this heuristic must not impose a stricter standard than
     // the author wrote — otherwise the app rejects answers that are genuinely correct.
     const CONTENT_CHECKS = new Set(['equals', 'equals_any', 'contains', 'contains_any', 'matches', 'numeric_equals'])
-    const authorPinsOutput = (exercise.grading?.tests || []).some(test =>
-      (test.checks || []).some(check =>
-        CONTENT_CHECKS.has(String(check.type)) && (!check.target || check.target === 'test_output')))
+    const contentChecks = (exercise.grading?.tests || []).flatMap(test =>
+      (test.checks || []).filter(check => CONTENT_CHECKS.has(String(check.type))))
+
+    // `target: 'test_output'` means the check reads what the GRADER's afterCode printed,
+    // not what the learner's program printed. Phases 9-20 ask for a function and call it
+    // from afterCode, so a correct solution prints nothing at all.
+    //
+    // Treating those checks as "the author pinned the output" made this compare the
+    // learner's empty stdout against the sample and fail every correct answer in twelve
+    // phases: both real tests green, and still "Produces the required result ✗ — the
+    // visible result does not match the requested output", at 83%, under a padlock
+    // reading "Run this exercise successfully to continue". Found by working through the
+    // phases in the browser; no amount of checking the exercise DATA could see it,
+    // because the data was right.
+    const studentOutputChecks = contentChecks.filter(check => check.target !== 'test_output')
+    const gradedByAfterCode = contentChecks.length > 0 && studentOutputChecks.length === 0
+    const authorPinsOutput = studentOutputChecks.length > 0
 
     // The sample describes the run made with the exercise's OWN input values. If the
     // learner typed their own, their output is different and still correct, so the
@@ -270,7 +284,11 @@ export async function gradeExercise(
     const similarity = comparedToExpected
       ? outputSimilarity(exercise, lang, run.output)
       : { passed: Boolean(run.output && run.output.trim()), detail: '' }
-    checks.push({
+
+    // Nothing to say about stdout when stdout was never the deliverable. Skipping the
+    // check is right rather than passing it: a green tick for something unexamined is
+    // the same lie in the other direction.
+    if (!gradedByAfterCode) checks.push({
       id: 'expected-output',
       // When nothing pins the output — every observation exercise, and any run with
       // the learner's own inputs — the fallback only asks whether anything was

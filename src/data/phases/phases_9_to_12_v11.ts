@@ -377,7 +377,7 @@ for material, esperado, recebido in entregas:
     exercise(
       'p9-transfer',
       b('🟣 Challenge — transpose a rectangular grid', '🟣 Desafio — transponha uma grade retangular'),
-      b('Goal:\nWrite transpose_grid(grid). Convert rows into columns so that each original row becomes a column in the result. Return an empty list for an empty grid, and raise ValueError("ragged grid") when rows have different lengths.\n\nProgram requirements\n\n1. Validate\n- Return [] immediately if the grid is empty\n- Raise ValueError("ragged grid") if any row has a different length than the first row\n\n2. Calculate\n- Build a new nested list where each new row collects one cell from every original row at the same column index\n- Return the transposed grid\n\nExample, transposing a 3-by-2 grid:\n[[1, 4], [2, 5], [3, 6]]', 'Objetivo:\nEscreva transpose_grid(grid). Converta linhas em colunas de modo que cada linha original vire uma coluna no resultado. Retorne uma lista vazia para grade vazia e gere ValueError("ragged grid") quando as linhas tiverem tamanhos diferentes.\n\nRequisitos do programa\n\n1. Validar\n- Retorne [] imediatamente se a grade estiver vazia\n- Gere ValueError("ragged grid") se alguma linha tiver tamanho diferente da primeira\n\n2. Calcular\n- Construa uma nova lista aninhada onde cada nova linha coleta uma célula de cada linha original no mesmo índice de coluna\n- Retorne a grade transposta\n\nExemplo, transpondo uma grade 3 por 2:\n[[1, 4], [2, 5], [3, 6]]'),
+      b('Goal:\nWrite transpose_grid(grid). Convert rows into columns so that each original row becomes a column in the result. Return an empty list for an empty grid, and raise ValueError("ragged grid") when rows have different lengths.\n\nProgram requirements\n\n1. Validate\n- Return [] immediately if the grid is empty\n- Raise ValueError("ragged grid") if any row has a different length than the first row\n\n2. Calculate\n- Build a new nested list where each new row collects one cell from every original row at the same column index, using a for loop over the column positions\n- Return the transposed grid\n\nExample, transposing a 3-by-2 grid:\n[[1, 4], [2, 5], [3, 6]]', 'Objetivo:\nEscreva transpose_grid(grid). Converta linhas em colunas de modo que cada linha original vire uma coluna no resultado. Retorne uma lista vazia para grade vazia e gere ValueError("ragged grid") quando as linhas tiverem tamanhos diferentes.\n\nRequisitos do programa\n\n1. Validar\n- Retorne [] imediatamente se a grade estiver vazia\n- Gere ValueError("ragged grid") se alguma linha tiver tamanho diferente da primeira\n\n2. Calcular\n- Construa uma nova lista aninhada onde cada nova linha coleta uma célula de cada linha original no mesmo índice de coluna, usando um for sobre as posições de coluna\n- Retorne a grade transposta\n\nExemplo, transpondo uma grade 3 por 2:\n[[1, 4], [2, 5], [3, 6]]'),
       `def transpose_grid(grid):
     # Validate the shape, then build a new nested list.
     pass`,
@@ -679,12 +679,12 @@ print(atualizado["confirmado"])   # True`,
     return updated`,
       b("{'sku': 'A1', 'stock': 2}", "{'sku': 'A1', 'stock': 2}"),
       [b('Use product.copy() to create the outer copy.', 'Use product.copy() para criar a cópia externa.'), b('Only updated should receive the new stock.', 'Apenas updated deve receber o novo estoque.'), b('The hidden test checks the original record after the call.', 'O teste oculto verifica o registro original após a chamada.')],
-      [{ kind: 'function', value: 'sell_units' }, { kind: 'call', value: 'copy' }, { kind: 'node', value: 'If' }, { kind: 'node', value: 'Raise' }],
+      [{ kind: 'function', value: 'sell_units' }, { kind: 'node', value: 'If' }, { kind: 'node', value: 'Raise' }],
       exactTest('p10-stock-visible', b('Updates stock in a returned copy', 'Atualiza estoque em uma cópia retornada'), `item = {"sku": "A1", "stock": 5}
-print(sell_units(item, 3))`, b("{'sku': 'A1', 'stock': 2}", "{'sku': 'A1', 'stock': 2}"), 60, [{ kind: 'function', value: 'sell_units' }, { kind: 'call', value: 'copy' }]),
+print(sell_units(item, 3))`, b("{'sku': 'A1', 'stock': 2}", "{'sku': 'A1', 'stock': 2}"), 60, [{ kind: 'function', value: 'sell_units' }]),
       exactTest('p10-stock-hidden-original', b('Protects original data and lower boundary', 'Protege dados originais e limite inferior'), `item = {"sku": "B2", "stock": 2}
 print(sell_units(item, 10))
-print(item)`, b("{'sku': 'B2', 'stock': 0}\n{'sku': 'B2', 'stock': 2}", "{'sku': 'B2', 'stock': 0}\n{'sku': 'B2', 'stock': 2}"), 40, [{ kind: 'function', value: 'sell_units' }, { kind: 'call', value: 'copy' }], true),
+print(item)`, b("{'sku': 'B2', 'stock': 0}\n{'sku': 'B2', 'stock': 2}", "{'sku': 'B2', 'stock': 0}\n{'sku': 'B2', 'stock': 2}"), 40, [{ kind: 'function', value: 'sell_units' }], true),
       'independent',
       b('Separate mutation of a copy from mutation of the source.', 'Separar mutação de uma cópia da mutação da origem.'),
       b('Applying inventory changes while preserving an imported snapshot.', 'Aplicação de mudanças de estoque preservando um retrato importado.'),
@@ -719,9 +719,9 @@ except ValueError as error:
     pass`,
       b("{'language': 'pt', 'theme': 'dark'}", "{'language': 'pt', 'theme': 'dark'}"),
       [b('Find unknown keys before updating anything.', 'Encontre chaves desconhecidas antes de atualizar qualquer coisa.'), b('Use a copy so a failed or successful merge does not mutate base.', 'Use uma cópia para uma combinação com falha ou sucesso não alterar base.'), b('dict.update can apply all validated changes.', 'dict.update pode aplicar todas as mudanças validadas.')],
-      [{ kind: 'function', value: 'merge_settings' }, { kind: 'call', value: 'copy' }, { kind: 'call', value: 'update' }, { kind: 'node', value: 'Raise' }],
+      [{ kind: 'function', value: 'merge_settings' }, { kind: 'call', value: 'update' }, { kind: 'node', value: 'Raise' }],
       exactTest('p10-merge-visible', b('Applies allowed settings', 'Aplica configurações permitidas'), `base = {"language": "en", "theme": "light"}
-print(merge_settings(base, {"language": "pt", "theme": "dark"}, {"language", "theme"}))`, b("{'language': 'pt', 'theme': 'dark'}", "{'language': 'pt', 'theme': 'dark'}"), 60, [{ kind: 'function', value: 'merge_settings' }, { kind: 'call', value: 'copy' }, { kind: 'call', value: 'update' }]),
+print(merge_settings(base, {"language": "pt", "theme": "dark"}, {"language", "theme"}))`, b("{'language': 'pt', 'theme': 'dark'}", "{'language': 'pt', 'theme': 'dark'}"), 60, [{ kind: 'function', value: 'merge_settings' }, { kind: 'call', value: 'update' }]),
       exactTest('p10-merge-hidden-unknown', b('Rejects an unknown setting and keeps base unchanged', 'Rejeita configuração desconhecida e mantém base intacta'), `base = {"theme": "light"}
 try:
     merge_settings(base, {"admin": True}, {"theme"})
@@ -1051,8 +1051,8 @@ except ValueError as error:
     pass`,
       b("{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}", "{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}"),
       [b('Create an empty dictionary before the loop.', 'Crie um dicionário vazio antes do loop.'), b('Check record["id"] in the index before assignment.', 'Verifique record["id"] no índice antes da atribuição.'), b('Store record.copy() to avoid shared outer mutation.', 'Armazene record.copy() para evitar mutação externa compartilhada.')],
-      [{ kind: 'function', value: 'index_by_id' }, { kind: 'node', value: 'For' }, { kind: 'node', value: 'Dict' }, { kind: 'call', value: 'copy' }, { kind: 'node', value: 'Raise' }],
-      exactTest('p11-index-visible', b('Indexes two unique records', 'Indexa dois registros únicos'), `print(index_by_id([{"id": 1, "name": "Ana"}, {"id": 2, "name": "Beto"}]))`, b("{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}", "{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}"), 60, [{ kind: 'function', value: 'index_by_id' }, { kind: 'node', value: 'For' }, { kind: 'call', value: 'copy' }]),
+      [{ kind: 'function', value: 'index_by_id' }, { kind: 'node', value: 'For' }, { kind: 'node', value: 'Dict' }, { kind: 'node', value: 'Raise' }],
+      exactTest('p11-index-visible', b('Indexes two unique records', 'Indexa dois registros únicos'), `print(index_by_id([{"id": 1, "name": "Ana"}, {"id": 2, "name": "Beto"}]))`, b("{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}", "{1: {'id': 1, 'name': 'Ana'}, 2: {'id': 2, 'name': 'Beto'}}"), 60, [{ kind: 'function', value: 'index_by_id' }, { kind: 'node', value: 'For' }]),
       exactTest('p11-index-hidden-duplicate', b('Rejects duplicate identity', 'Rejeita identidade duplicada'), `try:
     index_by_id([{"id": 7, "name": "A"}, {"id": 7, "name": "B"}])
 except ValueError as error:
@@ -1344,8 +1344,8 @@ print(horas_longas)  # [1.25, 2.0]`,
     pass`,
       b("['A:Mouse', 'C:Café']", "['A:Mouse', 'C:Café']"),
       [b('Validate the collection first with any or a normal loop.', 'Valide a coleção primeiro com any ou loop normal.'), b('The comprehension expression can use an f-string.', 'A expressão da compreensão pode usar f-string.'), b('The final filter is product["stock"] > 0.', 'O filtro final é product["stock"] > 0.')],
-      [{ kind: 'function', value: 'available_labels' }, { kind: 'node', value: 'ListComp' }, { kind: 'node', value: 'Raise' }, { kind: 'node', value: 'JoinedStr' }],
-      exactTest('p12-products-visible', b('Selects available product labels', 'Seleciona rótulos de produtos disponíveis'), `print(available_labels([{"sku": "A", "name": "Mouse", "stock": 2}, {"sku": "B", "name": "Monitor", "stock": 0}, {"sku": "C", "name": "Café", "stock": 1}]))`, b("['A:Mouse', 'C:Café']", "['A:Mouse', 'C:Café']"), 60, [{ kind: 'function', value: 'available_labels' }, { kind: 'node', value: 'ListComp' }, { kind: 'node', value: 'JoinedStr' }]),
+      [{ kind: 'function', value: 'available_labels' }, { kind: 'node', value: 'ListComp' }, { kind: 'node', value: 'Raise' }],
+      exactTest('p12-products-visible', b('Selects available product labels', 'Seleciona rótulos de produtos disponíveis'), `print(available_labels([{"sku": "A", "name": "Mouse", "stock": 2}, {"sku": "B", "name": "Monitor", "stock": 0}, {"sku": "C", "name": "Café", "stock": 1}]))`, b("['A:Mouse', 'C:Café']", "['A:Mouse', 'C:Café']"), 60, [{ kind: 'function', value: 'available_labels' }, { kind: 'node', value: 'ListComp' }]),
       exactTest('p12-products-hidden-negative', b('Rejects negative stock before projection', 'Rejeita estoque negativo antes da projeção'), `try:
     available_labels([{"sku": "X", "name": "Invalid", "stock": -1}])
 except ValueError as error:

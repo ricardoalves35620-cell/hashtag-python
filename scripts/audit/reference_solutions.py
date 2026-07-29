@@ -59,7 +59,15 @@ def _p9_transfer():
         for row in grid:
             if len(row) != width:
                 raise ValueError("ragged grid")
-        return [[row[index] for row in grid] for index in range(width)]
+        # A for loop rather than a comprehension: phase 9 has not taught comprehensions
+        # yet — they arrive in phase 12 — and the task now says to use one.
+        transposed = []
+        for index in range(width):
+            column = []
+            for row in grid:
+                column.append(row[index])
+            transposed.append(column)
+        return transposed
 
 
 # ── phase 10 · dictionaries ──────────────────────────────────────────────────
@@ -524,7 +532,7 @@ def _p19_transfer():
             raise ValueError("settings must be an object")
         data[key] = value
         with open(path, "w", encoding="utf-8") as file:
-            file.write(_json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+            _json.dump(data, file, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         return len(data)
 
 

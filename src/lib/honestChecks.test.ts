@@ -41,3 +41,51 @@ describe('the output check only claims what it actually compared', () => {
     expect(validation).toContain('exercise.sampleOutput && comparedToExpected ? similarity.detail : undefined')
   })
 })
+
+/**
+ * Phases 9-20 ask for a FUNCTION and call it from the grader's afterCode. A correct
+ * solution prints nothing, so judging the learner's own stdout is judging a thing the
+ * exercise never asked for.
+ *
+ * Before this, every correct answer across twelve phases showed both real tests green
+ * and still "Produces the required result ✗ — the visible result does not match the
+ * requested output", at 83%, under "Run this exercise successfully to continue". The
+ * exercise DATA was right, which is why nothing that reads the data could see it.
+ */
+describe('an exercise graded through afterCode does not judge the learner stdout', () => {
+  const functionExercise = {
+    id: 'p9-guided-cell',
+    grading: {
+      tests: [{
+        id: 't', afterCode: 'print(cell_at([["red","blue"]], 0, 1))',
+        checks: [{ type: 'equals_any', value: ['blue'], target: 'test_output' }],
+      }],
+    },
+    sampleOutput: { en: 'blue', pt: 'blue' },
+  }
+
+  const scriptExercise = {
+    id: 'ex1_zero',
+    grading: { tests: [{ id: 't', checks: [{ type: 'matches', value: 'Total: 400' }] }] },
+    sampleOutput: { en: 'Total: 400', pt: 'Total: 400' },
+  }
+
+  const contentChecks = (exercise: typeof functionExercise | typeof scriptExercise) =>
+    (exercise.grading?.tests || []).flatMap(test =>
+      (test.checks || []).filter(check =>
+        ['equals', 'equals_any', 'contains', 'contains_any', 'matches', 'numeric_equals']
+          .includes(String(check.type))))
+
+  const gradedByAfterCode = (exercise: typeof functionExercise | typeof scriptExercise) => {
+    const all = contentChecks(exercise)
+    return all.length > 0 && all.every(check => (check as { target?: string }).target === 'test_output')
+  }
+
+  it('recognises a function exercise as graded elsewhere', () => {
+    expect(gradedByAfterCode(functionExercise)).toBe(true)
+  })
+
+  it('still judges stdout for a script exercise, where stdout IS the deliverable', () => {
+    expect(gradedByAfterCode(scriptExercise)).toBe(false)
+  })
+})

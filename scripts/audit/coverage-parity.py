@@ -84,11 +84,37 @@ def scenarios(ex):
                if any(check['type'] in PINS_OUTPUT for check in test['checks']))
 
 
+def all_requirements(ex):
+    """Requirements live at the exercise level AND on individual tests.
+
+    Reading only the exercise level reported 0 undisclosed while four exercises in
+    phases 10-12 demanded `.copy()` or an f-string from a test. Working through the
+    phases in a browser is what surfaced them; this is the checker catching up.
+    """
+    out = list(ex['codeRequirements'])
+    for test in ex['tests']:
+        out += test.get('codeRequirements', [])
+    return out
+
+
 def undisclosed(ex):
-    """Structural requirements the grader enforces that the task never mentions."""
+    """Requirements the grader enforces that the task never mentions."""
     text = (ex['desc'] + ' ' + ex['descPt'] + ' ' + ' '.join(ex['hints']) + ' ' + (ex['starter'] or '')).lower()
     missing = []
-    for requirement in ex['codeRequirements']:
+    seen = set()
+    for requirement in all_requirements(ex):
+        key = (requirement['kind'], requirement['value'])
+        if key in seen:
+            continue
+        seen.add(key)
+        if requirement['kind'] in ('function', 'assignment'):
+            continue                      # the starter names these; they cannot surprise
+        if requirement['kind'] in ('call', 'import'):
+            # A method or module the learner must reach for. Naming it in the task is the
+            # bar — "use json" is disclosure, "serialise it" is not.
+            if requirement['value'].lower() not in text:
+                missing.append(f"{requirement['kind']}:{requirement['value']}")
+            continue
         if requirement['kind'] != 'node':
             continue
         if requirement['value'] in IMPLIED:
@@ -149,7 +175,8 @@ print(f"   {len(hidden)} exercises")
 # it is theirs — the same limit behaviourGrading.ts documents. Making that a gate would
 # mean either failing honest exercises or redesigning them, so it is a number to watch
 # rather than a wall.
-blocking = len(gaps) + len(hidden)
+structural = [r for r in hidden if any(not item.startswith(('call:', 'import:')) for item in r['undisclosed'])]
+blocking = len(gaps) + len(structural)
 if blocking:
-    print(f"\nBLOCKING: {len(gaps)} unverified, {len(hidden)} undisclosed")
+    print(f"\nBLOCKING: {len(gaps)} unverified, {len(structural)} undisclosed structure")
 sys.exit(1 if blocking else 0)

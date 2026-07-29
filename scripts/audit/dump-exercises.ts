@@ -25,6 +25,11 @@ const out = ALL_PHASES
       hidden: !!test.hidden,
       inputs: test.inputs || [],
       afterCode: (test as { afterCode?: string }).afterCode ?? null,
+      // Requirements live at BOTH levels. ex7_zero declares its `While` only on the
+      // test, so reading the exercise level alone under-reports the guard rails and
+      // makes an exercise look weaker than it is.
+      codeRequirements: ((test as { codeRequirements?: Array<{ kind: string, value: unknown }> }).codeRequirements || [])
+        .map(r => ({ kind: r.kind, value: String(r.value) })),
       checks: (test.checks || []).map(check => ({
         type: String(check.type),
         value: (check as { value?: unknown }).value ?? null,
