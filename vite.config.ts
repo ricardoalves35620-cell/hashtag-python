@@ -13,7 +13,17 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'autoUpdate' FORCES skipWaiting:true and clientsClaim:true in the generated
+      // service worker, silently overriding the two options set under `workbox` below —
+      // including the one whose comment says "Do NOT claim open tabs mid-session".
+      //
+      // The result is the failure that comment describes: a new build activates under a
+      // running tab, cleanupOutdatedCaches deletes the chunks that tab is still holding,
+      // the next lazy import 404s, and the learner gets "Algo interrompeu a aula" on
+      // reload. Reported from the app as happening often.
+      //
+      // 'prompt' respects them: the new worker waits until the old page is gone.
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'icons/*.png'],
       // Single source of truth for the manifest. public/manifest.json used to be a
       // second, hand-maintained copy that Vite shipped verbatim; the two had already

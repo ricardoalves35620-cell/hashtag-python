@@ -31,6 +31,7 @@
     "audit:learner": "node scripts/audit/learner-walkthrough.mjs",
     "audit:language": "tsx scripts/audit/language-isolation.ts",
     "audit:presentation": "tsx scripts/audit/presentation-tolerance.ts",
+    "audit:sw": "node scripts/audit/sw-update-policy.mjs",
     "audit:pt-grading": "tsx scripts/audit/dump-exercises.ts > /tmp/ex0_20.json && node scripts/audit/pt-grading.mjs",
     "audit:content:extra": "npm run audit:content:free-values && npm run audit:content:dead-stores && npm run audit:content:drift && npm run audit:content:expectations && npm run audit:content:parity && npm run audit:content:cheat && npm run audit:presentation",
     "audit:slim": "node scripts/audit/create-slim-report.mjs",
