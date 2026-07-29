@@ -667,6 +667,51 @@ def _ex3_zero():
     print(f"3-day total: ${total}")
 
 
+# The three fill-in exercises that take input(). They had no reference, so every checker
+# that works by running a program skipped them in silence — which is how phases 7 and 8
+# got caught promising English output while phases 4-6 went unread entirely.
+
+
+@solution('ex4_fill')
+def _ex4_fill():
+    name = input("Name: ")
+    age = int(input("Age: "))
+    height = float(input("Height (m): "))
+    phone = input("Phone: ")
+
+    print(f"{name}, {age} years, {height}m")
+    print(f"Next year: {age + 1}")
+    print(f"Phone: {phone}")
+
+
+@solution('ex5_fill')
+def _ex5_fill():
+    amount = int(input("Amount: $"))
+    days = int(input("Days since plan start: "))
+
+    if amount > 5000 and days < 30:
+        print("🚨 FLAGGED for investigation")
+    else:
+        print("✅ Passed fraud check")
+
+
+@solution('ex6_fill')
+def _ex6_fill():
+    age = int(input("Age: "))
+    base = 1000
+
+    if age < 21:
+        fee = base * 2.2
+    elif age < 26:
+        fee = base * 1.6
+    elif age < 60:
+        fee = base * 1.0
+    else:
+        fee = base * 1.5
+
+    print("Fee:", fee)
+
+
 @solution('ex6_zero')
 def _ex6_zero():
     score = 9.2

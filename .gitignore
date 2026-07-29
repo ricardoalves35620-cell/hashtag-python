@@ -25,3 +25,4 @@ public/pyodide/
 
 # Python bytecode from the audit scripts
 scripts/audit/__pycache__/
+audit-reports/

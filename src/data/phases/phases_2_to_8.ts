@@ -21,7 +21,7 @@ export const phase2: Phase = {
       { type: 'heading', content: { en: '🌍 Math that lands rovers on Mars', pt: '🌍 Matemática que pousa rovers em Marte' } },
       { type: 'text', content: {
         en: 'NASA used Python math to land the Perseverance rover within 2.4 meters of its target — after traveling 470 MILLION kilometers. 🚀\n\nCloser to home:\n• Uber calculates 20 million ride prices per day with these operators\n• Nubank processes millions of interest calculations per hour\n• Every subscription refund in the world uses subtraction and multiplication\n\nThe 6 operators you learn today power all of it.',
-        pt: 'A NASA usou matemática Python para pousar o rover Perseverance com 2,4 metros de precisão — após viajar 470 MILHÕES de quilômetros. 🚀\n\nMais perto de casa:\n• O Uber calcula 20 milhões de preços de corrida por dia com esses operadores\n• O Nubank processa milhões de cálculos de juros por hora\n• Todo pagamento de assinatura no mundo usa subtração e multiplicação\n\nOs 6 operadores que você aprende hoje alimentam tudo isso.'
+        pt: 'A NASA usou matemática Python para pousar o rover Perseverance com 2,4 metros de precisão — após viajar 470 MILHÕES de quilômetros. 🚀\n\nMais perto de casa:\n• O Uber calcula 20 milhões de preços de corrida por dia com esses operadores\n• O Nubank processa milhões de cálculos de juros por hora\n• Toda assinatura paga no mundo usa subtração e multiplicação\n\nOs 6 operadores que você aprende hoje alimentam tudo isso.'
       }},
 
       { type: 'heading', content: { en: '🧩 A calculator with memory', pt: '🧩 Uma calculadora com memória' } },
@@ -82,7 +82,7 @@ print((10 + 20 + 30) / 3)   # ✅ 20.0 — correct average` },
       { type: 'heading', content: { en: '🏗️ Real Scenario 1: Freelance invoice release', pt: '🏗️ Cenário Real 1: Liberação de uma fatura freelance' } },
       { type: 'text', content: {
         en: 'A real freelance invoice, step by step:\n🔸 Invoice total: $5,230\n🔸 Deposit already paid: $250\n🔸 Platform releases: 80% of the remainder\n🔸 Company processing fee: 2% of refund\n\nThis is EXACTLY how reviewers calculate every day:',
-        pt: 'Uma fatura freelance real, passo a passo:\n🔸 Total da fatura: R$5.230\n🔸 Depósito já pago: R$250\n🔸 Plataforma libera: 80% do restante\n🔸 Taxa de processamento: 2% do pagamento\n\nÉ EXATAMENTE assim que revisores calculam todo dia:'
+        pt: 'Uma fatura freelance real, passo a passo:\n🔸 Total da fatura: R$5.230\n🔸 Depósito já pago: R$250\n🔸 Plataforma libera: 80% do restante\n🔸 Taxa de processamento: 2% do reembolso\n\nÉ EXATAMENTE assim que revisores calculam todo dia:'
       }},
       { type: 'code', code: `# Step-by-step subscription refund
 amount     = 5230
@@ -202,7 +202,7 @@ print(n, "** 2 =", n ** 2)`,
       title: { en: '🟡 Fill the Gap: Refund Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
       description: {
         en: 'Goal:\nA two-step refund calculation is almost complete. Fill in the two missing operator symbols.\n\nBlank 1 — subtract the discount from the order amount\n\nBlank 2 — multiply the result by 0.75 to apply a 75% cover rate\n\nExample, with amount = 8000 and discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0',
-        pt: 'Objetivo:\nUm cálculo de pagamento em duas etapas está quase completo. Preencha os dois símbolos de operador que faltam.\n\nBlank 1 — subtraia o desconto do valor\n\nBlank 2 — multiplique o resultado por 0.75 para aplicar uma taxa de 75%\n\nExemplo, com amount = 8000 e discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0'
+        pt: 'Objetivo:\nUm cálculo de reembolso em duas etapas está quase completo. Preencha os dois símbolos de operador que faltam.\n\nBlank 1 — subtraia o desconto do valor\n\nBlank 2 — multiplique o resultado por 0.75 para aplicar uma taxa de 75%\n\nExemplo, com amount = 8000 e discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0'
       },
       starterCode: `amount = 8000
 discount = 300
@@ -223,7 +223,7 @@ print("Final refund:", refund)`,
       title: { en: '🔴 From Scratch: Music School Budget', pt: '🔴 Do Zero: Orçamento Escola de Música' },
       description: {
         en: 'Goal:\nA music school has a yearly budget of 48000. Split it into four categories using the given percentages, then add all four shares together to verify the total matches the original budget.\n\nProgram requirements\n\n1. Calculate\n- Materials: 30% of the budget\n- Teachers: 45% of the budget\n- Equipment: 15% of the budget\n- Admin: 10% of the budget\n\n2. Display\n- Each category\'s share\n- The sum of all four shares as a verification\n\nExample:\nMaterials: 14400.0\nTeachers: 21600.0\nEquipment: 7200.0\nAdmin: 4800.0\nTotal check: 48000.0',
-        pt: 'Objetivo:\nUma escola de música tem um orçamento anual de 48000. Divida entre quatro categorias usando as porcentagens dadas, depois some as quatro partes para verificar se o total bate com o orçamento original.\n\nRequisitos do programa\n\n1. Calcular\n- Materiais: 30% do orçamento\n- Professores: 45% do orçamento\n- Equipamentos: 15% do orçamento\n- Administração: 10% do orçamento\n\n2. Mostrar\n- A parte de cada categoria\n- A soma das quatro partes como verificação\n\nExemplo:\nMaterials: 14400.0\nTeachers: 21600.0\nEquipment: 7200.0\nAdmin: 4800.0\nTotal check: 48000.0'
+        pt: 'Objetivo:\nUma escola de música tem um orçamento anual de 48000. Divida entre quatro categorias usando as porcentagens dadas, depois some as quatro partes para verificar se o total bate com o orçamento original.\n\nRequisitos do programa\n\n1. Calcular\n- Materiais: 30% do orçamento\n- Professores: 45% do orçamento\n- Equipamentos: 15% do orçamento\n- Administração: 10% do orçamento\n\n2. Mostrar\n- A parte de cada categoria\n- A soma das quatro partes como verificação\n\nExemplo:\nMateriais: 14400.0\nProfessores: 21600.0\nEquipamentos: 7200.0\nAdministrativo: 4800.0\nConferência do total: 48000.0'
       },
       starterCode: `budget = 48000
 
@@ -232,7 +232,7 @@ print("Final refund:", refund)`,
         { en: '30% in Python: budget * 0.30  (move the decimal two places left: 30 → 0.30)', pt: '30% em Python: budget * 0.30  (mova o ponto dois lugares à esquerda: 30 → 0.30)' },
         { en: 'Total check: print("Total check:", materials + teachers + equipment + admin)', pt: 'Verificação: print("Total check:", materials + teachers + equipment + admin)' }
       ],
-      sampleOutput: { en: 'Materials: 14400.0\nTeachers: 21600.0\nEquipment: 7200.0\nAdmin: 4800.0\nTotal check: 48000.0', pt: 'Materials: 14400.0\nTeachers: 21600.0\nEquipment: 7200.0\nAdmin: 4800.0\nTotal check: 48000.0' }
+      sampleOutput: { en: 'Materials: 14400.0\nTeachers: 21600.0\nEquipment: 7200.0\nAdmin: 4800.0\nTotal check: 48000.0', pt: 'Materiais: 14400.0\nProfessores: 21600.0\nEquipamentos: 7200.0\nAdministrativo: 4800.0\nConferência do total: 48000.0' }
     }
   ],
 
@@ -471,7 +471,7 @@ print(x == 5)   # x é igual a 5? → True`
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: name variables like you\'d explain them to a colleague.\n❌ x, a, temp, data2\n✅ client_name, total_refund, monthly_fee\nGood names make code self-documenting. 6 months from now, "x" tells you nothing.',
-        pt: '💡 DICA PRO: nomeie variáveis como explicaria a um colega.\n❌ x, a, temp, data2\n✅ nome_cliente, total_pagamento, taxa_mensal\nBons nomes tornam o código auto-documentado. Daqui 6 meses, "x" não te diz nada.'
+        pt: '💡 DICA PRO: nomeie variáveis como explicaria a um colega.\n❌ x, a, temp, data2\n✅ nome_cliente, total_reembolso, taxa_mensal\nBons nomes tornam o código auto-documentado. Daqui 6 meses, "x" não te diz nada.'
       }},
 
       { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
@@ -488,7 +488,7 @@ print(x == 5)   # x é igual a 5? → True`
       title: { en: '🟢 Guided: Watch Variables Change', pt: '🟢 Guiado: Veja Variáveis Mudarem' },
       description: {
         en: 'Goal:\nRun the code and watch how a running total changes. The variable starts at 0 and is updated three times with +=. After tracing each update, add a fourth purchase of 500 to the code, predict the new total, and run to confirm.\n\nOutput with the fourth purchase added:\nStart: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035\nAfter tiles: 3535',
-        pt: 'Objetivo:\nExecute o código e veja como um total acumulado muda. A variável começa em 0 e é atualizada três vezes com +=. Depois de acompanhar cada atualização, adicione uma quarta compra de 500 ao código, preveja o novo total e execute para confirmar.\n\nSaída com a quarta compra adicionada:\nStart: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035\nAfter tiles: 3535'
+        pt: 'Objetivo:\nExecute o código e veja como um total acumulado muda. A variável começa em 0 e é atualizada três vezes com +=. Depois de acompanhar cada atualização, adicione uma quarta compra de 500 ao código, preveja o novo total e execute para confirmar.\n\nSaída com a quarta compra adicionada:\nInício: 0\nApós caixas: 960\nApós aço: 2235\nApós tinta: 3035\nAfter tiles: 3535'
       },
       starterCode: `total = 0
 print("Start:", total)
@@ -505,14 +505,14 @@ print("After paint:", total)`,
         { en: 'Add after the last print: total += 500 then print("After tiles:", total)', pt: 'Adicione após o último print: total += 500 e depois print("After tiles:", total)' },
         { en: 'New total: 3035 + 500 = 3535', pt: 'Novo total: 3035 + 500 = 3535' }
       ],
-      sampleOutput: { en: 'Start: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035\nAfter tiles: 3535', pt: 'Start: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035\nAfter tiles: 3535' }
+      sampleOutput: { en: 'Start: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035', pt: 'Início: 0\nApós caixas: 960\nApós aço: 2235\nApós tinta: 3035' }
     },
     {
       id: 'ex3_fill',
       title: { en: '🟡 Fill the Gap: Client File', pt: '🟡 Preencha: Ficha de Cliente' },
       description: {
         en: 'Goal:\nFill in the four blanks to set up a client file and calculate the annual fee.\n\nBlank 1 — client_name: any name, as text (needs quotes)\n\nBlank 2 — client_age: any whole number (no quotes)\n\nBlank 3 — plan_active: True or False (capital first letter, no quotes)\n\nBlank 4 — the operator between monthly_fee and 12 to get the annual fee\n\nExample output:\nClient: Maria, age 35\nAnnual: 5400\nActive: True',
-        pt: 'Objetivo:\nPreencha as quatro lacunas para montar uma ficha de cliente e calcular a taxa anual.\n\nBlank 1 — client_name: qualquer nome, como texto (precisa de aspas)\n\nBlank 2 — client_age: qualquer número inteiro (sem aspas)\n\nBlank 3 — plan_active: True ou False (inicial maiúscula, sem aspas)\n\nBlank 4 — o operador entre monthly_fee e 12 para obter a taxa anual\n\nExemplo de saída:\nClient: Maria, age 35\nAnnual: 5400\nActive: True'
+        pt: 'Objetivo:\nPreencha as quatro lacunas para montar uma ficha de cliente e calcular a taxa anual.\n\nBlank 1 — client_name: qualquer nome, como texto (precisa de aspas)\n\nBlank 2 — client_age: qualquer número inteiro (sem aspas)\n\nBlank 3 — plan_active: True ou False (inicial maiúscula, sem aspas)\n\nBlank 4 — o operador entre monthly_fee e 12 para obter a taxa anual\n\nExemplo de saída:\nCliente: Maria, idade 35\nAnual: 5400\nAtivo: True'
       },
       starterCode: `client_name     = ___          # any name — text needs quotes!
 client_age      = ___          # any age — number, no quotes
@@ -548,7 +548,7 @@ print(f"Active: {plan_active}")`,
 
   quiz: [
     { id: 'q3_1', question: { en: 'What does x = 10 do?', pt: 'O que x = 10 faz?' }, options: [{ en: 'Stores 10 in a box labelled x', pt: 'Armazena 10 numa caixa chamada x' }, { en: 'Compares x to 10', pt: 'Compara x com 10' }, { en: 'Prints 10', pt: 'Imprime 10' }, { en: 'Creates the number 10', pt: 'Cria o número 10' }], correctIndex: 0, explanation: { en: '= is assignment (store). == is comparison (check equality).', pt: '= é atribuição (armazenar). == é comparação (verificar igualdade).' } },
-    { id: 'q3_2', question: { en: 'Which name is VALID?', pt: 'Qual nome é VÁLIDO?' }, options: [{ en: 'total_refund', pt: 'total_pagamento' }, { en: '2total', pt: '2total' }, { en: 'total-refund', pt: 'total-pagamento' }, { en: 'total refund', pt: 'total pagamento' }], correctIndex: 0, explanation: { en: 'Letters, numbers, underscore only. Can\'t start with a number. No hyphens or spaces.', pt: 'Apenas letras, números e underscore. Não pode começar com número. Sem hífens ou espaços.' } },
+    { id: 'q3_2', question: { en: 'Which name is VALID?', pt: 'Qual nome é VÁLIDO?' }, options: [{ en: 'total_refund', pt: 'total_reembolso' }, { en: '2total', pt: '2total' }, { en: 'total-refund', pt: 'total-reembolso' }, { en: 'total refund', pt: 'total reembolso' }], correctIndex: 0, explanation: { en: 'Letters, numbers, underscore only. Can\'t start with a number. No hyphens or spaces.', pt: 'Apenas letras, números e underscore. Não pode começar com número. Sem hífens ou espaços.' } },
     { id: 'q3_3', question: { en: 'x = 100\nx += 50\nprint(x) → ?', pt: 'x = 100\nx += 50\nprint(x) → ?' }, options: [{ en: '150', pt: '150' }, { en: '100', pt: '100' }, { en: '50', pt: '50' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: '+= means "add to current". 100 + 50 = 150.', pt: '+= significa "adicione ao atual". 100 + 50 = 150.' } },
     { id: 'q3_4', question: { en: 'The 4 basic types are:', pt: 'Os 4 tipos básicos são:' }, options: [{ en: 'str, int, float, bool', pt: 'str, int, float, bool' }, { en: 'text, num, dec, bit', pt: 'text, num, dec, bit' }, { en: 'string, number, real, logic', pt: 'string, number, real, logic' }, { en: 'char, int, double, boolean', pt: 'char, int, double, boolean' }], correctIndex: 0, explanation: { en: 'str (text), int (whole), float (decimal), bool (True/False). These four cover most programs.', pt: 'str (texto), int (inteiro), float (decimal), bool (True/False). Esses quatro cobrem a maioria dos programas.' } },
     { id: 'q3_5', question: { en: 'f"Age: {30 + 5}" produces:', pt: 'f"Idade: {30 + 5}" produz:' }, options: [{ en: 'Age: 35', pt: 'Idade: 35' }, { en: 'Age: {30 + 5}', pt: 'Idade: {30 + 5}' }, { en: 'Age: 30 + 5', pt: 'Idade: 30 + 5' }, { en: 'Error', pt: 'Erro' }], correctIndex: 0, explanation: { en: 'f-strings evaluate expressions inside braces. 30+5 is calculated → 35.', pt: 'f-strings avaliam expressões dentro das chaves. 30+5 é calculado → 35.' } },
@@ -770,7 +770,7 @@ n = float(input("Height: "))
       title: { en: '🟢 Guided: See the Type Problem', pt: '🟢 Guiado: Veja o Problema do Tipo' },
       description: {
         en: 'Goal:\nRun the code and type a number when prompted. Observe that input() always returns text, even when you type digits. Notice how int() converts that text into a real number that math can work with.\n\nThen change the multiplier at the end, run with a different number, and predict the result before pressing Enter.\n\nExample, typing 25, before your change:\nMath now works: 50',
-        pt: 'Objetivo:\nExecute o código e digite um número quando solicitado. Observe que input() sempre retorna texto, mesmo quando você digita dígitos. Perceba como int() converte esse texto num número real no qual a matemática funciona.\n\nDepois mude o multiplicador no final, execute com um número diferente e preveja o resultado antes de pressionar Enter.\n\nExemplo, digitando 25, antes da sua alteração:\nMath now works: 50'
+        pt: 'Objetivo:\nExecute o código e digite um número quando solicitado. Observe que input() sempre retorna texto, mesmo quando você digita dígitos. Perceba como int() converte esse texto num número real no qual a matemática funciona.\n\nDepois mude o multiplicador no final, execute com um número diferente e preveja o resultado antes de pressionar Enter.\n\nExemplo, digitando 25, antes da sua alteração:\nA conta agora funciona: 50'
       },
       starterCode: `raw = input("Type a number: ")
 print("Raw value:", raw)
@@ -900,7 +900,7 @@ print(f"Você paga: {pay}")`,
     title: { en: 'Interactive Order System', pt: 'Sistema Interativo de Pedidos' },
     scenario: {
       en: 'Build the complete order intake: collect client data with proper types, calculate the refund with an 85% cover rate, and print a professional summary.',
-      pt: 'Construa a entrada completa de pedido: colete dados com tipos corretos, calcule o pagamento com taxa de uma taxa de 85% e imprima um resumo profissional.'
+      pt: 'Construa a entrada completa de pedido: colete dados com tipos corretos, calcule o reembolso com uma taxa de cobertura de 85% e imprima um resumo profissional.'
     },
     requirements: {
       en: [
@@ -914,8 +914,8 @@ print(f"Você paga: {pay}")`,
         'Pergunte nome do cliente (texto)',
         'Pergunte valor (converta para int)',
         'Pergunte desconto (converta para int)',
-        'Calcule: pagamento = (valor - desconto) * 0.85',
-        'Imprima nome e pagamento num resumo'
+        'Calcule: reembolso = (valor - desconto) * 0.85',
+        'Imprima nome e reembolso num resumo'
       ]
     },
     starterCode: `# Interactive order intake:`,
@@ -1198,7 +1198,7 @@ if int(palpite) == 10:
       title: { en: '🟢 Guided: Trace the Decision', pt: '🟢 Guiado: Rastreie a Decisão' },
       description: {
         en: 'Goal:\nRun the code, type a number when prompted, and trace the if/else decision. Test with a value above the threshold to see the if-block run and the else-block skip, then test with a value below to see the opposite. Finally, try the exact boundary value to see which branch catches it.\n\nExample, typing 8000:\n🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---\n\nExample, typing 2000:\n🟢 Standard processing\nAuto-queue assigned\n--- check complete ---',
-        pt: 'Objetivo:\nExecute o código, digite um número quando solicitado e acompanhe a decisão do if/else. Teste com um valor acima do limite para ver o bloco if executar e o else ser pulado, depois teste com um valor abaixo para ver o oposto. Por fim, tente o valor exato do limite para ver qual ramo captura.\n\nExemplo, digitando 8000:\n🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---\n\nExemplo, digitando 2000:\n🟢 Standard processing\nAuto-queue assigned\n--- check complete ---'
+        pt: 'Objetivo:\nExecute o código, digite um número quando solicitado e acompanhe a decisão do if/else. Teste com um valor acima do limite para ver o bloco if executar e o else ser pulado, depois teste com um valor abaixo para ver o oposto. Por fim, tente o valor exato do limite para ver qual ramo captura.\n\nExemplo, digitando 8000:\n🔴 PRIORIDADE ALTA\nAnalista especialista designado\n--- verificação concluída ---\n\nExemplo, digitando 2000:\n🟢 Processamento padrão\nFila automática atribuída\n--- verificação concluída ---'
       },
       starterCode: `amount = int(input("Amount: $"))
 
@@ -1213,14 +1213,14 @@ print("--- check complete ---")`,
       hints: [
         { en: 'The last print always runs — it is OUTSIDE the if/else block (no indentation)', pt: 'O último print sempre executa — está FORA do bloco if/else (sem indentação)' }
       ],
-      sampleOutput: { en: '🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---', pt: '🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---' }
+      sampleOutput: { en: '🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---', pt: '🔴 PRIORIDADE ALTA\nAnalista especialista designado\n--- verificação concluída ---' }
     },
     {
       id: 'ex5_fill',
       title: { en: '🟡 Fill the Gap: Fraud Gate', pt: '🟡 Preencha: Portão de Fraude' },
       description: {
         en: 'Goal:\nThis code flags suspicious orders. Fill in the three blanks on the if-condition line.\n\nThe rule: flag an order if the amount is more than 5000 AND the plan started fewer than 30 days ago.\n\nBlank 1 — the comparison operator for "greater than 5000"\n\nBlank 2 — the keyword that requires both conditions to be true at the same time\n\nBlank 3 — the comparison operator for "fewer than 30"\n\nTest with amount = 8000, days = 10:\nFLAGGED for investigation',
-        pt: 'Objetivo:\nEste código sinaliza pedidos suspeitos. Preencha as três lacunas na linha da condição if.\n\nA regra: sinalize um pedido se o valor for maior que 5000 E o plano tiver começado há menos de 30 dias.\n\nBlank 1 — o operador de comparação para "maior que 5000"\n\nBlank 2 — a palavra-chave que exige que ambas as condições sejam verdadeiras ao mesmo tempo\n\nBlank 3 — o operador de comparação para "menos de 30"\n\nTeste com amount = 8000, days = 10:\nFLAGGED for investigation'
+        pt: 'Objetivo:\nEste código sinaliza pedidos suspeitos. Preencha as três lacunas na linha da condição if.\n\nA regra: sinalize um pedido se o valor for maior que 5000 E o plano tiver começado há menos de 30 dias.\n\nBlank 1 — o operador de comparação para "maior que 5000"\n\nBlank 2 — a palavra-chave que exige que ambas as condições sejam verdadeiras ao mesmo tempo\n\nBlank 3 — o operador de comparação para "menos de 30"\n\nTeste com amount = 8000, days = 10:\nMARCADO para investigação'
       },
       starterCode: `amount = int(input("Amount: $"))
 days = int(input("Days since plan start: "))
@@ -1239,7 +1239,7 @@ else:
 days = int(input("Days since plan start: "))
 
 if amount > 5000 and days < 30:
-    print("\U0001f6a8 FLAGGED for investigation")
+    print("🚨 FLAGGED for investigation")
 else:
     print("\u2705 Passed fraud check")`,
         cases: [
@@ -1255,7 +1255,7 @@ else:
         { en: 'Large: amount > 5000  |  Recent: days < 30  |  Both: and between them', pt: 'Grande: amount > 5000  |  Recente: days < 30  |  Ambos: and entre eles' },
         { en: 'Full line: if amount > 5000 and days < 30:', pt: 'Linha completa: if amount > 5000 and days < 30:' }
       ],
-      sampleOutput: { en: '🚨 FLAGGED for investigation', pt: '🚨 FLAGGED for investigation' }
+      sampleOutput: { en: '🚨 FLAGGED for investigation', pt: '🚨 MARCADO para investigação' }
     },
     {
       id: 'ex5_zero',
@@ -1274,12 +1274,12 @@ else:
         reference: {
           en: `age = int(input("Age: "))
 if age >= 18:
-    print("\U0001f3ac Enjoy the movie!")
+    print("🎬 Enjoy the movie!")
 else:
     print("Sorry, you are too young for this film.")`,
           pt: `age = int(input("Age: "))
 if age >= 18:
-    print("\U0001f3ac Aproveite o filme!")
+    print("🎬 Aproveite o filme!")
 else:
     print("Desculpe, você é muito jovem para este filme.")`,
         },
@@ -1567,7 +1567,7 @@ else:
       title: { en: '🟡 Fill: Fee Brackets', pt: '🟡 Preencha: Faixas de Taxa' },
       description: {
         en: 'Goal:\nThis code calculates a subscription fee based on the driver\'s age. Fill in the three blanks.\n\nBlank 1 — the comparison operator after age to catch the youngest bracket (under 21)\n\nBlank 2 — the number in the elif condition that separates the second bracket (under 26)\n\nBlank 3 — the keyword that catches everyone not matched by the branches above\n\nTest with age = 25:\nFee: 1600.0',
-        pt: 'Objetivo:\nEste código calcula uma taxa de assinatura baseada na idade do motorista. Preencha as três lacunas.\n\nBlank 1 — o operador de comparação após age para capturar a faixa mais jovem (abaixo de 21)\n\nBlank 2 — o número na condição elif que separa a segunda faixa (abaixo de 26)\n\nBlank 3 — a palavra-chave que captura todos que não foram cobertos pelos ramos acima\n\nTeste com age = 25:\nFee: 1600.0'
+        pt: 'Objetivo:\nEste código calcula uma taxa de assinatura baseada na idade do motorista. Preencha as três lacunas.\n\nBlank 1 — o operador de comparação após age para capturar a faixa mais jovem (abaixo de 21)\n\nBlank 2 — o número na condição elif que separa a segunda faixa (abaixo de 26)\n\nBlank 3 — a palavra-chave que captura todos que não foram cobertos pelos ramos acima\n\nTeste com age = 25:\nTaxa: 1600.0'
       },
       starterCode: `age = int(input("Age: "))
 base = 1000
@@ -1616,7 +1616,7 @@ print("Fee:", fee)`,
         { en: 'Youngest: age < 21', pt: 'Mais jovem: age < 21' },
         { en: 'The catch-all is else:', pt: 'O captura-tudo é else:' }
       ],
-      sampleOutput: { en: 'Fee: 1600.0', pt: 'Fee: 1600.0' }
+      sampleOutput: { en: 'Fee: 1600.0', pt: 'Taxa: 1600.0' }
     },
     {
       id: 'ex6_zero',
@@ -1909,7 +1909,7 @@ while contador <= 5:        # 10 <= 5 é False, então o loop nunca executa
       title: { en: '🟢 Guided: Trace the Counter', pt: '🟢 Guiado: Rastreie o Contador' },
       description: {
         en: 'Goal:\nRun the code and trace how the counter changes on each turn of the while loop. Observe that the loop continues as long as the condition is true and stops at the first value that fails the check. Then change the limit, predict how many iterations will occur and what the final counter value will be, and run to confirm.\n\nOutput with the original limit of 5:\nOrder # 1 processed\nOrder # 2 processed\nOrder # 3 processed\nOrder # 4 processed\nOrder # 5 processed\nFinal count value: 6',
-        pt: 'Objetivo:\nExecute o código e acompanhe como o contador muda a cada volta do loop while. Observe que o loop continua enquanto a condição for verdadeira e para no primeiro valor que falha na verificação. Depois mude o limite, preveja quantas iterações ocorrerão e qual será o valor final do contador, e execute para confirmar.\n\nSaída com o limite original de 5:\nOrder # 1 processed\nOrder # 2 processed\nOrder # 3 processed\nOrder # 4 processed\nOrder # 5 processed\nFinal count value: 6'
+        pt: 'Objetivo:\nExecute o código e acompanhe como o contador muda a cada volta do loop while. Observe que o loop continua enquanto a condição for verdadeira e para no primeiro valor que falha na verificação. Depois mude o limite, preveja quantas iterações ocorrerão e qual será o valor final do contador, e execute para confirmar.\n\nSaída com o limite original de 5:\nPedido nº 1 processado\nPedido nº 2 processado\nPedido nº 3 processado\nPedido nº 4 processado\nPedido nº 5 processado\nValor final do contador: 6'
       },
       starterCode: `count = 1
 while count <= 5:
@@ -1926,7 +1926,7 @@ print("Final count value:", count)`,
       title: { en: '🟡 Fill: Coffee Shop Stock Countdown', pt: '🟡 Preencha: Contagem de Copos da Cafeteria' },
       description: {
         en: 'Goal:\nA coffee shop starts the day with 60 disposable cups. Each order uses 15 cups. The loop should run while there are enough cups for at least one more order. Fill in the three blanks.\n\nBlank 1 — the condition: keep going while stock is at least 15\n\nBlank 2 — consume 15 cups from stock each turn\n\nBlank 3 — advance the order counter each turn\n\nExample output:\nOrder 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!',
-        pt: 'Objetivo:\nUma cafeteria começa o dia com 60 copos descartáveis. Cada pedido usa 15 copos. O loop deve rodar enquanto houver copos para pelo menos mais um pedido. Preencha as três lacunas.\n\nBlank 1 — a condição: continuar enquanto o estoque for pelo menos 15\n\nBlank 2 — consumir 15 copos do estoque a cada volta\n\nBlank 3 — avançar o contador de pedidos a cada volta\n\nExemplo de saída:\nOrder 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!'
+        pt: 'Objetivo:\nUma cafeteria começa o dia com 60 copos descartáveis. Cada pedido usa 15 copos. O loop deve rodar enquanto houver copos para pelo menos mais um pedido. Preencha as três lacunas.\n\nBlank 1 — a condição: continuar enquanto o estoque for pelo menos 15\n\nBlank 2 — consumir 15 copos do estoque a cada volta\n\nBlank 3 — avançar o contador de pedidos a cada volta\n\nExemplo de saída:\nPedido 1: 45 copos restantes\nPedido 2: 30 copos restantes\nPedido 3: 15 copos restantes\nPedido 4: 0 copos restantes\nPrecisa repor o estoque!'
       },
       starterCode: `stock = 60
 order = 1
@@ -1948,7 +1948,7 @@ print("Restock needed!")`,
       title: { en: '🔴 From Scratch: Batch + Average', pt: '🔴 Do Zero: Lote + Média' },
       description: {
         en: 'Goal:\nWrite a batch processor that collects order values in a loop, adds them to a running total, and calculates the average at the end.\n\nProgram requirements\n\n1. Set up\n- A total starting at zero\n- A counter starting at 1\n\n2. Repeat for 4 orders\n- Ask for the order value\n- Add it to the running total\n- Advance the counter\n\n3. Finish\n- Show the total\n- Show the average (total divided by 4)\n\nThe loop must stop on its own after 4 orders — do not write the number of iterations by hand.\n\nExample:\nTotal: 10200\nAverage: 2550.0',
-        pt: 'Objetivo:\nEscreva um processador de lotes que coleta valores de pedidos num loop, soma ao total acumulado e calcula a média ao final.\n\nRequisitos do programa\n\n1. Preparar\n- Um total começando em zero\n- Um contador começando em 1\n\n2. Repetir para 4 pedidos\n- Pergunte o valor do pedido\n- Adicione ao total acumulado\n- Avance o contador\n\n3. Encerrar\n- Mostre o total\n- Mostre a média (total dividido por 4)\n\nO loop deve parar sozinho após 4 pedidos — não escreva o número de iterações à mão.\n\nExemplo:\nTotal: 10200\nAverage: 2550.0'
+        pt: 'Objetivo:\nEscreva um processador de lotes que coleta valores de pedidos num loop, soma ao total acumulado e calcula a média ao final.\n\nRequisitos do programa\n\n1. Preparar\n- Um total começando em zero\n- Um contador começando em 1\n\n2. Repetir para 4 pedidos\n- Pergunte o valor do pedido\n- Adicione ao total acumulado\n- Avance o contador\n\n3. Encerrar\n- Mostre o total\n- Mostre a média (total dividido por 4)\n\nO loop deve parar sozinho após 4 pedidos — não escreva o número de iterações à mão.\n\nExemplo:\nTotal: 10200\nMédia: 2550.0'
       },
       starterCode: `# Batch processor (4 orders):`,
       suggestedInputs: ['2550', '2550', '2550', '2550'],
@@ -1970,7 +1970,7 @@ print("Restock needed!")`,
         { en: 'total = 0 and count = 1 before the loop', pt: 'total = 0 e count = 1 antes do loop' },
         { en: 'Average: total / 4 (after the loop)', pt: 'Média: total / 4 (após o loop)' }
       ],
-      sampleOutput: { en: 'Total: 10200\nAverage: 2550.0', pt: 'Total: 10200\nAverage: 2550.0' }
+      sampleOutput: { en: 'Total: 10200\nAverage: 2550.0', pt: 'Total: 10200\nMédia: 2550.0' }
     }
   ],
 
@@ -1987,11 +1987,11 @@ print("Restock needed!")`,
     title: { en: 'Monthly Batch + Statistics', pt: 'Lote Mensal + Estatísticas' },
     scenario: {
       en: 'Month-end batch: process 5 orders with a $300 discount each, then report total, average, and how many were above $3000 refund.',
-      pt: 'Lote de fim de mês: processe 5 pedidos com R$300 de desconto cada, depois reporte total, média e quantos ficaram acima de R$3000 de pagamento.'
+      pt: 'Lote de fim de mês: processe 5 pedidos com R$300 de desconto cada, depois reporte total, média e quantos ficaram acima de R$3000 de reembolso.'
     },
     requirements: {
       en: ['Loop exactly 5 times', 'Ask amount, subtract 300', 'Accumulate total', 'Count refunds above 3000', 'Print total, average and count'],
-      pt: ['Loop exatamente 5 vezes', 'Pergunte valor, subtraia 300', 'Acumule total', 'Conte pagamentos acima de 3000', 'Imprima total, média e contagem']
+      pt: ['Loop exatamente 5 vezes', 'Pergunte valor, subtraia 300', 'Acumule total', 'Conte reembolsos acima de 3000', 'Imprima total, média e contagem']
     },
     starterCode: `total = 0
 big_count = 0
@@ -2159,13 +2159,13 @@ criticos = 0
 
 print("=== FILA DA MANHÃ ===")
 for valor in valores:
-    pagamento = valor - 250
+    reembolso = valor - 250
     total += pagamento
     if valor > 8000:
         criticos += 1
         print(f"🔴 R\${valor} → CRÍTICO, encaminhando")
     else:
-        print(f"🟢 R\${valor} → pagamento R\${pagamento}")
+        print(f"🟢 R\${valor} → reembolso R\${reembolso}")
 
 print()
 print(f"Fila: {len(valores)} pedidos")
@@ -2255,7 +2255,7 @@ print(total)              # 60 ✅
       title: { en: '🟢 Guided: One Item Per Turn', pt: '🟢 Guiado: Um Item Por Vez' },
       description: {
         en: 'Goal:\nRun the code and watch how a for loop processes each item in a list, one at a time. Observe that no counter is needed — the loop automatically visits every element. Then add a fourth item to the list before the loop, predict what changes in the output, and run to confirm.\n\nOutput before your change:\nQueue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!',
-        pt: 'Objetivo:\nExecute o código e veja como um loop for processa cada item de uma lista, um por vez. Observe que não é preciso contador — o loop visita automaticamente cada elemento. Depois adicione um quarto item à lista antes do loop, preveja o que muda na saída e execute para confirmar.\n\nSaída antes da sua alteração:\nQueue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!'
+        pt: 'Objetivo:\nExecute o código e veja como um loop for processa cada item de uma lista, um por vez. Observe que não é preciso contador — o loop visita automaticamente cada elemento. Depois adicione um quarto item à lista antes do loop, preveja o que muda na saída e execute para confirmar.\n\nSaída antes da sua alteração:\nTamanho da fila: 3\nProcessando: Alice\nProcessando: Bob\nProcessando: Carlos\nFila concluída!'
       },
       starterCode: `clients = ["Alice", "Bob", "Carlos"]
 print("Queue size:", len(clients))
@@ -2273,7 +2273,7 @@ print("Queue complete!")`,
       title: { en: '🟡 Fill: Filter + Accumulate', pt: '🟡 Preencha: Filtrar + Acumular' },
       description: {
         en: 'Goal:\nThis dashboard loops over a list of order values, calculates a refund for each, accumulates the total, and flags orders above a threshold. Fill in the three blanks.\n\nBlank 1 — the starting value for the total accumulator\n\nBlank 2 — the operator to add each refund to the running total\n\nBlank 3 — the comparison operator to flag orders bigger than 3000\n\nExample output (amounts = 1200, 4500, 8000, 650):\nBig order: 4500\nBig order: 8000\nTotal: 13350',
-        pt: 'Objetivo:\nEste dashboard percorre uma lista de valores de pedido, calcula um pagamento para cada, acumula o total e sinaliza pedidos acima de um limite. Preencha as três lacunas.\n\nBlank 1 — o valor inicial do acumulador total\n\nBlank 2 — o operador para somar cada pagamento ao total acumulado\n\nBlank 3 — o operador de comparação para sinalizar pedidos maiores que 3000\n\nExemplo de saída (amounts = 1200, 4500, 8000, 650):\nBig order: 4500\nBig order: 8000\nTotal: 13350'
+        pt: 'Objetivo:\nEste dashboard percorre uma lista de valores de pedido, calcula um reembolso para cada, acumula o total e sinaliza pedidos acima de um limite. Preencha as três lacunas.\n\nBlank 1 — o valor inicial do acumulador total\n\nBlank 2 — o operador para somar cada reembolso ao total acumulado\n\nBlank 3 — o operador de comparação para sinalizar pedidos maiores que 3000\n\nExemplo de saída (amounts = 1200, 4500, 8000, 650):\nPedido grande: 4500\nPedido grande: 8000\nTotal: 13350'
       },
       starterCode: `amounts = [1200, 4500, 8000, 650]
 total = ___                     # fill: accumulator start
@@ -2326,7 +2326,7 @@ print("Total:", total)`,
     },
     requirements: {
       en: ['Use the provided amounts list', 'Loop applying $250 discount', 'Count orders above $5000', 'Print total refund, count of orders, count of big ones'],
-      pt: ['Use a lista de valores fornecida', 'Percorra aplicando R$250 de desconto', 'Conte pedidos acima de R$5000', 'Imprima pagamento total, quantidade de pedidos, quantidade de grandes']
+      pt: ['Use a lista de valores fornecida', 'Percorra aplicando R$250 de desconto', 'Conte pedidos acima de R$5000', 'Imprima reembolso total, quantidade de pedidos, quantidade de grandes']
     },
     starterCode: `amounts = [5230, 1200, 8000, 450, 3100, 9200]
 

@@ -451,7 +451,10 @@ export const phase18: Phase = {
     makeExercise({
       id: 'p18-guided', title: b('Guided — format a deterministic text report', 'Guiado — formate relatório textual determinístico'),
       description: b('Goal:\nComplete format_report so that it does the following.\nWrite a function that builds a deterministic text report from a title and a list of key-value rows.\n\nProgram requirements\n\n1. Format\n- Remove leading and trailing spaces from the title\n- Place the cleaned title as the first line\n- Add each row in the format key=value, one per line\n- Return a single string ending with a newline\n\nExample, for title "Stock" and rows [("coffee", 3), ("tea", 8)]:\nStock\ncoffee=3\ntea=8', 'Objetivo:\nComplete format_report para fazer o seguinte.\nEscreva uma função que monta um relatório textual determinístico a partir de um título e uma lista de linhas chave-valor.\n\nRequisitos do programa\n\n1. Formatar\n- Remova os espaços do início e do fim do título\n- Coloque o título limpo como primeira linha\n- Adicione cada linha no formato chave=valor, uma por linha\n- Retorne uma única string terminando com quebra de linha\n\nExemplo, para título "Stock" e linhas [("coffee", 3), ("tea", 8)]:\nStock\ncoffee=3\ntea=8'),
-      starterCode: 'def format_report(title, rows):\n    pass', sampleOutput: b('Stock\ncoffee=3\ntea=8', 'Estoque\ncafé=3\nchá=8'),
+      starterCode: 'def format_report(title, rows):\n    pass', // The grader calls this with English fixture data — " Stock ", ("coffee", 3).
+      // A translated sample told the Portuguese learner to return words the test never
+      // passes in, so following the example was the way to fail.
+      sampleOutput: b('Stock\ncoffee=3\ntea=8', 'Stock\ncoffee=3\ntea=8'),
       hints: [b("Collect lines, then join with '\\n'.", "Colete linhas e use join com '\\n'."), b('Add one final newline after joining.', 'Adicione uma quebra final depois do join.')],
       requirements: p18FormatRequirements,
       tests: [

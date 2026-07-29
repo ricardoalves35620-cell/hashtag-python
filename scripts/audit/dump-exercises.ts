@@ -1,4 +1,5 @@
 import { ALL_PHASES } from '../../src/data/phases'
+import { resolveLocalizedCode } from '../../src/lib/localization'
 
 /**
  * Exports every exercise in phases 0-20 with the facts the parity report needs:
@@ -13,8 +14,13 @@ const out = ALL_PHASES
     difficulty: ex.difficulty ?? null,
     desc: ex.description.en,
     descPt: ex.description.pt,
-    starter: typeof ex.starterCode === 'string' ? ex.starterCode : (ex.starterCode as { en?: string })?.en,
+    starter: resolveLocalizedCode(ex.starterCode as never, 'en'),
+    // The PORTUGUESE learner's starter, resolved the way the app renders it. Without it a
+    // checker can only compare English against English and never sees that the two
+    // languages run different programs.
+    starterPt: resolveLocalizedCode(ex.starterCode as never, 'pt'),
     sample: ex.sampleOutput?.en,
+    samplePt: ex.sampleOutput?.pt,
     hints: (ex.hints || []).map(h => h.en),
     behaviourCases: ex.behaviour ? ex.behaviour.cases.length : 0,
     behaviourReference: ex.behaviour

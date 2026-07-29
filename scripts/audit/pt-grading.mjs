@@ -17,7 +17,14 @@ import { readFileSync, writeFileSync } from 'node:fs'
 
 const REFERENCES = JSON.parse(readFileSync('/tmp/references.json', 'utf8'))
 const EXERCISES = JSON.parse(readFileSync('/tmp/ex0_20.json', 'utf8'))
-const PT_CODE = JSON.parse(readFileSync('/tmp/pt-code.json', 'utf8'))
+/**
+ * The Portuguese form of each reference, produced by localize-references.ts.
+ *
+ * This used to read /tmp/pt-code.json, which NOTHING in the repository wrote — it existed
+ * on one machine because a one-off command had made it there. Anywhere else the script
+ * crashed on a missing file, or worse, would have compared nothing.
+ */
+const PT_CODE = JSON.parse(readFileSync(process.env.HP_REFERENCES_PT || '/tmp/references.pt.json', 'utf8'))
 
 const PINS = new Set(['equals', 'equals_any', 'matches', 'numeric_equals', 'contains', 'contains_any'])
 const normalise = text => (text || '').replace(/\r/g, '').split('\n').map(l => l.trimEnd()).filter(l => l.trim()).join('\n').trim()
@@ -42,7 +49,8 @@ function passes(check, output) {
 
 let checked = 0, failed = 0
 for (const exercise of EXERCISES) {
-  if (exercise.phase > 8) continue
+  // Phases 9-20 used to be skipped outright. They are graded the same way and translated
+  // the same way, so a translation could break them and this would still report success.
   const reference = REFERENCES[exercise.id]
   const pt = PT_CODE[exercise.id]
   if (!reference || pt === undefined) continue
@@ -69,5 +77,5 @@ for (const exercise of EXERCISES) {
   }
 }
 
-console.log(`\n${checked} graded tests run in Portuguese, ${failed} now fail`)
+console.log(`\n${checked} graded tests run in Portuguese across phases 0-20, ${failed} now fail`)
 process.exitCode = failed ? 1 : 0

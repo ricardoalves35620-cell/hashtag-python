@@ -204,7 +204,7 @@ print("oi")`
       title: { en: '🟢 Guided: Run Your First Code', pt: '🟢 Guiado: Rode Seu Primeiro Código' },
       description: {
         en: 'Goal:\nThis code is complete. Run it and observe how text and numbers are displayed, and how Python calculates a sum from two values.\n\nThen change "Alice" to your own name and run again to see the output change.\n\nOutput:\nWelcome to Python!\nMy name is Alice\nMy age is 28\nIn 10 years I\'ll be 38\n\nThis is my first program!',
-        pt: 'Objetivo:\nEste código está completo. Execute-o e observe como texto e números são exibidos, e como o Python calcula uma soma a partir de dois valores.\n\nDepois troque "Alice" pelo seu próprio nome e execute novamente para ver a saída mudar.\n\nSaída:\nWelcome to Python!\nMy name is Alice\nMy age is 28\nIn 10 years I\'ll be 38\n\nThis is my first program!'
+        pt: 'Objetivo:\nEste código está completo. Execute-o e observe como texto e números são exibidos, e como o Python calcula uma soma a partir de dois valores.\n\nDepois troque "Alice" pelo seu próprio nome e execute novamente para ver a saída mudar.\n\nSaída:\nBem-vindo ao Python!\nMeu nome é Alice\nMinha idade é 28\nDaqui a 10 anos eu terei 38\n\nEste é o meu primeiro programa!'
       },
       starterCode: `print("Welcome to Python!")
 print("My name is", "Alice")
@@ -216,14 +216,14 @@ print("This is my first program!")`,
         { en: 'Click Run and watch each line print in order', pt: 'Clique em Executar e veja cada linha imprimir em ordem' },
         { en: 'Change "Alice" (keep the quotes!) and run again', pt: 'Troque "Alice" (mantenha as aspas!) e rode de novo' }
       ],
-      sampleOutput: { en: 'Welcome to Python!\nMy name is Alice\nMy age is 28\nIn 10 years I\'ll be 38\n\nThis is my first program!', pt: 'Welcome to Python!\nMy name is Alice\nMy age is 28\nIn 10 years I\'ll be 38\n\nThis is my first program!' }
+      sampleOutput: { en: 'Welcome to Python!\nMy name is Alice\nMy age is 28\nIn 10 years I\'ll be 38\n\nThis is my first program!', pt: 'Bem-vindo ao Python!\nMeu nome é Alice\nMinha idade é 28\nDaqui a 10 anos eu terei 38\n\nEste é o meu primeiro programa!' }
     },
     {
       id: 'ex1_fill',
       title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
       description: {
         en: 'Goal:\nThe MusicBox startup report is almost ready. Fill in the three blanks.\n\nBlank 1 — the app name as text (needs quotes)\n\nBlank 2 — the number of new songs (no quotes — it is a number)\n\nBlank 3 — the same number as Blank 2, used in a sum\n\nExample output:\n=== SYSTEM START ===\nApp: MusicBox\nNew songs: 47\nNew playlists: 12\nTotal: 59',
-        pt: 'Objetivo:\nO relatório de inicialização do MusicBox está quase pronto. Preencha as três lacunas.\n\nBlank 1 — o nome do app como texto (precisa de aspas)\n\nBlank 2 — o número de novas músicas (sem aspas — é um número)\n\nBlank 3 — o mesmo número da Lacuna 2, usado numa soma\n\nExemplo de saída:\n=== SYSTEM START ===\nApp: MusicBox\nNew songs: 47\nNew playlists: 12\nTotal: 59'
+        pt: 'Objetivo:\nO relatório de inicialização do MusicBox está quase pronto. Preencha as três lacunas.\n\nBlank 1 — o nome do app como texto (precisa de aspas)\n\nBlank 2 — o número de novas músicas (sem aspas — é um número)\n\nBlank 3 — o mesmo número da Lacuna 2, usado numa soma\n\nExemplo de saída:\n=== INÍCIO DO SISTEMA ===\nApp: MusicBox\nMúsicas novas: 47\nPlaylists novas: 12\nTotal: 59'
       },
       starterCode: { en: `print("=== SYSTEM START ===")
 print("App:", ___)              # fill: "MusicBox" (with quotes — it's text!)
@@ -238,21 +238,21 @@ print("Total:", ___ + 12)       # preencha: 47 de novo (o mesmo número da linha
         { en: 'App name is text → needs quotes: "MusicBox"', pt: 'Nome do app é texto → precisa de aspas: "MusicBox"' },
         { en: 'Numbers never use quotes: 47', pt: 'Números nunca usam aspas: 47' }
       ],
-      sampleOutput: { en: '=== SYSTEM START ===\nApp: MusicBox\nNew songs: 47\nNew playlists: 12\nTotal: 59', pt: '=== SYSTEM START ===\nApp: MusicBox\nNew songs: 47\nNew playlists: 12\nTotal: 59' }
+      sampleOutput: { en: '=== SYSTEM START ===\nApp: MusicBox\nNew songs: 47\nNew playlists: 12\nTotal: 59', pt: '=== INÍCIO DO SISTEMA ===\nApp: MusicBox\nMúsicas novas: 47\nPlaylists novas: 12\nTotal: 59' }
     },
     {
       id: 'ex1_zero',
       title: { en: '🔴 From Scratch: Coffee Shop Report', pt: '🔴 Do Zero: Relatório de Cafeteria' },
       description: {
         en: 'Goal:\nWrite a coffee shop report that prints exactly five lines: a title, the number of coffees sold, the price per coffee, the total revenue calculated by Python (80 multiplied by 5), and a closing message.\n\nProgram requirements\n\n1. Display\n- The report title\n- The number of coffees sold: 80\n- The price per coffee: 5\n- The total revenue: Python must calculate 80 times 5 for you\n- A closing message\n\nOutput:\n--- COFFEE SHOP REPORT ---\nCoffees sold: 80\nPrice per coffee: 5\nTotal revenue: 400\nReport complete!',
-        pt: 'Objetivo:\nEscreva um relatório de cafeteria que imprima exatamente cinco linhas: um título, a quantidade de cafés vendidos, o preço por café, a receita total calculada pelo Python (80 multiplicado por 5) e uma mensagem de encerramento.\n\nRequisitos do programa\n\n1. Mostrar\n- O título do relatório\n- A quantidade de cafés vendidos: 80\n- O preço por café: 5\n- A receita total: o Python deve calcular 80 vezes 5 por você\n- Uma mensagem de encerramento\n\nSaída:\n--- COFFEE SHOP REPORT ---\nCoffees sold: 80\nPrice per coffee: 5\nTotal revenue: 400\nReport complete!'
+        pt: 'Objetivo:\nEscreva um relatório de cafeteria que imprima exatamente cinco linhas: um título, a quantidade de cafés vendidos, o preço por café, a receita total calculada pelo Python (80 multiplicado por 5) e uma mensagem de encerramento.\n\nRequisitos do programa\n\n1. Mostrar\n- O título do relatório\n- A quantidade de cafés vendidos: 80\n- O preço por café: 5\n- A receita total: o Python deve calcular 80 vezes 5 por você\n- Uma mensagem de encerramento\n\nSaída:\n--- RELATÓRIO DA CAFETERIA ---\nCafés vendidos: 80\nPreço por café: 5\nReceita total: 400\nRelatório concluído!'
       },
       starterCode: { en: '# Write your 5 print() lines below:', pt: '# Escreva suas 5 linhas de print() abaixo:' },
       hints: [
         { en: 'Use * for multiplication: print("Total revenue:", 80 * 5)', pt: 'Use * para multiplicação: print("Total revenue:", 80 * 5)' },
         { en: 'Mix text and numbers with commas: print("Coffees sold:", 80)', pt: 'Misture texto e números com vírgulas: print("Coffees sold:", 80)' }
       ],
-      sampleOutput: { en: '--- COFFEE SHOP REPORT ---\nCoffees sold: 80\nPrice per coffee: 5\nTotal revenue: 400\nReport complete!', pt: '--- COFFEE SHOP REPORT ---\nCoffees sold: 80\nPrice per coffee: 5\nTotal revenue: 400\nReport complete!' }
+      sampleOutput: { en: '--- COFFEE SHOP REPORT ---\nCoffees sold: 80\nPrice per coffee: 5\nTotal revenue: 400\nReport complete!', pt: '--- RELATÓRIO DA CAFETERIA ---\nCafés vendidos: 80\nPreço por café: 5\nReceita total: 400\nRelatório concluído!' }
     }
   ],
 

@@ -113,6 +113,11 @@ const FALSE_FRIENDS: Array<{ pt: RegExp, en: RegExp, why: string }> = [
   { pt: /\bsinistros?\b/i, en: /\bclaim/i, why: '"sinistro" is an insurance claim' },
   { pt: /\bap[óo]lices?\b/i, en: /\bpolic/i, why: '"apólice" is an insurance policy' },
   { pt: /\breembolsos?\b/i, en: /\brefund/i, why: '"reembolso" is a refund' },
+  // "pagamento" is a payment. Eleven places used it where the English said REFUND —
+  // a different transaction, and the one the exercise is about. Payroll, subscription
+  // and advance payments are real payments, so the English side accepts those too.
+  { pt: /\bpagamentos?\b/i, en: /\bpay(ment|ments|ing|roll)?\b|\bpaid\b|\bpays\b/i,
+    why: '"pagamento" is a payment; check whether the English says refund' },
   { pt: /\breparos?\b/i, en: /\brepair/i, why: '"reparo" is a repair' },
 ]
 

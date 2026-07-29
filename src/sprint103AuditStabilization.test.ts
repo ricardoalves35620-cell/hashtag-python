@@ -36,7 +36,13 @@ describe('Sprint 10.3 audit and learning-flow stabilization', () => {
     // The sticky actions must clear BOTH the bottom navigation and the virtual
     // keyboard. The original rule only accounted for the nav, which left the primary
     // CTA rendered underneath the keyboard on an iPhone SE.
-    expect(css).toContain('bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + max(var(--safe-bottom), .5rem))')
+    //
+    // `max(var(--safe-bottom), .5rem)` used to be a third term here. It is gone because
+    // --app-nav-height now carries the home-indicator inset itself: the menu bar reaches
+    // the bottom edge of the screen and the inset is padding inside it. Adding the inset
+    // here as well reserved it twice and floated every sticky button 34px too high.
+    expect(css).toContain('bottom: calc(var(--app-nav-height) + var(--keyboard-inset) + .5rem)')
+    expect(css).toContain('--app-nav-height: calc(76px + var(--safe-bottom))')
     // The nav is translated off-screen while the keyboard is up, so its reserved
     // height must collapse or the button floats above the keyboard instead of on it.
     expect(css).toContain('.hp-app-shell--keyboard-open {')

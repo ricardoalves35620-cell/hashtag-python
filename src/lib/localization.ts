@@ -8,6 +8,53 @@ export function resolveLocalizedText(value: LocalizedText | undefined, lang: Lan
 }
 
 const exactPt: Record<string, string> = {
+  // Comments the word-level fallback left in two languages at once. A learner reading
+  // "# Construa the laço:" is worse off than one reading "# Build the loop:", because the
+  // second can be looked up and the first looks like a broken app. Found by
+  // `npm run audit:portunol`, which now fails the build if the list grows.
+  'Build the loop:': 'Construa o laço:',
+  'the user types 30': 'o usuário digita 30',
+  'the user types 5': 'o usuário digita 5',
+  'Client profile with calculations.': 'Perfil do cliente com cálculos.',
+  'any age — number, no quotes': 'qualquer idade — número, sem aspas',
+  // The key is the WHOLE comment, from the first '#' to the end of the line. These two
+  // start with commented-out code, so an entry for the readable half never matched and
+  // the fallback translated around it — `# ❌ TypeError! texto + número = crash`.
+  'print(age + 5)                  # ❌ TypeError! text + number = crash':
+    'print(age + 5)                  # ❌ TypeError! texto + número = erro',
+  '4  — tie goes to the even number': '4  — empate vai para o número par',
+  'Wrap each in try/except with the correct exception:':
+    'Envolva cada um em try/except com a exceção correta:',
+  'Shared mutation: redesign first, lock only the smallest critical section':
+    'Mutação compartilhada: redesenhe primeiro, trave apenas a menor seção crítica',
+  'str(x)    → back to text     str(42) → "42"': 'str(x)    → de volta para texto     str(42) → "42"',
+  '✅ FIX: use float() when decimals are possible': '✅ CORREÇÃO: use float() quando houver casas decimais',
+  'checked ONLY if first was False': 'verificado SOMENTE se o primeiro for False',
+  'loop by INDEX to pair two lists': 'laço por ÍNDICE para parear duas listas',
+  'fill: bigger than': 'preencha: maior que',
+  'same number every single run': 'o mesmo número em toda execução',
+  'fill: which key to update?': 'preencha: qual chave atualizar?',
+  'fill: compare which key?': 'preencha: comparar qual chave?',
+  'fill: middle index': 'preencha: índice do meio',
+  'A dump: correct, and useless to a reader': 'Um despejo: correto, e inútil para quem lê',
+  '1. Works after model and index are downloaded, with network disconnected.':
+    '1. Funciona depois que o modelo e o índice forem baixados, com a rede desconectada.',
+  // Found once the English-marker list was widened. Every one of these had been reaching a
+  // Portuguese learner as English or, worse, as half-Portuguese: "5 (// gives inteiro
+  // numbers)", "4 — how many itens", "Weekly Verifique: review every course module".
+  '5    (// gives whole numbers)': '5    (// dá números inteiros)',
+  'When is % (modulo) useful? Checking even/odd, splitting evenly:':
+    'Quando o % (módulo) é útil? Verificar par/ímpar, dividir em partes iguais:',
+  '❌ 40.0 — only 30 was divided!': '❌ 40.0 — só o 30 foi dividido!',
+  'Problem: real business has MORE than 2 categories!':
+    'Problema: um negócio real tem MAIS de 2 categorias!',
+  '4 — how many items': '4 — quantos itens',
+  'Weekly check: review every course module': 'Verificação semanal: revise cada módulo do curso',
+  'The model never executes arbitrary Python directly.':
+    'O modelo nunca executa Python arbitrário diretamente.',
+  'Application code validates tool name, argument schema, user permission and activity logging.':
+    'O código da aplicação valida o nome da ferramenta, o esquema dos argumentos, a permissão do usuário e o registro de atividade.',
+
   // phases 9-20
   'Write the complete solution.': 'Escreva a solução completa.',
   'Returns the area': 'Retorna a área',
@@ -36,7 +83,7 @@ const exactPt: Record<string, string> = {
   'any name — text needs quotes!': 'qualquer nome — texto precisa de aspas!',
   'fill the operator': 'preencha o operador',
   'Choose your own name, age and monthly fee — the grader checks the maths, not the values.': 'Escolha seu próprio nome, idade e mensalidade — a correção verifica a conta, não os valores.',
-  'phone = int(input("Phone: "))  → "555-1234" crashes int()!': 'phone = int(input("Telefone: "))  → "555-1234" quebra o int()!',
+  'phone = int(input("Phone: "))  → "555-1234" crashes int()!': 'telefone = int(input("Telefone: "))  → "555-1234" quebra o int()!',
   'Phone, ZIP code, ID numbers → keep as text!': 'Telefone, CEP, números de documento → mantenha como texto!',
   'Interactive order intake:': 'Recebimento interativo de pedidos:',
   'fill: >, and, <': 'preencha: >, and, <',
@@ -248,17 +295,32 @@ const phraseRules: Array<[RegExp, string]> = [
  *
  * Without this, [/\bBuild\b/gi, 'Construa'] rewrote `python -m build` to
  * `python -m Construa` in phase 52 — an instruction that no longer runs.
+ *
+ * The first version was just the command word, and it read
+ * `# Python reads TOP to BOTTOM and stops at the FIRST True.` as a shell command, so
+ * phase 6 showed that sentence in English to every Portuguese learner even though the
+ * translation was sitting in `exactPt` two hundred lines below. A sentence is not a
+ * command: the arguments of a real one are flags, paths and identifiers, never prose.
  */
-const COMMAND_LINE = /^\s*[$>]?\s*(python|python3|py|pip|pip3|npm|npx|pnpm|yarn|node|git|curl|wget|cd|ls|mkdir|export|source|docker|make|pytest|uvicorn|streamlit)\b/i
+const COMMAND_ARGUMENTS = /^[\s]*(?:-{1,2}[\w-]+|[\w./@:=<>\[\]"'*-]+)*(?:\s+(?:-{1,2}[\w-]+|[\w./@:=<>\[\]"'*-]+))*[\s]*$/
+const COMMAND_WORD = /^\s*[$>]?\s*(python|python3|py|pip|pip3|npm|npx|pnpm|yarn|node|git|curl|wget|cd|ls|mkdir|export|source|docker|make|pytest|uvicorn|streamlit)\b/i
+
+function isCommandLine(core: string): boolean {
+  const match = COMMAND_WORD.exec(core)
+  if (!match) return false
+  return COMMAND_ARGUMENTS.test(core.slice(match[0].length))
+}
 
 function translateCommentToPt(comment: string): string {
   const leading = comment.match(/^\s*/)?.[0] || ''
   const trailing = comment.match(/\s*$/)?.[0] || ''
   const core = comment.trim()
   if (!core) return comment
-  if (COMMAND_LINE.test(core)) return comment
+  // The dictionary outranks every heuristic below it. An author who wrote a translation
+  // for this exact line has already decided the question.
   const exact = exactPt[core]
   if (exact) return `${leading}${exact}${trailing}`
+  if (isCommandLine(core)) return comment
 
   const protectedTokens: string[] = []
   const protectPattern = /\b(?:print|input|int|float|str|bool|if|elif|else|for|while|return|break|continue|range|len|sum|min|max|append|True|False)\b(?:\(\))?/gi
@@ -323,6 +385,64 @@ function findCommentStart(line: string): number {
  * the two agree. scripts/audit/language-isolation.ts checks that they do.
  */
 const literalPt: Record<string, string> = {
+  // Printed strings whose Portuguese existed only in `sampleOutput.pt`. The task promised
+  // "Tempo total: 1710 segundos" and the same exercise's code printed "Total time: 1710
+  // seconds" — nothing was comparing the two until `npm run audit:content:described`.
+  'Welcome to Python!': 'Bem-vindo ao Python!',
+  'storage': 'armazenamento',
+  'After cartons:': 'Após caixas:',
+  'After steel:': 'Após aço:',
+  'After paint:': 'Após tinta:',
+  'After Monday:': 'Após segunda:',
+  'After Tuesday:': 'Após terça:',
+  'After Wednesday:': 'Após quarta:',
+  '3-day total: $': 'Total 3 dias: R$',
+  '👍 Highly Recommended': '👍 Muito Recomendado',
+  'Total time:': 'Tempo total:',
+  'seconds': 'segundos',
+  'Long songs (>4 min):': 'Músicas longas (>4 min):',
+  'Average:': 'Média:',
+  'Fee:': 'Taxa:',
+  'Stock': 'Estoque',
+  // Everything a phase 0-8 exercise prints. These existed in neither `literalPt` nor
+  // `sampleOutput.pt`, so the Portuguese task promised English and the Portuguese program
+  // delivered it — consistent, and unreadable.
+  'Running:': 'Executando:',
+  'Python is ready': 'O Python está pronto',
+  '=== SYSTEM START ===': '=== INÍCIO DO SISTEMA ===',
+  'App:': 'App:',
+  'New songs:': 'Músicas novas:',
+  'New playlists:': 'Playlists novas:',
+  '--- COFFEE SHOP REPORT ---': '--- RELATÓRIO DA CAFETERIA ---',
+  'Coffees sold:': 'Cafés vendidos:',
+  'Price per coffee:': 'Preço por café:',
+  'Total revenue:': 'Receita total:',
+  'Report complete!': 'Relatório concluído!',
+  'Materials:': 'Materiais:',
+  'Teachers:': 'Professores:',
+  'Equipment:': 'Equipamentos:',
+  'Admin:': 'Administrativo:',
+  'Total check:': 'Conferência do total:',
+  'Math now works:': 'A conta agora funciona:',
+  '🔴 HIGH PRIORITY': '🔴 PRIORIDADE ALTA',
+  'Expert reviewer assigned': 'Analista especialista designado',
+  '🚨 FLAGGED: large order submitted soon after plan start': '🚨 MARCADO: pedido grande enviado logo após o início do plano',
+  'Assigned to: {team}': 'Encaminhado para: {team}',
+  'Grade: C20 — foundations only ⚠️': 'Classe: C20 — apenas fundação ⚠️',
+  'Batch must be discarded': 'O lote deve ser descartado',
+  'Command (quit to exit): ': 'Comando (quit para sair): ',
+  // An f-string is ONE literal, placeholders and all, so the key has to carry them.
+  '3-day total: ${total}': 'Total 3 dias: R${total}',
+  'Order {counter} value: ': 'Pedido {counter} valor: ',
+  'Total:': 'Total:',
+  // The curriculum writes emoji as escape sequences in some files and as characters in
+  // others. The localizer matches the literal as WRITTEN, so both spellings need an entry
+  // or the escaped one silently stays English.
+  '\\U0001f44d Highly Recommended': '\\U0001f44d Muito Recomendado',
+  'Worth Watching': 'Vale Assistir',
+  'Average': 'Média',
+  'Not Recommended': 'Não Recomendado',
+
   'Age:': 'Idade:',
   'Name:': 'Nome:',
   '| Age:': '| Idade:',
@@ -371,6 +491,11 @@ const literalPt: Record<string, string> = {
   'Age (0-120):': 'Idade (0-120):',
   'Valid age:': 'Idade válida:',
   'Order #': 'Pedido nº',
+  // `print("Order #", count, "processed")` is THREE arguments, so translating the first
+  // literal left the learner reading "Pedido nº 1 processed". A single-word literal is
+  // usually a dictionary key, which is why audit:language skips them — but here it is a
+  // word the learner reads on the console.
+  'processed': 'processado',
   'Final count value:': 'Valor final do contador:',
   'Order {order}: {stock} cups left': 'Pedido {order}: {stock} copos restantes',
   'Restock needed!': 'Precisa repor o estoque!',
@@ -391,7 +516,11 @@ export function translateLiteralToPt(text: string): string {
 // The f in f"..." is a string PREFIX, not an identifier. Excluding any preceding
 // letter skipped every f-string — which is most of the printed output in this
 // curriculum, so the translation silently did nothing where it mattered most.
-const LITERAL = /(?<![A-Za-z_0-9])([fFrRbB]{0,2})(['"])((?:(?!\2)[^\\\n])*)\2/g
+// Escape sequences are part of the literal. Excluding backslashes meant any string with
+// one in it — `"\U0001f44d Highly Recommended"`, `"line\tvalue"` — was skipped entirely,
+// so phase 6 kept printing "👍 Highly Recommended" to a Portuguese learner while the task
+// promised "👍 Muito Recomendado" and nothing reported a leak.
+const LITERAL = /(?<![A-Za-z_0-9])([fFrRbB]{0,2})(['"])((?:\\.|(?!\2)[^\\\n])*)\2/g
 
 export function localizePythonStrings(code: string, lang: Lang): string {
   if (!code || lang === 'en') return code

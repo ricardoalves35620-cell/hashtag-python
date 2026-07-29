@@ -28,10 +28,22 @@ export interface Leak { where: string, kind: 'comment' | 'output', text: string 
 const NEUTRAL = /^[\s\d\W]*$|^(python|ok|status|total|import|def|print|input|json|csv|api|id|url|cpu|ram|gpu|ssd|sku|http|utf|true|false|none|error|debug)[\s\W]*$/i
 
 /** A Portuguese marker: accents, or a word that only exists in Portuguese. */
-const PORTUGUESE = /[áàâãéêíóôõúüç]|\b(voc[êe]|para|com|uma?|dos?|das?|não|são|est[áa]|ser[áa]|cada|pelo|pela|seus?|suas?|mais|nome|valor|lista|fila|total de|preço|quantidade|arquivo|linha|erro|nota|aluno|pedido|cliente|entrada|sa[íi]da|resultado|c[óo]digo)\b/i
+const PORTUGUESE = /[áàâãéêíóôõúüç]|\b(voc[êe]|para|com|uma?|dos?|das?|não|são|est[áa]|ser[áa]|cada|pelo|pela|seus?|suas?|mais|nome|valor|lista|fila|total de|preço|quantidade|arquivo|linha|erro|nota|aluno|pedido|cliente|entrada|sa[íi]da|resultado|c[óo]digo|que|mesm[oa]|forma|curta|enquanto|preencha|tem|anos?|quando|ent[ãa]o|isso|apenas|sempre|nunca|tamb[ée]m|aqui|agora|depois|antes|sobre|entre|muito|pode|deve|veja|exemplo|primeiro|[úu]ltimo|ainda|quebra|retorna|imprime|mostra|guarda|escolhe|verifica|cria)\b/i
 
-/** An English marker: a word that does not occur in ordinary Portuguese. */
-const ENGLISH = /\b(the|and|for each|with|from|your|you|this|that|size|complete|processing|queue|price|amount|name|list|file|line|row|value|score|total revenue|report|coffee|songs|sold|left|order|cups|member|client|full|pay|saves|next|year|phone|age|years|keeps|files|temporary|working|data|executes|instructions|graphics|storage|highly|recommended|watching|average|enjoy|movie|sorry|young|film|flagged|investigation|passed|fraud|check|restock|needed|big|stock|start|system|new|songs|playlists|long)\b/i
+/**
+ * An English marker: a word that does not occur in ordinary Portuguese.
+ *
+ * Deliberately excludes homographs — `do`, `no`, `a`, `e`, `os`, `use`, `real`, `total`,
+ * `normal`, `local`, `final` all mean something in Portuguese too, and every one of them
+ * would turn a Portuguese sentence into a reported leak.
+ *
+ * `complete` and `data` were in this list and had to come out. "🟡 Complete — entenda
+ * sombreamento" and "Interprete a data inicial" are both Portuguese: `complete` is the
+ * imperative of *completar* and `data` is the word for *date*. Six findings in phases
+ * 16-20 were this, and acting on them would have replaced correct Portuguese with
+ * different correct Portuguese for no reason.
+ */
+const ENGLISH = /\b(the|and|for each|with|from|your|you|this|that|size|processing|queue|price|amount|name|list|file|line|row|value|score|total revenue|report|coffee|songs|sold|left|order|cups|member|client|full|pay|saves|next|year|phone|age|years|keeps|files|temporary|working|executes|instructions|graphics|storage|highly|recommended|watching|average|enjoy|movie|sorry|young|film|flagged|investigation|passed|fraud|check|restock|needed|big|stock|start|system|new|long|to|of|are|was|were|been|being|has|have|had|will|would|should|must|each|every|only|still|then|than|into|without|when|what|which|who|how|why|there|they|them|their|its|both|other|another|same|whole|empty|missing|wrong|useless|reader|downloaded|disconnected|network|model|index|goes|going|comes|works|worked|does|did|makes|made|gets|adds|needs|wants|calls|called|takes|gives|finds|knows|thinks|looks|fails|stops|changes|counts|runs|running|reads|writes|shows|keeps|used|uses)\b/i
 
 function comments(code: string): string[] {
   return code.split('\n')
@@ -82,11 +94,43 @@ function prose(text: string): boolean {
   return true
 }
 
+/**
+ * Everything inside `{...}` is the learner's own code, not prose.
+ *
+ * `f"{name}, {age} anos, {height}m"` is Portuguese. It was reported as an English leak
+ * because `name`, `age` and `height` are English words — but they are f-string FIELD
+ * NAMES, bound to variables in the surrounding program. "Translating" them renames the
+ * learner's variables and breaks the exercise. Same for the dictionary keys in
+ * `f"#{c['id']} {c['client']}"`.
+ *
+ * Python keywords are deliberately NOT stripped. An earlier version removed them, and it
+ * silenced two real leaks — "Reject empty paths and non-positive context sizes." and
+ * "Rank by token overlap, preserve source IDs and refuse without evidence." — because the
+ * only English marker either one carried was the word "and". `and`, `or`, `not`, `in`,
+ * `for`, `while` are Python keywords *and* ordinary English function words, and the
+ * second reading is the one that matters here. Portuguese strings that contain them are
+ * protected by their Portuguese markers instead: `# preencha: >, and, <` is silent
+ * because of "preencha", not because of "and".
+ *
+ * This is a narrowing, so it is pinned in both directions by language-isolation.test.ts:
+ * the strings below must stay silent, and the leaks a learner actually reported from the
+ * running app must still fire.
+ */
+function proseOnly(text: string): string {
+  return text
+    .replace(/\{[^{}]*\}/g, ' ')   // f-string fields: identifiers and expressions
+    .replace(/%[-+ #0]*\d*(?:\.\d+)?[sdifgex]/gi, ' ')  // %-format specs
+}
+
 /** Prose that reads as English and carries no Portuguese marker. */
 export function isEnglishProse(text: string): boolean {
   if (!prose(text)) return false
   if (PORTUGUESE.test(text)) return false
-  return ENGLISH.test(text)
+  // The Portuguese check reads the WHOLE string — an accent inside a placeholder still
+  // proves the author wrote Portuguese — but the English check reads only the prose.
+  const readable = proseOnly(text)
+  if (!prose(readable)) return false
+  return ENGLISH.test(readable)
 }
 
 export function leaksIn(where: string, code: string): Leak[] {

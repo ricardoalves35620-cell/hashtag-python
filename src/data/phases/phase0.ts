@@ -28,7 +28,7 @@ export const phase0: Phase = {
       title: { en: 'Guided: your first output', pt: 'Guiado: sua primeira saída' },
       description: {
         en: 'Goal:\nRun the code and observe how a variable appears inside a print statement. A text label is combined with the value stored in the variable file_name.\n\nThen change the text stored in file_name, run again, and notice which part of the output changes.\n\nOutput:\nRunning: meu_primeiro.py\nPython is ready',
-        pt: 'Objetivo:\nExecute o código e observe como uma variável aparece dentro de um print. Um rótulo de texto é combinado com o valor guardado na variável file_name.\n\nDepois mude o texto guardado em file_name, execute novamente e perceba qual parte da saída muda.\n\nSaída:\nRunning: meu_primeiro.py\nPython is ready'
+        pt: 'Objetivo:\nExecute o código e observe como uma variável aparece dentro de um print. Um rótulo de texto é combinado com o valor guardado na variável file_name.\n\nDepois mude o texto guardado em file_name, execute novamente e perceba qual parte da saída muda.\n\nSaída:\nExecutando: meu_primeiro.py\nO Python está pronto'
       },
       starterCode: 'file_name = "meu_primeiro.py"\nprint("Running:", file_name)\nprint("Python is ready")',
       hints: [
@@ -36,7 +36,7 @@ export const phase0: Phase = {
         { en: 'The variable file_name stores text. The first print combines a label with that stored value.', pt: 'A variável file_name guarda um texto. O primeiro print combina um rótulo com esse valor guardado.' },
         { en: 'After the first run, change only the filename text, run again, and confirm which part of the output changed.', pt: 'Depois da primeira execução, altere somente o texto do nome do arquivo, execute novamente e confirme qual parte da saída mudou.' },
       ],
-      sampleOutput: { en: 'Running: {{file}}\nPython is ready', pt: 'Running: {{file}}\nPython is ready' },
+      sampleOutput: { en: 'Running: {{file}}\nPython is ready', pt: 'Executando: {{file}}\nO Python está pronto' },
       grading: {
         codeRequirements: [{ kind: 'assignment', value: 'file_name' }, { kind: 'call', value: 'print', minCount: 2 }],
         tests: [{ id: 'output', description: { en: 'Shows the Python filename and ready message', pt: 'Mostra o arquivo Python e a mensagem de pronto' }, inputs: [], checks: [{ type: 'matches', value: '[A-Za-z0-9_-]+[.]py' }, { type: 'contains_any', value: ['ready', 'pronto'] }], points: 100 }],
