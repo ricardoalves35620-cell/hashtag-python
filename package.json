@@ -34,7 +34,10 @@
     "audit:budget:update": "node scripts/audit/check-bundle-budget.mjs --update",
     "audit:local-ci": "bash scripts/audit/local-ci.sh",
     "prebuild": "node scripts/copy-pyodide.mjs",
-    "predev": "node scripts/copy-pyodide.mjs"
+    "predev": "node scripts/copy-pyodide.mjs",
+    "audit:contradictions": "tsx scripts/audit/contradictions.ts",
+    "audit:phase-sweep": "node scripts/audit/phase-sweep.mjs",
+    "audit:flight": "node scripts/audit/flight-mode.mjs --guest --no-http-cache"
   },
   "dependencies": {
     "@codemirror/commands": "^6.3.3",
