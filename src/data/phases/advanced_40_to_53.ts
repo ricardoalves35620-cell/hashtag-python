@@ -82,6 +82,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "every_other",
+      "starterCode": "def every_other(items):\n    \"\"\"Return every second item of an iterable, starting with the first.\n\n    Works on anything you can loop over, not just lists.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(every_other([\"a\", \"b\", \"c\", \"d\", \"e\"]))",
+      "publicExpected": "['a', 'c', 'e']",
+      "hiddenAfterCode": "print(every_other(range(6)))",
+      "hiddenExpected": "[0, 2, 4]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "every_other"
+        }
+      ]
+    },
     "exam": {
       "functionName": "take",
       "starterCode": "def take(iterable, count):\n    \"\"\"Return no items for non-positive count and never over-consume.\"\"\"\n    pass",
@@ -190,6 +204,24 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "running_totals",
+      "starterCode": "def running_totals(numbers):\n    \"\"\"Yield the running total after each number.\n\n    Produce values one at a time rather than building the whole list first.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(list(running_totals([10, 5, 20])))",
+      "publicExpected": "[10, 15, 35]",
+      "hiddenAfterCode": "print(list(running_totals([])))",
+      "hiddenExpected": "[]",
+      "requirements": [
+          {
+            "kind": "function",
+            "value": "running_totals"
+          },
+          {
+            "kind": "node",
+            "value": "Yield"
+          }
+        ]
+    },
     "exam": {
       "functionName": "batched",
       "starterCode": "def batched(items, size):\n    \"\"\"Raise ValueError for non-positive size and yield final partial batch.\"\"\"\n    pass",
@@ -296,6 +328,20 @@ const specs: ConceptPhaseSpec[] = [
           "kind": "node",
           "value": "FunctionDef",
           "minCount": 2
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "count_calls",
+      "starterCode": "def count_calls(function):\n    \"\"\"Wrap a function so it counts how many times it was called.\n\n    Return the wrapper. It must expose the tally as wrapper.calls and still\n    return whatever the original function returned.\n    \"\"\"\n    pass",
+      "publicAfterCode": "f = count_calls(lambda x: x * 2)\nprint([f(3), f(4), f.calls])",
+      "publicExpected": "[6, 8, 2]",
+      "hiddenAfterCode": "g = count_calls(lambda: None)\nprint(g.calls)",
+      "hiddenExpected": "0",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "count_calls"
         }
       ]
     },
@@ -412,6 +458,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "collecting",
+      "starterCode": "def collecting():\n    \"\"\"A context manager that collects everything appended inside it.\n\n    Entering gives a fresh list. On exit the list must be left untouched so the\n    caller can still read what was collected.\n    \"\"\"\n    pass",
+      "publicAfterCode": "with collecting() as bucket:\n    bucket.append(\"a\")\n    bucket.append(\"b\")\nprint(bucket)",
+      "publicExpected": "['a', 'b']",
+      "hiddenAfterCode": "with collecting() as bucket:\n    pass\nprint(bucket)",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "collecting"
+        }
+      ]
+    },
     "exam": {
       "functionName": "managed_flag",
       "starterCode": "from contextlib import contextmanager\n\n@contextmanager\ndef managed_flag(events):\n    \"\"\"Yield ready and always record cleanup.\"\"\"\n    pass",
@@ -524,6 +584,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "Duration",
+      "starterCode": "class Duration:\n    \"\"\"A Duration in minutes that adds with + and prints as \"<n>min\".\n\n    Give it __add__ so two Durations added together make a longer one, and\n    __str__ so printing one reads as minutes.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(str(Duration(30) + Duration(45)))",
+      "publicExpected": "75min",
+      "hiddenAfterCode": "print(str(Duration(0) + Duration(0)))",
+      "hiddenExpected": "0min",
+      "requirements": [
+          {
+            "kind": "node",
+            "value": "ClassDef"
+          }
+        ]
+    },
     "exam": {
       "functionName": "combine_money",
       "starterCode": "class Money:\n    def __init__(self, amount, currency=\"CAD\"):\n        self.amount = amount\n        self.currency = currency\n    def __repr__(self):\n        return f\"Money({self.amount!r}, {self.currency!r})\"\n    def __add__(self, other):\n        if not isinstance(other, Money) or other.currency != self.currency:\n            return NotImplemented\n        return Money(self.amount + other.amount, self.currency)\n\ndef combine_money(values):\n    pass",
@@ -633,6 +707,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "render"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "describe_all",
+      "starterCode": "def describe_all(items):\n    \"\"\"Return the description of every item that can describe itself.\n\n    An item can when it has a callable `describe`. Skip the ones that cannot\n    rather than failing on them.\n    \"\"\"\n    pass",
+      "publicAfterCode": "class A:\n    def describe(self):\n        return \"an A\"\nprint(describe_all([A(), \"plain\", 42]))",
+      "publicExpected": "['an A']",
+      "hiddenAfterCode": "print(describe_all([]))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "describe_all"
         }
       ]
     },
@@ -749,6 +837,20 @@ const specs: ConceptPhaseSpec[] = [
       ],
       "timeoutMs": 10000
     },
+    "transfer": {
+      "functionName": "ordered_results",
+      "starterCode": "def ordered_results(requested, finished):\n    \"\"\"Return results in the order they were requested, not the order they finished.\n\n    `finished` maps a task name to its result. `requested` is the order to\n    report them in. A task with no result yet reports None.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(ordered_results([\"a\", \"b\", \"c\"], {\"c\": 3, \"a\": 1}))",
+      "publicExpected": "[1, None, 3]",
+      "hiddenAfterCode": "print(ordered_results([], {\"a\": 1}))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "ordered_results"
+        }
+      ]
+    },
     "exam": {
       "functionName": "gather_values",
       "starterCode": "import asyncio\n\nasync def gather_values(values):\n    \"\"\"Create one coroutine per value and gather results.\"\"\"\n    pass",
@@ -851,6 +953,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "partition_work"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "balance_load",
+      "starterCode": "def balance_load(sizes, workers):\n    \"\"\"Split work across workers so the totals are as close as possible.\n\n    Give each next item to whichever worker currently has the least. Return the\n    total each worker ends up with.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(balance_load([5, 3, 2, 8], 2))",
+      "publicExpected": "[10, 8]",
+      "hiddenAfterCode": "print(balance_load([], 3))",
+      "hiddenExpected": "[0, 0, 0]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "balance_load"
         }
       ]
     },
@@ -962,6 +1078,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "memoized_calls",
+      "starterCode": "def memoized_calls(arguments):\n    \"\"\"Count how many times the underlying work actually runs.\n\n    Repeated arguments must reuse the earlier answer. Return the results and\n    the number of real computations.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(memoized_calls([2, 3, 2, 2, 3]))",
+      "publicExpected": "([4, 9, 4, 4, 9], 2)",
+      "hiddenAfterCode": "print(memoized_calls([]))",
+      "hiddenExpected": "([], 0)",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "memoized_calls"
+        }
+      ]
+    },
     "exam": {
       "functionName": "unique_expensive_calls",
       "starterCode": "def unique_expensive_calls(values):\n    \"\"\"Compute each distinct value once while preserving result order.\"\"\"\n    pass",
@@ -1061,6 +1191,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "build_order_query"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "where_clause",
+      "starterCode": "def where_clause(filters):\n    \"\"\"Build a WHERE clause and its parameters from a filter mapping.\n\n    Return the clause and a list of values, with the columns in sorted order.\n    An empty filter produces an empty clause and no values.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(where_clause({\"status\": \"open\", \"city\": \"Recife\"}))",
+      "publicExpected": "('city = ? AND status = ?', ['Recife', 'open'])",
+      "hiddenAfterCode": "print(where_clause({}))",
+      "hiddenExpected": "('', [])",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "where_clause"
         }
       ]
     },
@@ -1168,6 +1312,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "retryable",
+      "starterCode": "def retryable(codes):\n    \"\"\"Return the status codes worth retrying, in the order given.\n\n    A request is worth retrying when the server failed (500 and above) or asked\n    you to slow down (429). A client mistake is not worth retrying.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(retryable([200, 404, 429, 500, 503]))",
+      "publicExpected": "[429, 500, 503]",
+      "hiddenAfterCode": "print(retryable([400, 401, 403]))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "retryable"
+        }
+      ]
+    },
     "exam": {
       "functionName": "normalize_response",
       "starterCode": "def normalize_response(status, payload):\n    \"\"\"Treat only 2xx as success and use unknown for missing error text.\"\"\"\n    pass",
@@ -1272,6 +1430,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "unsafe_fields",
+      "starterCode": "def unsafe_fields(names):\n    \"\"\"Return the field names that must never cross a public boundary, sorted.\n\n    A field is unsafe when its name contains any of: password, token, secret.\n    The match ignores capitalisation.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(unsafe_fields([\"email\", \"api_token\", \"Password_hash\", \"city\"]))",
+      "publicExpected": "['Password_hash', 'api_token']",
+      "hiddenAfterCode": "print(unsafe_fields([\"id\", \"name\"]))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "unsafe_fields"
+        }
+      ]
+    },
     "exam": {
       "functionName": "redact_record",
       "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Do not mutate the source and support multiple secret fields.\"\"\"\n    pass",
@@ -1372,6 +1544,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "version_bump",
+      "starterCode": "def version_bump(version, kind):\n    \"\"\"Return the next version for a kind of change.\n\n    \"major\" resets minor and patch, \"minor\" resets patch, \"patch\" adds one.\n    Anything else returns the version unchanged.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print([version_bump(\"1.4.2\", \"major\"), version_bump(\"1.4.2\", \"minor\"), version_bump(\"1.4.2\", \"patch\")])",
+      "publicExpected": "['2.0.0', '1.5.0', '1.4.3']",
+      "hiddenAfterCode": "print(version_bump(\"0.9.9\", \"unknown\"))",
+      "hiddenExpected": "0.9.9",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "version_bump"
+        }
+      ]
+    },
     "exam": {
       "functionName": "release_ready",
       "starterCode": "def release_ready(checks):\n    \"\"\"Report every missing or failed required gate in stable order.\"\"\"\n    pass",
@@ -1469,6 +1655,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "process_orders"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "reconcile",
+      "starterCode": "def reconcile(left, right):\n    \"\"\"Compare two ledgers and report what differs.\n\n    Return three sorted lists: ids only on the left, only on the right, and ids\n    present in both whose amounts disagree.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(reconcile({\"a\": 10, \"b\": 20}, {\"b\": 25, \"c\": 30}))",
+      "publicExpected": "(['a'], ['c'], ['b'])",
+      "hiddenAfterCode": "print(reconcile({}, {}))",
+      "hiddenExpected": "([], [], [])",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "reconcile"
         }
       ]
     },

@@ -78,6 +78,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "magnitude",
+      "starterCode": "def magnitude(vector):\n    \"\"\"Return the length of a vector, rounded to two decimal places.\n\n    The length is the square root of the sum of the squared components.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(magnitude([3, 4]))",
+      "publicExpected": "5.0",
+      "hiddenAfterCode": "print(magnitude([0, 0, 0]))",
+      "hiddenExpected": "0.0",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "magnitude"
+        }
+      ]
+    },
     "exam": {
       "functionName": "dot_product",
       "starterCode": "def dot_product(a, b):\n    \"\"\"Compute a numeric dot product for equal-length vectors.\"\"\"\n    pass",
@@ -184,6 +198,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ],
       "timeoutMs": 90000
+    },
+    "transfer": {
+      "functionName": "scale_rows",
+      "starterCode": "def scale_rows(rows):\n    \"\"\"Divide every row by its own largest absolute value.\n\n    A row of all zeros is left as it is rather than dividing by zero. Round each\n    result to two decimal places.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(scale_rows([[2, 4], [-6, 3]]))",
+      "publicExpected": "[[0.5, 1.0], [-1.0, 0.5]]",
+      "hiddenAfterCode": "print(scale_rows([[0, 0]]))",
+      "hiddenExpected": "[[0, 0]]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "scale_rows"
+        }
+      ]
     },
     "exam": {
       "functionName": "normalize_vector",
@@ -297,6 +325,20 @@ const specs: ConceptPhaseSpec[] = [
       ],
       "timeoutMs": 90000
     },
+    "transfer": {
+      "functionName": "column_gaps",
+      "starterCode": "def column_gaps(records):\n    \"\"\"Report how many values each column is missing.\n\n    A value is missing when it is None or an empty string. Report every column\n    that appears in any record, sorted, even when nothing is missing.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(column_gaps([{\"name\": \"Ana\", \"city\": \"\"}, {\"name\": None, \"city\": \"Recife\"}]))",
+      "publicExpected": "{'city': 1, 'name': 1}",
+      "hiddenAfterCode": "print(column_gaps([{\"a\": 1}]))",
+      "hiddenExpected": "{'a': 0}",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "column_gaps"
+        }
+      ]
+    },
     "exam": {
       "functionName": "clean_records",
       "starterCode": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Return a list of cleaned records without changing the source list.\"\"\"\n    pass",
@@ -399,6 +441,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "classification_metrics"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "confusion_counts",
+      "starterCode": "def confusion_counts(actual, predicted):\n    \"\"\"Count true positives, false positives, true negatives and false negatives.\n\n    Return them in that order. Labels are 1 for positive and 0 for negative.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(confusion_counts([1, 0, 1, 0], [1, 1, 0, 0]))",
+      "publicExpected": "(1, 1, 1, 1)",
+      "hiddenAfterCode": "print(confusion_counts([], []))",
+      "hiddenExpected": "(0, 0, 0, 0)",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "confusion_counts"
         }
       ]
     },
@@ -506,6 +562,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "fold_indices",
+      "starterCode": "def fold_indices(size, folds):\n    \"\"\"Split a dataset into k folds of consecutive indices.\n\n    Earlier folds take the extra item when the size does not divide evenly.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(fold_indices(7, 3))",
+      "publicExpected": "[[0, 1, 2], [3, 4], [5, 6]]",
+      "hiddenAfterCode": "print(fold_indices(4, 4))",
+      "hiddenExpected": "[[0], [1], [2], [3]]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "fold_indices"
+        }
+      ]
+    },
     "exam": {
       "functionName": "split_dataset",
       "starterCode": "def split_dataset(items, train_ratio=0.6, validation_ratio=0.2):\n    \"\"\"Reject negative ratios or a train+validation ratio above 1.\"\"\"\n    pass",
@@ -610,6 +680,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "mean_absolute_error",
+      "starterCode": "def mean_absolute_error(actual, predicted):\n    \"\"\"Return the mean absolute error, rounded to three decimal places.\n\n    An empty pair of lists has an error of 0.0.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(mean_absolute_error([3, -0.5, 2], [2.5, 0.0, 2]))",
+      "publicExpected": "0.333",
+      "hiddenAfterCode": "print(mean_absolute_error([], []))",
+      "hiddenExpected": "0.0",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "mean_absolute_error"
+        }
+      ]
+    },
     "exam": {
       "functionName": "linear_predict",
       "starterCode": "def linear_predict(xs, weight, bias):\n    \"\"\"Preserve floating-point predictions.\"\"\"\n    pass",
@@ -709,6 +793,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "classify_scores"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "label_counts",
+      "starterCode": "def label_counts(labels):\n    \"\"\"Count how many times each label appears, most common first.\n\n    Ties are broken alphabetically by label.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(label_counts([\"spam\", \"ham\", \"spam\", \"ham\", \"spam\"]))",
+      "publicExpected": "[('spam', 3), ('ham', 2)]",
+      "hiddenAfterCode": "print(label_counts([]))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "label_counts"
         }
       ]
     },
@@ -818,6 +916,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "relu_forward",
+      "starterCode": "def relu_forward(values):\n    \"\"\"Apply ReLU to every value: keep positives, replace anything else with 0.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(relu_forward([-2, 0, 3.5, 1]))",
+      "publicExpected": "[0, 0, 3.5, 1]",
+      "hiddenAfterCode": "print(relu_forward([]))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "relu_forward"
+        }
+      ]
+    },
     "exam": {
       "functionName": "gradient_step",
       "starterCode": "def gradient_step(weight, x, target, learning_rate):\n    \"\"\"Reject negative learning rates.\"\"\"\n    pass",
@@ -921,6 +1033,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "training_step"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "epoch_losses",
+      "starterCode": "def epoch_losses(batches):\n    \"\"\"Return the average loss for each epoch, rounded to three decimals.\n\n    `batches` maps an epoch number to its list of batch losses. Report epochs in\n    increasing order.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(epoch_losses({2: [0.4, 0.2], 1: [1.0, 0.8, 0.6]}))",
+      "publicExpected": "[0.8, 0.3]",
+      "hiddenAfterCode": "print(epoch_losses({}))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "epoch_losses"
         }
       ]
     },
@@ -1028,6 +1154,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "rare_tokens",
+      "starterCode": "def rare_tokens(tokens, minimum):\n    \"\"\"Return the tokens that appear fewer than `minimum` times, sorted.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(rare_tokens([\"a\", \"b\", \"a\", \"c\", \"a\", \"b\"], 2))",
+      "publicExpected": "['c']",
+      "hiddenAfterCode": "print(rare_tokens([], 3))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "rare_tokens"
+        }
+      ]
+    },
     "exam": {
       "functionName": "build_vocabulary",
       "starterCode": "def build_vocabulary(texts):\n    \"\"\"Use deterministic IDs independent of input order.\"\"\"\n    pass",
@@ -1129,6 +1269,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "softmax"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "attention_mask",
+      "starterCode": "def attention_mask(length):\n    \"\"\"Build a causal mask: position i may attend to positions up to and including i.\n\n    Return a square grid of 1 for allowed and 0 for blocked.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(attention_mask(3))",
+      "publicExpected": "[[1, 0, 0], [1, 1, 0], [1, 1, 1]]",
+      "hiddenAfterCode": "print(attention_mask(1))",
+      "hiddenExpected": "[[1]]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "attention_mask"
         }
       ]
     },
@@ -1243,6 +1397,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "fits_in_memory",
+      "starterCode": "def fits_in_memory(sizes, available_gb):\n    \"\"\"Return the quantisations whose weights fit in the memory available.\n\n    `sizes` maps a quantisation name to its size in GB. Report the ones that fit\n    in `available_gb`, largest first.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(fits_in_memory({\"Q4\": 4.1, \"Q8\": 7.9, \"F16\": 15.2}, 8))",
+      "publicExpected": "['Q8', 'Q4']",
+      "hiddenAfterCode": "print(fits_in_memory({\"Q8\": 7.9}, 4))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "fits_in_memory"
+        }
+      ]
+    },
     "exam": {
       "functionName": "estimated_weight_gb",
       "starterCode": "def estimated_weight_gb(parameters_billions, bits_per_weight):\n    \"\"\"Reject non-positive model sizes or bit widths and round to 2 decimals.\"\"\"\n    pass",
@@ -1354,6 +1522,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "tool_allowed",
+      "starterCode": "def tool_allowed(name, path, allowed):\n    \"\"\"Decide whether a tool call may run.\n\n    Return \"\" when it is allowed, otherwise the reason:\n      - the tool is not on the allow list -> \"tool not allowed: <name>\"\n      - the tool is allowed but the path leaves the sandbox -> \"path escapes sandbox\"\n    A path escapes when it contains \"..\".\n    \"\"\"\n    pass",
+      "publicAfterCode": "print([tool_allowed(\"read\", \"docs/a.txt\", [\"read\"]), tool_allowed(\"write\", \"a\", [\"read\"]), tool_allowed(\"read\", \"../etc\", [\"read\"])])",
+      "publicExpected": "['', 'tool not allowed: write', 'path escapes sandbox']",
+      "hiddenAfterCode": "print(tool_allowed(\"read\", \"notes/../notes/a.txt\", [\"read\"]))",
+      "hiddenExpected": "path escapes sandbox",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "tool_allowed"
+        }
+      ]
+    },
     "exam": {
       "functionName": "local_runtime_command",
       "starterCode": "def local_runtime_command(model_path, context_size=4096):\n    \"\"\"Reject empty paths and non-positive context sizes.\"\"\"\n    pass",
@@ -1458,6 +1640,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "chunk_words"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "overlapping_chunks",
+      "starterCode": "def overlapping_chunks(words, size, overlap):\n    \"\"\"Split words into chunks of `size` that overlap by `overlap` words.\n\n    The last chunk may be shorter. An overlap that is not smaller than the size\n    would never advance, so return [] for that.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(overlapping_chunks([\"a\", \"b\", \"c\", \"d\", \"e\"], 3, 1))",
+      "publicExpected": "[['a', 'b', 'c'], ['c', 'd', 'e'], ['e']]",
+      "hiddenAfterCode": "print(overlapping_chunks([\"a\", \"b\"], 2, 2))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "overlapping_chunks"
         }
       ]
     },
@@ -1567,6 +1763,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "answer_with_sources"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "answer_confidence",
+      "starterCode": "def answer_confidence(scores):\n    \"\"\"Report how well the retrieved sources support an answer.\n\n    Return \"supported\" when at least two sources score 0.7 or higher,\n    \"weak\" when exactly one does, and \"insufficient\" when none do.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print([answer_confidence([0.9, 0.8, 0.2]), answer_confidence([0.9, 0.1]), answer_confidence([0.3])])",
+      "publicExpected": "['supported', 'weak', 'insufficient']",
+      "hiddenAfterCode": "print(answer_confidence([]))",
+      "hiddenExpected": "insufficient",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "answer_confidence"
         }
       ]
     },

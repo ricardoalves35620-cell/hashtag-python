@@ -182,6 +182,20 @@ const specs: ConceptPhaseSpec[] = [
       "hiddenAfterCode": "print(dependency_plan([\" RUFF==0.6 \", \"mypy==1.11\", \"ruff==0.6\"]))",
       "hiddenExpected": "['mypy==1.11', 'ruff==0.6']"
     },
+    "transfer": {
+      "functionName": "unpinned_packages",
+      "starterCode": "def unpinned_packages(lines):\n    \"\"\"Return the package names that have no exact version pin, sorted.\n\n    A requirement line pins a version when it uses \"==\".\n    \"requests==2.31.0\" is pinned; \"requests\" and \"requests>=2.0\" are not.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(unpinned_packages([\"requests==2.31.0\", \"flask\", \"pytest>=7.0\"]))",
+      "publicExpected": "['flask', 'pytest']",
+      "hiddenAfterCode": "print(unpinned_packages([\"# comment\", \"numpy==1.26.0\", \"  \", \"rich~=13.0\"]))",
+      "hiddenExpected": "['rich']",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "unpinned_packages"
+        }
+      ]
+    },
     "exam": {
       "functionName": "dependency_plan",
       "starterCode": "def dependency_plan(packages):\n    \"\"\"Return normalized unique non-empty package specs.\"\"\"\n    pass",
@@ -270,6 +284,20 @@ const specs: ConceptPhaseSpec[] = [
       "hiddenAfterCode": "print(public_api(\"music\", [\"play_track\", \"play_track\", \"_debug\"]))",
       "hiddenExpected": "from music import play_track"
     },
+    "transfer": {
+      "functionName": "import_cycle",
+      "starterCode": "def import_cycle(imports):\n    \"\"\"Return the two module names that import each other, sorted, or [] if none do.\n\n    `imports` maps a module name to the list of modules it imports.\n    A cycle here means A imports B and B imports A.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(import_cycle({\"api\": [\"models\"], \"models\": [\"api\"], \"utils\": []}))",
+      "publicExpected": "['api', 'models']",
+      "hiddenAfterCode": "print(import_cycle({\"a\": [\"b\"], \"b\": [\"c\"], \"c\": []}))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "import_cycle"
+        }
+      ]
+    },
     "exam": {
       "functionName": "public_api",
       "starterCode": "def public_api(module, names):\n    \"\"\"Ignore private names, deduplicate, sort, and build imports.\"\"\"\n    pass",
@@ -357,6 +385,20 @@ const specs: ConceptPhaseSpec[] = [
       "publicExpected": "src/notes/__init__.py",
       "hiddenAfterCode": "print(package_tree(\"tasks\", [\"item\"]))",
       "hiddenExpected": "tests/test_item.py"
+    },
+    "transfer": {
+      "functionName": "missing_init",
+      "starterCode": "def missing_init(paths):\n    \"\"\"Return the package directories that have no __init__.py, sorted.\n\n    Every directory that contains a .py file is a package and needs an\n    __init__.py beside it. \"src/api/routes.py\" puts \"src/api\" in that position.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(missing_init([\"src/api/routes.py\", \"src/api/__init__.py\", \"src/core/engine.py\"]))",
+      "publicExpected": "['src/core']",
+      "hiddenAfterCode": "print(missing_init([\"pkg/__init__.py\", \"pkg/tool.py\", \"README.md\"]))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "missing_init"
+        }
+      ]
     },
     "exam": {
       "functionName": "package_tree",
@@ -453,6 +495,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "main_guard",
           "value": "__name__"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "usage_error",
+      "starterCode": "def usage_error(args):\n    \"\"\"Return the usage error for a command line, or \"\" when it is valid.\n\n    The only valid commands are \"add <name>\" and \"list\".\n    Report exactly one problem, in this order:\n      - no arguments at all          -> \"missing command\"\n      - a command that is not known  -> \"unknown command: <name>\"\n      - add without a name           -> \"add needs a name\"\n    \"\"\"\n    pass",
+      "publicAfterCode": "print([usage_error([]), usage_error([\"remove\", \"x\"]), usage_error([\"add\"]), usage_error([\"add\", \"todo\"])])",
+      "publicExpected": "['missing command', 'unknown command: remove', 'add needs a name', '']",
+      "hiddenAfterCode": "print([usage_error([\"list\"]), usage_error([\"list\", \"extra\"]), usage_error([\"Add\"])])",
+      "hiddenExpected": "['', '', 'unknown command: Add']",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "usage_error"
         }
       ]
     },
@@ -554,6 +610,20 @@ const specs: ConceptPhaseSpec[] = [
       "hiddenAfterCode": "print(next_git_command(\"unknown\"))",
       "hiddenExpected": "git status"
     },
+    "transfer": {
+      "functionName": "subject_problems",
+      "starterCode": "def subject_problems(subjects):\n    \"\"\"Return the commit subjects that break the rules, each with its reason.\n\n    Each result is \"<subject> -> <reason>\", in the order the subjects arrive.\n    The rules, checked in this order:\n      - longer than 50 characters   -> \"too long\"\n      - does not start with a capital -> \"not capitalised\"\n      - ends with a full stop        -> \"ends with a period\"\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(subject_problems([\"Add login form\", \"fix bug\", \"Update docs.\"]))",
+      "publicExpected": "['fix bug -> not capitalised', 'Update docs. -> ends with a period']",
+      "hiddenAfterCode": "print(subject_problems([\"Rewrite the whole authentication and session handling layer\", \"Refactor the parser\"]))",
+      "hiddenExpected": "['Rewrite the whole authentication and session handling layer -> too long']",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "subject_problems"
+        }
+      ]
+    },
     "exam": {
       "functionName": "next_git_command",
       "starterCode": "def next_git_command(state):\n    \"\"\"Map workflow state to the next deliberate Git command.\"\"\"\n    pass",
@@ -644,6 +714,20 @@ const specs: ConceptPhaseSpec[] = [
       "hiddenAfterCode": "print(evaluate_cases(lambda x: x + 1, [(0, 1), (4, 9)]))",
       "hiddenExpected": "['PASS', 'FAIL']"
     },
+    "transfer": {
+      "functionName": "untested_cases",
+      "starterCode": "def untested_cases(required, test_names):\n    \"\"\"Return the required cases that no test name mentions, sorted.\n\n    A case is covered when its name appears anywhere in a test name,\n    ignoring capitalisation. \"test_empty_list\" covers \"empty\".\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(untested_cases([\"empty\", \"negative\", \"zero\"], [\"test_empty_list\", \"test_zero_division\"]))",
+      "publicExpected": "['negative']",
+      "hiddenAfterCode": "print(untested_cases([\"Unicode\", \"large\"], [\"test_unicode_names\", \"test_large_input\"]))",
+      "hiddenExpected": "[]",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "untested_cases"
+        }
+      ]
+    },
     "exam": {
       "functionName": "evaluate_cases",
       "starterCode": "def evaluate_cases(function, cases):\n    \"\"\"Evaluate all independent cases without stopping at first failure.\"\"\"\n    pass",
@@ -731,6 +815,20 @@ const specs: ConceptPhaseSpec[] = [
       "hiddenAfterCode": "print(safe_ratio(7, 0))",
       "hiddenExpected": "0.0"
     },
+    "transfer": {
+      "functionName": "last_own_frame",
+      "starterCode": "def last_own_frame(lines):\n    \"\"\"Return the last traceback line that points at the learner's own file.\n\n    Their file is the one whose path contains \"student_code.py\".\n    Return \"\" when the traceback never reaches it.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(repr(last_own_frame([\"Traceback (most recent call last):\", '  File \"student_code.py\", line 3, in <module>', '  File \"/lib/json.py\", line 90, in loads'])))",
+      "publicExpected": "'File \"student_code.py\", line 3, in <module>'",
+      "hiddenAfterCode": "print(repr(last_own_frame([\"Traceback (most recent call last):\", '  File \"/lib/csv.py\", line 12, in reader'])))",
+      "hiddenExpected": "''",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "last_own_frame"
+        }
+      ]
+    },
     "exam": {
       "functionName": "safe_ratio",
       "starterCode": "def safe_ratio(total, count):\n    \"\"\"Validate numeric inputs and avoid division by zero.\"\"\"\n    pass",
@@ -817,6 +915,20 @@ const specs: ConceptPhaseSpec[] = [
       "publicExpected": "INFO | saved | id=7",
       "hiddenAfterCode": "print(log_event(\"warning\", \"slow\", {\"ms\": 950, \"job\": \"sync\"}))",
       "hiddenExpected": "job=sync ms=950"
+    },
+    "transfer": {
+      "functionName": "resolved_settings",
+      "starterCode": "def resolved_settings(defaults, environment):\n    \"\"\"Merge configuration and report anything unrecognised.\n\n    Return a tuple: the resolved settings, then the rejected keys sorted.\n    An environment value overrides a default. A key that is not in the\n    defaults is not a setting, so it is rejected rather than merged.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(resolved_settings({\"level\": \"info\", \"retries\": \"3\"}, {\"level\": \"debug\", \"colour\": \"always\"}))",
+      "publicExpected": "({'level': 'debug', 'retries': '3'}, ['colour'])",
+      "hiddenAfterCode": "print(resolved_settings({\"level\": \"info\"}, {}))",
+      "hiddenExpected": "({'level': 'info'}, [])",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "resolved_settings"
+        }
+      ]
     },
     "exam": {
       "functionName": "log_event",
@@ -917,6 +1029,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "net_total"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "invalid_records",
+      "starterCode": "def invalid_records(records, schema):\n    \"\"\"Return \"<index>: <field>\" for each record whose field has the wrong type.\n\n    `schema` maps a field name to the type it must have. Report the first\n    wrong field of each record, in the order the schema lists them.\n    A missing field counts as wrong.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(invalid_records([{\"name\": \"Ana\", \"age\": 30}, {\"name\": \"Beto\", \"age\": \"31\"}], {\"name\": str, \"age\": int}))",
+      "publicExpected": "['1: age']",
+      "hiddenAfterCode": "print(invalid_records([{\"name\": \"Caio\"}], {\"name\": str, \"age\": int}))",
+      "hiddenExpected": "['0: age']",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "invalid_records"
         }
       ]
     },
@@ -1032,6 +1158,20 @@ const specs: ConceptPhaseSpec[] = [
         }
       ]
     },
+    "transfer": {
+      "functionName": "shelf_report",
+      "starterCode": "def shelf_report(shelves, items):\n    \"\"\"Build a one-line report per shelf, in the order the shelves arrive.\n\n    Each line reads \"<shelf> count=<count> total=<total>\".\n    A shelf with no items still gets a line, with a total of 0.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(shelf_report([\"A\", \"B\"], [{\"shelf\": \"A\", \"price\": 10}, {\"shelf\": \"A\", \"price\": 5}, {\"shelf\": \"B\", \"price\": 7}]))",
+      "publicExpected": "['A count=2 total=15', 'B count=1 total=7']",
+      "hiddenAfterCode": "print(shelf_report([\"A\", \"Z\"], [{\"shelf\": \"A\", \"price\": 3}]))",
+      "hiddenExpected": "['A count=1 total=3', 'Z count=0 total=0']",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "shelf_report"
+        }
+      ]
+    },
     "exam": {
       "functionName": "catalog_total",
       "starterCode": "class Product:\n    def __init__(self, name, price):\n        if price < 0:\n            raise ValueError(\"price cannot be negative\")\n        self.name = name\n        self.price = price\n\ndef catalog_total(products):\n    pass",
@@ -1133,6 +1273,20 @@ const specs: ConceptPhaseSpec[] = [
         {
           "kind": "function",
           "value": "monthly_summary"
+        }
+      ]
+    },
+    "transfer": {
+      "functionName": "top_categories",
+      "starterCode": "def top_categories(entries, limit):\n    \"\"\"Return the highest-spending categories as \"<category>=<total>\", best first.\n\n    Ties are broken alphabetically. Return at most `limit` of them.\n    \"\"\"\n    pass",
+      "publicAfterCode": "print(top_categories([{\"category\": \"rent\", \"amount\": 1200}, {\"category\": \"food\", \"amount\": 300}, {\"category\": \"food\", \"amount\": 250}], 2))",
+      "publicExpected": "['rent=1200', 'food=550']",
+      "hiddenAfterCode": "print(top_categories([{\"category\": \"b\", \"amount\": 5}, {\"category\": \"a\", \"amount\": 5}], 5))",
+      "hiddenExpected": "['a=5', 'b=5']",
+      "requirements": [
+        {
+          "kind": "function",
+          "value": "top_categories"
         }
       ]
     },
