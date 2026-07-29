@@ -11,7 +11,7 @@ import {
 } from '../lib/learningEngine'
 import { migrateGuestBaseZeroState } from '../lib/baseZero'
 import { chooseNewestLearningState, fetchRemoteLearningState, scheduleLearningStateSync, syncLearningStateNow } from '../lib/learningSync'
-import { initialSyncState, SYNC_EVENT, type SyncSnapshot } from '../lib/syncStatus'
+import { SYNC_EVENT, initialSyncState, type SyncSnapshot, withConnectivity } from '../lib/syncStatus'
 
 export type Theme = 'dark' | 'light' | 'system'
 export type EditorHeightMode = 'auto' | 'compact'
@@ -106,7 +106,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [accountDisplayName, setAccountDisplayName] = useState('Student')
   const [learningState, setLearningState] = useState<LearningState>(() => createEmptyLearningState())
-  const [syncSnapshot, setSyncSnapshot] = useState<SyncSnapshot>(() => initialSyncState())
+  const [rawSyncSnapshot, setSyncSnapshot] = useState<SyncSnapshot>(() => initialSyncState())
+  // Read through connectivity so every producer — the outbox, syncNow, the event
+  // bus — reports offline as offline instead of "waiting to sync".
+  const syncSnapshot = withConnectivity(rawSyncSnapshot, lang)
   const learnerId = user?.id || (isGuest ? GUEST_ID : null)
   const displayName = isGuest ? (lang === 'pt' ? 'Aluno visitante' : 'Guest student') : accountDisplayName
 

@@ -27,6 +27,29 @@ export function emitSyncState(state: SyncState, message?: string) {
   }))
 }
 
+/**
+ * A device with no connection is offline, whatever the last write attempt concluded.
+ *
+ * The outbox emits 'pending' when a write cannot leave the device, which is accurate
+ * about the write and wrong about the cause. Offline, the chip read "Aguardando
+ * sincronização" — a normal-looking transient state — so nothing ever told the learner
+ * their connection was gone. On a plane that is the single fact they need.
+ *
+ * Applied where the snapshot is READ rather than where it is set, so no future call
+ * site can route around it.
+ */
+export function withConnectivity(snapshot: SyncSnapshot, lang: 'en' | 'pt'): SyncSnapshot {
+  const online = typeof navigator === 'undefined' ? true : navigator.onLine
+  if (online || snapshot.state === 'offline') return snapshot
+  return {
+    ...snapshot,
+    state: 'offline',
+    message: lang === 'pt'
+      ? 'Sem conexão. Alterações salvas neste aparelho.'
+      : 'Offline. Changes are saved on this device.',
+  }
+}
+
 export function initialSyncState(): SyncSnapshot {
   const online = typeof navigator === 'undefined' ? true : navigator.onLine
   return {

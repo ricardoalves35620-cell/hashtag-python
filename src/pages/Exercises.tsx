@@ -447,12 +447,23 @@ export default function Exercises() {
             clearResult()
           }} lang={lang} suggestedInputs={contractInputs} /></div>
 
-        <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
-          <div className="mb-3"><PythonLoadingProgress lang={lang} /></div>
+        {/*
+          The loading progress used to sit INSIDE this grid, which made three children
+          share two columns: the progress took column one, Run fell into the narrow
+          `auto` column on the right, and Reset wrapped onto a second row at full width.
+          The two actions ended up different widths on different rows.
+
+          Two equal halves is what every other action row in the app uses — BaseZero,
+          EngineeringLab, LearningProgress, Roadmap, Profile — so this now matches them
+          instead of being the one screen with its own layout.
+        */}
+        <div className="mb-3"><PythonLoadingProgress lang={lang} /></div>
+
+        <div className="grid grid-cols-2 gap-2">
           <Button data-testid="exercise-run-button" aria-describedby={isFirstExercise ? 'exercise-run-requirements' : undefined} fullWidth size="lg" loading={running || pyodideLoading} disabled={isFirstExercise && !thinkingReady} onClick={handleRun} leftIcon="▶">
             {pyodideLoading ? t.loading : running ? t.running : t.run}
           </Button>
-          <Button variant="secondary" size="lg" onClick={() => {
+          <Button variant="secondary" size="lg" fullWidth onClick={() => {
             lastEditAt.current = Date.now()
             setCodes(previous => ({ ...previous, [exercise.id]: resolveLocalizedCode(exercise.starterCode, lang) }))
             clearResult()

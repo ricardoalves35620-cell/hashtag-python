@@ -726,4 +726,7 @@ def _ex8_zero():
             long_songs += 1
     print("Total time:", total, "seconds")
     print("Long songs (>4 min):", long_songs)
-    print("Average:", total / len(songs), "seconds")
+    # The task now says "rounded to two decimal places". It used to demand
+    # 244.28571428571428 exactly, so rounding an average — the obvious thing a learner
+    # does — failed the exercise.
+    print("Average:", round(total / len(songs), 2), "seconds")

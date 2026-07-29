@@ -193,14 +193,55 @@ function describeDifference(exercise: Exercise, lang: Lang, actual: string): str
     return head.length > 2 && candidate.includes(head)
   })
 
-  if (nearest) {
+  if (nearest) return describeLineDifference(missing, nearest, lang)
+
+  // Every expected line IS present, just not in the order the task asked for. Saying
+  // "your output never contains X" when X is plainly on screen reads as a broken app.
+  const allPresent = expectedLines.every(line => actualLines.some(candidate => candidate.includes(line)))
+  if (allPresent) {
     return lang === 'en'
-      ? `Expected a line like "${missing}" but yours reads "${nearest}".`
-      : `Esperava uma linha como "${missing}", mas a sua é "${nearest}".`
+      ? 'Every expected line is there, but not in the order the task asks for. Print them in the order listed under "Display".'
+      : 'Todas as linhas esperadas estão lá, mas não na ordem que o enunciado pede. Imprima na ordem listada em "Mostrar".'
   }
+
   return lang === 'en'
     ? `Your output never contains "${missing}".`
     : `Sua saída não contém "${missing}".`
+}
+
+/**
+ * Points AT the difference instead of printing two near-identical strings.
+ *
+ * Reported from the app: a learner produced "Average: 244.28571428571428" where
+ * "Average: 244.28571428571428 seconds" was wanted, and read the two quoted strings as
+ * identical — reasonably, since they differ by one word at the very end and both were
+ * shown lower-cased. "Expected X, got Y" is only useful when X and Y look different.
+ */
+export function describeLineDifference(expected: string, actual: string, lang: Lang): string {
+  let at = 0
+  while (at < expected.length && at < actual.length && expected[at] === actual[at]) at += 1
+  const shared = expected.slice(0, at)
+  const expectedRest = expected.slice(at)
+  const actualRest = actual.slice(at)
+
+  if (expectedRest && !actualRest) {
+    return lang === 'en'
+      ? `Your line matches up to "${shared}" and then stops. It is missing "${expectedRest}" at the end.`
+      : `Sua linha está igual até "${shared}" e para aí. Falta "${expectedRest}" no final.`
+  }
+  if (!expectedRest && actualRest) {
+    return lang === 'en'
+      ? `Your line is correct up to "${shared}", then has "${actualRest}" extra at the end.`
+      : `Sua linha está correta até "${shared}" e depois tem "${actualRest}" a mais no final.`
+  }
+  if (shared) {
+    return lang === 'en'
+      ? `The two match up to "${shared}". After that the task expects "${expectedRest}" and yours has "${actualRest}".`
+      : `As duas coincidem até "${shared}". Depois disso o enunciado espera "${expectedRest}" e a sua tem "${actualRest}".`
+  }
+  return lang === 'en'
+    ? `Expected a line like "${expected}" but yours reads "${actual}".`
+    : `Esperava uma linha como "${expected}", mas a sua é "${actual}".`
 }
 
 export async function gradeExercise(

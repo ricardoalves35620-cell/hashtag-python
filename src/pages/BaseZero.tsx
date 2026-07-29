@@ -288,9 +288,12 @@ function ModuleChallenge({ moduleId, lang, completed, onComplete, setFeedback }:
   }
 
   if (moduleId === 'local-cloud') {
+    // Answers ran local, cloud, local, cloud against two buttons in a fixed order, so
+    // alternating scored 100%. Reordered to local, cloud, cloud, local: still two
+    // buttons, but the pattern no longer answers the question.
     const items = [
       ['downloads-folder', { en: 'A file in Downloads', pt: 'Um arquivo em Downloads' }], ['google-drive', { en: 'A file only on Google Drive', pt: 'Um arquivo apenas no Google Drive' }],
-      ['desktop-file', { en: 'A file on the Desktop', pt: 'Um arquivo na Área de Trabalho' }], ['onedrive-web', { en: 'OneDrive opened in a browser', pt: 'OneDrive aberto no navegador' }],
+      ['onedrive-web', { en: 'OneDrive opened in a browser', pt: 'OneDrive aberto no navegador' }], ['desktop-file', { en: 'A file on the Desktop', pt: 'Um arquivo na Área de Trabalho' }],
     ] as const
     return <div className="hp-practice-card rounded-xl p-4 space-y-3"><div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>☁️ {lang === 'en' ? 'Classify where each item lives' : 'Classifique onde cada item está'}</div>{items.map(([id, label]) => <div key={id} className="rounded-lg p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-sm mb-2" style={{ color: 'var(--c-text2)' }}>{label[lang]}</div><div className="flex gap-2">{(['local', 'cloud'] as const).map(choice => <button key={choice} onClick={() => setClassification(previous => ({ ...previous, [id]: choice }))} className="flex-1 rounded-lg py-2 text-xs" style={{ background: classification[id] === choice ? 'var(--c-purple-dm)' : 'var(--c-card)', color: classification[id] === choice ? 'var(--c-purple-l)' : 'var(--c-muted)', border: '1px solid var(--c-border)' }}>{choice === 'local' ? (lang === 'en' ? '💻 Local' : '💻 Local') : (lang === 'en' ? '☁️ Cloud' : '☁️ Nuvem')}</button>)}</div></div>)}<button onClick={() => scoreClassification(classification) === 100 ? success(lang === 'en' ? 'You can distinguish local and cloud storage.' : 'Você distingue armazenamento local e nuvem.') : fail(lang === 'en' ? `You got ${scoreClassification(classification)}%. Review what requires the internet.` : `Você acertou ${scoreClassification(classification)}%. Revise o que depende da internet.`)} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
   }
@@ -309,5 +312,25 @@ function ModuleChallenge({ moduleId, lang, completed, onComplete, setFeedback }:
     ['calculate', { en: 'Executes general instructions', pt: 'Executa instruções gerais' }], ['temporary', { en: 'Temporary workspace for open apps', pt: 'Espaço temporário para apps abertos' }],
     ['permanent', { en: 'Keeps files after shutdown', pt: 'Mantém arquivos depois de desligar' }], ['parallel', { en: 'Many parallel calculations for AI', pt: 'Muitos cálculos paralelos para IA' }],
   ] as const
-  return <div className="hp-practice-card rounded-xl p-4 space-y-3"><div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>🧠 {lang === 'en' ? 'Match the computer resource' : 'Associe o recurso do computador'}</div>{rows.map(([id, label]) => <label key={id} className="block rounded-lg p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-xs mb-2" style={{ color: 'var(--c-text2)' }}>{label[lang]}</div><select value={hardware[id] || ''} onChange={event => setHardware(previous => ({ ...previous, [id]: event.target.value }))} className="w-full rounded-lg px-3 py-2 text-sm" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}><option value="">—</option><option value="cpu">CPU</option><option value="ram">RAM</option><option value="storage">SSD / Storage</option><option value="gpu">GPU</option></select></label>)}<button onClick={() => scoreHardware(hardware) === 100 ? success(lang === 'en' ? 'You understand the four core resources.' : 'Você entendeu os quatro recursos principais.') : fail(lang === 'en' ? `You got ${scoreHardware(hardware)}%. Think worker, workbench, warehouse and team.` : `Você acertou ${scoreHardware(hardware)}%. Pense em trabalhador, bancada, depósito e equipe.`)} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
+
+  /**
+   * The four answers are CPU, RAM, storage, GPU — and the four prompts were listed in
+   * exactly that order, above a dropdown that listed the options in exactly that order
+   * too. Picking the first option in the first box, the second in the second, and so on
+   * scored 100% without reading a word.
+   *
+   * The quiz and the lesson checkpoints already avoid this by shuffling per question
+   * with shuffledIndices; this select was the one place that did not. Shuffling per ROW
+   * means no two dropdowns share an order, so position carries no information.
+   *
+   * "Storage" is also a Portuguese-mode English word — the printed label is translated
+   * even though the variable name stays `storage`.
+   */
+  const HARDWARE_CHOICES = [
+    ['cpu', { en: 'CPU', pt: 'CPU' }],
+    ['ram', { en: 'RAM', pt: 'RAM' }],
+    ['storage', { en: 'SSD / Storage', pt: 'SSD / Armazenamento' }],
+    ['gpu', { en: 'GPU', pt: 'GPU' }],
+  ] as const
+  return <div className="hp-practice-card rounded-xl p-4 space-y-3"><div className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>🧠 {lang === 'en' ? 'Match the computer resource' : 'Associe o recurso do computador'}</div>{rows.map(([id, label]) => <label key={id} className="block rounded-lg p-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}><div className="text-xs mb-2" style={{ color: 'var(--c-text2)' }}>{label[lang]}</div><select value={hardware[id] || ''} onChange={event => setHardware(previous => ({ ...previous, [id]: event.target.value }))} className="w-full rounded-lg px-3 py-2 text-sm" style={{ background: 'var(--c-card)', color: 'var(--c-text)', border: '1px solid var(--c-border)' }}><option value="">—</option>{shuffledIndices(HARDWARE_CHOICES.length, 1, `hardware-${id}`).map(choice => <option key={HARDWARE_CHOICES[choice][0]} value={HARDWARE_CHOICES[choice][0]}>{HARDWARE_CHOICES[choice][1][lang]}</option>)}</select></label>)}<button onClick={() => scoreHardware(hardware) === 100 ? success(lang === 'en' ? 'You understand the four core resources.' : 'Você entendeu os quatro recursos principais.') : fail(lang === 'en' ? `You got ${scoreHardware(hardware)}%. Think worker, workbench, warehouse and team.` : `Você acertou ${scoreHardware(hardware)}%. Pense em trabalhador, bancada, depósito e equipe.`)} className="w-full rounded-lg py-2.5 text-sm font-semibold text-white" style={{ background: 'var(--c-purple)' }}>{lang === 'en' ? 'Validate' : 'Validar'}</button></div>
 }

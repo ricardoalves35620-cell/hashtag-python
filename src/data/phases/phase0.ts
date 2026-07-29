@@ -62,13 +62,13 @@ export const phase0: Phase = {
       title: { en: 'Build a tiny hardware report', pt: 'Monte um pequeno relatório de hardware' },
       description: {
         en: 'Goal:\nCreate four variables named cpu, ram, storage and gpu, each storing a short text description of what that computer component does. Then print each variable with a label.\n\nThe output must show four lines, one per component, with the component name and its role.\n\nProgram requirements\n\n1. Create\n- cpu: what the CPU does\n- ram: what RAM does\n- storage: what storage does\n- gpu: what the GPU does\n\n2. Display\n- One line per component, showing its name and its role\n\nExample:\nCPU: executes instructions\nRAM: temporary working data\nStorage: keeps files\nGPU: processes graphics',
-        pt: 'Objetivo:\nCrie quatro variáveis chamadas cpu, ram, storage e gpu, cada uma guardando uma breve descrição do que aquele componente do computador faz. Depois imprima cada variável com um rótulo.\n\nA saída deve mostrar quatro linhas, uma por componente, com o nome do componente e sua função.\n\nRequisitos do programa\n\n1. Criar\n- cpu: o que a CPU faz\n- ram: o que a RAM faz\n- storage: o que o armazenamento faz\n- gpu: o que a GPU faz\n\n2. Mostrar\n- Uma linha por componente, com seu nome e sua função\n\nExemplo:\nCPU: executa instruções\nRAM: guarda dados temporários\nStorage: mantém arquivos\nGPU: processa gráficos'
+        pt: 'Objetivo:\nCrie quatro variáveis chamadas cpu, ram, storage e gpu, cada uma guardando uma breve descrição do que aquele componente do computador faz. Depois imprima cada variável com um rótulo.\n\nA saída deve mostrar quatro linhas, uma por componente, com o nome do componente e sua função.\n\nRequisitos do programa\n\n1. Criar\n- cpu: o que a CPU faz\n- ram: o que a RAM faz\n- storage: o que o armazenamento faz\n- gpu: o que a GPU faz\n\n2. Mostrar\n- Uma linha por componente, com seu nome e sua função\n\nExemplo:\nCPU: executa instruções\nRAM: guarda dados temporários\nArmazenamento: mantém arquivos\nGPU: processa gráficos'
       },
       starterCode: { en: '# Create the four variables below, using exactly these names:\n# cpu, ram, storage, gpu\n\n# Print a line for each resource\n', pt: '# Crie as quatro variáveis abaixo, usando exatamente estes nomes:\n# cpu, ram, storage, gpu\n\n# Imprima uma linha para cada componente\n' },
       hints: [{ en: 'Example: cpu = "executes instructions"', pt: 'Exemplo: cpu = "executa instruções"' }, { en: 'Use four print calls.', pt: 'Use quatro chamadas de print.' }],
       sampleOutput: {
         en: 'CPU: executes instructions\nRAM: temporary working data\nStorage: keeps files\nGPU: processes graphics',
-        pt: 'CPU: executa instruções\nRAM: guarda dados temporários\nStorage: mantém arquivos\nGPU: processa gráficos',
+        pt: 'CPU: executa instruções\nRAM: guarda dados temporários\nArmazenamento: mantém arquivos\nGPU: processa gráficos',
       },
       grading: {
         codeRequirements: [

@@ -22,3 +22,6 @@ pedagogy-report/
 
 # Copied from the pinned pyodide devDependency by scripts/copy-pyodide.mjs
 public/pyodide/
+
+# Python bytecode from the audit scripts
+scripts/audit/__pycache__/

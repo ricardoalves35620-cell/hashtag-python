@@ -4,7 +4,11 @@ import { Button } from './ui'
 
 export default function SyncStatusIndicator({ compact = false }: { compact?: boolean }) {
   const { lang, user, isGuest, syncSnapshot, syncNow } = useApp()
-  if (isGuest || !user) return null
+  // A guest has nothing to sync, so the chip is normally noise for them. Being offline
+  // is not noise: it is the one fact that explains why things behave differently, and
+  // hiding it left guest learners with no signal at all.
+  const offline = syncSnapshot.state === 'offline'
+  if ((isGuest || !user) && !offline) return null
 
   const copy = {
     en: {

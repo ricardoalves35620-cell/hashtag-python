@@ -85,7 +85,11 @@ function exerciseChecks(output: Bilingual): Check[] {
       { type: 'no_error' },
       {
         type: 'matches',
-        value: samplePattern(accepted[0]),
+        // Every accepted language, not just the first. This branch built the pattern
+        // from accepted[0] alone — the English sample — so once the Portuguese version
+        // of an exercise printed Portuguese, the only correct answer a Portuguese
+        // learner could give was rejected. The branch below already joins them.
+        value: accepted.map(samplePattern).join('|'),
         label: {
           en: 'Produces the expected output, with your own values where the sample shows them',
           pt: 'Produz a saída esperada, com os seus valores onde a amostra os indica',

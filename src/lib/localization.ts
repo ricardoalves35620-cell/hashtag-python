@@ -8,6 +8,50 @@ export function resolveLocalizedText(value: LocalizedText | undefined, lang: Lan
 }
 
 const exactPt: Record<string, string> = {
+  // phases 9-20
+  'Write the complete solution.': 'Escreva a solução completa.',
+  'Returns the area': 'Retorna a área',
+  'the file contains: abc': 'o arquivo contém: abc',
+  'Validate and append the normalized record.': 'Valide e adicione o registro normalizado.',
+  'Validate the root type and serialize deterministically.': 'Valide o tipo raiz e serialize de forma determinística.',
+  'Parse, validate, add a duration and format.': 'Interprete, valide, some uma duração e formate.',
+  // Added after a Portuguese learner reported English in the app. The word-level
+  // fallback below turns an unlisted comment into Portunhol — "Build the 4-tier
+  // waterfall (highest primeiro!)" — which is worse than leaving it in English,
+  // so every one of these is an exact entry.
+  'Age: 28': 'Idade: 28',
+  'Name: Alice | Age: 28': 'Nome: Alice | Idade: 28',
+  'Floor division  → 3  (drops the decimal)': 'Divisão inteira  → 3  (descarta a parte decimal)',
+  'Modulo          → 1  (only the remainder)': 'Módulo           → 1  (apenas o resto)',
+  'Power           → 1024  (2 to the 10th)': 'Potência         → 1024  (2 elevado a 10)',
+  '20  (parentheses force order)': '20  (os parênteses forçam a ordem)',
+  '✅ 20.0 — correct average': '✅ 20.0 — média correta',
+  'How many $50 chairs fit in the equipment budget?': 'Quantas cadeiras de $50 cabem no orçamento de equipamentos?',
+  'Split into 4 categories and print all 5 lines:': 'Divida em 4 categorias e imprima as 5 linhas:',
+  'Calculate: total, average, reserve (10%), remaining': 'Calcule: total, média, reserva (10%), restante',
+  'shorthand: same as score = score + 5 → 15': 'forma curta: o mesmo que score = score + 5 → 15',
+  'Ana Souza is 32 years old': 'Ana Souza tem 32 anos',
+  'In 10 years: 42': 'Daqui a 10 anos: 42',
+  'New subscription client registration': 'Cadastro de novo cliente de assinatura',
+  'any name — text needs quotes!': 'qualquer nome — texto precisa de aspas!',
+  'fill the operator': 'preencha o operador',
+  'Choose your own name, age and monthly fee — the grader checks the maths, not the values.': 'Escolha seu próprio nome, idade e mensalidade — a correção verifica a conta, não os valores.',
+  'phone = int(input("Phone: "))  → "555-1234" crashes int()!': 'phone = int(input("Telefone: "))  → "555-1234" quebra o int()!',
+  'Phone, ZIP code, ID numbers → keep as text!': 'Telefone, CEP, números de documento → mantenha como texto!',
+  'Interactive order intake:': 'Recebimento interativo de pedidos:',
+  'fill: >, and, <': 'preencha: >, and, <',
+  'Cinema age gate:': 'Controle de idade do cinema:',
+  'Cinema ticket price by age': 'Preço do ingresso de cinema por idade',
+  'Device check: grade a phone battery by health percentage': 'Verificação do aparelho: classifique a bateria pela porcentagem de saúde',
+  'Movie rating classifier:': 'Classificador de avaliação de filmes:',
+  'Build the 4-tier waterfall (highest first!):': 'Monte a cascata de 4 faixas (da maior para a menor!):',
+  'fill: keep going while stock >= 15': 'preencha: continue enquanto stock >= 15',
+  'fill: consume 15 cups': 'preencha: consuma 15 copos',
+  'fill: next order': 'preencha: próximo pedido',
+  'Diana   (negative = from the end!)': 'Diana   (negativo = a partir do fim!)',
+  '% complete, same order!': '% concluído, na mesma ordem!',
+  'Analyze the playlist:': 'Analise a playlist:',
+  'Build your dashboard:': 'Monte seu painel:',
   'condition + colon': 'condição + dois-pontos',
   'indented = inside the if': 'indentado = dentro do if',
   'still inside': 'ainda dentro do bloco',
@@ -262,6 +306,107 @@ function findCommentStart(line: string): number {
   return -1
 }
 
+/**
+ * Printed text, translated the same way comments are.
+ *
+ * localizePythonComments only ever touched `#` comments, so a Portuguese learner ran
+ * phase 8 and the console answered "Queue size: 3 / Processing: Alice / Queue
+ * complete!". The code was right; the language was not theirs. Someone who does not
+ * read English cannot tell whether that output means they succeeded.
+ *
+ * Exact-match only, and that is the whole safety argument: a literal is translated when
+ * it appears in this table and never otherwise, so dictionary keys, identifiers, format
+ * placeholders and API strings cannot be touched by accident.
+ *
+ * The graders accept both languages already — exerciseChecks() builds its pattern from
+ * sampleOutput.en AND sampleOutput.pt — so a translated program still passes, provided
+ * the two agree. scripts/audit/language-isolation.ts checks that they do.
+ */
+const literalPt: Record<string, string> = {
+  'Age:': 'Idade:',
+  'Name:': 'Nome:',
+  '| Age:': '| Idade:',
+  'Songs:': 'Músicas:',
+  'My name is': 'Meu nome é',
+  'My age is': 'Minha idade é',
+  'In 10 years I\'ll be': 'Daqui a 10 anos eu terei',
+  'This is my first program!': 'Este é o meu primeiro programa!',
+  'Amount ordered:  $': 'Valor do pedido:  $',
+  'Processing fee:  $': 'Taxa de processamento:  $',
+  'Check:': 'Verificação:',
+  'Money left over: $': 'Dinheiro restante: $',
+  '{full} is {age} years old': '{full} tem {age} anos',
+  'In 10 years: {age + 10}': 'Daqui a 10 anos: {age + 10}',
+  '=== CLIENT FILE ===': '=== FICHA DO CLIENTE ===',
+  'Name:    {client_name}': 'Nome:    {client_name}',
+  'Age:     {client_age}': 'Idade:   {client_age}',
+  'Total spent this week: $': 'Total gasto nesta semana: $',
+  'Start:': 'Início:',
+  'Client: {client_name}, age {client_age}': 'Cliente: {client_name}, idade {client_age}',
+  'Annual: {annual_fee}': 'Anual: {annual_fee}',
+  'Active: {plan_active}': 'Ativo: {plan_active}',
+  'What is your name?': 'Qual é o seu nome?',
+  'Your city:': 'Sua cidade:',
+  'Your age:': 'Sua idade:',
+  'Room name:': 'Nome da sala:',
+  'Phone:': 'Telefone:',
+  'Raw value:': 'Valor original:',
+  'New type:': 'Novo tipo:',
+  '{name}, {age} years, {height}m': '{name}, {age} anos, {height}m',
+  'Next year: {age + 1}': 'Ano que vem: {age + 1}',
+  'Phone: {phone}': 'Telefone: {phone}',
+  'Amount: $': 'Valor: $',
+  '🟢 Standard processing': '🟢 Processamento padrão',
+  'Auto-queue assigned': 'Fila automática atribuída',
+  '--- check complete ---': '--- verificação concluída ---',
+  'Days since plan start:': 'Dias desde o início do plano:',
+  '🚨 FLAGGED for investigation': '🚨 MARCADO para investigação',
+  '✅ Passed fraud check': '✅ Passou na verificação de fraude',
+  'Auto-queue': 'Fila automática',
+  'Ticket holder age:': 'Idade de quem vai assistir:',
+  'Young driver': 'Motorista jovem',
+  'Grade: C30 — beams and slabs ✅': 'Classe: C30 — vigas e lajes ✅',
+  'Amount:': 'Valor:',
+  'You typed:': 'Você digitou:',
+  'Age (0-120):': 'Idade (0-120):',
+  'Valid age:': 'Idade válida:',
+  'Order #': 'Pedido nº',
+  'Final count value:': 'Valor final do contador:',
+  'Order {order}: {stock} cups left': 'Pedido {order}: {stock} copos restantes',
+  'Restock needed!': 'Precisa repor o estoque!',
+  '⚠️ Big order: ${amount}': '⚠️ Pedido grande: ${amount}',
+  'Big orders: {big_orders} of {len(amounts)}': 'Pedidos grandes: {big_orders} de {len(amounts)}',
+  'Files': 'Arquivos',
+  'Queue size:': 'Tamanho da fila:',
+  'Processing:': 'Processando:',
+  'Queue complete!': 'Fila concluída!',
+  'Big order:': 'Pedido grande:',
+}
+
+/** Exposed so the audit can assert the table and the sample outputs agree. */
+export function translateLiteralToPt(text: string): string {
+  return literalPt[text] ?? literalPt[text.trim()] ?? text
+}
+
+// The f in f"..." is a string PREFIX, not an identifier. Excluding any preceding
+// letter skipped every f-string — which is most of the printed output in this
+// curriculum, so the translation silently did nothing where it mattered most.
+const LITERAL = /(?<![A-Za-z_0-9])([fFrRbB]{0,2})(['"])((?:(?!\2)[^\\\n])*)\2/g
+
+export function localizePythonStrings(code: string, lang: Lang): string {
+  if (!code || lang === 'en') return code
+  return code.split('\n').map(line => {
+    const commentAt = findCommentStart(line)
+    const codePart = commentAt < 0 ? line : line.slice(0, commentAt)
+    const rest = commentAt < 0 ? '' : line.slice(commentAt)
+    const translated = codePart.replace(LITERAL, (whole, prefix: string, quote: string, inner: string) => {
+      const next = translateLiteralToPt(inner)
+      return next === inner ? whole : `${prefix}${quote}${next}${quote}`
+    })
+    return translated + rest
+  }).join('\n')
+}
+
 export function localizePythonComments(code: string, lang: Lang): string {
   if (!code || lang === 'en') return code
   return code.split('\n').map(line => {
@@ -276,5 +421,5 @@ export function localizePythonComments(code: string, lang: Lang): string {
 export function resolveLocalizedCode(code: string | Bilingual | undefined, lang: Lang): string {
   if (!code) return ''
   if (typeof code !== 'string') return code[lang] || code.en || code.pt || ''
-  return localizePythonComments(code, lang)
+  return localizePythonStrings(localizePythonComments(code, lang), lang)
 }

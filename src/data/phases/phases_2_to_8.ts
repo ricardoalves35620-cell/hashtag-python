@@ -528,7 +528,7 @@ print(f"Active: {plan_active}")`,
         { en: 'Text: "Maria" | Number: 35 | Bool: True (capital T)', pt: 'Texto: "Maria" | Número: 35 | Bool: True (T maiúsculo)' },
         { en: 'Annual = monthly × 12 → use *', pt: 'Anual = mensal × 12 → use *' }
       ],
-      sampleOutput: { en: 'Client: {{your name}}, age {{your age}}\nAnnual: 5400\nActive: True', pt: 'Client: {{seu nome}}, age {{sua idade}}\nAnnual: 5400\nActive: True' }
+      sampleOutput: { en: 'Client: {{your name}}, age {{your age}}\nAnnual: 5400\nActive: True', pt: 'Cliente: {{seu nome}}, idade {{sua idade}}\nAnual: 5400\nAtivo: True' }
     },
     {
       id: 'ex3_zero',
@@ -1941,7 +1941,7 @@ print("Restock needed!")`,
         { en: 'Condition: stock >= 15  |  Consume: stock -= 15  |  Next order: order += 1', pt: 'Condição: stock >= 15  |  Consumir: stock -= 15  |  Próximo pedido: order += 1' },
         { en: 'The loop runs 4 times: 60 → 45 → 30 → 15 → 0. At 0, 0 >= 15 is False → stops.', pt: 'O loop roda 4 vezes: 60 → 45 → 30 → 15 → 0. Em 0, 0 >= 15 é False → para.' }
       ],
-      sampleOutput: { en: 'Order 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!', pt: 'Order 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!' }
+      sampleOutput: { en: 'Order 1: 45 cups left\nOrder 2: 30 cups left\nOrder 3: 15 cups left\nOrder 4: 0 cups left\nRestock needed!', pt: 'Pedido 1: 45 copos restantes\nPedido 2: 30 copos restantes\nPedido 3: 15 copos restantes\nPedido 4: 0 copos restantes\nPrecisa repor o estoque!' }
     },
     {
       id: 'ex7_zero',
@@ -2289,14 +2289,14 @@ print("Total:", total)`,
         { en: 'Start at 0, accumulate with +=', pt: 'Comece em 0, acumule com +=' },
         { en: 'Bigger than: >', pt: 'Maior que: >' }
       ],
-      sampleOutput: { en: 'Big order: 4500\nBig order: 8000\nTotal: 13350', pt: 'Big order: 4500\nBig order: 8000\nTotal: 13350' }
+      sampleOutput: { en: 'Big order: 4500\nBig order: 8000\nTotal: 13350', pt: 'Pedido grande: 4500\nPedido grande: 8000\nTotal: 13350' }
     },
     {
       id: 'ex8_zero',
       title: { en: '🔴 From Scratch: Playlist Analyzer', pt: '🔴 Do Zero: Analisador de Playlist' },
       description: {
-        en: 'Goal:\nWrite a playlist analyzer. Given a list of song durations in seconds, produce a summary report.\n\nProgram requirements\n\n1. The data\n- A list of seven song durations in seconds\n\n2. For every song\n- Accumulate the total duration\n- Count how many songs last more than 4 minutes (240 seconds)\n\n3. Display\n- The total duration\n- The number of long songs\n- The average duration\n\nWork through the list with a loop — do not calculate each song separately.\n\nExample:\nTotal time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds',
-        pt: 'Objetivo:\nEscreva um analisador de playlist. Dada uma lista de durações de músicas em segundos, produza um relatório resumido.\n\nRequisitos do programa\n\n1. Os dados\n- Uma lista com sete durações de músicas em segundos\n\n2. Para cada música\n- Acumule a duração total\n- Conte quantas músicas duram mais de 4 minutos (240 segundos)\n\n3. Mostrar\n- A duração total\n- A quantidade de músicas longas\n- A duração média\n\nPercorra a lista com um laço — não calcule cada música separadamente.\n\nExemplo:\nTotal time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds'
+        en: 'Goal:\nWrite a playlist analyzer. Given a list of song durations in seconds, produce a summary report.\n\nProgram requirements\n\n1. The data\n- A list of seven song durations in seconds\n\n2. For every song\n- Accumulate the total duration\n- Count how many songs last more than 4 minutes (240 seconds)\n\n3. Display\n- The total duration\n- The number of long songs\n- The average duration, rounded to two decimal places\n\nWork through the list with a loop — do not calculate each song separately.\n\nExample:\nTotal time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.29 seconds',
+        pt: 'Objetivo:\nEscreva um analisador de playlist. Dada uma lista de durações de músicas em segundos, produza um relatório resumido.\n\nRequisitos do programa\n\n1. Os dados\n- Uma lista com sete durações de músicas em segundos\n\n2. Para cada música\n- Acumule a duração total\n- Conte quantas músicas duram mais de 4 minutos (240 segundos)\n\n3. Mostrar\n- A duração total\n- A quantidade de músicas longas\n- A duração média, arredondada para duas casas decimais\n\nPercorra a lista com um laço — não calcule cada música separadamente.\n\nExemplo:\nTempo total: 1710 segundos\nMúsicas longas (>4 min): 3\nMédia: 244.29 segundos'
       },
       starterCode: `songs = [210, 195, 300, 180, 265, 240, 320]
 
@@ -2305,7 +2305,7 @@ print("Total:", total)`,
         { en: 'total = 0 and long_songs = 0 BEFORE the loop', pt: 'total = 0 e long_songs = 0 ANTES do loop' },
         { en: 'Inside the loop: total += duration then if duration > 240: long_songs += 1', pt: 'Dentro do loop: total += duration depois if duration > 240: long_songs += 1' }
       ],
-      sampleOutput: { en: 'Total time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds', pt: 'Total time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.28571428571428 seconds' }
+      sampleOutput: { en: 'Total time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.29 seconds', pt: 'Tempo total: 1710 segundos\nMúsicas longas (>4 min): 3\nMédia: 244.29 segundos' }
     }
   ],
 
