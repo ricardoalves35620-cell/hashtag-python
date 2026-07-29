@@ -1485,9 +1485,54 @@ def update_status(db, cid, status):
 
 def analyze(db):
     if not db: return
-    total  = sum(c["amount"] for c in db)
-    total = sum(c["total"] for c in db)
-    print(f"Total: \${total:,} | Net total: \${total:,} | Orders: {len(db)}")` }
+    gross = sum(c["amount"] for c in db)
+    net   = sum(c["total"] for c in db)
+    print(f"Total: \${gross:,} | Net total: \${net:,} | Orders: {len(db)}")` },
+      // Both answers below were produced by running the snippet, not by reading it.
+      { type: 'checkpoint', checkpoint: {
+        code: `amount = 5000
+priority = ("Critical" if amount > 10000
+            else "Urgent" if amount > 5000
+            else "Normal")
+print(priority)`,
+        question: { en: 'An order comes in at exactly 5000. What does this print?', pt: 'Chega um pedido de exatamente 5000. O que isso imprime?' },
+        options: [
+          { en: 'Normal', pt: 'Normal' },
+          { en: 'Urgent', pt: 'Urgent' },
+          { en: 'Critical', pt: 'Critical' },
+          { en: 'Nothing — the chained if is a syntax error', pt: 'Nada — o if encadeado é um erro de sintaxe' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: '`amount > 5000` is False when amount IS 5000, so the chain falls through to "Normal". Boundaries are where classification code goes wrong: `>` excludes the edge, `>=` includes it. Whenever you write a threshold, test the exact value.',
+          pt: '`amount > 5000` é False quando amount É 5000, então a cadeia cai para "Normal". Limites são onde o código de classificação erra: `>` exclui a borda, `>=` inclui. Sempre que escrever um limite, teste o valor exato.'
+        }
+      }},
+      { type: 'checkpoint', checkpoint: {
+        code: `def clear_all(db):
+    db = []
+
+def delete_all(db):
+    db[:] = []
+
+orders = [{"id": 1}, {"id": 2}]
+clear_all(orders)
+print(len(orders))
+delete_all(orders)
+print(len(orders))`,
+        question: { en: 'What two numbers does this print?', pt: 'Quais dois números isso imprime?' },
+        options: [
+          { en: '2 then 0', pt: '2 e depois 0' },
+          { en: '0 then 0', pt: '0 e depois 0' },
+          { en: '2 then 2', pt: '2 e depois 2' },
+          { en: 'It raises an error on the second call', pt: 'Gera um erro na segunda chamada' }
+        ],
+        correctIndex: 0,
+        explanation: {
+          en: '`db = []` rebinds the local name and leaves the caller\'s list untouched — the function looks like it worked and did nothing. `db[:] = []` edits the list the caller passed in. That is why delete_order() in this capstone uses `db[:] = [...]`.',
+          pt: '`db = []` religa o nome local e não toca na lista do chamador — a função parece ter funcionado e não fez nada. `db[:] = []` edita a lista que o chamador passou. É por isso que delete_order() neste capstone usa `db[:] = [...]`.'
+        }
+      }}
     ]
   },
   exercises: [
@@ -1495,8 +1540,8 @@ def analyze(db):
       id: 'ex27_recog',
       title: { en: '🟡 Complete the System Functions', pt: '🟡 Complete as Funções do Sistema' },
       description: {
-        en: 'Goal:\nThe starter code implements a orders system with three functions. create_order() is already complete. update_status() has two blanks -- the dictionary key used to find a order by id, and the dictionary key being updated with the new status. delete_order() has one blank -- the dictionary key used to filter out the order with the matching id.\n\nFill in the three blanks, then run the code. Alice’s order should have its status changed to approved, and Bob’s order should be removed.\n\nExample:\n{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}',
-        pt: 'Objetivo:\nO código inicial implementa um sistema de pedidos com três funções. create_order() já está completa. update_status() tem duas lacunas -- a chave do dicionário usada para encontrar um pedido por id, e a chave do dicionário sendo atualizada com o novo status. delete_order() tem uma lacuna -- a chave do dicionário usada para filtrar o pedido com o id correspondente.\n\nPreencha as três lacunas e execute o código. O pedido de Alice deve ter seu status alterado para approved, e o pedido de Bob deve ser removido.\n\nExemplo:\n{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}'
+        en: 'Goal:\nThe starter code implements a orders system with three functions. create_order() is already complete. update_status() has two blanks -- the dictionary key used to find a order by id, and the dictionary key being updated with the new status. delete_order() has one blank -- the dictionary key used to filter out the order with the matching id.\n\nFill in the three blanks, then run the code. Alice’s order should have its status changed to approved, and Bob’s order should be removed.\n\nExample:\n{\'id\': 1, \'client\': \'Alice\', \'amount\': 5230, \'status\': \'approved\'}',
+        pt: 'Objetivo:\nO código inicial implementa um sistema de pedidos com três funções. create_order() já está completa. update_status() tem duas lacunas -- a chave do dicionário usada para encontrar um pedido por id, e a chave do dicionário sendo atualizada com o novo status. delete_order() tem uma lacuna -- a chave do dicionário usada para filtrar o pedido com o id correspondente.\n\nPreencha as três lacunas e execute o código. O pedido de Alice deve ter seu status alterado para approved, e o pedido de Bob deve ser removido.\n\nExemplo:\n{\'id\': 1, \'client\': \'Alice\', \'amount\': 5230, \'status\': \'approved\'}'
       },
       starterCode: `from datetime import datetime
 
@@ -1523,14 +1568,14 @@ for c in db: print(c)`,
         { en: 'All three blanks use the "id" key', pt: 'Os três espaços usam a chave "id"' },
         { en: 'The status blank uses the "status" key', pt: 'O espaço de status usa a chave "status"' }
       ],
-      sampleOutput: { en: '{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}', pt: '{"id": 1, "client": "Alice", "amount": 5230, "status": "approved"}' }
+      sampleOutput: { en: '{\'id\': 1, \'client\': \'Alice\', \'amount\': 5230, \'status\': \'approved\'}', pt: '{\'id\': 1, \'client\': \'Alice\', \'amount\': 5230, \'status\': \'approved\'}' }
     },
     {
       id: 'ex27_zero',
       title: { en: '🔴 Build the Full System', pt: '🔴 Construa o Sistema Completo' },
       description: {
         en: 'Goal:\nRun the provided orders system as-is. The program creates orders, updates statuses, deletes records and displays statistics.\n\nProgram requirements\n\n1. Create five orders for Alice (12000 amount), Bob (3500), Carlos (7800), Diana (900) and Eduardo (-1)\n2. The negative amount for Eduardo should trigger an error message\n3. Approve Alice’s and Carlos’s orders\n4. Remove Diana’s order\n5. Display the remaining three orders with their priority and status\n6. Display total orders, total amount and grand total\n\nExample:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550',
-        pt: 'Objetivo:\nExecute o sistema de pedidos fornecido como está. O programa cria pedidos, atualiza status, exclui registros e exibe estatísticas.\n\nRequisitos do programa\n\n1. Crie cinco pedidos para Alice (dano 12000), Bob (3500), Carlos (7800), Diana (900) e Eduardo (-1)\n2. O dano negativo de Eduardo deve acionar uma mensagem de erro\n3. Aprove os pedidos de Alice e Carlos\n4. Remova o pedido de Diana\n5. Exiba os três pedidos restantes com prioridade e status\n6. Exiba o total de pedidos, o dano total e o grand total\n\nExemplo:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550'
+        pt: 'Objetivo:\nExecute o sistema de pedidos fornecido como está. O programa cria pedidos, atualiza status, exclui registros e exibe estatísticas.\n\nRequisitos do programa\n\n1. Crie cinco pedidos para Alice (valor 12000), Bob (3500), Carlos (7800), Diana (900) e Eduardo (-1)\n2. O valor negativo de Eduardo deve acionar uma mensagem de erro\n3. Aprove os pedidos de Alice e Carlos\n4. Remova o pedido de Diana\n5. Exiba os três pedidos restantes com prioridade e status\n6. Exiba o total de pedidos, o valor total e o total líquido\n\nExemplo:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550'
       },
       starterCode: `from datetime import datetime
 
@@ -1553,9 +1598,9 @@ def delete_order(db, cid):
     db[:] = [c for c in db if c["id"] != cid]
 
 def analyze(db):
-    total = sum(c["amount"] for c in db)
-    total = sum(c["total"] for c in db)
-    print(f"Orders:{len(db)} | Amount:\${total:,} | Total:\${total:,}")
+    gross = sum(c["amount"] for c in db)
+    net   = sum(c["total"] for c in db)
+    print(f"Orders:{len(db)} | Amount:\${gross:,} | Total:\${net:,}")
 
 db = []
 try:
@@ -1608,9 +1653,9 @@ def delete_order(db, cid):
     db[:] = [c for c in db if c["id"] != cid]
 
 def analyze(db):
-    total = sum(c["amount"] for c in db)
-    total = sum(c["total"] for c in db)
-    print(f"Orders:{len(db)} | Total:\${total:,} | Total:\${total:,}")
+    gross = sum(c["amount"] for c in db)
+    net   = sum(c["total"] for c in db)
+    print(f"Orders:{len(db)} | Amount:\${gross:,} | Total:\${net:,}")
 
 db = []
 try:
