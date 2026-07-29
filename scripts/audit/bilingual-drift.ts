@@ -95,12 +95,37 @@ function missing(left: string[], right: string[]): string[] {
   return out
 }
 
+/**
+ * Portuguese domain words that only make sense if the English says the same thing.
+ *
+ * The curriculum began as an insurance-claims theme. The English was later rewritten to
+ * neutral wording — "amount", "order" — and the Portuguese was not: 70 places still said
+ * "dano" (damage) where the English said "amount", and the variable on screen was
+ * `amount`. A Portuguese learner was reading about damages while looking at code about
+ * amounts, with nothing connecting the two.
+ *
+ * Comparing numbers, calls and identifier counts cannot see this: both sides are fluent,
+ * well-formed, and about different things. Each entry says "this Portuguese word is only
+ * correct when the English carries this meaning".
+ */
+const FALSE_FRIENDS: Array<{ pt: RegExp, en: RegExp, why: string }> = [
+  { pt: /\bdanos?\b/i, en: /\bdamage/i, why: '"dano" is damage; the English says amount' },
+  { pt: /\bsinistros?\b/i, en: /\bclaim/i, why: '"sinistro" is an insurance claim' },
+  { pt: /\bap[óo]lices?\b/i, en: /\bpolic/i, why: '"apólice" is an insurance policy' },
+  { pt: /\breembolsos?\b/i, en: /\brefund/i, why: '"reembolso" is a refund' },
+  { pt: /\breparos?\b/i, en: /\brepair/i, why: '"reparo" is a repair' },
+]
+
 export function findDrift(where: string, en: string, pt: string): Drift | null {
   const onlyEn = missing(digitsOf(en), digitsOf(pt))
   const onlyPt = missing(digitsOf(pt), digitsOf(en))
 
   for (const name of missing(apiCalls(en), apiCalls(pt))) onlyEn.push(`${name}()`)
   for (const name of missing(apiCalls(pt), apiCalls(en))) onlyPt.push(`${name}()`)
+
+  for (const friend of FALSE_FRIENDS) {
+    if (friend.pt.test(pt) && !friend.en.test(en)) onlyPt.push(friend.why)
+  }
 
   const enNames = identifierCount(en), ptNames = identifierCount(pt)
   if (enNames !== ptNames) {

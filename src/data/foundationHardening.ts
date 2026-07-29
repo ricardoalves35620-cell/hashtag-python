@@ -235,7 +235,7 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
     requirements: [{ kind: 'function', value: 'order_total' }],
     hints: [
       { en: 'Read values by key, not by numeric position.', pt: 'Leia valores pela chave, não por posição numérica.' },
-      { en: 'Calculate amount minus discount once and give that result a name.', pt: 'Calcule dano menos desconto uma vez e dê um nome ao resultado.' },
+      { en: 'Calculate amount minus discount once and give that result a name.', pt: 'Calcule valor menos desconto uma vez e dê um nome ao resultado.' },
       { en: 'max(result, 0) is one clear way to protect the lower boundary.', pt: 'max(resultado, 0) é uma forma clara de proteger o limite inferior.' },
     ],
   },
@@ -283,7 +283,7 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
     hints: [
       { en: 'The function contract has two inputs and one numeric return value.', pt: 'O contrato da função tem duas entradas e um retorno numérico.' },
       { en: 'Compute the rule inside the function instead of printing the sample answer.', pt: 'Calcule a regra dentro da função em vez de imprimir a resposta do exemplo.' },
-      { en: 'Test a discount larger than the amount.', pt: 'Teste uma desconto maior que o dano.' },
+      { en: 'Test a discount larger than the amount.', pt: 'Teste uma desconto maior que o valor.' },
     ],
   },
   14: {
@@ -328,7 +328,7 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
     requirements: [{ kind: 'function', value: 'accumulate_totals' }, { kind: 'node', value: 'For' }, { kind: 'node', value: 'Return' }],
     hints: [
       { en: 'Initialize total inside the function.', pt: 'Inicialize total dentro da função.' },
-      { en: 'For each pair, add amount minus discount.', pt: 'Para cada par, some dano menos desconto.' },
+      { en: 'For each pair, add amount minus discount.', pt: 'Para cada par, some valor menos desconto.' },
       { en: 'An empty list should return the initial total.', pt: 'Uma lista vazia deve retornar o total inicial.' },
     ],
   },
@@ -343,8 +343,8 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
     hiddenExpected: '0',
     requirements: [{ kind: 'function', value: 'approved_csv_total' }, { kind: 'call', value: 'split' }, { kind: 'node', value: 'For' }],
     hints: [
-      { en: 'Write down the index of id, client, amount, and status.', pt: 'Anote o índice de id, cliente, dano e status.' },
-      { en: 'Convert the amount field before subtracting.', pt: 'Converta o campo de dano antes de subtrair.' },
+      { en: 'Write down the index of id, client, amount, and status.', pt: 'Anote o índice de id, cliente, valor e status.' },
+      { en: 'Convert the amount field before subtracting.', pt: 'Converta o campo de valor antes de subtrair.' },
       { en: 'Only approved rows update the accumulator.', pt: 'Somente linhas aprovadas atualizam o acumulador.' },
     ],
   },
@@ -432,7 +432,7 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
   23: {
     functionName: 'safe_total',
     title: { en: 'Transfer: recover from invalid input', pt: 'Transferência: recupere entrada inválida' },
-    description: { en: 'Goal:\nComplete safe_total so that it does the following.\nCreate a function that safely converts a raw amount value and returns the subscription total.\n\nProgram requirements\n\n1. Convert and validate\n- Attempt to convert the raw input to an integer\n- If the conversion fails, return None\n- If the converted value is not positive, return None\n\n2. Calculate\n- Subtract the discount amount of 250 from the valid amount value\n- Return the resulting total\n\nExample, for raw input "5000":\n4750', pt: 'Objetivo:\nComplete safe_total para fazer o seguinte.\nCrie uma função que converte com segurança um valor bruto de dano e retorna o pagamento do seguro.\n\nRequisitos do programa\n\n1. Converter e validar\n- Tente converter a entrada bruta para inteiro\n- Se a conversão falhar, retorne None\n- Se o valor convertido não for positivo, retorne None\n\n2. Calcular\n- Subtraia o valor do desconto de 250 do dano válido\n- Retorne o pagamento resultante\n\nExemplo, para entrada bruta "5000":\n4750' },
+    description: { en: 'Goal:\nComplete safe_total so that it does the following.\nCreate a function that safely converts a raw amount value and returns the subscription total.\n\nProgram requirements\n\n1. Convert and validate\n- Attempt to convert the raw input to an integer\n- If the conversion fails, return None\n- If the converted value is not positive, return None\n\n2. Calculate\n- Subtract the discount amount of 250 from the valid amount value\n- Return the resulting total\n\nExample, for raw input "5000":\n4750', pt: 'Objetivo:\nComplete safe_total para fazer o seguinte.\nCrie uma função que converte com segurança um valor bruto e retorna o pagamento do seguro.\n\nRequisitos do programa\n\n1. Converter e validar\n- Tente converter a entrada bruta para inteiro\n- Se a conversão falhar, retorne None\n- Se o valor convertido não for positivo, retorne None\n\n2. Calcular\n- Subtraia o valor do desconto de 250 do valor válido\n- Retorne o pagamento resultante\n\nExemplo, para entrada bruta "5000":\n4750' },
     starterCode: `def safe_total(raw, discount=250):\n    pass`,
     publicAfterCode: `print(safe_total("5000"))`,
     publicExpected: '4750',
@@ -464,7 +464,7 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
   25: {
     functionName: 'update_amount',
     title: { en: 'Transfer: update one CRUD record', pt: 'Transferência: atualize um registro CRUD' },
-    description: { en: 'Goal:\nComplete update_amount so that it does the following.\nWrite a function that updates the amount value of a single order in a list of order records. When a order with the given id exists, change its amount and return True. When no order matches the id, leave the list unchanged and return False.\n\nExample, for a order with id 1 and amount updated to 900:\nTrue\n900', pt: 'Objetivo:\nComplete update_amount para fazer o seguinte.\nEscreva uma função que atualize o valor de dano de um único pedido em uma lista de registros. Quando existir um pedido com o id fornecido, altere seu dano e retorne True. Quando nenhum pedido corresponder ao id, mantenha a lista intacta e retorne False.\n\nExemplo, para um pedido com id 1 e dano atualizado para 900:\nTrue\n900' },
+    description: { en: 'Goal:\nComplete update_amount so that it does the following.\nWrite a function that updates the amount value of a single order in a list of order records. When a order with the given id exists, change its amount and return True. When no order matches the id, leave the list unchanged and return False.\n\nExample, for a order with id 1 and amount updated to 900:\nTrue\n900', pt: 'Objetivo:\nComplete update_amount para fazer o seguinte.\nEscreva uma função que atualize o valor de um único pedido em uma lista de registros. Quando existir um pedido com o id fornecido, altere seu valor e retorne True. Quando nenhum pedido corresponder ao id, mantenha a lista intacta e retorne False.\n\nExemplo, para um pedido com id 1 e valor atualizado para 900:\nTrue\n900' },
     starterCode: `def update_amount(db, order_id, new_amount):\n    pass`,
     publicAfterCode: `db = [{"id": 1, "amount": 500}]\nprint(update_amount(db, 1, 900))\nprint(db[0]["amount"])`,
     publicExpected: 'True\n900',
@@ -496,7 +496,7 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
   27: {
     functionName: 'register_order',
     title: { en: 'Transfer: capstone boundary', pt: 'Transferência: fronteira do capstone' },
-    description: { en: 'Goal:\nComplete register_order so that it does the following.\nWrite a function that registers a new order. It receives a client name, a raw amount value and a discount amount (default 250). Convert the raw amount to a number, validate it is positive, calculate the total by subtracting the discount, and return a dictionary with the client, amount and total. Return None if the amount is invalid or not positive.\n\nExample, for client "Ana" with raw amount "5000":\n{\'client\': \'Ana\', \'amount\': 5000, \'total\': 4750}', pt: 'Objetivo:\nComplete register_order para fazer o seguinte.\nEscreva uma função que registre um novo pedido. Ela recebe um nome de cliente, um valor de dano bruto e um valor de desconto (padrão 250). Converta o dano bruto para número, valide que é positivo, calcule o total subtraindo a desconto e retorne um dicionário com o cliente, o dano e o total. Retorne None se o dano for inválido ou não positivo.\n\nExemplo, para a cliente "Ana" com dano bruto "5000":\n{\'client\': \'Ana\', \'amount\': 5000, \'total\': 4750}' },
+    description: { en: 'Goal:\nComplete register_order so that it does the following.\nWrite a function that registers a new order. It receives a client name, a raw amount value and a discount amount (default 250). Convert the raw amount to a number, validate it is positive, calculate the total by subtracting the discount, and return a dictionary with the client, amount and total. Return None if the amount is invalid or not positive.\n\nExample, for client "Ana" with raw amount "5000":\n{\'client\': \'Ana\', \'amount\': 5000, \'total\': 4750}', pt: 'Objetivo:\nComplete register_order para fazer o seguinte.\nEscreva uma função que registre um novo pedido. Ela recebe um nome de cliente, um valor bruto e um valor de desconto (padrão 250). Converta o valor bruto para número, valide que é positivo, calcule o total subtraindo a desconto e retorne um dicionário com o cliente, o valor e o total. Retorne None se o valor for inválido ou não positivo.\n\nExemplo, para a cliente "Ana" com valor bruto "5000":\n{\'client\': \'Ana\', \'amount\': 5000, \'total\': 4750}' },
     starterCode: `def register_order(client, raw_amount, discount=250):\n    pass`,
     publicAfterCode: `print(register_order("Ana", "5000"))`,
     publicExpected: "{'client': 'Ana', 'amount': 5000, 'total': 4750}",
@@ -504,7 +504,7 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
     hiddenExpected: 'None',
     requirements: [{ kind: 'function', value: 'register_order' }, { kind: 'node', value: 'Try' }, { kind: 'node', value: 'Dict' }],
     hints: [
-      { en: 'Convert the raw amount inside a small try block.', pt: 'Converta o dano bruto dentro de um try pequeno.' },
+      { en: 'Convert the raw amount inside a small try block.', pt: 'Converta o valor bruto dentro de um try pequeno.' },
       { en: 'Reject conversion failure and non-positive values before creating the record.', pt: 'Rejeite falha de conversão e valores não positivos antes de criar o registro.' },
       { en: 'Return a dictionary whose keys form a stable contract.', pt: 'Retorne um dicionário cujas chaves formam um contrato estável.' },
     ],

@@ -638,7 +638,7 @@ print("Confirmed total: $", amount - 250)`,
   exam: {
     title: { en: 'Bulletproof Processor', pt: 'Processador À Prova de Falhas' },
     scenario: { en: 'Process mixed order data — some entries invalid. Handle all errors.', pt: 'Processe dados mistos — algumas entradas inválidas. Trate todos os erros.' },
-    requirements: { en: ['5 data entries', 'Try/except per entry', 'Handle non-numeric amount', 'Handle negative amount', 'Print success or error per entry'], pt: ['5 entradas de dados', 'Try/except por entrada', 'Tratar dano não-numérico', 'Tratar dano negativo', 'Imprimir sucesso ou erro por entrada'] },
+    requirements: { en: ['5 data entries', 'Try/except per entry', 'Handle non-numeric amount', 'Handle negative amount', 'Print success or error per entry'], pt: ['5 entradas de dados', 'Try/except por entrada', 'Tratar valor não-numérico', 'Tratar valor negativo', 'Imprimir sucesso ou erro por entrada'] },
     starterCode: `entries = [("Alice","5230"),("Bob","abc"),("Carlos","8000"),("Diana","-500"),("Eduardo","1200")]
 
 for name, raw in entries:

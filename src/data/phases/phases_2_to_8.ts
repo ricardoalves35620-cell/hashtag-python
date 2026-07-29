@@ -202,7 +202,7 @@ print(n, "** 2 =", n ** 2)`,
       title: { en: '🟡 Fill the Gap: Refund Chain', pt: '🟡 Preencha: Cadeia de Pagamento' },
       description: {
         en: 'Goal:\nA two-step refund calculation is almost complete. Fill in the two missing operator symbols.\n\nBlank 1 — subtract the discount from the order amount\n\nBlank 2 — multiply the result by 0.75 to apply a 75% cover rate\n\nExample, with amount = 8000 and discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0',
-        pt: 'Objetivo:\nUm cálculo de pagamento em duas etapas está quase completo. Preencha os dois símbolos de operador que faltam.\n\nBlank 1 — subtraia o desconto do valor do dano\n\nBlank 2 — multiplique o resultado por 0.75 para aplicar uma taxa de 75%\n\nExemplo, com amount = 8000 e discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0'
+        pt: 'Objetivo:\nUm cálculo de pagamento em duas etapas está quase completo. Preencha os dois símbolos de operador que faltam.\n\nBlank 1 — subtraia o desconto do valor\n\nBlank 2 — multiplique o resultado por 0.75 para aplicar uma taxa de 75%\n\nExemplo, com amount = 8000 e discount = 300:\nAfter discount: 7700\nFinal refund: 5775.0'
       },
       starterCode: `amount = 8000
 discount = 300
@@ -213,7 +213,7 @@ refund = after_ded ___ 0.75           # fill: apply 75% cover rate
 print("After discount:", after_ded)
 print("Final refund:", refund)`,
       hints: [
-        { en: 'Blank 1: you need to take the discount away from the amount. The symbol for "take away" is minus: -', pt: 'Lacuna 1: você precisa tirar a desconto do valor do dano. O símbolo de "tirar" é menos: -' },
+        { en: 'Blank 1: you need to take the discount away from the amount. The symbol for "take away" is minus: -', pt: 'Lacuna 1: você precisa tirar a desconto do valor. O símbolo de "tirar" é menos: -' },
         { en: 'Blank 2: 75% of a value means you multiply it by 0.75. The multiplication symbol in Python is: *', pt: 'Lacuna 2: 75% de um valor significa multiplicar por 0.75. O símbolo de multiplicação em Python é: *' }
       ],
       sampleOutput: { en: 'After discount: 7700\nFinal refund: 5775.0', pt: 'After discount: 7700\nFinal refund: 5775.0' }
@@ -702,16 +702,16 @@ print("=== NOVO PEDIDO ===")
 
 cliente = input("Nome do cliente: ")             # texto; não precisa de conversão
 telefone = input("Telefone: ")                   # mantenha como texto, pois pode conter hífens
-dano = int(input("Valor do dano: $"))            # número usado em cálculos
+valor = int(input("Valor: $"))            # número usado em cálculos
 desconto = int(input("Desconto: $"))             # número usado em cálculos
 
-indenizacao = dano - desconto
+indenizacao = valor - desconto
 
 print()
 print("=== RESUMO DO PEDIDO ===")
 print(f"Cliente: {cliente}")
 print(f"Telefone: {telefone}")
-print(f"Dano: {dano}")
+print(f"Valor: {valor}")
 print(f"reembolso: {indenizacao}")`
       } },
 
@@ -753,7 +753,7 @@ n = float(input("Height: "))
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: the "will I do math with it?" test.\n• Order amount → math → int/float\n• Age → math → int\n• Phone number → NO math → keep str\n• ZIP code → NO math → keep str\nConverting everything blindly is a rookie mistake.',
-        pt: '💡 DICA PRO: o teste "vou fazer matemática com isso?".\n• Valor do dano → matemática → int/float\n• Idade → matemática → int\n• Telefone → SEM matemática → mantém str\n• CEP → SEM matemática → mantém str\nConverter tudo cegamente é erro de iniciante.'
+        pt: '💡 DICA PRO: o teste "vou fazer matemática com isso?".\n• Valor → matemática → int/float\n• Idade → matemática → int\n• Telefone → SEM matemática → mantém str\n• CEP → SEM matemática → mantém str\nConverter tudo cegamente é erro de iniciante.'
       }},
 
       { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
@@ -912,9 +912,9 @@ print(f"Você paga: {pay}")`,
       ],
       pt: [
         'Pergunte nome do cliente (texto)',
-        'Pergunte valor do dano (converta para int)',
+        'Pergunte valor (converta para int)',
         'Pergunte desconto (converta para int)',
-        'Calcule: pagamento = (dano - desconto) * 0.85',
+        'Calcule: pagamento = (valor - desconto) * 0.85',
         'Imprima nome e pagamento num resumo'
       ]
     },
@@ -977,9 +977,9 @@ print(x >= 10)   # True   greater than or equal to
 print(x <= 9)    # False  less than or equal to
 print(x == 10)   # True   equal (TWO equals signs!)
 print(x != 7)    # True   not equal`,
-        pt: `dano = 8000
+        pt: `valor = 8000
 
-if dano > 5000:                    # condição + dois-pontos
+if valor > 5000:                    # condição + dois-pontos
     print("🔴 ALTA PRIORIDADE")    # indentado = dentro do if
     print("Enviar revisor experiente")  # ainda dentro do bloco
 else:
@@ -1032,16 +1032,16 @@ status = "approved"
 if status == "approved":
     print("✅ Release payment")
 # "Approved" != "approved" — capitalization matters`,
-        pt: `dano = 7000
+        pt: `valor = 7000
 dias_desde_plano = 15
 
 # AND — as duas condições devem ser True
-if dano > 5000 and dias_desde_plano < 30:
+if valor > 5000 and dias_desde_plano < 30:
     print("⚠️ Pedido grande logo após o início da plano — investigar")
 
 # OR — pelo menos uma condição deve ser True
 regiao = "zona_de_inundacao"
-if regiao == "zona_de_inundacao" or dano > 10000:
+if regiao == "zona_de_inundacao" or valor > 10000:
     print("Exige revisão de um profissional sênior")
 
 # NOT — inverte a condição
@@ -1073,10 +1073,10 @@ else:
     print("✅ Passed fraud screening")
     print("Route to standard processing")`,
         pt: `print("=== TRIAGEM DE FRAUDE ===")
-dano = int(input("Valor do pedido: R$"))
+valor = int(input("Valor do pedido: R$"))
 dias = int(input("Dias desde o início da plano: "))
 
-if dano > 5000 and dias < 30:
+if valor > 5000 and dias < 30:
     print("🚨 SINALIZADO: pedido grande logo após o início da plano")
     print("Encaminhar para a Unidade de Investigações Especiais")
 else:
@@ -1181,7 +1181,7 @@ if int(palpite) == 10:
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: read conditions out loud.\nif amount > 5000 and days < 30 →\n"IF amount is over five thousand AND days is under thirty"\nIf the sentence sounds wrong out loud, the logic is probably wrong too.',
-        pt: '💡 DICA PRO: leia condições em voz alta.\nif dano > 5000 and dias < 30 →\n"SE o dano é maior que cinco mil E os dias são menos que trinta"\nSe a frase soa errada em voz alta, a lógica provavelmente está errada também.'
+        pt: '💡 DICA PRO: leia condições em voz alta.\nif valor > 5000 and dias < 30 →\n"SE o valor é maior que cinco mil E os dias são menos que trinta"\nSe a frase soa errada em voz alta, a lógica provavelmente está errada também.'
       }},
 
       { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
@@ -1220,7 +1220,7 @@ print("--- check complete ---")`,
       title: { en: '🟡 Fill the Gap: Fraud Gate', pt: '🟡 Preencha: Portão de Fraude' },
       description: {
         en: 'Goal:\nThis code flags suspicious orders. Fill in the three blanks on the if-condition line.\n\nThe rule: flag an order if the amount is more than 5000 AND the plan started fewer than 30 days ago.\n\nBlank 1 — the comparison operator for "greater than 5000"\n\nBlank 2 — the keyword that requires both conditions to be true at the same time\n\nBlank 3 — the comparison operator for "fewer than 30"\n\nTest with amount = 8000, days = 10:\nFLAGGED for investigation',
-        pt: 'Objetivo:\nEste código sinaliza pedidos suspeitos. Preencha as três lacunas na linha da condição if.\n\nA regra: sinalize um pedido se o dano for maior que 5000 E o plano tiver começado há menos de 30 dias.\n\nBlank 1 — o operador de comparação para "maior que 5000"\n\nBlank 2 — a palavra-chave que exige que ambas as condições sejam verdadeiras ao mesmo tempo\n\nBlank 3 — o operador de comparação para "menos de 30"\n\nTeste com amount = 8000, days = 10:\nFLAGGED for investigation'
+        pt: 'Objetivo:\nEste código sinaliza pedidos suspeitos. Preencha as três lacunas na linha da condição if.\n\nA regra: sinalize um pedido se o valor for maior que 5000 E o plano tiver começado há menos de 30 dias.\n\nBlank 1 — o operador de comparação para "maior que 5000"\n\nBlank 2 — a palavra-chave que exige que ambas as condições sejam verdadeiras ao mesmo tempo\n\nBlank 3 — o operador de comparação para "menos de 30"\n\nTeste com amount = 8000, days = 10:\nFLAGGED for investigation'
       },
       starterCode: `amount = int(input("Amount: $"))
 days = int(input("Days since plan start: "))
@@ -1320,9 +1320,9 @@ else:
         'Else → print "AUTO-APPROVED"'
       ],
       pt: [
-        'Pergunte valor do dano e dias desde início da plano',
-        'Se dano > 5000 E dias < 30 → imprima "INVESTIGATE"',
-        'Senão se dano > 10000 → imprima "NEEDS APPROVAL"',
+        'Pergunte valor e dias desde início da plano',
+        'Se valor > 5000 E dias < 30 → imprima "INVESTIGATE"',
+        'Senão se valor > 10000 → imprima "NEEDS APPROVAL"',
         'Senão → imprima "AUTO-APPROVED"'
       ]
     },
@@ -1501,26 +1501,26 @@ if amount > 1000:
     print("Normal")           # also prints: separate ifs are independent
 
 # ✅ elif makes the branches exclusive: only one branch runs`,
-        pt: `dano = 8000
+        pt: `valor = 8000
 
 # ❌ ERRO 1: colocar uma condição ampla primeiro
-if dano > 1000:              # 8000 > 1000? True → para aqui
+if valor > 1000:              # 8000 > 1000? True → para aqui
     print("Normal")           # errado: deveria ser Urgente
-elif dano > 5000:
+elif valor > 5000:
     print("Urgente")          # nunca é alcançado
 
 # ✅ CORREÇÃO: coloque a condição mais específica primeiro
-if dano > 10000:
+if valor > 10000:
     print("Crítico")
-elif dano > 5000:
+elif valor > 5000:
     print("Urgente")          # agora 8000 chega ao ramo correto
-elif dano > 1000:
+elif valor > 1000:
     print("Normal")
 
 # ❌ ERRO 2: usar ifs separados em vez de elif
-if dano > 5000:
+if valor > 5000:
     print("Urgente")          # imprime
-if dano > 1000:
+if valor > 1000:
     print("Normal")           # também imprime: ifs separados são independentes
 
 # ✅ elif torna os ramos exclusivos: apenas um ramo é executado`
@@ -1636,7 +1636,7 @@ print("Fee:", fee)`,
 
   quiz: [
     { id: 'q6_1', question: { en: 'Does elif order matter?', pt: 'A ordem do elif importa?' }, options: [{ en: 'Yes — top to bottom, FIRST True wins', pt: 'Sim — de cima para baixo, PRIMEIRO True vence' }, { en: 'No — all are checked', pt: 'Não — todos são verificados' }, { en: 'Only with numbers', pt: 'Só com números' }, { en: 'Python sorts automatically', pt: 'Python ordena sozinho' }], correctIndex: 0, explanation: { en: 'Python stops at the first True. Broad conditions first = specific ones never reached.', pt: 'Python para no primeiro True. Condições amplas primeiro = específicas nunca alcançadas.' } },
-    { id: 'q6_2', question: { en: 'amount = 8000\nif amount > 1000: print("A")\nelif amount > 5000: print("B")\nWhat prints?', pt: 'dano = 8000\nif dano > 1000: print("A")\nelif dano > 5000: print("B")\nO que será impresso?' }, options: [{ en: 'A — first condition matched, B is skipped', pt: 'A — primeira condição bateu, B é pulado' }, { en: 'B', pt: 'B' }, { en: 'A and B', pt: 'A e B' }, { en: 'Nothing', pt: 'Nada' }], correctIndex: 0, explanation: { en: '8000 > 1000 is True → "A" prints and the elif is never checked. Classic wrong-order bug!', pt: '8000 > 1000 é True → "A" imprime e o elif nunca é verificado. Clássico bug de ordem errada!' } },
+    { id: 'q6_2', question: { en: 'amount = 8000\nif amount > 1000: print("A")\nelif amount > 5000: print("B")\nWhat prints?', pt: 'valor = 8000\nif valor > 1000: print("A")\nelif valor > 5000: print("B")\nO que será impresso?' }, options: [{ en: 'A — first condition matched, B is skipped', pt: 'A — primeira condição bateu, B é pulado' }, { en: 'B', pt: 'B' }, { en: 'A and B', pt: 'A e B' }, { en: 'Nothing', pt: 'Nada' }], correctIndex: 0, explanation: { en: '8000 > 1000 is True → "A" prints and the elif is never checked. Classic wrong-order bug!', pt: '8000 > 1000 é True → "A" imprime e o elif nunca é verificado. Clássico bug de ordem errada!' } },
     { id: 'q6_3', question: { en: 'Two separate ifs (not elif) means:', pt: 'Dois ifs separados (não elif) significa:' }, options: [{ en: 'Independent checks — both can run', pt: 'Verificações independentes — ambos podem rodar' }, { en: 'Same as elif', pt: 'Igual ao elif' }, { en: 'Only the first runs', pt: 'Só o primeiro roda' }, { en: 'Syntax error', pt: 'Erro de sintaxe' }], correctIndex: 0, explanation: { en: 'Separate ifs are evaluated independently. elif makes branches EXCLUSIVE — only one runs.', pt: 'Ifs separados são avaliados independentemente. elif torna os ramos EXCLUSIVOS — só um roda.' } },
     { id: 'q6_4', question: { en: 'Is else required after elif?', pt: 'O else é obrigatório após elif?' }, options: [{ en: 'No — optional. Without it, no match = nothing happens', pt: 'Não — opcional. Sem ele, sem match = nada acontece' }, { en: 'Yes, always', pt: 'Sim, sempre' }, { en: 'Only with 3+ elifs', pt: 'Só com 3+ elifs' }, { en: 'Yes, in Python 3', pt: 'Sim, no Python 3' }], correctIndex: 0, explanation: { en: 'else is the optional catch-all. Skipping it is valid — sometimes "do nothing" is the right default.', pt: 'else é o captura-tudo opcional. Pular é válido — às vezes "não fazer nada" é o padrão certo.' } },
     { id: 'q6_5', question: { en: 'score=85: if score>=90:"A" elif score>=80:"B" elif score>=70:"C" →', pt: 'score=85: if score>=90:"A" elif score>=80:"B" elif score>=70:"C" →' }, options: [{ en: 'B — 85 fails >=90, passes >=80, stops', pt: 'B — 85 falha >=90, passa >=80, para' }, { en: 'C', pt: 'C' }, { en: 'B and C', pt: 'B e C' }, { en: 'A', pt: 'A' }], correctIndex: 0, explanation: { en: '85 >= 90? No. 85 >= 80? Yes → B, and the chain stops immediately.', pt: '85 >= 90? Não. 85 >= 80? Sim → B, e a cadeia para imediatamente.' } },
@@ -1651,7 +1651,7 @@ print("Fee:", fee)`,
     },
     requirements: {
       en: ['Ask the order amount', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'else → "LOW - 72 hours"'],
-      pt: ['Pergunte o valor do dano', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'senão → "LOW - 72 hours"']
+      pt: ['Pergunte o valor', '>10000 → "CRITICAL - 2 hours"', '>5000 → "URGENT - 4 hours"', '>=1000 → "NORMAL - 24 hours"', 'senão → "LOW - 72 hours"']
     },
     starterCode: `amount = int(input("Amount: $"))
 
@@ -1785,8 +1785,8 @@ total_indenizacoes = 0
 
 while contador <= pendentes:
     print(f"--- Solicitação {contador} de {pendentes} ---")
-    dano = int(input("Valor do dano: $"))
-    indenizacao = dano - 250
+    valor = int(input("Valor: $"))
+    indenizacao = valor - 250
     total_indenizacoes += indenizacao
     print(f"reembolso: \${indenizacao}")
     contador += 1
@@ -1991,7 +1991,7 @@ print("Restock needed!")`,
     },
     requirements: {
       en: ['Loop exactly 5 times', 'Ask amount, subtract 300', 'Accumulate total', 'Count refunds above 3000', 'Print total, average and count'],
-      pt: ['Loop exatamente 5 vezes', 'Pergunte dano, subtraia 300', 'Acumule total', 'Conte pagamentos acima de 3000', 'Imprima total, média e contagem']
+      pt: ['Loop exatamente 5 vezes', 'Pergunte valor, subtraia 300', 'Acumule total', 'Conte pagamentos acima de 3000', 'Imprima total, média e contagem']
     },
     starterCode: `total = 0
 big_count = 0
@@ -2153,25 +2153,25 @@ print(f"Critical: {critical}")
 print(f"Total refund: \${total}")
 print(f"Average: \${total / len(amounts):.2f}")`,
         pt: `# Dashboard matinal: processe a fila de pedidos da madrugada
-danos = [5230, 1200, 8000, 450, 3100, 9200]
+valores = [5230, 1200, 8000, 450, 3100, 9200]
 total = 0
 criticos = 0
 
 print("=== FILA DA MANHÃ ===")
-for dano in danos:
-    pagamento = dano - 250
+for valor in valores:
+    pagamento = valor - 250
     total += pagamento
-    if dano > 8000:
+    if valor > 8000:
         criticos += 1
-        print(f"🔴 R\${dano} → CRÍTICO, encaminhando")
+        print(f"🔴 R\${valor} → CRÍTICO, encaminhando")
     else:
-        print(f"🟢 R\${dano} → pagamento R\${pagamento}")
+        print(f"🟢 R\${valor} → pagamento R\${pagamento}")
 
 print()
-print(f"Fila: {len(danos)} pedidos")
+print(f"Fila: {len(valores)} pedidos")
 print(f"Críticos: {criticos}")
 print(f"Pagamento total: R\${total}")
-print(f"Média: R\${total / len(danos):.2f}")`,
+print(f"Média: R\${total / len(valores):.2f}")`,
       } },
 
       { type: 'heading', content: { en: '🏗️ Real Scenario 2: Course progress round-up', pt: '🏗️ Cenário Real 2: Ronda de inspeção multi-projeto' } },
@@ -2238,7 +2238,7 @@ print(total)              # 60 ✅
 
       { type: 'tip', content: {
         en: '💡 PRO TIP: name the loop variable as the SINGULAR of the list.\nfor client in clients / for amount in amounts / for site in sites\nYour code reads like English and bugs become obvious: "for amount in clients" instantly looks wrong.',
-        pt: '💡 DICA PRO: nomeie a variável do loop como o SINGULAR da lista.\nfor cliente in clientes / for dano in danos / for projeto in projetos\nSeu código lê como português e bugs ficam óbvios: "for dano in clientes" parece errado na hora.'
+        pt: '💡 DICA PRO: nomeie a variável do loop como o SINGULAR da lista.\nfor cliente in clientes / for valor in valores / for projeto in projetos\nSeu código lê como português e bugs ficam óbvios: "for valor in clientes" parece errado na hora.'
       }},
 
       { type: 'heading', content: { en: '📋 Summary', pt: '📋 Resumo' } },
@@ -2326,7 +2326,7 @@ print("Total:", total)`,
     },
     requirements: {
       en: ['Use the provided amounts list', 'Loop applying $250 discount', 'Count orders above $5000', 'Print total refund, count of orders, count of big ones'],
-      pt: ['Use a lista de danos fornecida', 'Percorra aplicando R$250 de desconto', 'Conte pedidos acima de R$5000', 'Imprima pagamento total, quantidade de pedidos, quantidade de grandes']
+      pt: ['Use a lista de valores fornecida', 'Percorra aplicando R$250 de desconto', 'Conte pedidos acima de R$5000', 'Imprima pagamento total, quantidade de pedidos, quantidade de grandes']
     },
     starterCode: `amounts = [5230, 1200, 8000, 450, 3100, 9200]
 
