@@ -60,6 +60,8 @@ export interface BehaviourReport {
   analysis: PythonAnalysis | null
   /** True when the runtime never loaded, so nothing was actually assessed. */
   runtimeUnavailable: boolean
+  /** The program printed the same thing for every case while the reference did not. */
+  ignoresInput?: boolean
 }
 
 /**
@@ -80,16 +82,45 @@ export function normaliseOutput(text: string): string {
 }
 
 /**
- * input() echoes its prompt into stdout, so both runs carry the same prompt text. That
- * is fine for comparison — but only because BOTH sides get the same inputs. Never
- * compare a run made with the learner's own inputs against the reference's.
+ * Kept for callers that want strict equality. Grading no longer uses it — see
+ * `producesExpected` below and the shadow run that changed this.
  */
 export function outputsMatch(expected: string, actual: string): boolean {
   return normaliseOutput(expected) === normaliseOutput(actual)
 }
 
+/**
+ * Everything the reference printed must appear, in order. Extra lines are allowed.
+ *
+ * Strict equality was rejecting correct work, which is failure mode 1 above — the exact
+ * thing this module was written to remove. scripts/audit/behaviour-shadow.py ran nine
+ * candidate solutions through both graders and found the old comparison rejected three
+ * of the four correct ones:
+ *
+ *   input() with no prompt      the reference's prompt text was in the expected output
+ *   a debug print left in       an extra line made the whole run "wrong"
+ *   different prompt wording    "Your age: " instead of "Age: "
+ *
+ * None of those is a mistake about fees, which is what the exercise is about. A grader
+ * that fails a learner for wording their own question differently is worse than the
+ * string matching it replaces, because the learner cannot tell which one is wrong.
+ */
+export function producesExpected(expected: string, actual: string): boolean {
+  const wanted = normaliseOutput(expected).split('\n').filter(Boolean)
+  const got = normaliseOutput(actual).split('\n').filter(Boolean)
+  let at = 0
+  for (const line of wanted) {
+    at = got.indexOf(line, at)
+    if (at === -1) return false
+    at++
+  }
+  return true
+}
+
 async function runOnce(code: string, inputs: string[], timeoutMs?: number): Promise<RunResult> {
-  return runCode(code, inputs, undefined, { timeoutMs })
+  // quietPrompts keeps input()'s prompt out of the graded output. The prompt is what the
+  // program ASKS; the reference has no authority over how a learner words a question.
+  return runCode(code, inputs, undefined, { timeoutMs, quietPrompts: true })
 }
 
 export async function gradeBehaviour(spec: BehaviourSpec, learnerCode: string, lang: Lang = 'en'): Promise<BehaviourReport> {
@@ -117,17 +148,27 @@ export async function gradeBehaviour(spec: BehaviourSpec, learnerCode: string, l
 
     results.push({
       case: item,
-      passed: !actualRun.error && outputsMatch(expectedRun.output, actualRun.output),
+      passed: !actualRun.error && producesExpected(expectedRun.output, actualRun.output),
       expected: expectedRun.output,
       actual: actualRun.output,
       error: actualRun.error,
     })
   }
 
+  // Allowing extra lines opens one hole: a learner can print every possible answer and
+  // satisfy the reference by accident. But a program that prints the SAME thing for
+  // every input, while the reference prints something different, is not reading its
+  // input at all. This cannot fail correct work — correct work varies exactly where the
+  // reference varies.
+  const expectations = new Set(results.map(r => normaliseOutput(r.expected)))
+  const actuals = new Set(results.map(r => normaliseOutput(r.actual)))
+  const ignoresInput = expectations.size > 1 && actuals.size === 1
+
   return {
-    passed: results.length > 0 && results.every(r => r.passed),
+    passed: results.length > 0 && !ignoresInput && results.every(r => r.passed),
     results,
     analysis,
+    ignoresInput,
     runtimeUnavailable: false,
   }
 }
@@ -136,6 +177,12 @@ export async function gradeBehaviour(spec: BehaviourSpec, learnerCode: string, l
  * What the learner is told. A hidden case names the concept, never the input — telling
  * them the value would turn every hidden case into a visible one.
  */
+export function describeIgnoredInput(lang: Lang): string {
+  return lang === 'pt'
+    ? 'Seu programa imprime a mesma coisa para toda entrada. A resposta certa muda conforme o valor recebido — verifique se o código está realmente usando o que leu.'
+    : 'Your program prints the same thing for every input. The right answer changes with the value it reads — check that the code actually uses what it read.'
+}
+
 export function describeFailure(result: BehaviourCaseResult, lang: Lang): string {
   if (result.error) {
     return lang === 'pt'

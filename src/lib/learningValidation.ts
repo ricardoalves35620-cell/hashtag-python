@@ -3,7 +3,7 @@ import { meetsCodeRequirement, normalizeAssessmentText, runCode, runExam, type P
 import { findPythonPlaceholders } from './placeholders'
 import { personalize } from './learnerProfile'
 import { describeRequirement } from './requirementLanguage'
-import { describeFailure, gradeBehaviour, type BehaviourReport } from './behaviourGrading'
+import { describeFailure, describeIgnoredInput, gradeBehaviour, type BehaviourReport } from './behaviourGrading'
 
 export interface ValidationItem {
   id: string
@@ -324,8 +324,13 @@ export async function gradeExercise(
           : 'Funciona em todos os casos, não só no exemplo',
         passed: report.passed,
         hidden: true,
-        why: failed.length ? describeFailure(failed[0], lang) : undefined,
-        fix: failed.length
+        // A report can fail with no failing CASE: `ignoresInput` means every case was
+        // individually satisfiable but the program never varied. Without this branch the
+        // learner is marked wrong and told nothing.
+        why: report.ignoresInput
+          ? describeIgnoredInput(lang)
+          : (failed.length ? describeFailure(failed[0], lang) : undefined),
+        fix: (failed.length || report.ignoresInput)
           ? (lang === 'en'
             ? 'Check the boundary values, not just the example in the task.'
             : 'Confira os valores de limite, não apenas o exemplo do enunciado.')

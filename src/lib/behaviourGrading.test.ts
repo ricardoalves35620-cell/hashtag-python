@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { ALL_PHASES } from '../data/phases/index'
-import { normaliseOutput, outputsMatch } from './behaviourGrading'
+import { normaliseOutput, outputsMatch, producesExpected } from './behaviourGrading'
 
 /**
  * The behavioural-grading pilot. These guard the two things that would make it worse
@@ -124,5 +124,47 @@ describe('the phase 6 pilot exercise', () => {
     // The starter contains blanks; a reference that still had them would grade nothing.
     expect(exercise.behaviour.reference).not.toContain('___')
     expect(exercise.behaviour.reference).toContain('elif')
+  })
+})
+
+/**
+ * The nine candidates from scripts/audit/behaviour-shadow.py, as tests.
+ *
+ * The shadow run found strict equality rejected three of four CORRECT solutions —
+ * failure mode 1 from this module's own docstring, reproduced by the thing written to
+ * remove it. These pin the fix in both directions: presentation differences pass,
+ * behaviour differences do not.
+ */
+describe('producesExpected: presentation is not behaviour', () => {
+  const expected = 'Fee: 1600.0'
+
+  it('accepts an identical run', () => {
+    expect(producesExpected(expected, 'Fee: 1600.0')).toBe(true)
+  })
+
+  it('accepts a debug print the learner left in', () => {
+    expect(producesExpected(expected, 'debug: 25\nFee: 1600.0')).toBe(true)
+  })
+
+  it('accepts extra output after the result', () => {
+    expect(producesExpected(expected, 'Fee: 1600.0\nDone!')).toBe(true)
+  })
+
+  it('rejects a different value', () => {
+    expect(producesExpected(expected, 'Fee: 2200.0')).toBe(false)
+  })
+
+  it('rejects a missing line', () => {
+    expect(producesExpected('Fee: 1600.0\nTotal: 3', 'Fee: 1600.0')).toBe(false)
+  })
+
+  it('rejects the right lines in the wrong order', () => {
+    // Order is behaviour. A report printed backwards is not the same report.
+    expect(producesExpected('first\nsecond', 'second\nfirst')).toBe(false)
+  })
+
+  it('requires a whole line, not a fragment', () => {
+    // Otherwise "Fee: 16" would satisfy "Fee: 1600.0" and partial credit becomes a pass.
+    expect(producesExpected('Fee: 1600.0', 'Fee: 16')).toBe(false)
   })
 })

@@ -44,6 +44,8 @@ interface RunPayload {
   inputMap?: Record<string, string>
   setupCode?: string
   afterCode?: string
+  /** Behavioural grading only: keep input() prompts out of the graded output. */
+  quietPrompts?: boolean
 }
 
 interface PendingRequest {
@@ -282,9 +284,9 @@ export async function runCode(
   code: string,
   inputs: string[] = [],
   inputMap?: Record<string, string>,
-  options?: { timeoutMs?: number; setupCode?: string; afterCode?: string }
+  options?: { timeoutMs?: number; setupCode?: string; afterCode?: string; quietPrompts?: boolean }
 ): Promise<RunResult> {
-  return client.run({ code, inputs, inputMap, setupCode: options?.setupCode, afterCode: options?.afterCode }, options?.timeoutMs)
+  return client.run({ code, inputs, inputMap, setupCode: options?.setupCode, afterCode: options?.afterCode, quietPrompts: options?.quietPrompts }, options?.timeoutMs)
 }
 
 export function normalizeAssessmentText(value: string, options?: {

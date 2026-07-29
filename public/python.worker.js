@@ -80,6 +80,11 @@ function buildProgram(payload, execute) {
   const inputMap = pythonLiteral(payload.inputMap || {})
   const setupCode = pythonLiteral(String(payload.setupCode || ''))
   const afterCode = pythonLiteral(String(payload.afterCode || ''))
+  // Behavioural grading compares a learner's output to a reference's. The prompt is
+  // what the program ASKS, not what it produces, and the reference has no authority
+  // over how a learner words a question. Suppressing the echo here is the only place
+  // that can do it without string-hacking the output afterwards.
+  const quietPrompts = payload.quietPrompts ? 'True' : 'False'
 
   return `
 import ast
@@ -95,6 +100,7 @@ _hp_map = ${inputMap}
 _hp_setup_code = ${setupCode}
 _hp_after_code = ${afterCode}
 _hp_execute = ${execute ? 'True' : 'False'}
+_hp_quiet_prompts = ${quietPrompts}
 _hp_input_index = [0]
 _hp_student_buffer = StringIO()
 _hp_test_buffer = StringIO()
@@ -199,20 +205,23 @@ def _hp_analyze(tree):
 
 
 def _hp_input(prompt=''):
-    _hp_student_buffer.write(str(prompt))
+    if not _hp_quiet_prompts:
+        _hp_student_buffer.write(str(prompt))
     prompt_lower = str(prompt).lower()
 
     if _hp_map:
         for key in sorted(_hp_map.keys(), key=len, reverse=True):
             if key.lower() in prompt_lower:
                 value = str(_hp_map[key])
-                _hp_student_buffer.write(value + '\\n')
+                if not _hp_quiet_prompts:
+                    _hp_student_buffer.write(value + '\\n')
                 return value
 
     if _hp_input_index[0] < len(_hp_inputs):
         value = str(_hp_inputs[_hp_input_index[0]])
         _hp_input_index[0] += 1
-        _hp_student_buffer.write(value + '\\n')
+        if not _hp_quiet_prompts:
+            _hp_student_buffer.write(value + '\\n')
         return value
 
     raise EOFError('No more test inputs. Add one value per line in the test inputs box.')
