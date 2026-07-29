@@ -805,6 +805,27 @@ phone  = input("Phone: ")               # already correct — no math on phones!
 print(f"{name}, {age} years, {height}m")
 print(f"Next year: {age + 1}")
 print(f"Phone: {phone}")`,
+      // Behavioural grading. Every case below was validated by scripts/audit/author-behaviour.py:
+      // several correct implementations agree on it, the reference satisfies the check this
+      // exercise already ships with, and a deliberately wrong implementation fails at least
+      // one case. The expected values are not stored — they are produced by running the
+      // reference, so there is no authored expectation left to be wrong.
+      behaviour: {
+        reference: `name   = input("Name: ")
+age    = int(input("Age: "))
+height = float(input("Height (m): "))
+phone  = input("Phone: ")
+
+print(f"{name}, {age} years, {height}m")
+print(f"Next year: {age + 1}")
+print(f"Phone: {phone}")`,
+        cases: [
+          { inputs: ["Maria", "35", "1.68", "555-1234"], label: { en: "the example in the task", pt: "o exemplo do enunciado" }, visible: true },
+          { inputs: ["Ana Paula", "9", "1.05", "111-2222"], label: { en: "a name with a space", pt: "um nome com espaço" } },
+          { inputs: ["Bruno", "0", "2.0", "000-0000"], label: { en: "a height with no fractional part", pt: "uma altura sem parte decimal" } },
+          { inputs: ["Chen", "64", "1.755", "0551234"], label: { en: "a phone number that looks like a number", pt: "um telefone que parece um número" } },
+        ],
+      },
       hints: [
         { en: 'name: just input(...) — or str() which changes nothing', pt: 'name: apenas input(...) — ou str() que não muda nada' },
         { en: 'age → int() | height → float()', pt: 'idade → int() | altura → float()' }
@@ -819,6 +840,45 @@ print(f"Phone: {phone}")`,
         pt: 'Objetivo:\nEscreva uma calculadora de plano de academia. Ela pergunta os dados de um novo aluno e calcula quanto ele paga com 10% de desconto por pagamento antecipado.\n\nRequisitos do programa\n\n1. Receber os dados\n- O nome do aluno, como texto\n- A mensalidade em reais, que pode ter decimais\n- Quantos meses ele vai pagar, como número inteiro\n\n2. Calcular\n- O preço cheio, antes de qualquer desconto\n- Um desconto de 10% sobre esse preço cheio\n- O valor final que ele realmente paga\n\n3. Mostrar\n- O nome do aluno\n- O preço cheio, quanto economizou e o preço final\n\nExemplo, para Alex pagando 80.0 por mês durante 6 meses:\nAluno: Alex\nPreço cheio: 480.0\n10% off economiza: 48.0\nVocê paga: 432.0'
       },
       starterCode: `# Gym membership calculator:`,
+      // Behavioural grading. Every case below was validated by scripts/audit/author-behaviour.py:
+      // several correct implementations agree on it, the reference satisfies the check this
+      // exercise already ships with, and a deliberately wrong implementation fails at least
+      // one case. The expected values are not stored — they are produced by running the
+      // reference, so there is no authored expectation left to be wrong.
+      behaviour: {
+        reference: {
+          en: `name = input("Name: ")
+fee = float(input("Monthly fee: "))
+months = int(input("Months: "))
+
+full = fee * months
+saved = full * 0.10
+pay = full - saved
+
+print(f"Member: {name}")
+print(f"Full price: {full}")
+print(f"10% off saves: {saved}")
+print(f"You pay: {pay}")`,
+          pt: `name = input("Name: ")
+fee = float(input("Monthly fee: "))
+months = int(input("Months: "))
+
+full = fee * months
+saved = full * 0.10
+pay = full - saved
+
+print(f"Aluno: {name}")
+print(f"Preço cheio: {full}")
+print(f"10% off economiza: {saved}")
+print(f"Você paga: {pay}")`,
+        },
+        cases: [
+          { inputs: ["Alex", "80.0", "6"], label: { en: "the example in the task", pt: "o exemplo do enunciado" }, visible: true },
+          { inputs: ["Bea", "100.0", "1"], label: { en: "a single month", pt: "um único mês" } },
+          { inputs: ["Caio", "50.0", "12"], label: { en: "a full year", pt: "um ano inteiro" } },
+          { inputs: ["Dara", "250.0", "2"], label: { en: "a larger fee", pt: "uma mensalidade maior" } },
+        ],
+      },
       hints: [
         { en: 'monthly = float(input("Monthly fee: $"))  ← float for values like 80.50', pt: 'monthly = float(input("Mensalidade: R$"))  ← float para valores como 80,50' },
         { en: 'discount = total * 0.10  then  final = total - discount', pt: 'discount = total * 0.10  depois  final = total - discount' }
@@ -1169,6 +1229,28 @@ if amount ___ 5000 ___ days ___ 30:    # fill: >, and, <
     print("🚨 FLAGGED for investigation")
 else:
     print("✅ Passed fraud check")`,
+      // Behavioural grading. Every case below was validated by scripts/audit/author-behaviour.py:
+      // several correct implementations agree on it, the reference satisfies the check this
+      // exercise already ships with, and a deliberately wrong implementation fails at least
+      // one case. The expected values are not stored — they are produced by running the
+      // reference, so there is no authored expectation left to be wrong.
+      behaviour: {
+        reference: `amount = int(input("Amount: $"))
+days = int(input("Days since plan start: "))
+
+if amount > 5000 and days < 30:
+    print("\U0001f6a8 FLAGGED for investigation")
+else:
+    print("\u2705 Passed fraud check")`,
+        cases: [
+          { inputs: ["8000", "10"], label: { en: "the example in the task", pt: "o exemplo do enunciado" }, visible: true },
+          { inputs: ["5000", "10"], label: { en: "exactly 5000 — not more than 5000", pt: "exatamente 5000 — não é mais que 5000" } },
+          { inputs: ["8000", "30"], label: { en: "exactly 30 days — not fewer than 30", pt: "exatamente 30 dias — não é menos que 30" } },
+          { inputs: ["5001", "29"], label: { en: "just past both limits", pt: "logo além dos dois limites" } },
+          { inputs: ["3000", "10"], label: { en: "small amount, recent plan", pt: "valor pequeno, plano recente" } },
+          { inputs: ["9000", "400"], label: { en: "large amount, old plan", pt: "valor grande, plano antigo" } },
+        ],
+      },
       hints: [
         { en: 'Large: amount > 5000  |  Recent: days < 30  |  Both: and between them', pt: 'Grande: amount > 5000  |  Recente: days < 30  |  Ambos: and entre eles' },
         { en: 'Full line: if amount > 5000 and days < 30:', pt: 'Linha completa: if amount > 5000 and days < 30:' }
@@ -1183,6 +1265,30 @@ else:
         pt: 'Objetivo:\nEscreva um verificador de ingresso de cinema que pergunta a idade da pessoa e decide se ela pode assistir a um filme com classificação etária.\n\nRequisitos do programa\n\n1. Receber os dados\n- A idade da pessoa, como número inteiro\n\n2. Decidir\n- 18 anos ou mais pode assistir\n- Menos de 18 não pode\n\n3. Mostrar\n- Uma mensagem clara para o caso que se aplica\n\nExemplo, para idade 20:\nAproveite o filme!'
       },
       starterCode: `# Cinema age gate:`,
+      // Behavioural grading. Every case below was validated by scripts/audit/author-behaviour.py:
+      // several correct implementations agree on it, the reference satisfies the check this
+      // exercise already ships with, and a deliberately wrong implementation fails at least
+      // one case. The expected values are not stored — they are produced by running the
+      // reference, so there is no authored expectation left to be wrong.
+      behaviour: {
+        reference: {
+          en: `age = int(input("Age: "))
+if age >= 18:
+    print("\U0001f3ac Enjoy the movie!")
+else:
+    print("Sorry, you are too young for this film.")`,
+          pt: `age = int(input("Age: "))
+if age >= 18:
+    print("\U0001f3ac Aproveite o filme!")
+else:
+    print("Desculpe, você é muito jovem para este filme.")`,
+        },
+        cases: [
+          { inputs: ["20"], label: { en: "the example in the task", pt: "o exemplo do enunciado" }, visible: true },
+          { inputs: ["18"], label: { en: "exactly 18 — the boundary", pt: "exatamente 18 — o limite" } },
+          { inputs: ["65"], label: { en: "well over the limit", pt: "bem acima do limite" } },
+        ],
+      },
       hints: [
         { en: 'age = int(input("Your age: "))  ← int because you will compare numbers', pt: 'age = int(input("Sua idade: "))  ← int porque você vai comparar números' },
         { en: 'if age >= 16:  (>= means "greater than OR equal to" — don\'t forget the colon!)', pt: 'if age >= 16:  (>= significa "maior ou igual" — não esqueça os dois pontos!)' }
@@ -1516,7 +1622,7 @@ print("Fee:", fee)`,
       id: 'ex6_zero',
       title: { en: '🔴 From Scratch: Movie Rating System', pt: '🔴 Do Zero: Sistema de Avaliação de Filmes' },
       description: {
-        en: 'Goal:\nWrite a movie rating classifier that turns a numeric score into a recommendation.\n\nProgram requirements\n\n1. Set up\n- Store a rating score out of 10.\n\n2. Classify into one band\n- 9 or above is highly recommended.\n- 7 up to just under 9 is worth watching.\n- 5 up to just under 7 is average.\n- Below 5 is not recommended.\n\n3. Display\n- The recommendation for the score you stored.\n\nOnly one band can apply to a score, so make sure the boundaries do not overlap.\n\nExample, for a score of 9.2:\n👍 Highly Recommended',
+        en: 'Goal:\nWrite a movie rating classifier that turns a numeric score into a recommendation.\n\nProgram requirements\n\n1. Set up\n- Store a rating score from 0 to 10.\n\n2. Classify into one band\n- 9 or above is highly recommended.\n- 7 up to just under 9 is worth watching.\n- 5 up to just under 7 is average.\n- Below 5 is not recommended.\n\n3. Display\n- The recommendation for the score you stored.\n\nOnly one band can apply to a score, so make sure the boundaries do not overlap.\n\nExample, for a score of 9.2:\n👍 Highly Recommended',
         pt: 'Objetivo:\nEscreva um classificador de avaliação de filmes que transforma uma nota em uma recomendação.\n\nRequisitos do programa\n\n1. Preparar\n- Guarde uma nota de 0 a 10.\n\n2. Classificar numa faixa\n- 9 ou mais é muito recomendado.\n- De 7 até menos de 9 vale a pena assistir.\n- De 5 até menos de 7 é mediano.\n- Abaixo de 5 não é recomendado.\n\n3. Mostrar\n- A recomendação para a nota que você guardou.\n\nSó uma faixa pode valer para cada nota, então garanta que os limites não se sobreponham.\n\nExemplo, para uma nota de 9.2:\n👍 Muito Recomendado'
       },
       starterCode: `# Movie rating classifier:`,

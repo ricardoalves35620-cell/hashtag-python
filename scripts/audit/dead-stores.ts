@@ -85,7 +85,13 @@ function codeStrings(): Array<{ where: string, code: string }> {
       if (block.type === 'code') push(`p${phase.id} lesson block ${n}`, block.code)
       if (block.type === 'checkpoint' && block.checkpoint) push(`p${phase.id} checkpoint ${n}`, block.checkpoint.code)
     }
-    for (const ex of phase.exercises) push(`p${phase.id} ${ex.id} starter`, ex.starterCode)
+    for (const ex of phase.exercises) {
+      push(`p${phase.id} ${ex.id} starter`, ex.starterCode)
+      // A behaviour reference is executed to PRODUCE the expected values. A dead
+      // store in one silently corrupts every case derived from it, and no learner
+      // ever sees the code to notice.
+      if (ex.behaviour) push(`p${phase.id} ${ex.id} behaviour reference`, ex.behaviour.reference)
+    }
     if (phase.exam?.starterCode) push(`p${phase.id} exam starter`, phase.exam.starterCode)
   }
   return out
@@ -103,3 +109,4 @@ for (const { where, code } of RUN_AS_SCRIPT ? codeStrings() : []) {
   }
 }
 if (RUN_AS_SCRIPT) console.log(`\n${flagged} values computed and thrown away`)
+if (RUN_AS_SCRIPT && flagged > 0) process.exitCode = 1

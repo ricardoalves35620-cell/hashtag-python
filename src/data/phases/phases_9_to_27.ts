@@ -183,7 +183,7 @@ for i in range(5):
     print(f"Quote {i+1}: \${repair_value} → \${quote} [{risk}]")
 
 print("High risk:", high_risk)`,
-      hints: [{ en: 'random.randint(500, 12000) generates the repair_value', pt: 'random.randint(500, 12000) gera o dano' }],
+      hints: [{ en: 'random.randint(500, 12000) generates the repair_value', pt: 'random.randint(500, 12000) gera o repair_value' }],
       sampleOutput: { en: 'Quote 1: $4634 → $4384 [normal]\nHigh risk: 2', pt: 'Quote 1: $4634 → $4384 [normal]\nHigh risk: 2' }
     }
   ],
@@ -196,7 +196,7 @@ print("High risk:", high_risk)`,
   exam: {
     title: { en: 'Risk Simulation', pt: 'Simulação de Risco' },
     scenario: { en: 'Simulate 10 repair quotes and produce a workload report.', pt: 'Simule 10 orçamentos de reparo e produza um relatório de carga.' },
-    requirements: { en: ['10 random repair_values $200–$15000', '$250 parts credit', 'Critical>8k, Urgent 3k-8k, Normal<3k', 'Print each + totals'], pt: ['10 danos aleatórios R$200–R$15000', 'R$250 de crédito de peças', 'Crítico>8k, Urgente 3k-8k, Normal<3k', 'Imprima cada + totais'] },
+    requirements: { en: ['10 random repair_values $200–$15000', '$250 parts credit', 'Critical>8k, Urgent 3k-8k, Normal<3k', 'Print each + totals'], pt: ['10 valores repair_value aleatórios R$200–R$15000', 'R$250 de crédito de peças', 'Crítico>8k, Urgente 3k-8k, Normal<3k', 'Imprima cada + totais'] },
     starterCode: `import random
 random.seed(99)
 

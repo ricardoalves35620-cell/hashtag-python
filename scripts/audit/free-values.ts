@@ -109,3 +109,4 @@ for (const phase of RUN_AS_SCRIPT ?  ALL_PHASES.filter(p => p.id <= MAX).sort((a
   }
 }
 if (RUN_AS_SCRIPT) console.log(`\n${flagged} exercises invite a free value and then require one specific answer`)
+if (RUN_AS_SCRIPT && flagged > 0) process.exitCode = 1
