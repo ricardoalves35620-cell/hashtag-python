@@ -44,3 +44,46 @@ describe('the feedback points at the difference', () => {
     expect(message).toContain(' segundos')
   })
 })
+
+/**
+ * Reported from the app, with a screenshot of a completely correct solution being failed.
+ * The learner's loop, total, count and average were all right. They printed
+ *
+ *   Long songs (>4 min):  3        <- their order, and print() emitted two spaces
+ *   Total time: 1710 seconds
+ *   Average: ... seconds
+ *
+ * and the app said "one of the expected behaviors was not produced", about output that
+ * was on screen and correct. Two separate defects: the contract required the authored
+ * ORDER, and the explanation had no branch for "everything is present".
+ */
+describe('presentation is not logic', () => {
+  const contract = (sample: string) => {
+    const linePattern = (line: string) => line
+      .replace(/[.*+?^${}()|[\]\\]/g, m => '\\' + m)
+      .replace(/\s+/g, '\\s+')
+    const lines = sample.trim().split('\n').map(l => l.trim()).filter(Boolean)
+    return new RegExp(lines.map(l => `(?=[\\s\\S]*${linePattern(l)})`).join('') + '[\\s\\S]*')
+  }
+
+  const sample = 'Total time: 1710 seconds\nLong songs (>4 min): 3\nAverage: 244.29 seconds'
+
+  it('accepts the right answer printed in a different order', () => {
+    const learner = 'Long songs (>4 min): 3\nTotal time: 1710 seconds\nAverage: 244.29 seconds'
+    expect(contract(sample).test(learner)).toBe(true)
+  })
+
+  it('accepts extra spacing from print("label: ", value)', () => {
+    const learner = 'Total time: 1710 seconds\nLong songs (>4 min):  3\nAverage: 244.29 seconds'
+    expect(contract(sample).test(learner)).toBe(true)
+  })
+
+  it('still rejects a wrong value', () => {
+    const learner = 'Total time: 1700 seconds\nLong songs (>4 min): 3\nAverage: 244.29 seconds'
+    expect(contract(sample).test(learner)).toBe(false)
+  })
+
+  it('still rejects a missing line', () => {
+    expect(contract(sample).test('Total time: 1710 seconds\nAverage: 244.29 seconds')).toBe(false)
+  })
+})

@@ -186,7 +186,18 @@ function describeDifference(exercise: Exercise, lang: Lang, actual: string): str
   const expectedLines = meaningfulLines(personalize(sample))
   const actualLines = meaningfulLines(actual)
   const missing = expectedLines.find(line => !actualLines.some(candidate => candidate.includes(line)))
-  if (!missing) return generic
+
+  // EVERY expected line is on screen. This is the case where the old message was worst:
+  // it said "one of the expected behaviors was not produced" about output the learner
+  // could read, line by line, and which was in fact correct. If something still failed
+  // here it is the ORDER, and saying so is the whole difference between a verdict and a
+  // lesson.
+  if (!missing) {
+    const wanted = expectedLines.join(' → ')
+    return lang === 'en'
+      ? `Every line the task asks for is there and the values are right — they are just printed in a different order. The task lists them as: ${wanted}.`
+      : `Todas as linhas que o enunciado pede estão lá e os valores estão certos — só estão impressas em outra ordem. O enunciado lista assim: ${wanted}.`
+  }
 
   const nearest = actualLines.find(candidate => {
     const head = missing.split(/[\s:]+/)[0]
@@ -194,15 +205,6 @@ function describeDifference(exercise: Exercise, lang: Lang, actual: string): str
   })
 
   if (nearest) return describeLineDifference(missing, nearest, lang)
-
-  // Every expected line IS present, just not in the order the task asked for. Saying
-  // "your output never contains X" when X is plainly on screen reads as a broken app.
-  const allPresent = expectedLines.every(line => actualLines.some(candidate => candidate.includes(line)))
-  if (allPresent) {
-    return lang === 'en'
-      ? 'Every expected line is there, but not in the order the task asks for. Print them in the order listed under "Display".'
-      : 'Todas as linhas esperadas estão lá, mas não na ordem que o enunciado pede. Imprima na ordem listada em "Mostrar".'
-  }
 
   return lang === 'en'
     ? `Your output never contains "${missing}".`

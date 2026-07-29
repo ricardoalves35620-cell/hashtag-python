@@ -66,12 +66,29 @@ function meaningfulLines(value: string) {
 
 /** Turns a sample containing {{placeholders}} into a pattern, so the parts the learner
  *  chooses are wildcards and only the fixed parts are enforced. */
+/**
+ * Requires every expected LINE to appear — in any order, with any spacing.
+ *
+ * It used to escape the whole sample block, newlines included, so the three lines had to
+ * arrive contiguous and in exactly the authored order. A learner whose loop, total,
+ * count and average were all correct was failed for printing "Long songs" before
+ * "Total time", and for `print("...: ", count)` emitting two spaces where the sample has
+ * one. Neither is the thing any of these exercises teaches.
+ *
+ * A wrong VALUE still fails: each line is matched in full, so 1700 does not satisfy
+ * 1710. What no longer fails is the order you chose to print them in.
+ */
 function samplePattern(text: string): string {
-  return text
-    .trim()
+  const linePattern = (line: string) => line
     .split(/\{\{[^}]*\}\}/)
-    .map(part => part.replace(/[.*+?^${}()|[\]\\]/g, match => '\\' + match))
+    .map(part => part
+      .replace(/[.*+?^${}()|[\]\\]/g, match => '\\' + match)
+      .replace(/\s+/g, '\\s+'))
     .join('.+')
+
+  const lines = text.trim().split('\n').map(line => line.trim()).filter(Boolean)
+  if (lines.length <= 1) return linePattern(text.trim())
+  return lines.map(line => `(?=[\\s\\S]*${linePattern(line)})`).join('') + '[\\s\\S]*'
 }
 
 function exerciseChecks(output: Bilingual): Check[] {
