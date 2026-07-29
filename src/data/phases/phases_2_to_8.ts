@@ -769,8 +769,8 @@ n = float(input("Height: "))
       id: 'ex4_guided',
       title: { en: '🟢 Guided: See the Type Problem', pt: '🟢 Guiado: Veja o Problema do Tipo' },
       description: {
-        en: 'Goal:\nRun the code and type a number when prompted. Observe that input() always returns text, even when you type digits. Notice how int() converts that text into a real number that math can work with.\n\nThen change the multiplier at the end, run with a different number, and predict the result before pressing Enter.\n\nExample, typing 25:\nMath now works: 50',
-        pt: 'Objetivo:\nExecute o código e digite um número quando solicitado. Observe que input() sempre retorna texto, mesmo quando você digita dígitos. Perceba como int() converte esse texto num número real no qual a matemática funciona.\n\nDepois mude o multiplicador no final, execute com um número diferente e preveja o resultado antes de pressionar Enter.\n\nExemplo, digitando 25:\nMath now works: 50'
+        en: 'Goal:\nRun the code and type a number when prompted. Observe that input() always returns text, even when you type digits. Notice how int() converts that text into a real number that math can work with.\n\nThen change the multiplier at the end, run with a different number, and predict the result before pressing Enter.\n\nExample, typing 25, before your change:\nMath now works: 50',
+        pt: 'Objetivo:\nExecute o código e digite um número quando solicitado. Observe que input() sempre retorna texto, mesmo quando você digita dígitos. Perceba como int() converte esse texto num número real no qual a matemática funciona.\n\nDepois mude o multiplicador no final, execute com um número diferente e preveja o resultado antes de pressionar Enter.\n\nExemplo, digitando 25, antes da sua alteração:\nMath now works: 50'
       },
       starterCode: `raw = input("Type a number: ")
 print("Raw value:", raw)
@@ -784,7 +784,11 @@ print("Math now works:", converted * 2)`,
       hints: [
         { en: 'The raw type is str even though you typed digits — input() always returns text', pt: 'O tipo bruto é str mesmo digitando dígitos — input() sempre retorna texto' }
       ],
-      sampleOutput: { en: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>', pt: 'Raw value: 25\nRaw type: <class \'str\'>\nConverted: 25\nNew type: <class \'int\'>' }
+      // Deliberately no sampleOutput. The task asks the learner to change the
+      // multiplier, so the last line varies — and an expected-output panel cannot say
+      // "except this line". Publishing a partial sample made the description's own
+      // example disagree with it, which is what audit-task-drift caught. This exercise
+      // shows the "What counts as done" wording instead, which is honest about it.
     },
     {
       id: 'ex4_fill',
