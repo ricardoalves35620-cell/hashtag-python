@@ -572,3 +572,150 @@ def _p20_transfer():
                 raise ValueError("invalid offset")
             dates.append((start_date + timedelta(days=offset)).isoformat())
         return dates
+
+
+# ═══ phases 0-8 ═══════════════════════════════════════════════════════════════
+# These are whole programs rather than functions: the learner's script IS the answer,
+# so the reference is a complete correct script and the test feeds stdin.
+
+@solution('base0-first-output')
+def _base0_first():
+    file_name = "meu_primeiro.py"
+    print("Running:", file_name)
+    print("Python is ready")
+
+
+@solution('base0-fill-extension')
+def _base0_fill():
+    python_extension = ".py"
+    long_term_files = "storage"
+    print(python_extension)
+    print(long_term_files)
+
+
+@solution('ex1_fill')
+def _ex1_fill():
+    print("=== SYSTEM START ===")
+    print("App:", "MusicBox")
+    print("New songs:", 47)
+    print("New playlists:", 12)
+    print("Total:", 47 + 12)
+
+
+@solution('ex1_zero')
+def _ex1_zero():
+    print("--- COFFEE SHOP REPORT ---")
+    print("Coffees sold:", 80)
+    print("Price per coffee:", 5)
+    print("Total revenue:", 80 * 5)
+    print("Report complete!")
+
+
+@solution('ex2_fill')
+def _ex2_fill():
+    amount = 8000
+    discount = 300
+    after_ded = amount - discount
+    refund = after_ded * 0.75
+    print("After discount:", after_ded)
+    print("Final refund:", refund)
+
+
+@solution('ex2_zero')
+def _ex2_zero():
+    budget = 48000
+    materials = budget * 0.30
+    teachers = budget * 0.45
+    equipment = budget * 0.15
+    admin = budget * 0.10
+    print("Materials:", materials)
+    print("Teachers:", teachers)
+    print("Equipment:", equipment)
+    print("Admin:", admin)
+    print("Total check:", materials + teachers + equipment + admin)
+
+
+@solution('ex3_fill')
+def _ex3_fill():
+    client_name = "Maria"
+    client_age = 35
+    monthly_fee = 450
+    plan_active = True
+    annual_fee = monthly_fee * 12
+    print(f"Client: {client_name}, age {client_age}")
+    print(f"Annual: {annual_fee}")
+    print(f"Active: {plan_active}")
+
+
+@solution('ex3_zero')
+def _ex3_zero():
+    total = 0
+    total = total + 120
+    print("After Monday:", total)
+    total = total + 95
+    print("After Tuesday:", total)
+    total = total + 140
+    print("After Wednesday:", total)
+    print(f"3-day total: ${total}")
+
+
+@solution('ex6_zero')
+def _ex6_zero():
+    score = 9.2
+    if score >= 9:
+        print("\U0001f44d Highly Recommended")
+    elif score >= 7:
+        print("Worth Watching")
+    elif score >= 5:
+        print("Average")
+    else:
+        print("Not Recommended")
+
+
+@solution('ex7_fill')
+def _ex7_fill():
+    stock = 60
+    order = 1
+    while stock >= 15:
+        stock -= 15
+        print(f"Order {order}: {stock} cups left")
+        order += 1
+    print("Restock needed!")
+
+
+@solution('ex7_zero')
+def _ex7_zero():
+    total = 0
+    counter = 1
+    while counter <= 4:
+        value = int(input(f"Order {counter} value: "))
+        total = total + value
+        counter = counter + 1
+    print("Total:", total)
+    print("Average:", total / 4)
+
+
+@solution('ex8_fill')
+def _ex8_fill():
+    amounts = [1200, 4500, 8000, 650]
+    total = 0
+    for amount in amounts:
+        refund = amount - 250
+        total += refund
+        if amount > 3000:
+            print("Big order:", amount)
+    print("Total:", total)
+
+
+@solution('ex8_zero')
+def _ex8_zero():
+    songs = [210, 195, 300, 180, 265, 240, 320]
+    total = 0
+    long_songs = 0
+    for duration in songs:
+        total += duration
+        if duration > 240:
+            long_songs += 1
+    print("Total time:", total, "seconds")
+    print("Long songs (>4 min):", long_songs)
+    print("Average:", total / len(songs), "seconds")

@@ -1951,12 +1951,12 @@ print("Restock needed!")`,
         pt: 'Objetivo:\nEscreva um processador de lotes que coleta valores de pedidos num loop, soma ao total acumulado e calcula a média ao final.\n\nRequisitos do programa\n\n1. Preparar\n- Um total começando em zero\n- Um contador começando em 1\n\n2. Repetir para 4 pedidos\n- Pergunte o valor do pedido\n- Adicione ao total acumulado\n- Avance o contador\n\n3. Encerrar\n- Mostre o total\n- Mostre a média (total dividido por 4)\n\nO loop deve parar sozinho após 4 pedidos — não escreva o número de iterações à mão.\n\nExemplo:\nTotal: 10200\nAverage: 2550.0'
       },
       starterCode: `# Batch processor (4 orders):`,
-      suggestedInputs: ['2750', '2750', '2750', '2750'],
+      suggestedInputs: ['2550', '2550', '2550', '2550'],
       grading: {
         tests: [{
           id: 'ex7-zero-consistent-inputs',
           description: { en: 'Suggested inputs produce the published expected result', pt: 'As entradas sugeridas produzem o resultado esperado publicado' },
-          inputs: ['2750', '2750', '2750', '2750'],
+          inputs: ['2550', '2550', '2550', '2550'],
           checks: [
             { type: 'contains', value: '10200' },
             { type: 'contains', value: '2550' },
