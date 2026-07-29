@@ -3,6 +3,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { ALL_PHASES } from '../../src/data/phases'
 import { resolveLocalizedCode } from '../../src/lib/localization'
 import { isEnglishProse } from './language-isolation'
+// @ts-expect-error - plain .mjs helper shared with the Node-only checkers
+import { REFERENCES_JSON } from './cache.mjs'
 
 /**
  * Works through the whole app as a learner, in both languages, and writes down what it
@@ -52,7 +54,7 @@ const REPORT_DIR = 'audit-reports'
  * run submitted no solutions at all and reported that every graded exercise was fine. An
  * empty reference set is not a smaller run; it is a run that cannot fail.
  */
-const REFERENCES_PATH = process.env.HP_REFERENCES || '/tmp/references.json'
+const REFERENCES_PATH = process.env.HP_REFERENCES || REFERENCES_JSON
 if (!existsSync(REFERENCES_PATH)) {
   console.error(`no reference solutions at ${REFERENCES_PATH}`)
   console.error('run: python3 scripts/audit/dump-references.py   (npm run audit:learner does this for you)')

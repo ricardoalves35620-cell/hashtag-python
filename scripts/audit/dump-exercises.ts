@@ -1,5 +1,8 @@
 import { ALL_PHASES } from '../../src/data/phases'
+import { writeFileSync } from 'node:fs'
 import { resolveLocalizedCode } from '../../src/lib/localization'
+// @ts-expect-error - plain .mjs helper shared with the Node-only checkers
+import { EXERCISES_JSON } from './cache.mjs'
 
 /**
  * Exports every exercise in phases 0-20 with the facts the parity report needs:
@@ -43,4 +46,11 @@ const out = ALL_PHASES
     })),
   })))
 
-console.log(JSON.stringify(out, null, 1))
+/*
+ * Writes the file itself rather than relying on `> /tmp/ex0_20.json` in package.json.
+ * Shell redirection to a POSIX path does not survive Windows, where npm runs scripts
+ * through cmd.exe and `/tmp/...` lands on C:\tmp if it lands anywhere — which is why six
+ * audit commands could not run on the machine this project is developed on.
+ */
+writeFileSync(EXERCISES_JSON, JSON.stringify(out, null, 1), 'utf8')
+console.log(`${out.length} exercises -> ${EXERCISES_JSON}`)

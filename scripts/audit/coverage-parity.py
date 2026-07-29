@@ -20,6 +20,11 @@ Four properties, each either true or false for an exercise, no partial credit:
     npm run audit:content:parity
 """
 
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cache import EXERCISES_JSON  # noqa: E402  (path set above)
 import json
 import os
 import re
@@ -28,7 +33,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reference_solutions import REFERENCES
 
-EXERCISES = json.load(open('/tmp/ex0_20.json'))
+EXERCISES = json.load(open(EXERCISES_JSON, encoding='utf-8'))
 
 PINS_OUTPUT = {'equals', 'equals_any', 'matches', 'numeric_equals', 'contains', 'contains_any'}
 

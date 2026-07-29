@@ -18,6 +18,11 @@ solution that follows the description fails, the exercise is wrong — not the l
     npm run audit:content:expectations
 """
 
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cache import EXERCISES_JSON  # noqa: E402  (path set above)
 import json
 import os
 import re
@@ -65,7 +70,7 @@ def check_fails(check, output):
     return None
 
 
-exercises = json.load(open('/tmp/ex0_20.json'))
+exercises = json.load(open(EXERCISES_JSON, encoding='utf-8'))
 checked = failed = skipped = 0
 
 for exercise in exercises:

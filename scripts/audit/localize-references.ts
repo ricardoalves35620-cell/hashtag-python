@@ -1,5 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolveLocalizedCode } from '../../src/lib/localization'
+// @ts-expect-error - plain .mjs helper shared with the Node-only checkers
+import { REFERENCES_JSON, REFERENCES_PT_JSON } from './cache.mjs'
 
 /**
  * Emits the Portuguese form of every reference solution.
@@ -16,8 +18,8 @@ import { resolveLocalizedCode } from '../../src/lib/localization'
  *   python3 scripts/audit/dump-references.py && tsx scripts/audit/localize-references.ts
  */
 
-const SOURCE = process.env.HP_REFERENCES || '/tmp/references.json'
-const DESTINATION = process.env.HP_REFERENCES_PT || '/tmp/references.pt.json'
+const SOURCE = process.env.HP_REFERENCES || REFERENCES_JSON
+const DESTINATION = process.env.HP_REFERENCES_PT || REFERENCES_PT_JSON
 
 if (!existsSync(SOURCE)) {
   console.error(`no reference solutions at ${SOURCE} — run: python3 scripts/audit/dump-references.py`)

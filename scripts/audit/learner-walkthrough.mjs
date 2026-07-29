@@ -1,5 +1,6 @@
 import { chromium } from '@playwright/test'
 import { readFileSync, writeFileSync } from 'node:fs'
+import { EXERCISES_JSON, REFERENCES_JSON, cachePath } from './cache.mjs'
 
 /**
  * Sits down and works through the phases the way a learner does.
@@ -26,8 +27,8 @@ const BASE = 'http://127.0.0.1:4173'
 const argument = process.argv.find(item => item.startsWith('--phases='))
 const [FROM, TO] = (argument ? argument.split('=')[1] : '9-20').split('-').map(Number)
 
-const REFERENCES = JSON.parse(readFileSync('/tmp/references.json', 'utf8'))
-const EXERCISES = JSON.parse(readFileSync('/tmp/ex0_20.json', 'utf8'))
+const REFERENCES = JSON.parse(readFileSync(REFERENCES_JSON, 'utf8'))
+const EXERCISES = JSON.parse(readFileSync(EXERCISES_JSON, 'utf8'))
 
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' })
 const context = await browser.newContext({ viewport: { width: 1280, height: 1100 }, locale: 'en-US' })
@@ -157,6 +158,6 @@ for (const phase of EXERCISES.filter(item => item.phase >= FROM && item.phase <=
   }
 }
 
-writeFileSync('/tmp/walkthrough.json', JSON.stringify(findings, null, 1))
+writeFileSync(cachePath('walkthrough.json'), JSON.stringify(findings, null, 1))
 console.log(`\n${findings.length} problems a learner would hit`)
 await browser.close()

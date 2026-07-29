@@ -17,6 +17,11 @@ phases 0-8 need more cases or already have enough guard rails.
     python3 scripts/audit/cheat-resistance.py
 """
 
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cache import EXERCISES_JSON  # noqa: E402  (path set above)
 import ast
 import json
 import os
@@ -28,7 +33,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from reference_solutions import REFERENCES
 
 PINS_OUTPUT = {'equals', 'equals_any', 'matches', 'numeric_equals', 'contains', 'contains_any'}
-EXERCISES = json.load(open('/tmp/ex0_20.json'))
+EXERCISES = json.load(open(EXERCISES_JSON, encoding='utf-8'))
 
 
 def normalise(text):

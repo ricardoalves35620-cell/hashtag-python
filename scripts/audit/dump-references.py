@@ -1,8 +1,8 @@
 """
-Writes the reference solutions to /tmp/references.json for the JS-side checkers.
+Writes the reference solutions to the audit cache for the JS-side checkers.
 
 This file exists because of a defect in the checkers themselves. `learner-agent.ts`,
-`pt-grading.mjs` and `learner-walkthrough.mjs` all read /tmp/references.json, and NOTHING
+`pt-grading.mjs` and `learner-walkthrough.mjs` all read that file, and NOTHING
 in the repository wrote it — it happened to exist on one machine because a one-off command
 had produced it there. learner-agent.ts treated a missing file as "no references", so on
 any other machine it degraded silently to render-only checks and reported that every
@@ -15,15 +15,16 @@ command that consumes it, and the consumers fail loudly when it is absent.
     python3 scripts/audit/dump-references.py
 """
 
-import json
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cache import REFERENCES_JSON  # noqa: E402  (path set above)
+import json
 
 import reference_solutions  # noqa: E402  (path set above)
 
-DESTINATION = os.environ.get("HP_REFERENCES", "/tmp/references.json")
+DESTINATION = os.environ.get("HP_REFERENCES", REFERENCES_JSON)
 
 references = reference_solutions.REFERENCES
 if not references:

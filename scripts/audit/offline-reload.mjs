@@ -1,4 +1,5 @@
 import { chromium } from '@playwright/test'
+import { cachePath } from './cache.mjs'
 
 /**
  * Reproduces the two offline defects reported from the app:
@@ -116,6 +117,6 @@ if (errors.length) {
   for (const error of [...new Set(errors)].slice(0, 12)) console.log(`   ${error}`)
 }
 
-await page.screenshot({ path: '/tmp/offline-reload.png' })
+await page.screenshot({ path: cachePath('offline-reload.png') })
 await browser.close()
 process.exitCode = crashed > 0 ? 1 : 0

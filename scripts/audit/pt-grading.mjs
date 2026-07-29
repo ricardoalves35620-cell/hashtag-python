@@ -1,5 +1,7 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
+import { EXERCISES_JSON, REFERENCES_JSON, REFERENCES_PT_JSON, cachePath } from './cache.mjs'
+import { findPython } from './python.mjs'
 
 /**
  * Runs every graded exercise AS A PORTUGUESE LEARNER SEES IT, and checks it still passes.
@@ -15,8 +17,8 @@ import { readFileSync, writeFileSync } from 'node:fs'
  *   node scripts/audit/pt-grading.mjs
  */
 
-const REFERENCES = JSON.parse(readFileSync('/tmp/references.json', 'utf8'))
-const EXERCISES = JSON.parse(readFileSync('/tmp/ex0_20.json', 'utf8'))
+const REFERENCES = JSON.parse(readFileSync(REFERENCES_JSON, 'utf8'))
+const EXERCISES = JSON.parse(readFileSync(EXERCISES_JSON, 'utf8'))
 /**
  * The Portuguese form of each reference, produced by localize-references.ts.
  *
@@ -24,15 +26,23 @@ const EXERCISES = JSON.parse(readFileSync('/tmp/ex0_20.json', 'utf8'))
  * on one machine because a one-off command had made it there. Anywhere else the script
  * crashed on a missing file, or worse, would have compared nothing.
  */
-const PT_CODE = JSON.parse(readFileSync(process.env.HP_REFERENCES_PT || '/tmp/references.pt.json', 'utf8'))
+const PT_CODE = JSON.parse(readFileSync(process.env.HP_REFERENCES_PT || REFERENCES_PT_JSON, 'utf8'))
+
+const PYTHON = findPython()
+if (!PYTHON) {
+  console.error('no working Python found (tried python3, python, py -3) — see scripts/audit/python.mjs')
+  process.exit(1)
+}
 
 const PINS = new Set(['equals', 'equals_any', 'matches', 'numeric_equals', 'contains', 'contains_any'])
 const normalise = text => (text || '').replace(/\r/g, '').split('\n').map(l => l.trimEnd()).filter(l => l.trim()).join('\n').trim()
 
 function run(code, inputs) {
   try {
-    writeFileSync('/tmp/pt-run.py', code)
-    return { out: execFileSync('python3', ['/tmp/pt-run.py'], { input: inputs.join('\n') + '\n', encoding: 'utf8', timeout: 15000 }), error: null }
+    const scriptPath = cachePath('pt-run.py')
+    writeFileSync(scriptPath, code, 'utf8')
+    // `python3` is not a command on Windows — see python.mjs. Resolved once, at the top.
+    return { out: execFileSync(PYTHON.command, [...PYTHON.prefix, scriptPath], { input: inputs.join('\n') + '\n', encoding: 'utf8', timeout: 15000, env: { ...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' } }), error: null }
   } catch (error) {
     return { out: null, error: String(error.stderr || error.message).trim().split('\n').pop() }
   }

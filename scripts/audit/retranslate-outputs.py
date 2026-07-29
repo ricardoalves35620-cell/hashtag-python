@@ -10,7 +10,7 @@ task while the code printed "Tamanho da fila: 3".
 
     python3 scripts/audit/dump-references.py
     npx tsx scripts/audit/localize-references.ts
-    npx tsx scripts/audit/dump-exercises.ts > /tmp/ex0_20.json
+    npx tsx scripts/audit/dump-exercises.ts
     python3 scripts/audit/retranslate-outputs.py            # --dry-run to preview
 
 Nothing here invents Portuguese. Every replacement is a line one run printed, substituted
@@ -19,6 +19,11 @@ entry the two runs agree, there is no pair, and nothing is touched — so an unt
 exercise is left visibly untranslated rather than quietly half-fixed.
 """
 
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cache import EXERCISES_JSON, REFERENCES_JSON, REFERENCES_PT_JSON  # noqa: E402  (path set above)
 import glob
 import json
 import re
@@ -27,9 +32,9 @@ import sys
 
 DRY_RUN = "--dry-run" in sys.argv
 
-EXERCISES = json.load(open("/tmp/ex0_20.json", encoding="utf-8"))
-REFERENCES_EN = json.load(open("/tmp/references.json", encoding="utf-8"))
-REFERENCES_PT = json.load(open("/tmp/references.pt.json", encoding="utf-8"))
+EXERCISES = json.load(open(EXERCISES_JSON, encoding="utf-8"))
+REFERENCES_EN = json.load(open(REFERENCES_JSON, encoding="utf-8"))
+REFERENCES_PT = json.load(open(REFERENCES_PT_JSON, encoding="utf-8"))
 
 LEADING_DECORATION = re.compile(r"^[^\w]+")
 PROMPT = re.compile(r"input\(\s*f?([\"'])(.*?)\1\s*\)", re.S)

@@ -31,12 +31,17 @@ Method — no string matching between languages, no guessing:
     python3 scripts/audit/described-output.py
 """
 
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from cache import EXERCISES_JSON, REFERENCES_JSON, REFERENCES_PT_JSON  # noqa: E402  (path set above)
 import json
 import re
 import subprocess
 import sys
 
-EXERCISES = json.load(open("/tmp/ex0_20.json", encoding="utf-8"))
+EXERCISES = json.load(open(EXERCISES_JSON, encoding="utf-8"))
 
 
 def load(path):
@@ -51,8 +56,8 @@ def load(path):
 # solution can, and it is the same program the learner is meant to end up with. Without
 # this, every `_fill` exercise was silently skipped, which is where the phase 7 and 8
 # mismatches were hiding.
-REFERENCES_EN = load("/tmp/references.json")
-REFERENCES_PT = load("/tmp/references.pt.json")
+REFERENCES_EN = load(REFERENCES_JSON)
+REFERENCES_PT = load(REFERENCES_PT_JSON)
 
 
 def run(code, stdin=None):

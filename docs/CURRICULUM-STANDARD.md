@@ -93,6 +93,16 @@ Run everything: `npm run audit:content:extra`
 | `audit:offline` | every route survives a reload with no network, and says it is offline |
 | `audit:content:described` | the task and the sampleOutput promise what the program prints, in both languages |
 | `audit:portunol` | no comment reaches a learner in neither language |
+| `audit:device-fit` | the bottom menu reaches the screen edge and clears the home indicator |
+
+Every command runs on Windows and on POSIX. It did not always: six of them called
+`python3` and wrote to `/tmp/...`, which on Windows hits the Microsoft Store alias stub
+and a `C:\tmp` path that does not exist — so the person who owns this repository could
+not run half of his own checks, and the error read like a missing Python install rather
+than a wrong command name. `scripts/audit/python.mjs` finds whatever the local
+interpreter is called, `scripts/audit/cache.{mjs,py}` puts the intermediate files in a
+git-ignored `.audit-cache/` inside the repo, and `portability.test.ts` fails the build if
+either assumption comes back. A check nobody can run is a check nobody runs.
 
 ---
 
