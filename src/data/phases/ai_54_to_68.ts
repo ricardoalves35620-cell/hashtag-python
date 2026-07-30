@@ -552,9 +552,9 @@ const specs: ConceptPhaseSpec[] = [
       "functionName": "split_dataset",
       "starterCode": "def split_dataset(items, train_ratio=0.6, validation_ratio=0.2):\n    \"\"\"Return train, validation and test slices without overlap.\"\"\"\n    pass",
       "publicAfterCode": "print(split_dataset(list(range(10))))",
-      "publicExpected": "[8, 9]",
+      "publicExpected": "([0, 1, 2, 3, 4, 5], [6, 7], [8, 9])",
       "hiddenAfterCode": "print(split_dataset(list(range(5)), 0.6, 0.2))",
-      "hiddenExpected": "[4]",
+      "hiddenExpected": "([0, 1, 2], [3], [4])",
       "requirements": [
         {
           "kind": "function",
@@ -1507,10 +1507,10 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "local_runtime_command",
       "starterCode": "def local_runtime_command(model_path, context_size=4096):\n    \"\"\"Return a safe llama-server command bound to localhost.\"\"\"\n    pass",
-      "publicAfterCode": "print(local_runtime_command(\"models/a.gguf\", 8192))",
-      "publicExpected": "127.0.0.1",
-      "hiddenAfterCode": "print(local_runtime_command(\"model.gguf\"))",
-      "hiddenExpected": "4096",
+      "publicAfterCode": "command = local_runtime_command(\"models/a.gguf\", 8192)\nprint(\"127.0.0.1\" in command)\nprint(\"8192\" in command)",
+      "publicExpected": "True\nTrue",
+      "hiddenAfterCode": "command = local_runtime_command(\"model.gguf\")\nprint(\"127.0.0.1\" in command)\nprint(\"4096\" in command)",
+      "hiddenExpected": "True\nTrue",
       "requirements": [
         {
           "kind": "function",

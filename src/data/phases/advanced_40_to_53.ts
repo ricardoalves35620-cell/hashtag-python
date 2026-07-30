@@ -439,10 +439,10 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "managed_flag",
       "starterCode": "from contextlib import contextmanager\n\n@contextmanager\ndef managed_flag(events):\n    \"\"\"Append enter before yield and exit in a finally block.\"\"\"\n    pass",
-      "publicAfterCode": "events = []\nwith managed_flag(events) as value:\n    print(value)\nprint(events)",
-      "publicExpected": "enter",
+      "publicAfterCode": "events = []\nwith managed_flag(events):\n    pass\nprint(events)",
+      "publicExpected": "['enter', 'exit']",
       "hiddenAfterCode": "events = []\ntry:\n    with managed_flag(events):\n        raise RuntimeError(\"boom\")\nexcept RuntimeError:\n    print(events)",
-      "hiddenExpected": "exit",
+      "hiddenExpected": "['enter', 'exit']",
       "requirements": [
         {
           "kind": "import",
@@ -960,7 +960,7 @@ const specs: ConceptPhaseSpec[] = [
       "functionName": "balance_load",
       "starterCode": "def balance_load(sizes, workers):\n    \"\"\"Split work across workers so the totals are as close as possible.\n\n    Give each next item to whichever worker currently has the least. Return the\n    total each worker ends up with.\n    \"\"\"\n    pass",
       "publicAfterCode": "print(balance_load([5, 3, 2, 8], 2))",
-      "publicExpected": "[10, 8]",
+      "publicExpected": "[13, 5]",
       "hiddenAfterCode": "print(balance_load([], 3))",
       "hiddenExpected": "[0, 0, 0]",
       "requirements": [
@@ -1064,9 +1064,9 @@ const specs: ConceptPhaseSpec[] = [
       "functionName": "unique_expensive_calls",
       "starterCode": "def unique_expensive_calls(values):\n    \"\"\"Return squared results and number of unique computations.\"\"\"\n    pass",
       "publicAfterCode": "print(unique_expensive_calls([2, 2, 3, 2]))",
-      "publicExpected": "2",
+      "publicExpected": "([4, 4, 9, 4], 2)",
       "hiddenAfterCode": "print(unique_expensive_calls([]))",
-      "hiddenExpected": "0",
+      "hiddenExpected": "([], 0)",
       "requirements": [
         {
           "kind": "function",
@@ -1183,8 +1183,8 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "build_order_query",
       "starterCode": "def build_order_query(status, limit):\n    \"\"\"Return parameterized SQL and a parameter tuple.\"\"\"\n    pass",
-      "publicAfterCode": "print(build_order_query(\"open\", 10))",
-      "publicExpected": "WHERE status = ?",
+      "publicAfterCode": "sql, params = build_order_query(\"open\", 10)\nprint(\"WHERE status = ?\" in sql)\nprint(params)",
+      "publicExpected": "True\n('open', 10)",
       "hiddenAfterCode": "print(build_order_query(\"closed\", 5)[1])",
       "hiddenExpected": "('closed', 5)",
       "requirements": [
@@ -1418,7 +1418,7 @@ const specs: ConceptPhaseSpec[] = [
       "publicAfterCode": "print(redact_record({\"name\": \"Ana\", \"token\": \"abc\"}, {\"token\"}))",
       "publicExpected": "{'name': 'Ana', 'token': '***'}",
       "hiddenAfterCode": "original = {\"password\": \"p\", \"id\": 3}\nprint(redact_record(original, {\"password\"}))\nprint(original[\"password\"])",
-      "hiddenExpected": "p",
+      "hiddenExpected": "{'password': '***', 'id': 3}\np",
       "requirements": [
         {
           "kind": "function",

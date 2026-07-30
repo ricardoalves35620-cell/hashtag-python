@@ -31,11 +31,19 @@ state the contract:
 | p67-transfer | the trailing shorter chunk is kept |
 | p68-practice | passages carry `source` (not `id`); always returns a dict — the docstring's "insufficient evidence" is not a return value |
 
-## Unpassable or self-contradictory (7 exercises — NOT fixed, they need a decision)
+## Unpassable or self-contradictory (7 exercises — RESOLVED 2026-07-30, owner said "go ahead")
 
-A solution that follows the task's own words cannot pass. These are live
-"correct answer marked wrong" defects; the references were left following the
-stated text so the verifier keeps failing until each is resolved.
+A solution that follows the task's own words could not pass. All seven are now
+fixed; every new expected value was DERIVED by running the reference, never
+typed. The first fix attempt used `contains` and was correctly rejected by two
+guards (`v11GradingHardening` bans partial contains on migrated phases;
+`audit:content` demands bilingual justification) — the shipped fix keeps
+`equals` and changes the GRADER-OWNED afterCode to print an unambiguous
+contract instead: p43 no longer prints the (unspecified) yield value; p49
+prints `"WHERE status = ?" in sql` plus the params tuple; p66 prints argv
+membership booleans so the command format stays the learner's choice. p47,
+p48, p51 and p58 got full derived expectations following their own stated
+text.
 
 Five are one defect class: **`equals` used on a fragment of the output** — the
 check compares the WHOLE stdout to a substring of it, so no output can ever
@@ -77,3 +85,11 @@ both languages, then `audit:pt-grading` and `audit:content:described` prove
 the translation didn't break anything. The 7 above are blocked on choosing,
 per exercise, which side is lying — checks (`equals`→`contains` or re-derived
 full output) or task text.
+
+## Resolution log (2026-07-30)
+
+All 17 findings closed at the grading layer: 297/297 graded test-runs now
+reproduce by execution, 544/544 unit tests green, content and curriculum
+audits pass. STILL OPEN: the 10 disclosure gaps above are fixed only in the
+references — each task text still owes the learner the disclosure, in both
+languages, and `audit:content:parity` remains the checker that tracks it.
