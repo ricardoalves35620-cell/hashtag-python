@@ -40,8 +40,23 @@ def normalise(text):
     return '\n'.join(line.rstrip() for line in (text or '').replace('\r', '').split('\n') if line.strip()).strip()
 
 
+# Mirrors the worker: the whole program is compiled with top-level await allowed
+# (Pyodide's runPythonAsync does exactly this), so an afterCode may `await` a
+# coroutine directly. asyncio.run drives it here because CPython has no already-
+# running loop — the one place the two runtimes legitimately differ.
+_DRIVER = (
+    "import ast, asyncio, sys\n"
+    "src = sys.argv[1]\n"
+    "code = compile(src, '<learner>', 'exec', flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT)\n"
+    "g = {'__name__': '__main__'}\n"
+    "coro = eval(code, g, g)\n"
+    "if coro is not None:\n"
+    "    asyncio.run(coro)\n"
+)
+
+
 def run(code, inputs):
-    proc = subprocess.run([sys.executable, '-c', code], input='\n'.join(inputs) + '\n',
+    proc = subprocess.run([sys.executable, '-c', _DRIVER, code], input='\n'.join(inputs) + '\n',
                           capture_output=True, text=True, timeout=15)
     if proc.returncode:
         return None, proc.stderr.strip().split('\n')[-1]

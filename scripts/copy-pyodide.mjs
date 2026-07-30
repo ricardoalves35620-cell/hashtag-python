@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, statSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 /**
@@ -20,8 +20,9 @@ import { join } from 'node:path'
  * Same-origin responses are not opaque, so all five cache. It also removes a hard
  * dependency on a third-party CDN for the one feature the whole app is built around.
  *
- * The files are NOT committed — they come from the pinned devDependency, and the copy
- * runs before every build.
+ * The CORE files are NOT committed — they come from the pinned devDependency, and the
+ * copy runs before every build. The scientific-package wheels below ARE committed
+ * (vendor/pyodide-wheels), because the devDependency does not contain them.
  */
 
 const VERSION = '0.25.1'
@@ -46,4 +47,32 @@ for (const name of FILES) {
   copyFileSync(source, join(to, name))
   bytes += statSync(source).size
 }
-console.log(`pyodide ${VERSION}: ${FILES.length} files, ${(bytes / 1048576).toFixed(1)} MB -> ${to}`)
+
+/**
+ * Scientific-package wheels, vendored in the repository.
+ *
+ * The worker's loadPackagesFromImports() resolves package files RELATIVE TO the
+ * same-origin indexURL — and the npm pyodide package ships NONE of them. So the
+ * comment in python.worker.js promising that "lessons using NumPy/Pandas work"
+ * was false in every deploy that ever shipped: the wheel fetch 404'd into the
+ * SPA fallback and the learner got ModuleNotFoundError. Found 2026-07-30 by
+ * audit:learner running phase 55 in the real browser; every source-level
+ * checker passed, because CPython has real numpy.
+ *
+ * The wheels live in vendor/pyodide-wheels (sha256-verified against
+ * pyodide-lock.json when they were vendored, from the pyodide 0.25.1 GitHub
+ * release) rather than being fetched at build time: a deploy must not depend
+ * on a third-party CDN being up, which is the same reasoning that moved the
+ * core runtime off jsdelivr in the first place.
+ */
+const wheelsFrom = join('vendor', 'pyodide-wheels')
+const wheels = existsSync(wheelsFrom) ? readdirSync(wheelsFrom).filter(name => name.endsWith('.whl')) : []
+if (!wheels.length) {
+  console.error(`no wheels in ${wheelsFrom} — phase 55/56 (NumPy/Pandas) cannot run in the browser without them`)
+  process.exit(1)
+}
+for (const name of wheels) {
+  copyFileSync(join(wheelsFrom, name), join(to, name))
+  bytes += statSync(join(wheelsFrom, name)).size
+}
+console.log(`pyodide ${VERSION}: ${FILES.length} core files + ${wheels.length} wheels, ${(bytes / 1048576).toFixed(1)} MB -> ${to}`)

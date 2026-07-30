@@ -817,9 +817,9 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "gather_values",
       "starterCode": "import asyncio\n\nasync def gather_values(values):\n    \"\"\"Double values concurrently and preserve input order.\"\"\"\n    pass",
-      "publicAfterCode": "print(asyncio.run(gather_values([1, 2, 3])))",
+      "publicAfterCode": "print(await gather_values([1, 2, 3]))",
       "publicExpected": "[2, 4, 6]",
-      "hiddenAfterCode": "print(asyncio.run(gather_values([])))",
+      "hiddenAfterCode": "print(await gather_values([]))",
       "hiddenExpected": "[]",
       "requirements": [
         {

@@ -269,7 +269,20 @@ if _hp_error is None and _hp_execute:
         try:
             sys.stdout = _hp_test_buffer
             sys.stderr = _hp_test_buffer
-            exec(compile(_hp_after_code, 'grader_test.py', 'exec'), _hp_globals, _hp_globals)
+            # Compiled with top-level await allowed, mirroring how Pyodide runs this
+            # whole program. A plain exec() cannot drive a coroutine here: the webloop
+            # is already running, so asyncio.run() raises RuntimeError and every
+            # run_until_complete() variant hands back a PENDING task (measured
+            # 2026-07-30 against real Pyodide 0.25.1, after audit:learner caught p46
+            # failing in the app while CPython passed it). An afterCode that needs
+            # async writes "await coroutine(...)" directly; eval() then returns a
+            # coroutine, awaited below on the same loop. NOTE: this comment lives
+            # inside a JS template literal — a backtick here breaks the whole worker,
+            # which is exactly how the first version of this fix shipped dead.
+            _hp_test_code = compile(_hp_after_code, 'grader_test.py', 'exec', flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT)
+            _hp_test_coro = eval(_hp_test_code, _hp_globals, _hp_globals)
+            if _hp_test_coro is not None:
+                await _hp_test_coro
         except BaseException as exc:
             _hp_test_error = f"{type(exc).__name__}: {exc}"
         finally:

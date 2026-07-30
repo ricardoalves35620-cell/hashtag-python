@@ -93,3 +93,30 @@ reproduce by execution, 544/544 unit tests green, content and curriculum
 audits pass. STILL OPEN: the 10 disclosure gaps above are fixed only in the
 references — each task text still owes the learner the disclosure, in both
 languages, and `audit:content:parity` remains the checker that tracks it.
+
+## audit:learner, phases 40-68, both languages (2026-07-30)
+
+First graded browser pass over this range: 174 exercise runs through the real
+editor and real Pyodide. Three failures, all invisible to every source-level
+checker because CPython is not the runtime learners get:
+
+- **p46 (asyncio)** — the grader ran afterCode through a plain exec() under
+  Pyodide's already-running webloop, where asyncio.run() raises and every
+  run_until_complete() variant returns a pending task (all three measured
+  against real Pyodide 0.25.1). The worker now compiles afterCode with
+  top-level await allowed and awaits the resulting coroutine; the CPython
+  verifier mirrors the same semantics via asyncio.run. The first version of
+  the fix shipped a backtick inside the worker's template literal and killed
+  every run — caught because the fix was re-verified in the browser instead
+  of assumed.
+- **p55 (NumPy) / p56 (Pandas)** — loadPackagesFromImports() resolves wheels
+  relative to the same-origin indexURL, and no deploy ever shipped any: the
+  npm pyodide package contains zero wheels, so every import numpy in
+  production 404'd into ModuleNotFoundError since the phases existed. The
+  five wheels (numpy, pandas, python-dateutil, pytz, six — the lock's full
+  dependency closure) are now vendored in vendor/pyodide-wheels,
+  sha256-verified against pyodide-lock.json, and copied next to the runtime
+  by scripts/copy-pyodide.mjs on every build.
+
+After the fixes: phases 46, 55, 56 re-run clean in the app in both languages.
+Full range: 174/174 runs clean.
