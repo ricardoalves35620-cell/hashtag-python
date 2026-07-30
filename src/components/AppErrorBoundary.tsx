@@ -1,5 +1,7 @@
 import React from 'react'
 import { Button, Card } from './ui'
+import AppLoadingScreen from './AppLoadingScreen'
+import { isRecoveryReloadPending } from '../lib/appUpdate'
 
 interface State { error: Error | null }
 
@@ -12,6 +14,14 @@ export default class AppErrorBoundary extends React.Component<React.PropsWithChi
   render() {
     if (!this.state.error) return this.props.children
     const lang = localStorage.getItem('hp_lang') === 'en' ? 'en' : 'pt'
+    // A chunk failure with a recovery reload already on the way is not a crash: the
+    // page is about to land on the new build. location.reload() takes a few hundred
+    // milliseconds to commit and React renders this boundary inside that window —
+    // measured in the 2026-07-30 repro as a flash of the crash card on every
+    // successful recovery. Show the quiet loading screen for that moment instead.
+    if (isRecoveryReloadPending()) {
+      return <AppLoadingScreen label={lang === 'en' ? 'Updating the app…' : 'Atualizando o app…'} />
+    }
     const copy = lang === 'en' ? {
       title: 'Something interrupted the lesson.', body: 'Your progress was not intentionally deleted. Reload the app first. If the problem returns, copy the technical detail below when reporting it.', reload: 'Reload app', detail: 'Technical detail',
     } : {

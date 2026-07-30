@@ -13,19 +13,22 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      // 'autoUpdate' FORCES skipWaiting:true and clientsClaim:true in the generated
-      // service worker, silently overriding the two options set under `workbox` below —
-      // including the one whose comment says "Do NOT claim open tabs mid-session".
+      // 'prompt': the new worker installs, precaches, and WAITS. serviceWorkerUpdate.ts
+      // notices it, UpdateBanner offers it, and the learner picks the moment —
+      // applyPendingUpdate() messages skipWaiting and the page reloads onto the new
+      // build. Both halves exist and are wired in main.tsx.
       //
-      // The result is the failure that comment describes: a new build activates under a
-      // running tab, cleanupOutdatedCaches deletes the chunks that tab is still holding,
-      // the next lazy import 404s, and the learner gets "Algo interrompeu a aula" on
-      // reload. Reported from the app as happening often.
-      //
-      // 'prompt' respects them: the new worker waits until the old page is gone.
-      // 'autoUpdate' so the waiting worker actually activates. With
-      // cleanupOutdatedCaches now false, activating no longer strands a live tab.
-      registerType: 'autoUpdate',
+      // The history, because each wrong setting was tried for a reason:
+      // - 'prompt' with NO prompt wired stranded every open client on the old build
+      //   forever (the 2026-07-30 outage: waiting worker + navigateFallback serving a
+      //   stale index.html whose chunks the server had dropped).
+      // - 'autoUpdate' fixed that by force-activating — and force-RELOADING every open
+      //   tab mid-exercise (vite-plugin-pwa reloads on 'activated' in auto mode), while
+      //   making onNeedRefresh dead code, so the banner could never show. Measured in
+      //   the 2026-07-30 reproduction.
+      // 'prompt' with the prompt actually wired is the setting both of those were
+      // reaching for. audit:sw holds the built worker to it.
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'icons/*.png'],
       // Single source of truth for the manifest. public/manifest.json used to be a
       // second, hand-maintained copy that Vite shipped verbatim; the two had already
@@ -76,35 +79,29 @@ export default defineConfig({
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api\//, /\.[^/]+$/],
         /*
-         * These two settings were in opposition, and the deadlock between them took the
-         * site down on 2026-07-30.
+         * `skipWaiting: false` + the WIRED prompt is the update policy. The new worker
+         * waits until the learner accepts (UpdateBanner → messageSkipWaiting) or every
+         * client is gone. The 2026-07-30 outage — waiting worker + navigateFallback
+         * serving a stale index.html forever — was skipWaiting:false with NO prompt
+         * wired: the waiting half without the telling half. The prompt now exists
+         * (main.tsx → installUpdatePrompt → UpdateBanner), so waiting is a choice the
+         * learner gets to end, not a dead end.
          *
-         * `navigateFallback` above means EVERY navigation is answered from the worker's
-         * precache — including an OAuth redirect back to /#access_token=... So whichever
-         * index.html the ACTIVE worker precached is the index.html the app boots from.
-         *
-         * `skipWaiting: false` means a new worker never becomes active while any client
-         * exists. On an installed app that is close to never. So the active worker stayed
-         * on an old generation, kept serving its old index.html, and that file asked for
-         * asset hashes that later deploys had removed from the server. Every navigation
-         * died on `Failed to load module script … MIME type "text/html"`, while
-         * Ctrl+Shift+R — which bypasses the worker — reached the real index and booted
-         * fine. That asymmetry is the signature, and it is what the reporter saw: the
-         * login page appeared on a hard reload and the redirect after login went blank.
-         *
-         * `skipWaiting: false` was chosen for a real reason — taking over a live tab while
-         * `cleanupOutdatedCaches` deletes the chunks it is still holding produces the
-         * "Algo interrompeu a aula" crash. But the cause of THAT is the cleanup, not the
-         * takeover. So: take over promptly, and stop deleting the old build's chunks. A
-         * tab mid-lesson keeps the files it is using, and the next navigation gets the
-         * new build. Neither failure remains available.
-         *
-         * The cost is precache growth across deploys, which Workbox bounds by revision
-         * and which is a far smaller price than an app that cannot start.
+         * A correction, verified against the built worker and at runtime in the
+         * 2026-07-30 reproduction: `cleanupOutdatedCaches` does NOT decide whether a
+         * claimed tab keeps its chunks. Workbox's PrecacheController.activate
+         * unconditionally deletes every cached URL that is not in the incoming
+         * manifest; this flag only removes caches left by OLDER WORKBOX naming
+         * schemes. So the moment any new worker activates under a live tab, that
+         * tab's not-yet-visited chunks are gone, whatever this flag says. With
+         * 'prompt', activation happens at a moment the accepting tab chose — that tab
+         * reloads immediately — and any OTHER open tab that trips over the deleted
+         * chunks is caught by appUpdate.ts, which spends one recovery reload per
+         * build and lets a real failure surface rather than loop.
          */
         cleanupOutdatedCaches: false,
         clientsClaim: true,
-        skipWaiting: true,
+        skipWaiting: false,
         runtimeCaching: [
           {
             // Order matters: Workbox matches in registration order, so auth must come
