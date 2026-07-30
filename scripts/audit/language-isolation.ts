@@ -74,16 +74,45 @@ function comments(code: string): string[] {
 const KEY_CONTEXT = /\[\s*$|\.get\(\s*$|\braise\s+\w*Error\(\s*$|\bin\s+$/
 const FILENAME = /^[\w./-]+\.\w{1,5}$/
 
+/**
+ * Walk the line, tracking quote state. A global regex cannot do this.
+ *
+ * `db.append({"id": len(db)+1, "client": client, "pages": pages})` has three string
+ * literals, all too short to report. The regex version skipped `"id"` for being under
+ * three characters and then resumed from its CLOSING quote, so it paired that quote with
+ * the opening quote of the next key and reported `": client,"` as a printed string — in
+ * four separate exercises. It was pointing at code, and the code was correct.
+ */
+function stringLiterals(line: string): string[] {
+  const found: string[] = []
+  let quote: '"' | "'" | null = null
+  let start = 0
+  for (let at = 0; at < line.length; at += 1) {
+    const character = line[at]
+    if (character === '\\') { at += 1; continue }        // an escape, not a delimiter
+    if (!quote && (character === '"' || character === "'")) { quote = character; start = at + 1 }
+    else if (quote && character === quote) { found.push(line.slice(start, at)); quote = null }
+  }
+  return found
+}
+
 function literals(code: string): string[] {
   const found: string[] = []
-  for (const match of code.matchAll(/"([^"\n]{3,})"|'([^'\n]{3,})'/g)) {
-    const text = (match[1] ?? match[2]).trim()
-    if (!text || !text.includes(' ')) continue          // one word: a key, not a sentence
-    if (FILENAME.test(text)) continue
-    const before = code.slice(0, match.index ?? 0)
-    const line = before.slice(before.lastIndexOf('\n') + 1)
-    if (KEY_CONTEXT.test(line)) continue
-    found.push(text)
+  for (const line of code.split('\n')) {
+    for (const value of stringLiterals(line)) {
+      const text = value.trim()
+      if (text.length < 3) continue
+      if (!text.includes(' ')) continue                 // one word: a key, not a sentence
+      if (FILENAME.test(text)) continue
+      // The prefix ends at the OPENING QUOTE, which has to come off before the context
+      // test: KEY_CONTEXT looks for `raise ValueError(` and the raw prefix is
+      // `raise ValueError("`. Without this, two pinned contract strings in phases 13
+      // and 14 were reported as prose a translator should touch — and translating them
+      // breaks the exercises that pin them.
+      const prefix = line.slice(0, line.indexOf(value)).replace(/["']$/, '')
+      if (KEY_CONTEXT.test(prefix)) continue
+      found.push(text)
+    }
   }
   return found
 }

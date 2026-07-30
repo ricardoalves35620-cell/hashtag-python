@@ -1,0 +1,17 @@
+audit: the leak detector was reading code between two strings as a string
+
+`db.append({"id": len(db)+1, "client": client, "pages": pages})` has three string
+literals, all too short to report. The global regex skipped "id" for being under
+three characters and resumed from its CLOSING quote, so it paired that quote with
+the opening quote of the next key and reported `": client,"` as printed prose — in
+four exercises, pointing at code that was correct.
+
+Replaced with a scan that tracks quote state per line. That also stopped the
+detector skipping every literal that followed a short one, so the honest count went
+UP before it came down: 152 reported, 160 actually there, 145 after the two pinned
+contract strings in phases 13 and 14 were re-excluded. Those two had been invisible
+to the regex and are `raise ValueError("negative price")` — values the grader pins,
+so translating them breaks the exercises.
+
+Phases 0-20 remain at 0. The remaining 145 are phases 21-68.
+

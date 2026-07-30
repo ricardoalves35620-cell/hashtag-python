@@ -38,5 +38,75 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!--
+      Safe-area diagnostic. Dormant unless the URL carries ?safearea=1.
+
+      The same visible symptom — a bottom bar that does not reach the screen edge — has at
+      least three different causes on iOS, and they need different fixes. Guessing costs
+      hours; reading four numbers off the device costs a minute. It lives in index.html
+      rather than in React so that it still runs if the app itself fails to boot, and it
+      has to run INSIDE the installed app, because the fault it is looking for is in how
+      iOS sizes that window and no desktop browser reproduces it.
+
+        open the installed app, then navigate to  /?safearea=1
+
+      Read the numbers against these three cases:
+
+      A  innerHeight === screen.height - env(top)  AND  gap below bar === 0
+         The window itself was created short. CSS cannot reach the strip. Caused by the
+         legacy apple-mobile-web-app-* metas, which the home-screen icon CACHES AT INSTALL
+         TIME — so the icon must be deleted and re-added after any fix.
+      B  innerHeight is full  AND  gap below bar > 0
+         A CSS bug: the inset is on an element that does not paint the bar's background,
+         or the reserved height is hardcoded. audit:device-fit covers this class.
+      C  visualViewport.height < innerHeight, only after the keyboard opened and closed
+         A WebKit bug in iOS 26.0, fixed in 26.1. Update iOS first.
+    -->
+    <script>
+      if (location.search.indexOf('safearea') !== -1) {
+        (function () {
+          var probe = document.createElement('div')
+          probe.style.cssText = 'position:fixed;visibility:hidden;' +
+            'padding-bottom:env(safe-area-inset-bottom,0px);padding-top:env(safe-area-inset-top,0px)'
+          document.body.appendChild(probe)
+          var computed = getComputedStyle(probe)
+          var bar = document.querySelector('.hp-bottom-nav__inner')
+          var box = bar && bar.getBoundingClientRect()
+          var rows = {
+            'env(bottom)': computed.paddingBottom,
+            'env(top)': computed.paddingTop,
+            'innerHeight': window.innerHeight,
+            'visualViewport.height': Math.round((window.visualViewport || {}).height || -1),
+            'screen.height': screen.height,
+            'devicePixelRatio': window.devicePixelRatio,
+            'bar bottom': box ? Math.round(box.bottom) : 'no bar on this page',
+            'gap below bar': box ? Math.round(window.innerHeight - box.bottom) : '-',
+            'standalone': matchMedia('(display-mode: standalone)').matches || navigator.standalone === true,
+            'build': document.querySelector('meta[name="theme-color"]') ? 'loaded' : '?',
+          }
+          probe.remove()
+
+          var panel = document.createElement('div')
+          panel.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.82);' +
+            'color:#fff;font:12px/1.6 monospace;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 0;overflow:auto'
+          panel.innerHTML = '<b>SAFE-AREA DIAGNOSTIC</b> — tap to close<br><br>' +
+            Object.keys(rows).map(function (key) { return key + ' = <b>' + rows[key] + '</b>' }).join('<br>') +
+            '<br><br>red band = the inset WebKit reports<br>green line = bottom of the layout viewport<br><br>' +
+            'If the green line is not at the physical bottom of the screen, the window is the wrong size and no CSS can fix it (case A).'
+          panel.onclick = function () { location.search = '' }
+          document.body.appendChild(panel)
+
+          var band = document.createElement('div')
+          band.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100000;' +
+            'height:env(safe-area-inset-bottom,0px);background:rgba(255,0,0,.6);pointer-events:none'
+          document.body.appendChild(band)
+
+          var edge = document.createElement('div')
+          edge.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:100001;height:3px;background:#22c55e;pointer-events:none'
+          document.body.appendChild(edge)
+        })()
+      }
+    </script>
   </body>
 </html>
