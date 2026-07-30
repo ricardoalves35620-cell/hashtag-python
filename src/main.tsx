@@ -4,6 +4,7 @@ import App from './App'
 import AppErrorBoundary from './components/AppErrorBoundary'
 import { installAppUpdateRecovery } from './lib/appUpdate'
 import { installOutboxDrain } from './lib/outbox'
+import { installUpdatePrompt } from './lib/serviceWorkerUpdate'
 import './index.css'
 
 document.documentElement.dataset.appVersion = __APP_VERSION__
@@ -16,6 +17,11 @@ installAppUpdateRecovery()
 
 // Replays writes that could not reach the server, on reconnect / focus / foreground.
 installOutboxDrain()
+
+// Notices a waiting service worker and offers the learner the new build. Without this,
+// registerType 'prompt' means a new build waits forever behind an open tab — which is how
+// a translation shipped on 2026-07-29 was still not on screen nineteen commits later.
+void installUpdatePrompt()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

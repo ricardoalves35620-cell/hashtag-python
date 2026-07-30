@@ -5,6 +5,7 @@ import BottomNav from './BottomNav'
 import { Button } from './ui'
 import { isVirtualKeyboardOpen, keyboardInset } from '../lib/mobileViewport'
 import SyncStatusIndicator from './SyncStatusIndicator'
+import UpdateBanner from './UpdateBanner'
 
 interface Props {
   children: React.ReactNode
@@ -84,6 +85,7 @@ export default function Layout({ children, showBack, backTo = '/', backLabel, ti
 
   return (
     <div className={`hp-app-shell ${showNav ? 'hp-app-shell--with-nav' : ''} ${keyboardOpen ? 'hp-app-shell--keyboard-open' : ''}`}>
+      <UpdateBanner />
       <a className="hp-skip-link" href="#main-content" onClick={focusMainContent}>
         {lang === 'en' ? 'Skip to content' : 'Pular para o conteúdo'}
       </a>

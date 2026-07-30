@@ -1,17 +1,27 @@
-audit: the leak detector was reading code between two strings as a string
+pwa: a day of fixes was sitting in a cache
 
-`db.append({"id": len(db)+1, "client": client, "pages": pages})` has three string
-literals, all too short to report. The global regex skipped "id" for being under
-three characters and resumed from its CLOSING quote, so it paired that quote with
-the opening quote of the next key and reported `": client,"` as printed prose — in
-four exercises, pointing at code that was correct.
+Reported from the app: phase 8's exam still shows "# Construa your dashboard:" — half
+Portuguese, half English, and the exact defect reported earlier. The repository has said
+"# Monte seu painel:" since 2026-07-29, commit 47b5a7e, NINETEEN commits ago. The
+translation was never wrong. It never arrived.
 
-Replaced with a scan that tracks quote state per line. That also stopped the
-detector skipping every literal that followed a short one, so the honest count went
-UP before it came down: 152 reported, 160 actually there, 145 after the two pinned
-contract strings in phases 13 and 14 were re-excluded. Those two had been invisible
-to the regex and are `raise ValueError("negative price")` — values the grader pins,
-so translating them breaks the exercises.
+`registerType: 'prompt'` in vite.config.ts is correct and was chosen for a real reason:
+with `autoUpdate` a new worker activates under a running tab, cleanupOutdatedCaches
+deletes the chunks that tab still holds, the next lazy import 404s, and the learner gets
+"Algo interrompeu a aula" mid-lesson. That was reported too.
 
-Phases 0-20 remain at 0. The remaining 145 are phases 21-68.
+But 'prompt' only means the new worker WAITS. Something has to tell it to take over, and
+nothing did — `registerSW` was never called anywhere in the app. So a build reached a
+learner only when every tab and every installed window was closed, which on an installed
+app means swiping it out of the app switcher rather than backgrounding it. Nobody does
+that, so nothing shipped.
+
+This is the half that was missing: notice the waiting worker, say so, and hand over when
+the learner chooses. A prompt rather than an automatic reload, because taking over
+mid-exercise throws away whatever is in the editor.
+
+I ranked this fourth of four. It should have been first: it made every other fix in this
+session invisible, including the ones I verified end to end in a browser I control. The
+verification was real and the delivery was not, which is a distinction worth keeping —
+"passes in the app" and "reaches the learner" are two claims, and I had only earned one.
 

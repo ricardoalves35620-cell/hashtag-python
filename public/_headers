@@ -25,14 +25,25 @@
   Cross-Origin-Opener-Policy: same-origin
   Content-Security-Policy-Report-Only: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net; worker-src 'self' blob:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net; manifest-src 'self'
 
-# The HTML shell must never be cached: it carries the hashed asset names for the
-# current build, so a stale copy points at files the server no longer has.
+# The HTML shell must never be STORED, not merely revalidated.
+#
+# This said `no-cache`, which permits an intermediary to keep a copy so long as it
+# revalidates. On 2026-07-30 a laptop was served an index.html referencing
+# `index-yhghPmjz.js` — an entry file from neither the deployed commit nor HEAD — while
+# the same URL on a phone, on a different network, loaded correctly. Same origin, same
+# deployment, different path to it. Something between the two was holding an old copy and
+# answering with it.
+#
+# `no-store` removes the ambiguity: no browser, proxy or CDN node may keep the shell at
+# all. It costs one small request per navigation and it makes a stale shell impossible,
+# which is worth it — a stale shell does not degrade the app, it prevents it from booting,
+# and nothing inside the app is alive to recover from that.
 /
-  Cache-Control: no-cache
+  Cache-Control: no-store, must-revalidate
 /index.html
-  Cache-Control: no-cache
+  Cache-Control: no-store, must-revalidate
 /sw.js
-  Cache-Control: no-cache
+  Cache-Control: no-store, must-revalidate
 # The generated manifest, not the old hand-written manifest.json, which nothing
 # links to any more.
 /manifest.webmanifest
