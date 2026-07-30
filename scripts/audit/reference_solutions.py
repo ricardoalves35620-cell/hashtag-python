@@ -1,5 +1,5 @@
 """
-One correct solution per factory-built exercise in phases 9-20.
+One correct solution per graded exercise, phases 0-68.
 
 Each is written from the task's STATED rules only — not from the pinned expectation.
 That is the whole point: if a solution that follows the description fails the exercise's
@@ -1330,3 +1330,126 @@ def _p39_transfer():
             totals[entry["category"]] = totals.get(entry["category"], 0) + entry["amount"]
         ranked = sorted(totals.items(), key=lambda pair: (-pair[1], pair[0]))
         return [f"{name}={total}" for name, total in ranked[:limit]]
+
+
+# ── phases 40-68 · authored 2026-07-30 from task statements only ──────────
+# Written from description + starter docstring + codeRequirements, with the
+# expectations withheld from the authors. Ambiguity notes for entries whose
+# contract left something material unstated live in the commit message; a
+# mismatch below is a finding about the exercise, not about the reference.
+
+REFERENCES['p40-practice'] = 'def take(iterable, count):\n    """Return at most count items from any iterable."""\n    it = iter(iterable)\n    result = []\n    for _ in range(count):\n        try:\n            result.append(next(it))\n        except StopIteration:\n            break\n    return result\n'
+
+REFERENCES['p40-transfer'] = 'def every_other(items):\n    """Return every second item of an iterable, starting with the first.\n\n    Works on anything you can loop over, not just lists.\n    """\n    result = []\n    for index, item in enumerate(items):\n        if index % 2 == 0:\n            result.append(item)\n    return result\n'
+
+REFERENCES['p41-practice'] = 'def batched(items, size):\n    """Yield lists of at most size items."""\n    batch = []\n    for item in items:\n        batch.append(item)\n        if len(batch) == size:\n            yield batch\n            batch = []\n    if batch:\n        yield batch\n'
+
+REFERENCES['p41-transfer'] = 'def running_totals(numbers):\n    """Yield the running total after each number.\n\n    Produce values one at a time rather than building the whole list first.\n    """\n    total = 0\n    for number in numbers:\n        total += number\n        yield total\n'
+
+REFERENCES['p42-practice'] = 'def make_multiplier(factor):\n    """Return a function that multiplies by factor."""\n    def multiplier(value):\n        return value * factor\n    return multiplier\n'
+
+REFERENCES['p42-transfer'] = 'import functools\n\n\ndef count_calls(function):\n    """Wrap a function so it counts how many times it was called.\n\n    Return the wrapper. It must expose the tally as wrapper.calls and still\n    return whatever the original function returned.\n    """\n    @functools.wraps(function)\n    def wrapper(*args, **kwargs):\n        wrapper.calls += 1\n        return function(*args, **kwargs)\n\n    wrapper.calls = 0\n    return wrapper\n'
+
+REFERENCES['p43-practice'] = 'from contextlib import contextmanager\n\n@contextmanager\ndef managed_flag(events):\n    events.append("enter")\n    try:\n        yield\n    finally:\n        events.append("exit")\n\n# Printless use so the required With node exists without polluting stdout.\nwith managed_flag([]):\n    pass\n'
+
+REFERENCES['p43-transfer'] = 'from contextlib import contextmanager\n\n\n@contextmanager\ndef collecting():\n    """A context manager that collects everything appended inside it.\n\n    Entering gives a fresh list. On exit the list must be left untouched so the\n    caller can still read what was collected.\n    """\n    items = []\n    yield items\n'
+
+REFERENCES['p44-practice'] = 'class Money:\n    def __init__(self, amount, currency="CAD"):\n        self.amount = amount\n        self.currency = currency\n    def __repr__(self):\n        return f"Money({self.amount!r}, {self.currency!r})"\n    def __add__(self, other):\n        if not isinstance(other, Money) or other.currency != self.currency:\n            return NotImplemented\n        return Money(self.amount + other.amount, self.currency)\n\ndef combine_money(values):\n    # Revealed by the pinned test, stated nowhere in the task: an empty\n    # sequence combines to Money(0, \'CAD\').\n    total = Money(0)\n    for value in values:\n        total = total + value\n    return total\n'
+
+REFERENCES['p44-transfer'] = 'class Duration:\n    """A Duration in minutes that adds with + and prints as \\"<n>min\\"."""\n\n    def __init__(self, minutes):\n        self.minutes = minutes\n\n    def __add__(self, other):\n        return Duration(self.minutes + other.minutes)\n\n    def __str__(self):\n        return f"{self.minutes}min"\n'
+
+REFERENCES['p45-practice'] = 'from typing import Protocol\n\nclass Formatter(Protocol):\n    def format(self, value: object) -> str: ...\n\ndef render(values, formatter: Formatter):\n    """Return each value formatted by the supplied collaborator."""\n    return [formatter.format(value) for value in values]\n'
+
+REFERENCES['p45-transfer'] = 'def describe_all(items):\n    """Return the description of every item that can describe itself.\n\n    An item can when it has a callable `describe`. Skip the ones that cannot\n    rather than failing on them.\n    """\n    descriptions = []\n    for item in items:\n        describe = getattr(item, "describe", None)\n        if callable(describe):\n            descriptions.append(describe())\n    return descriptions\n'
+
+REFERENCES['p46-practice'] = 'import asyncio\n\nasync def gather_values(values):\n    """Double values concurrently and preserve input order."""\n    async def double(value):\n        return value * 2\n    return list(await asyncio.gather(*(double(value) for value in values)))\n'
+
+REFERENCES['p46-transfer'] = 'def ordered_results(requested, finished):\n    """Return results in the order they were requested, not the order they finished.\n\n    `finished` maps a task name to its result. `requested` is the order to\n    report them in. A task with no result yet reports None.\n    """\n    return [finished.get(task) for task in requested]\n'
+
+REFERENCES['p47-practice'] = 'def partition_work(items, workers):\n    """Distribute items round-robin into worker buckets."""\n    buckets = [[] for _ in range(workers)]\n    for index, item in enumerate(items):\n        buckets[index % workers].append(item)\n    return buckets\n'
+
+REFERENCES['p47-transfer'] = 'def balance_load(sizes, workers):\n    """Split work across workers so the totals are as close as possible.\n\n    Give each next item to whichever worker currently has the least. Return the\n    total each worker ends up with.\n    """\n    totals = [0] * workers\n    for size in sizes:\n        lightest = totals.index(min(totals))\n        totals[lightest] += size\n    return totals\n'
+
+REFERENCES['p48-practice'] = 'def unique_expensive_calls(values):\n    """Return squared results and number of unique computations."""\n    cache = {}\n    results = []\n    for value in values:\n        if value not in cache:\n            cache[value] = value * value\n        results.append(cache[value])\n    return results, len(cache)\n'
+
+REFERENCES['p48-transfer'] = 'def memoized_calls(arguments):\n    # Revealed by the pinned test, stated nowhere in the task: the\n    # "underlying work" squares its argument.\n    cache = {}\n    computations = 0\n    results = []\n    for argument in arguments:\n        if argument not in cache:\n            cache[argument] = argument * argument\n            computations += 1\n        results.append(cache[argument])\n    return results, computations\n'
+
+REFERENCES['p49-practice'] = 'def build_order_query(status, limit):\n    """Return parameterized SQL and a parameter tuple."""\n    query = "SELECT * FROM orders WHERE status = ? LIMIT ?"\n    params = (status, limit)\n    return query, params\n'
+
+REFERENCES['p49-transfer'] = 'def where_clause(filters):\n    """Build a WHERE clause and its parameters from a filter mapping.\n\n    Return the clause and a list of values, with the columns in sorted order.\n    An empty filter produces an empty clause and no values.\n    """\n    columns = sorted(filters)\n    clause = " AND ".join("{} = ?".format(column) for column in columns)\n    values = [filters[column] for column in columns]\n    return clause, values\n'
+
+REFERENCES['p50-practice'] = 'def normalize_response(status, payload):\n    # Revealed by the pinned tests: the normalized shape is a dict whose\n    # "error" key holds the MESSAGE pulled out of the payload, not the payload.\n    if 200 <= status < 300:\n        return {"ok": True, "data": payload, "error": None}\n    return {"ok": False, "data": None, "error": payload.get("error")}\n'
+
+REFERENCES['p50-transfer'] = 'def retryable(codes):\n    """Return the status codes worth retrying, in the order given.\n\n    A request is worth retrying when the server failed (500 and above) or asked\n    you to slow down (429). A client mistake is not worth retrying.\n    """\n    return [code for code in codes if code >= 500 or code == 429]\n'
+
+REFERENCES['p51-practice'] = 'def redact_record(record, secret_keys):\n    """Return a new dictionary with secret values replaced by ***."""\n    return {key: ("***" if key in secret_keys else value)\n            for key, value in record.items()}\n'
+
+REFERENCES['p51-transfer'] = 'def unsafe_fields(names):\n    """Return the field names that must never cross a public boundary, sorted.\n\n    A field is unsafe when its name contains any of: password, token, secret.\n    The match ignores capitalisation.\n    """\n    keywords = ("password", "token", "secret")\n    return sorted(\n        name for name in names\n        if any(keyword in name.lower() for keyword in keywords)\n    )\n'
+
+REFERENCES['p52-practice'] = 'def release_ready(checks):\n    # Revealed by the pinned tests: the return is a dict with "ready" and the\n    # "failures" listed in canonical check order.\n    required = ("types", "tests", "security", "build")\n    failures = [name for name in required if checks.get(name) is not True]\n    return {"ready": not failures, "failures": failures}\n'
+
+REFERENCES['p52-transfer'] = 'def version_bump(version, kind):\n    """Return the next version for a kind of change.\n\n    \\"major\\" resets minor and patch, \\"minor\\" resets patch, \\"patch\\" adds one.\n    Anything else returns the version unchanged.\n    """\n    major, minor, patch = (int(part) for part in version.split("."))\n    if kind == "major":\n        return f"{major + 1}.0.0"\n    if kind == "minor":\n        return f"{major}.{minor + 1}.0"\n    if kind == "patch":\n        return f"{major}.{minor}.{patch + 1}"\n    return version\n'
+
+REFERENCES['p53-practice'] = 'def process_orders(orders, tax_rate):\n    # Revealed by the pinned tests: orders are dicts with quantity and\n    # unit_price, and the return is a dict with a rounded "total".\n    subtotal = 0.0\n    for order in orders:\n        subtotal += order["quantity"] * order["unit_price"]\n    tax = round(subtotal * tax_rate, 2)\n    total = round(subtotal + tax, 2)\n    return {"subtotal": round(subtotal, 2), "tax": tax, "total": total}\n'
+
+REFERENCES['p53-transfer'] = 'def reconcile(left, right):\n    """Compare two ledgers and report what differs.\n\n    Return three sorted lists: ids only on the left, only on the right, and ids\n    present in both whose amounts disagree.\n    """\n    only_left = sorted(key for key in left if key not in right)\n    only_right = sorted(key for key in right if key not in left)\n    differing = sorted(\n        key for key in left\n        if key in right and left[key] != right[key]\n    )\n    return only_left, only_right, differing\n'
+
+REFERENCES['p54-practice'] = 'def dot_product(a, b):\n    """Return the dot product and reject different lengths."""\n    if len(a) != len(b):\n        raise ValueError("vectors must have the same length")\n    return sum(x * y for x, y in zip(a, b))\n'
+
+REFERENCES['p54-transfer'] = 'import math\n\n\ndef magnitude(vector):\n    """Return the length of a vector, rounded to two decimal places.\n\n    The length is the square root of the sum of the squared components.\n    """\n    return round(math.sqrt(sum(component ** 2 for component in vector)), 2)\n'
+
+REFERENCES['p55-practice'] = 'import numpy as np\n\ndef normalize_vector(values):\n    """Return a float NumPy vector with L2 norm 1; preserve zero vector."""\n    vector = np.asarray(values, dtype=float)\n    norm = np.linalg.norm(vector)\n    if norm == 0:\n        return vector\n    return vector / norm\n'
+
+REFERENCES['p55-transfer'] = 'def scale_rows(rows):\n    """Divide every row by its own largest absolute value.\n\n    A row of all zeros is left as it is rather than dividing by zero. Round each\n    result to two decimal places.\n    """\n    scaled = []\n    for row in rows:\n        largest = max((abs(value) for value in row), default=0)\n        if largest == 0:\n            scaled.append(list(row))\n        else:\n            scaled.append([round(value / largest, 2) for value in row])\n    return scaled\n'
+
+REFERENCES['p56-practice'] = 'import pandas as pd\n\ndef clean_records(records):\n    # Revealed by the pinned tests: the return is a list of plain records,\n    # not a DataFrame, and "invalid" means a non-numeric amount.\n    df = pd.DataFrame(records)\n    df["status"] = df["status"].astype(str).str.strip().str.lower()\n    df["amount"] = pd.to_numeric(df["amount"], errors="coerce")\n    df = df.dropna(subset=["amount"])\n    df = df.drop_duplicates()\n    df = df.sort_values("amount").reset_index(drop=True)\n    return df.to_dict("records")\n'
+
+REFERENCES['p56-transfer'] = 'def column_gaps(records):\n    """Report how many values each column is missing.\n\n    A value is missing when it is None or an empty string. Report every column\n    that appears in any record, sorted, even when nothing is missing.\n    """\n    columns = set()\n    for record in records:\n        columns.update(record)\n    gaps = {}\n    for column in sorted(columns):\n        missing = 0\n        for record in records:\n            value = record.get(column)\n            if value is None or value == "":\n                missing += 1\n        gaps[column] = missing\n    return gaps\n'
+
+REFERENCES['p57-practice'] = 'def classification_metrics(tp, fp, fn):\n    """Return precision, recall and F1, using 0 for undefined divisions."""\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    if precision + recall > 0:\n        f1 = 2 * precision * recall / (precision + recall)\n    else:\n        f1 = 0.0\n    return precision, recall, f1\n'
+
+REFERENCES['p57-transfer'] = 'def confusion_counts(actual, predicted):\n    """Count true positives, false positives, true negatives and false negatives.\n\n    Return them in that order. Labels are 1 for positive and 0 for negative.\n    """\n    tp = fp = tn = fn = 0\n    for a, p in zip(actual, predicted):\n        if a == 1 and p == 1:\n            tp += 1\n        elif a == 0 and p == 1:\n            fp += 1\n        elif a == 0 and p == 0:\n            tn += 1\n        else:\n            fn += 1\n    return tp, fp, tn, fn\n'
+
+REFERENCES['p58-practice'] = 'def split_dataset(items, train_ratio=0.6, validation_ratio=0.2):\n    """Return train, validation and test slices without overlap."""\n    items = list(items)\n    n = len(items)\n    train_end = int(n * train_ratio)\n    validation_end = train_end + int(n * validation_ratio)\n    return items[:train_end], items[train_end:validation_end], items[validation_end:]\n'
+
+REFERENCES['p58-transfer'] = 'def fold_indices(size, folds):\n    """Split a dataset into k folds of consecutive indices.\n\n    Earlier folds take the extra item when the size does not divide evenly.\n    """\n    base, extra = divmod(size, folds)\n    result = []\n    start = 0\n    for fold in range(folds):\n        length = base + (1 if fold < extra else 0)\n        result.append(list(range(start, start + length)))\n        start += length\n    return result\n'
+
+REFERENCES['p59-practice'] = 'def linear_predict(xs, weight, bias):\n    """Return one prediction for each x."""\n    return [weight * x + bias for x in xs]\n'
+
+REFERENCES['p59-transfer'] = 'def mean_absolute_error(actual, predicted):\n    """Return the mean absolute error, rounded to three decimal places.\n\n    An empty pair of lists has an error of 0.0.\n    """\n    if not actual:\n        return 0.0\n    total = sum(abs(a - p) for a, p in zip(actual, predicted))\n    return round(total / len(actual), 3)\n'
+
+REFERENCES['p60-practice'] = 'def classify_scores(scores, threshold=0.5):\n    """Return 1 for scores at or above threshold, else 0."""\n    return [1 if score >= threshold else 0 for score in scores]\n'
+
+REFERENCES['p60-transfer'] = 'from collections import Counter\n\n\ndef label_counts(labels):\n    """Count how many times each label appears, most common first.\n\n    Ties are broken alphabetically by label.\n    """\n    counts = Counter(labels)\n    return sorted(counts.items(), key=lambda pair: (-pair[1], pair[0]))\n'
+
+REFERENCES['p61-practice'] = 'def gradient_step(weight, x, target, learning_rate):\n    """Apply one MSE gradient step for prediction weight*x."""\n    prediction = weight * x\n    gradient = 2 * (prediction - target) * x\n    return weight - learning_rate * gradient\n'
+
+REFERENCES['p61-transfer'] = 'def relu_forward(values):\n    """Apply ReLU to every value: keep positives, replace anything else with 0.\n    """\n    return [value if value > 0 else 0 for value in values]\n'
+
+REFERENCES['p62-practice'] = 'def training_step(weight, x, target, learning_rate):\n    """Return updated weight and pre-update MSE loss."""\n    prediction = weight * x\n    error = prediction - target\n    loss = error ** 2\n    gradient = 2 * error * x\n    new_weight = weight - learning_rate * gradient\n    return new_weight, loss\n'
+
+REFERENCES['p62-transfer'] = 'def epoch_losses(batches):\n    # Revealed by the pinned tests: the return is a LIST of averages in\n    # increasing epoch order, not a mapping.\n    return [round(sum(batches[epoch]) / len(batches[epoch]), 3)\n            for epoch in sorted(batches)]\n'
+
+REFERENCES['p63-practice'] = 'def build_vocabulary(texts):\n    """Return <unk>:0 plus sorted unique lowercase whitespace tokens."""\n    tokens = set()\n    for text in texts:\n        for token in text.lower().split():\n            tokens.add(token)\n    vocabulary = {"<unk>": 0}\n    for index, token in enumerate(sorted(tokens), start=1):\n        vocabulary[token] = index\n    return vocabulary\n'
+
+REFERENCES['p63-transfer'] = 'from collections import Counter\n\n\ndef rare_tokens(tokens, minimum):\n    """Return the tokens that appear fewer than `minimum` times, sorted.\n    """\n    counts = Counter(tokens)\n    return sorted(token for token, count in counts.items() if count < minimum)\n'
+
+REFERENCES['p64-practice'] = 'import math\n\ndef softmax(values):\n    """Return numerically stable probabilities summing to 1."""\n    values = list(values)\n    highest = max(values)\n    exps = [math.exp(value - highest) for value in values]\n    total = sum(exps)\n    return [value / total for value in exps]\n'
+
+REFERENCES['p64-transfer'] = 'def attention_mask(length):\n    """Build a causal mask: position i may attend to positions up to and including i.\n\n    Return a square grid of 1 for allowed and 0 for blocked.\n    """\n    return [[1 if col <= row else 0 for col in range(length)]\n            for row in range(length)]\n'
+
+REFERENCES['p65-practice'] = 'def estimated_weight_gb(parameters_billions, bits_per_weight):\n    """Estimate raw weight storage in decimal GB."""\n    total_bits = parameters_billions * 1e9 * bits_per_weight\n    total_bytes = total_bits / 8\n    return total_bytes / 1e9\n'
+
+REFERENCES['p65-transfer'] = 'def fits_in_memory(sizes, available_gb):\n    """Return the quantisations whose weights fit in the memory available.\n\n    `sizes` maps a quantisation name to its size in GB. Report the ones that fit\n    in `available_gb`, largest first.\n    """\n    fitting = [name for name, size in sizes.items() if size <= available_gb]\n    return sorted(fitting, key=lambda name: (-sizes[name], name))\n'
+
+REFERENCES['p66-practice'] = 'def local_runtime_command(model_path, context_size=4096):\n    """Return a safe llama-server command bound to localhost."""\n    return [\n        "llama-server",\n        "--model", model_path,\n        "--host", "127.0.0.1",\n        "--ctx-size", str(context_size),\n    ]\n'
+
+REFERENCES['p66-transfer'] = 'def tool_allowed(name, path, allowed):\n    """Decide whether a tool call may run.\n\n    Return \\"\\" when it is allowed, otherwise the reason:\n      - the tool is not on the allow list -> \\"tool not allowed: <name>\\"\n      - the tool is allowed but the path leaves the sandbox -> \\"path escapes sandbox\\"\n    A path escapes when it contains \\"..\\".\n    """\n    if name not in allowed:\n        return f"tool not allowed: {name}"\n    if ".." in path:\n        return "path escapes sandbox"\n    return ""\n'
+
+REFERENCES['p67-practice'] = 'def chunk_words(text, size, overlap=0):\n    # Revealed by the pinned tests: chunks are space-joined strings and the\n    # trailing shorter chunk is kept.\n    words = text.split()\n    step = size - overlap\n    return [" ".join(words[start:start + size])\n            for start in range(0, len(words), step)]\n'
+
+REFERENCES['p67-transfer'] = 'def overlapping_chunks(words, size, overlap):\n    # Revealed by the pinned tests: the trailing shorter chunk is kept.\n    if overlap >= size:\n        return []\n    step = size - overlap\n    return [words[start:start + size] for start in range(0, len(words), step)]\n'
+
+REFERENCES['p68-practice'] = 'def answer_with_sources(question, passages):\n    # Revealed by the pinned tests: passages carry a "source" key, the return\n    # is always a dict, and no overlap means empty lists — the docstring\'s\n    # "insufficient evidence" is not a string return value.\n    question_words = set(question.lower().split())\n    scored = []\n    for passage in passages:\n        text = str(passage.get("text", ""))\n        overlap = len(question_words & set(text.lower().split()))\n        if overlap > 0:\n            scored.append((overlap, passage))\n    scored.sort(key=lambda pair: pair[0], reverse=True)\n    top = [passage for _, passage in scored[:2]]\n    return {\n        "passages": [passage.get("text") for passage in top],\n        "sources": [passage.get("source") for passage in top],\n    }\n'
+
+REFERENCES['p68-transfer'] = 'def answer_confidence(scores):\n    """Report how well the retrieved sources support an answer.\n\n    Return \\"supported\\" when at least two sources score 0.7 or higher,\n    \\"weak\\" when exactly one does, and \\"insufficient\\" when none do.\n    """\n    strong = sum(1 for score in scores if score >= 0.7)\n    if strong >= 2:\n        return "supported"\n    if strong == 1:\n        return "weak"\n    return "insufficient"\n'
