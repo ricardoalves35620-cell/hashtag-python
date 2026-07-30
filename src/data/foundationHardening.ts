@@ -33,7 +33,10 @@ const PHASE_REQUIREMENTS: Record<number, CodeRequirement[]> = {
   23: [{ kind: 'node', value: 'Try' }],
   24: [{ kind: 'node', value: 'FunctionDef' }],
   25: [{ kind: 'node', value: 'FunctionDef' }],
-  26: [{ kind: 'node', value: 'For' }],
+  // Phase 26 summarises data with builtins and comprehensions. Its own starter uses
+  // comprehensions throughout, and a comprehension is not a `For` node, so requiring
+  // one made the shipped exercise unpassable — including by the code it ships with.
+  26: [],
   27: [{ kind: 'node', value: 'FunctionDef' }, { kind: 'node', value: 'Try' }],
 }
 
@@ -454,7 +457,11 @@ const TRANSFER_CHALLENGES: Record<number, TransferChallengeSpec> = {
     publicExpected: '15\n5.0',
     hiddenAfterCode: `try:\n    calculate(10, "/", 0)\nexcept ValueError:\n    print("invalid operation")`,
     hiddenExpected: 'invalid operation',
-    requirements: [{ kind: 'function', value: 'calculate' }, { kind: 'node', value: 'If' }],
+    // No `If` requirement. The task says which operations to support and which inputs to
+    // reject; it never says to use a branch, and phase 24 teaches error handling, not
+    // if-statements. A dict-dispatch calculator satisfies every stated rule and was being
+    // failed for its shape. Two test cases already stop a hard-coded answer.
+    requirements: [{ kind: 'function', value: 'calculate' }],
     hints: [
       { en: 'Write one branch per supported operator.', pt: 'Escreva um caminho para cada operador aceito.' },
       { en: 'Validate division by zero before dividing.', pt: 'Valide divisão por zero antes de dividir.' },
@@ -612,7 +619,12 @@ function hiddenExamTest(phase: Phase): TestCase {
     23: { codeRequirements: [{ kind: 'node', value: 'Try' }, { kind: 'node', value: 'ExceptHandler' }, { kind: 'node', value: 'For' }] },
     24: { afterCode: 'print(calc_premium(2000, 0.10, 2))', checks: [{ type: 'contains_any', value: ['400', '400.0'], target: 'test_output' }], codeRequirements: [{ kind: 'function', value: 'calc_premium' }, { kind: 'node', value: 'If' }] },
     25: { afterCode: 'audit_db=[]\ncreate(audit_db,"Zoe",1000)\nprint(update(audit_db,1,1500))\nprint(audit_db[0]["amount"])\ndelete(audit_db,1)\nprint(len(audit_db))', checks: [{ type: 'contains', value: '1500', target: 'test_output' }, { type: 'contains', value: '0', target: 'test_output' }], codeRequirements: [{ kind: 'function', value: 'create' }, { kind: 'function', value: 'update' }, { kind: 'function', value: 'delete' }] },
-    26: { codeRequirements: [{ kind: 'call', value: 'sum' }, { kind: 'call', value: 'min' }, { kind: 'call', value: 'max' }, { kind: 'node', value: 'For' }] },
+    // No `For`. Phase 26 is about summarising data with builtins and comprehensions, and
+    // its own starter uses comprehensions throughout — a comprehension is not a `For`
+    // node, so the shipped exercise could not pass its own requirement. Caught by
+    // audit:learner in the running app, in both languages, after every source-level
+    // checker had reported it clean. sum/min/max still stop a hard-coded answer.
+    26: { codeRequirements: [{ kind: 'call', value: 'sum' }, { kind: 'call', value: 'min' }, { kind: 'call', value: 'max' }] },
     27: { afterCode: 'audit_db=[]\ntry:\n    create_order(audit_db,"Invalid",-1)\nexcept ValueError:\n    print("rejected")\ncreate_order(audit_db,"Valid",1000)\nupdate_status(audit_db,1,"approved")\nprint(audit_db[0]["status"])', checks: [{ type: 'contains', value: 'rejected', target: 'test_output' }, { type: 'contains', value: 'approved', target: 'test_output' }], codeRequirements: [{ kind: 'function', value: 'create_order' }, { kind: 'node', value: 'Try' }] },
   }
 

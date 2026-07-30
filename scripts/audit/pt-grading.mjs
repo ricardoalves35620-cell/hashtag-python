@@ -87,5 +87,5 @@ for (const exercise of EXERCISES) {
   }
 }
 
-console.log(`\n${checked} graded tests run in Portuguese across phases 0-20, ${failed} now fail`)
+console.log(`\n${checked} graded tests run in Portuguese across every phase in the dump, ${failed} now fail`)
 process.exitCode = failed ? 1 : 0

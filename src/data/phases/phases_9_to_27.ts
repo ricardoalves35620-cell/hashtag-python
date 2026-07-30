@@ -168,8 +168,8 @@ print("Simulated repair value: $", repair_value)`,
       id: 'ex21_zero',
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
       description: {
-        en: 'Goal:\nBuild a repair-quote simulation that runs 5 rounds. Use a fixed seed of 42 so every run produces the same results.\n\nProgram requirements\n\n1. Simulate\n- For each round, generate a random repair value between 500 and 12000\n- Apply a 250 credit to get the quote amount\n- Classify the repair as "HIGH" when the value exceeds 5000, otherwise "normal"\n- Count how many repairs are classified as high risk\n\n2. Display\n- For each round, show the quote number, the repair value, the quote amount after credit and the risk level\n- At the end, show how many repairs were high risk\n\nExample output:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2',
-        pt: 'Objetivo:\nConstrua uma simulação de orçamentos de reparo que executa 5 rodadas. Use uma seed fixa de 42 para que toda execução produza os mesmos resultados.\n\nRequisitos do programa\n\n1. Simular\n- Para cada rodada, gere um valor de reparo aleatório entre 500 e 12000\n- Aplique um crédito de 250 para obter o valor do orçamento\n- Classifique o reparo como "HIGH" quando o valor ultrapassa 5000, senão "normal"\n- Conte quantos reparos são classificados como alto risco\n\n2. Mostrar\n- Para cada rodada, exiba o número do orçamento, o valor do reparo, o valor do orçamento após o crédito e o nível de risco\n- Ao final, exiba quantos reparos foram de alto risco\n\nExemplo de saída:\nQuote 1: $4634 → $4384 [normal]\nHigh risk: 2'
+        en: 'Goal:\nBuild a repair-quote simulation that runs 5 rounds. Use a fixed seed of 42 so every run produces the same results.\n\nProgram requirements\n\n1. Simulate\n- For each round, generate a random repair value between 500 and 12000\n- Apply a 250 credit to get the quote amount\n- Classify the repair as "HIGH" when the value exceeds 5000, otherwise "normal"\n- Count how many repairs are classified as high risk\n\n2. Display\n- For each round, show the quote number, the repair value, the quote amount after credit and the risk level\n- At the end, show how many repairs were high risk\n\nExample output:\nQuote 1: $10976 → $10726 [HIGH]\nHigh risk: 2',
+        pt: 'Objetivo:\nConstrua uma simulação de orçamentos de reparo que executa 5 rodadas. Use uma seed fixa de 42 para que toda execução produza os mesmos resultados.\n\nRequisitos do programa\n\n1. Simular\n- Para cada rodada, gere um valor de reparo aleatório entre 500 e 12000\n- Aplique um crédito de 250 para obter o valor do orçamento\n- Classifique o reparo como "HIGH" quando o valor ultrapassa 5000, senão "normal"\n- Conte quantos reparos são classificados como alto risco\n\n2. Mostrar\n- Para cada rodada, exiba o número do orçamento, o valor do reparo, o valor do orçamento após o crédito e o nível de risco\n- Ao final, exiba quantos reparos foram de alto risco\n\nExemplo de saída:\nCotação 1: $10976 → $10726 [ALTO]\nAlto risco: 2'
       },
       starterCode: `import random
 random.seed(42)
@@ -184,7 +184,7 @@ for i in range(5):
 
 print("High risk:", high_risk)`,
       hints: [{ en: 'random.randint(500, 12000) generates the repair_value', pt: 'random.randint(500, 12000) gera o repair_value' }],
-      sampleOutput: { en: 'Quote 1: $4634 → $4384 [normal]\nHigh risk: 2', pt: 'Quote 1: $4634 → $4384 [normal]\nHigh risk: 2' }
+      sampleOutput: { en: 'Quote 1: $10976 → $10726 [HIGH]\nHigh risk: 2', pt: 'Cotação 1: $10976 → $10726 [ALTO]\nAlto risco: 2' }
     }
   ],
   quiz: [
@@ -626,7 +626,7 @@ while amount is None:
 
 print("Confirmed total: $", amount - 250)`,
       hints: [{ en: 'Set amount = None before loop; reset to None on error', pt: 'Defina amount = None antes do loop; redefina como None no erro' }],
-      sampleOutput: { en: 'Invalid: ... — try again\nConfirmed total: $ 4750', pt: 'Inválido: ... — tente novamente\nTotal confirmado: $ 4750' }
+      sampleOutput: { en: 'Confirmed total: $ 4750', pt: 'Total confirmado: $ 4750' }
     }
   ],
   quiz: [
@@ -844,8 +844,8 @@ except ValueError as e:
       id: 'ex24_zero',
       title: { en: '🔴 Build the Full Calculator', pt: '🔴 Construa a Calculadora Completa' },
       description: {
-        en: 'Goal:\nBuild a calculator that performs arithmetic on pairs of numbers and keeps a history of successful operations.\n\nProgram requirements\n\n1. Calculate\n- Perform the requested operation on the two operands\n- Support addition, subtraction, multiplication and division\n- Reject division by zero by raising ValueError\n- Reject unknown operators by raising ValueError\n\n2. Process test cases\n- Run each of the three test cases inside a try/except block\n- On success, record the operation in the history list and display the result\n- On error, display the error message\n\n3. Display history\n- After all test cases, show the label "History:" followed by every successful operation\n\nExample output:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0',
-        pt: 'Objetivo:\nConstrua uma calculadora que realiza operações aritméticas em pares de números e mantém um histórico das operações bem-sucedidas.\n\nRequisitos do programa\n\n1. Calcular\n- Execute a operação solicitada nos dois operandos\n- Suporte adição, subtração, multiplicação e divisão\n- Rejeite divisão por zero gerando ValueError\n- Rejeite operadores desconhecidos gerando ValueError\n\n2. Processar casos de teste\n- Execute cada um dos três casos de teste dentro de um bloco try/except\n- Em caso de sucesso, registre a operação na lista de histórico e exiba o resultado\n- Em caso de erro, exiba a mensagem de erro\n\n3. Mostrar histórico\n- Após todos os casos de teste, exiba o rótulo "History:" seguido de cada operação bem-sucedida\n\nExemplo de saída:\n= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0'
+        en: 'Goal:\nBuild a calculator that performs arithmetic on pairs of numbers and keeps a history of successful operations.\n\nProgram requirements\n\n1. Calculate\n- Perform the requested operation on the two operands\n- Support addition, subtraction, multiplication and division\n- Reject division by zero by raising ValueError\n- Reject unknown operators by raising ValueError\n\n2. Process test cases\n- Run each of the three test cases inside a try/except block\n- On success, record the operation in the history list and display the result\n- On error, display the error message\n\n3. Display history\n- After all test cases, show the label "History:" followed by every successful operation\n\nExample output:\n= 15\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15',
+        pt: 'Objetivo:\nConstrua uma calculadora que realiza operações aritméticas em pares de números e mantém um histórico das operações bem-sucedidas.\n\nRequisitos do programa\n\n1. Calcular\n- Execute a operação solicitada nos dois operandos\n- Suporte adição, subtração, multiplicação e divisão\n- Rejeite divisão por zero gerando ValueError\n- Rejeite operadores desconhecidos gerando ValueError\n\n2. Processar casos de teste\n- Execute cada um dos três casos de teste dentro de um bloco try/except\n- Em caso de sucesso, registre a operação na lista de histórico e exiba o resultado\n- Em caso de erro, exiba a mensagem de erro\n\n3. Mostrar histórico\n- Após todos os casos de teste, exiba o rótulo "Histórico:" seguido de cada operação bem-sucedida\n\nExemplo de saída:\n= 15\n= 5.0\nErro: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15'
       },
       starterCode: `def calculate(x, op, y):
     """Perform arithmetic. Raises ValueError on invalid input."""
@@ -873,7 +873,7 @@ for x, op, y in tests:
 print("\\nHistory:")
 for h in history: print(" ", h)`,
       hints: [{ en: 'Use try/except inside the loop to catch errors per calculation', pt: 'Use try/except dentro do loop para capturar erros por cálculo' }],
-      sampleOutput: { en: '= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15.0', pt: '= 15.0\n= 5.0\nError: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15.0' }
+      sampleOutput: { en: '= 15\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15', pt: '= 15\n= 5.0\nErro: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15' }
     }
   ],
   quiz: [
@@ -1113,7 +1113,7 @@ read_all(db)`,
       title: { en: '🔴 Full CRUD Demo', pt: '🔴 Demo CRUD Completo' },
       description: {
         en: 'Goal:\nRun the provided CRUD demo as-is. The program creates four client records, displays them all, updates one record’s pages value, deletes another record, and displays the remaining records.\n\nProgram requirements\n\n1. Create records for Alice (5230 pages), Bob (1200), Carlos (8000) and Diana (900)\n2. Display all four records\n3. Update Bob’s pages to 9000\n4. Remove Diana’s record\n5. Display the three remaining records\n\nExample:\nInitial:\n#1 Alice $5230\n#2 Bob $1200\n#3 Carlos $8000\n#4 Diana $900\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000',
-        pt: 'Objetivo:\nExecute o demo CRUD fornecido como está. O programa cria quatro registros de clientes, exibe todos, atualiza o valor de páginas de um registro, exclui outro e exibe os registros restantes.\n\nRequisitos do programa\n\n1. Crie registros para Alice (5230 páginas), Bob (1200), Carlos (8000) e Diana (900)\n2. Exiba todos os quatro registros\n3. Atualize as páginas de Bob para 9000\n4. Remova o registro de Diana\n5. Exiba os três registros restantes\n\nExemplo:\nInitial:\n#1 Alice $5230\n#2 Bob $1200\n#3 Carlos $8000\n#4 Diana $900\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000'
+        pt: 'Objetivo:\nExecute o demo CRUD fornecido como está. O programa cria quatro registros de clientes, exibe todos, atualiza o valor de páginas de um registro, exclui outro e exibe os registros restantes.\n\nRequisitos do programa\n\n1. Crie registros para Alice (5230 páginas), Bob (1200), Carlos (8000) e Diana (900)\n2. Exiba todos os quatro registros\n3. Atualize as páginas de Bob para 9000\n4. Remova o registro de Diana\n5. Exiba os três registros restantes\n\nExemplo:\nInicial:\n#1 Alice $5230\n#2 Bob $1200\n#3 Carlos $8000\n#4 Diana $900\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000'
       },
       starterCode: `def create(db, client, pages):
     db.append({"id": len(db)+1, "client": client, "pages": pages})
@@ -1140,7 +1140,7 @@ update(db, 2, 9000)
 delete(db, 4)
 print("Final:"); read_all(db)`,
       hints: [{ en: 'Run in sequence: create × 4, read_all, update, delete, read_all', pt: 'Execute em sequência: create × 4, read_all, update, delete, read_all' }],
-      sampleOutput: { en: 'Initial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000', pt: 'Inicial:\n#1 Alice $5230\n...\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000' }
+      sampleOutput: { en: 'Initial:\n#1 Alice $5230\n#2 Bob $1200\n#3 Carlos $8000\n#4 Diana $900\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000', pt: 'Inicial:\n#1 Alice $5230\n#2 Bob $1200\n#3 Carlos $8000\n#4 Diana $900\nFinal:\n#1 Alice $5230\n#2 Bob $9000\n#3 Carlos $8000' }
     }
   ],
   quiz: [
@@ -1373,7 +1373,7 @@ print(f"Critical: {critical}")`,
       title: { en: '🔴 Full Data Report', pt: '🔴 Relatório Completo' },
       description: {
         en: 'Goal:\nRun the provided data report as-is. The program takes a list of daily sales and produces a full statistical summary.\n\nProgram requirements\n\n1. Calculate the total and average of all sales\n2. Find the minimum, maximum and median values\n3. Calculate the net total after a 250 deduction per sale\n4. Count sales in three ranges: critical (above 8000), urgent (3000 to 8000) and normal (below 3000)\n5. Identify the three largest sales\n\nExample, for 10 daily sales:\n=== REPORT ===\nTotal: $42,400 | Avg: $4,240\nMin: $450 | Max: $9200 | Median: $4500\nNet total: $39,900\nCritical:1 Urgent:5 Normal:4\nTop 3: [9200, 8000, 7800]',
-        pt: 'Objetivo:\nExecute o relatório de dados fornecido como está. O programa recebe uma lista de vendas diárias e produz um resumo estatístico completo.\n\nRequisitos do programa\n\n1. Calcule o total e a média de todas as vendas\n2. Encontre o valor mínimo, máximo e a mediana\n3. Calcule o total líquido após dedução de 250 por venda\n4. Conte vendas em três faixas: critical (acima de 8000), urgent (3000 a 8000) e normal (abaixo de 3000)\n5. Identifique as três maiores vendas\n\nExemplo, para 10 vendas diárias:\n=== REPORT ===\nTotal: $42,400 | Avg: $4,240\nMin: $450 | Max: $9200 | Median: $4500\nNet total: $39,900\nCritical:1 Urgent:5 Normal:4\nTop 3: [9200, 8000, 7800]'
+        pt: 'Objetivo:\nExecute o relatório de dados fornecido como está. O programa recebe uma lista de vendas diárias e produz um resumo estatístico completo.\n\nRequisitos do programa\n\n1. Calcule o total e a média de todas as vendas\n2. Encontre o valor mínimo, máximo e a mediana\n3. Calcule o total líquido após dedução de 250 por venda\n4. Conte vendas em três faixas: critical (acima de 8000), urgent (3000 a 8000) e normal (abaixo de 3000)\n5. Identifique as três maiores vendas\n\nExemplo, para 10 vendas diárias:\n=== RELATÓRIO ===\nTotal: $42,400 | Avg: $4,240\nMin: $450 | Max: $9200 | Median: $4500\nNet total: $39,900\nCritical:1 Urgent:5 Normal:4\nTop 3: [9200, 8000, 7800]'
       },
       starterCode: `sales = [5230,1200,8000,450,3100,9200,620,4500,7800,2300]
 
@@ -1395,7 +1395,7 @@ print(f"Net total: \${net_total:,}")
 print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
 print(f"Top 3: {top3}")`,
       hints: [{ en: 'sorted(sales, reverse=True)[:3] gets top 3', pt: 'sorted(sales, reverse=True)[:3] pega top 3' }],
-      sampleOutput: { en: '=== REPORT ===\nTotal: $42,400', pt: '=== RELATÓRIO ===\nTotal: $42.400' }
+      sampleOutput: { en: '=== REPORT ===\nTotal: $42,400', pt: '=== RELATÓRIO ===\nTotal: $42,400' }
     }
   ],
   quiz: [

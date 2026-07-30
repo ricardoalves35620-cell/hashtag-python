@@ -454,7 +454,10 @@ export async function gradeExercise(
     ? (lang === 'en' ? 'Exercise validated by behavior and code structure.' : 'Exercício validado pelo comportamento e pela estrutura do código.')
     : (lang === 'en'
       ? `${failedCount} validation check${failedCount === 1 ? '' : 's'} still need attention.`
-      : `${failedCount} verificação${failedCount === 1 ? '' : 'ões'} ainda precisa${failedCount === 1 ? '' : 'm'} de atenção.`)
+      // Portuguese does not pluralise by appending. "verificação" becomes
+      // "verificações" — the stem changes — so `verificação` + `ões` produced
+      // "2 verificaçãoões" on every failed exercise with more than one open check.
+      : `${failedCount} verificaç${failedCount === 1 ? 'ão' : 'ões'} ainda precisa${failedCount === 1 ? '' : 'm'} de atenção.`)
 
   return {
     passed,

@@ -8,8 +8,24 @@
          focus is prevented by keeping inputs at >=16px, not by blocking the user. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#5b21b6" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!--
+      NO apple-mobile-web-app-capable / -status-bar-style here, deliberately.
+
+      On iOS 26 those two legacy tags half-apply: content draws under the status bar, so
+      env(safe-area-inset-top) reports 59px, but the standalone window is CREATED that much
+      SHORT and anchored at the top. The result is a dead, unpaintable strip below the
+      layout viewport — `position: fixed` clips at the viewport, so no CSS reaches it and
+      the bottom bar appears to float above the screen edge. Diagnosed in a sibling project
+      on 2026-07-29.
+
+      Standalone mode comes from the web manifest instead — "display": "standalone" in the
+      manifest vite-plugin-pwa generates — which is the modern path and sizes the window
+      correctly. apple-mobile-web-app-title is harmless and stays.
+
+      NOTE FOR ANY DEPLOY: the Add-to-Home-Screen wrapper caches these tags AT INSTALL TIME.
+      An existing home-screen icon keeps the old window sizing forever. The icon has to be
+      deleted and re-added from Safari, or the fix will look like it did nothing.
+    -->
     <meta name="apple-mobile-web-app-title" content="#Python" />
     <meta name="description" content="Learn Python as a family — from beginner to expert" />
     <!-- The manifest link is injected by vite-plugin-pwa, which points at the

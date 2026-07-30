@@ -775,3 +775,286 @@ def _ex8_zero():
     # 244.28571428571428 exactly, so rounding an average — the obvious thing a learner
     # does — failed the exercise.
     print("Average:", round(total / len(songs), 2), "seconds")
+
+
+# ── phases 21-27 ─────────────────────────────────────────────────────────────
+#
+# Written from each task's stated rules, never from the expectation it is checked
+# against. Where one of these disagrees with the pinned value, the disagreement is the
+# finding: either the expectation is wrong or the task never disclosed a requirement.
+
+
+@solution('ex21_zero')
+def _ex21_zero():
+    import random
+    random.seed(42)
+
+    high_risk = 0
+    for index in range(5):
+        repair_value = random.randint(500, 12000)
+        quote = repair_value - 250
+        risk = "HIGH" if repair_value > 5000 else "normal"
+        if repair_value > 5000:
+            high_risk += 1
+        print(f"Quote {index + 1}: ${repair_value} → ${quote} [{risk}]")
+
+    print("High risk:", high_risk)
+
+
+@solution('p21-transfer')
+def _p21_transfer():
+    import random
+
+    def draw_numbers(seed, count):
+        generator = random.Random(seed)
+        return [generator.randint(1, 10) for _ in range(count)]
+
+
+@solution('ex22_zero')
+def _ex22_zero():
+    import math
+
+    principal = 10000
+    rate = 0.08
+    years = 5
+
+    amount = principal * math.pow(1 + rate, years)
+    rounded = math.ceil(amount)
+
+    print(f"After {years} years: ${amount:.2f}")
+    print(f"Rounded up: ${rounded}")
+
+
+@solution('p22-transfer')
+def _p22_transfer():
+    import math
+
+    def circle_area(radius):
+        if radius < 0:
+            raise ValueError("radius must not be negative")
+        return round(math.pi * radius ** 2, 2)
+
+
+@solution('ex23_zero')
+def _ex23_zero():
+    amount = None
+
+    while amount is None:
+        try:
+            raw = input("Order amount: $")
+            amount = int(raw)
+            if amount <= 0:
+                raise ValueError("Must be positive")
+        except ValueError as error:
+            print("Invalid:", error, "— try again")
+            amount = None
+
+    print("Confirmed total: $", amount - 250)
+
+
+@solution('p23-transfer')
+def _p23_transfer():
+    def safe_total(raw, discount=250):
+        try:
+            amount = int(raw)
+        except (TypeError, ValueError):
+            return None
+        if amount <= 0:
+            return None
+        return amount - discount
+
+
+@solution('ex24_zero')
+def _ex24_zero():
+    def calculate(x, op, y):
+        """Perform arithmetic. Raises ValueError on invalid input."""
+        if op == "+":
+            return x + y
+        elif op == "-":
+            return x - y
+        elif op == "*":
+            return x * y
+        elif op == "/":
+            if y == 0:
+                raise ValueError("Cannot divide by zero")
+            return x / y
+        else:
+            raise ValueError(f"Unknown operator: {op}")
+
+    history = []
+    tests = [(10, "+", 5), (20, "/", 4), (8, "/", 0)]
+
+    for x, op, y in tests:
+        try:
+            result = calculate(x, op, y)
+        except ValueError as error:
+            print("Error:", error)
+        else:
+            history.append(f"{x} {op} {y} = {result}")
+            print("=", result)
+
+    print()
+    print("History:")
+    for entry in history:
+        print(" ", entry)
+
+
+@solution('p24-transfer')
+def _p24_transfer():
+    def calculate(left, operator, right):
+        if operator == "+":
+            return left + right
+        if operator == "-":
+            return left - right
+        if operator == "*":
+            return left * right
+        if operator == "/":
+            if right == 0:
+                raise ValueError("Cannot divide by zero")
+            return left / right
+        raise ValueError(f"Unknown operator: {operator}")
+
+
+@solution('ex25_zero')
+def _ex25_zero():
+    def create(db, client, pages):
+        db.append({"id": len(db) + 1, "client": client, "pages": pages})
+
+    def read_all(db):
+        for record in db:
+            print(f"#{record['id']} {record['client']} ${record['pages']}")
+
+    def update(db, cid, new_pages):
+        for record in db:
+            if record["id"] == cid:
+                record["pages"] = new_pages
+                return True
+        return False
+
+    def delete(db, cid):
+        db[:] = [record for record in db if record["id"] != cid]
+
+    db = []
+    create(db, "Alice", 5230)
+    create(db, "Bob", 1200)
+    create(db, "Carlos", 8000)
+    create(db, "Diana", 900)
+
+    print("Initial:")
+    read_all(db)
+
+    update(db, 2, 9000)
+    delete(db, 4)
+
+    print("Final:")
+    read_all(db)
+
+
+@solution('p25-transfer')
+def _p25_transfer():
+    def update_amount(db, order_id, new_amount):
+        for record in db:
+            if record["id"] == order_id:
+                record["amount"] = new_amount
+                return True
+        return False
+
+
+@solution('ex26_zero')
+def _ex26_zero():
+    sales = [5230, 1200, 8000, 450, 3100, 9200, 620, 4500, 7800, 2300]
+
+    total = sum(sales)
+    average = total / len(sales)
+    minimum = min(sales)
+    maximum = max(sales)
+    median = sorted(sales)[len(sales) // 2]
+    net_total = sum(value - 250 for value in sales)
+    critical = len([value for value in sales if value > 8000])
+    urgent = len([value for value in sales if 3000 <= value <= 8000])
+    normal = len([value for value in sales if value < 3000])
+    top3 = sorted(sales, reverse=True)[:3]
+
+    print("=== REPORT ===")
+    print(f"Total: ${total:,} | Avg: ${average:,.0f}")
+    print(f"Min: ${minimum} | Max: ${maximum} | Median: ${median}")
+    print(f"Net total: ${net_total:,}")
+    print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
+    print(f"Top 3: {top3}")
+
+
+@solution('p26-transfer')
+def _p26_transfer():
+    def summarize_values(values):
+        if not values:
+            raise ValueError("values must not be empty")
+        return {
+            "total": sum(values),
+            "average": sum(values) / len(values),
+            "minimum": min(values),
+            "maximum": max(values),
+        }
+
+
+@solution('p27-transfer')
+def _p27_transfer():
+    def register_order(client, raw_amount, discount=250):
+        try:
+            amount = int(raw_amount)
+        except (TypeError, ValueError):
+            return None
+        if amount <= 0:
+            return None
+        return {"client": client, "amount": amount, "total": amount - discount}
+
+
+@solution('ex27_zero')
+def _ex27_zero():
+    from datetime import datetime
+
+    def create_order(db, client, amount, ded=250):
+        if amount <= 0:
+            raise ValueError("Must be positive")
+        priority = "Critical" if amount > 10000 else "Urgent" if amount > 5000 else "Normal"
+        db.append({"id": len(db) + 1, "client": client, "amount": amount,
+                   "total": amount - ded, "priority": priority, "status": "open",
+                   "date": datetime.now().strftime("%Y-%m-%d")})
+
+    def read_all(db):
+        for record in db:
+            print(f"#{record['id']} {record['client']} ${record['amount']} "
+                  f"[{record['priority']}] {record['status']}")
+
+    def update_status(db, cid, status):
+        for record in db:
+            if record["id"] == cid:
+                record["status"] = status
+                return True
+        return False
+
+    def delete_order(db, cid):
+        db[:] = [record for record in db if record["id"] != cid]
+
+    def analyze(db):
+        gross = sum(record["amount"] for record in db)
+        net = sum(record["total"] for record in db)
+        print(f"Orders:{len(db)} | Amount:${gross:,} | Total:${net:,}")
+
+    db = []
+    try:
+        create_order(db, "Alice", 12000)
+        create_order(db, "Bob", 3500)
+        create_order(db, "Carlos", 7800)
+        create_order(db, "Diana", 900)
+        create_order(db, "Eduardo", -1)
+    except ValueError as error:
+        print(f"Error: {error}")
+
+    update_status(db, 1, "approved")
+    update_status(db, 3, "approved")
+    delete_order(db, 4)
+
+    print("=== SYSTEM ===")
+    read_all(db)
+    print("=== STATS ===")
+    analyze(db)

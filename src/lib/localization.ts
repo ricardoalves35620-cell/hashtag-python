@@ -424,6 +424,25 @@ const literalPt: Record<string, string> = {
   'Admin:': 'Administrativo:',
   'Total check:': 'Conferência do total:',
   'Math now works:': 'A conta agora funciona:',
+  // Phases 21-27. Each of these existed only in `sampleOutput.pt`, so the task promised
+  // Portuguese and the program printed English — the same mismatch audit:content:described
+  // was built to catch in phase 8.
+  'Quote {i+1}: ${repair_value} → ${quote} [{risk}]': 'Cotação {i+1}: ${repair_value} → ${quote} [{risk}]',
+  'Quote {index + 1}: ${repair_value} → ${quote} [{risk}]': 'Cotação {index + 1}: ${repair_value} → ${quote} [{risk}]',
+  'HIGH': 'ALTO',
+  'normal': 'normal',
+  'High risk:': 'Alto risco:',
+  'Confirmed total: $': 'Total confirmado: $',
+  'Invalid:': 'Inválido:',
+  '— try again': '— tente novamente',
+  'Error:': 'Erro:',
+  'History:': 'Histórico:',
+  // The starter writes print("\\nHistory:") — the escape is part of the literal, so a
+  // key without it never matches. This is why LITERAL had to stop skipping backslashes.
+  '\\nHistory:': '\\nHistórico:',
+  'Initial:': 'Inicial:',
+  'Final:': 'Final:',
+  '=== REPORT ===': '=== RELATÓRIO ===',
   '🔴 HIGH PRIORITY': '🔴 PRIORIDADE ALTA',
   'Expert reviewer assigned': 'Analista especialista designado',
   '🚨 FLAGGED: large order submitted soon after plan start': '🚨 MARCADO: pedido grande enviado logo após o início do plano',

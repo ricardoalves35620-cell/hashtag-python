@@ -235,7 +235,16 @@
 }
 
 html {
-  background: var(--color-bg-canvas);
+  /*
+   * The BAR's surface colour, not the page canvas.
+   *
+   * Only overscroll and any area the OS leaves outside the layout viewport show this —
+   * `.hp-app-shell` paints the canvas everywhere else. On iOS a mis-sized standalone
+   * window can expose a strip below the viewport that no CSS can reach; painting the
+   * document in the bar's colour makes that strip read as part of the bar instead of
+   * flashing a different shade. A safety net, not the fix: see index.html.
+   */
+  background: var(--color-bg-surface);
   scroll-behavior: smooth;
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;

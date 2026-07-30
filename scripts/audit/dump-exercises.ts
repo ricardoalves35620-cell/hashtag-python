@@ -5,11 +5,16 @@ import { resolveLocalizedCode } from '../../src/lib/localization'
 import { EXERCISES_JSON } from './cache.mjs'
 
 /**
- * Exports every exercise in phases 0-20 with the facts the parity report needs:
+ * Exports every exercise through a given phase with the facts the parity report needs:
  * what is graded, how it is graded, and how much the learner was told.
  */
+// The range is an argument, not a constant. It was hardcoded to `<= 20`, so the moment
+// phases 21+ were brought into the standard every Python-side checker silently read an
+// exercise list that did not contain them and reported a clean sweep of nothing.
+const THROUGH = Number(process.argv.find(a => a.startsWith('--through='))?.split('=')[1] ?? 20)
+
 const out = ALL_PHASES
-  .filter(phase => phase.id <= 20)
+  .filter(phase => phase.id <= THROUGH)
   .sort((a, b) => a.id - b.id)
   .flatMap(phase => phase.exercises.map(ex => ({
     phase: phase.id,
@@ -53,4 +58,4 @@ const out = ALL_PHASES
  * audit commands could not run on the machine this project is developed on.
  */
 writeFileSync(EXERCISES_JSON, JSON.stringify(out, null, 1), 'utf8')
-console.log(`${out.length} exercises -> ${EXERCISES_JSON}`)
+console.log(`${out.length} exercises through phase ${THROUGH} -> ${EXERCISES_JSON}`)
