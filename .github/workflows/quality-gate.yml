@@ -70,6 +70,16 @@ jobs:
       - name: Production build
         run: npm run build
 
+      # The generated worker must match the update policy in vite.config.ts.
+      # registerType can silently override workbox's skipWaiting/clientsClaim —
+      # this reads dist/sw.js and fails the gate if the built worker does
+      # something the config says it must not. That exact override shipped once
+      # (autoUpdate forcing skipWaiting under a 'do NOT claim open tabs' comment)
+      # and this step existed but was never invoked here, so it caught nothing.
+      # Must run after Production build: it reads the artifact, not the source.
+      - name: Service worker update policy
+        run: npm run audit:sw
+
       - name: Bilingual content audit
         env:
           HP_AUDIT_CONTENT_OUTPUT: playwright-report/content-audit.json
