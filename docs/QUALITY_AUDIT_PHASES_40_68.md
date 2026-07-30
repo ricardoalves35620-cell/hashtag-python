@@ -10,7 +10,7 @@ graded test-runs, 286 reproduced, 11 not.
 The handoff predicted the yield ("assume the 21–27 rate continues until it
 stops"): it continued. Two kinds of finding, different severities.
 
-## Undisclosed requirements (10 exercises — references updated, task text must catch up)
+## Undisclosed requirements (10 exercises — RESOLVED 2026-07-30: disclosed in the starters, both languages)
 
 The pinned test demands something the task never states. The reference was
 updated to the revealed contract (each carries a `# Revealed by the pinned
@@ -90,9 +90,11 @@ full output) or task text.
 
 All 17 findings closed at the grading layer: 297/297 graded test-runs now
 reproduce by execution, 544/544 unit tests green, content and curriculum
-audits pass. STILL OPEN: the 10 disclosure gaps above are fixed only in the
-references — each task text still owes the learner the disclosure, in both
-languages, and `audit:content:parity` remains the checker that tracks it.
+audits pass. The 10 disclosure gaps are now closed too: each starter's docstring states
+the revealed contract, as bilingual starterCode (a docstring is task text,
+and task text reaches the learner in the learner's language). Contract
+values quoted inside them stay in code form, untranslated, per the
+pinnedValues rule.
 
 ## audit:learner, phases 40-68, both languages (2026-07-30)
 

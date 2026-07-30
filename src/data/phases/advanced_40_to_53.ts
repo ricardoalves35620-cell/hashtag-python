@@ -564,7 +564,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "combine_money",
-      "starterCode": "class Money:\n    def __init__(self, amount, currency=\"CAD\"):\n        self.amount = amount\n        self.currency = currency\n    def __repr__(self):\n        return f\"Money({self.amount!r}, {self.currency!r})\"\n    def __add__(self, other):\n        if not isinstance(other, Money) or other.currency != self.currency:\n            return NotImplemented\n        return Money(self.amount + other.amount, self.currency)\n\ndef combine_money(values):\n    pass",
+      "starterCode": {
+        "en": "class Money:\n    def __init__(self, amount, currency=\"CAD\"):\n        self.amount = amount\n        self.currency = currency\n    def __repr__(self):\n        return f\"Money({self.amount!r}, {self.currency!r})\"\n    def __add__(self, other):\n        if not isinstance(other, Money) or other.currency != self.currency:\n            return NotImplemented\n        return Money(self.amount + other.amount, self.currency)\n\ndef combine_money(values):\n    \"\"\"Combine Money values into one total using +.\n\n    An empty sequence combines to Money(0, \"CAD\").\n    \"\"\"\n    pass",
+        "pt": "class Money:\n    def __init__(self, amount, currency=\"CAD\"):\n        self.amount = amount\n        self.currency = currency\n    def __repr__(self):\n        return f\"Money({self.amount!r}, {self.currency!r})\"\n    def __add__(self, other):\n        if not isinstance(other, Money) or other.currency != self.currency:\n            return NotImplemented\n        return Money(self.amount + other.amount, self.currency)\n\ndef combine_money(values):\n    \"\"\"Combine valores Money em um único total usando +.\n\n    Uma sequência vazia se combina em Money(0, \"CAD\").\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(combine_money([Money(10), Money(5)]))",
       "publicExpected": "Money(15, 'CAD')",
       "hiddenAfterCode": "print(combine_money([]))",
@@ -1080,7 +1083,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "memoized_calls",
-      "starterCode": "def memoized_calls(arguments):\n    \"\"\"Count how many times the underlying work actually runs.\n\n    Repeated arguments must reuse the earlier answer. Return the results and\n    the number of real computations.\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "def memoized_calls(arguments):\n    \"\"\"Count how many times the underlying work actually runs.\n\n    The work squares its argument. Repeated arguments must reuse the earlier\n    answer instead of computing again. Return the list of results and the\n    number of real computations, as a (results, count) tuple.\n    \"\"\"\n    pass",
+        "pt": "def memoized_calls(arguments):\n    \"\"\"Conte quantas vezes o trabalho de verdade é executado.\n\n    O trabalho eleva o argumento ao quadrado. Argumentos repetidos devem\n    reaproveitar a resposta anterior em vez de calcular de novo. Retorne a\n    lista de resultados e o número de cálculos reais, como uma tupla\n    (resultados, contagem).\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(memoized_calls([2, 3, 2, 2, 3]))",
       "publicExpected": "([4, 9, 4, 4, 9], 2)",
       "hiddenAfterCode": "print(memoized_calls([]))",
@@ -1296,7 +1302,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "normalize_response",
-      "starterCode": "def normalize_response(status, payload):\n    \"\"\"Normalize success and error responses into one stable shape.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def normalize_response(status, payload):\n    \"\"\"Normalize success and error responses into one stable shape.\n\n    Return a dict with keys \"ok\", \"data\" and \"error\". A status in the 200s is\n    a success: \"ok\" is True, \"data\" is the payload, \"error\" is None. Anything\n    else is a failure: \"ok\" is False, \"data\" is None, and \"error\" holds the\n    message found at payload[\"error\"].\n    \"\"\"\n    pass",
+        "pt": "def normalize_response(status, payload):\n    \"\"\"Normalize respostas de sucesso e de erro em um único formato estável.\n\n    Retorne um dict com as chaves \"ok\", \"data\" e \"error\". Um status na faixa\n    200 é sucesso: \"ok\" é True, \"data\" é o payload e \"error\" é None. Qualquer\n    outro é falha: \"ok\" é False, \"data\" é None e \"error\" recebe a mensagem em\n    payload[\"error\"].\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(normalize_response(201, {\"id\": 7})[\"ok\"])",
       "publicExpected": "True",
       "hiddenAfterCode": "print(normalize_response(404, {\"error\": \"missing\"})[\"error\"])",
@@ -1532,7 +1541,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "release_ready",
-      "starterCode": "def release_ready(checks):\n    \"\"\"Require types, tests, security and build to be exactly True.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def release_ready(checks):\n    \"\"\"Require types, tests, security and build to be exactly True.\n\n    `checks` maps each name to its result. Return a dict with \"ready\" (True\n    only when all four are exactly True) and \"failures\" (the failing names,\n    in the order: types, tests, security, build).\n    \"\"\"\n    pass",
+        "pt": "def release_ready(checks):\n    \"\"\"Exija que types, tests, security e build sejam exatamente True.\n\n    `checks` mapeia cada nome para seu resultado. Retorne um dict com \"ready\"\n    (True somente quando os quatro são exatamente True) e \"failures\" (os\n    nomes que falharam, na ordem: types, tests, security, build).\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(release_ready({\"types\": True, \"tests\": True, \"security\": True, \"build\": True})[\"ready\"])",
       "publicExpected": "True",
       "hiddenAfterCode": "print(release_ready({\"types\": True, \"tests\": False, \"security\": True, \"build\": True})[\"failures\"])",
@@ -1646,7 +1658,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "process_orders",
-      "starterCode": "def process_orders(orders, tax_rate):\n    \"\"\"Validate orders and return subtotal, tax and total.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def process_orders(orders, tax_rate):\n    \"\"\"Validate orders and return subtotal, tax and total.\n\n    Each order is a dict with \"quantity\" and \"unit_price\". Return a dict with\n    \"subtotal\", \"tax\" and \"total\", each rounded to 2 decimal places. With no\n    orders every value is 0.0.\n    \"\"\"\n    pass",
+        "pt": "def process_orders(orders, tax_rate):\n    \"\"\"Valide os pedidos e retorne subtotal, imposto e total.\n\n    Cada pedido é um dict com \"quantity\" e \"unit_price\". Retorne um dict com\n    \"subtotal\", \"tax\" e \"total\", cada um arredondado para 2 casas decimais.\n    Sem pedidos, todos os valores são 0.0.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(process_orders([{\"quantity\": 2, \"unit_price\": 10}], 0.13)[\"total\"])",
       "publicExpected": "22.6",
       "hiddenAfterCode": "print(process_orders([], 0.2)[\"total\"])",

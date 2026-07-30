@@ -308,7 +308,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "clean_records",
-      "starterCode": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Normalize status, coerce amount, remove invalid and duplicate rows, sort by amount.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Clean raw records and return them as a list of dicts.\n\n    Strip and lowercase \"status\", convert \"amount\" to a number, drop rows\n    whose amount is not numeric, drop duplicate rows, sort by amount in\n    increasing order, and return plain records — not a DataFrame.\n    \"\"\"\n    pass",
+        "pt": "import pandas as pd\n\ndef clean_records(records):\n    \"\"\"Limpe os registros brutos e retorne uma lista de dicts.\n\n    Remova espaços e deixe \"status\" em minúsculas, converta \"amount\" para\n    número, descarte linhas cujo amount não é numérico, descarte linhas\n    duplicadas, ordene por amount em ordem crescente e retorne registros\n    simples — não um DataFrame.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(clean_records([{\"amount\": \"10\", \"status\": \" Open \"}, {\"amount\": \"bad\", \"status\": \"x\"}])[0][\"status\"])",
       "publicExpected": "open",
       "hiddenAfterCode": "print([int(row[\"amount\"]) for row in clean_records([{\"amount\": 2, \"status\": \"A\"}, {\"amount\": 1, \"status\": \"B\"}, {\"amount\": 2, \"status\": \"A\"}])])",
@@ -1038,7 +1041,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "epoch_losses",
-      "starterCode": "def epoch_losses(batches):\n    \"\"\"Return the average loss for each epoch, rounded to three decimals.\n\n    `batches` maps an epoch number to its list of batch losses. Report epochs in\n    increasing order.\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "def epoch_losses(batches):\n    \"\"\"Return the average loss of each epoch, rounded to three decimals.\n\n    `batches` maps an epoch number to its list of batch losses. Return a LIST\n    of averages ordered by increasing epoch — not a mapping. No epochs means\n    an empty list.\n    \"\"\"\n    pass",
+        "pt": "def epoch_losses(batches):\n    \"\"\"Retorne a perda média de cada época, arredondada para três casas.\n\n    `batches` mapeia o número da época para a lista de perdas dos lotes.\n    Retorne uma LISTA de médias em ordem crescente de época — não um\n    mapeamento. Sem épocas, retorne uma lista vazia.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(epoch_losses({2: [0.4, 0.2], 1: [1.0, 0.8, 0.6]}))",
       "publicExpected": "[0.8, 0.3]",
       "hiddenAfterCode": "print(epoch_losses({}))",
@@ -1631,7 +1637,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "chunk_words",
-      "starterCode": "def chunk_words(text, size, overlap=0):\n    \"\"\"Return word chunks; require size>0 and 0<=overlap<size.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def chunk_words(text, size, overlap=0):\n    \"\"\"Split the words of `text` into overlapping chunks.\n\n    Require size > 0 and 0 <= overlap < size. Start a chunk every\n    size - overlap words until the words run out, so the final chunk may be\n    shorter. Return each chunk as a space-joined string.\n    \"\"\"\n    pass",
+        "pt": "def chunk_words(text, size, overlap=0):\n    \"\"\"Divida as palavras de `text` em trechos que se sobrepõem.\n\n    Exija size > 0 e 0 <= overlap < size. Comece um trecho a cada\n    size - overlap palavras até as palavras acabarem, então o último trecho\n    pode ser mais curto. Retorne cada trecho como uma string unida por\n    espaços.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(chunk_words(\"a b c d e\", 3, 1))",
       "publicExpected": "['a b c', 'c d e', 'e']",
       "hiddenAfterCode": "print(chunk_words(\"one two\", 5, 0))",
@@ -1645,7 +1654,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "overlapping_chunks",
-      "starterCode": "def overlapping_chunks(words, size, overlap):\n    \"\"\"Split words into chunks of `size` that overlap by `overlap` words.\n\n    The last chunk may be shorter. An overlap that is not smaller than the size\n    would never advance, so return [] for that.\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "def overlapping_chunks(words, size, overlap):\n    \"\"\"Split words into chunks of `size` that overlap by `overlap` words.\n\n    Start a chunk every size - overlap positions until the words run out, so\n    the last chunk may be shorter. Return the chunks as lists of words. An\n    overlap that is not smaller than the size would never advance, so return\n    [] for that.\n    \"\"\"\n    pass",
+        "pt": "def overlapping_chunks(words, size, overlap):\n    \"\"\"Divida words em trechos de `size` com sobreposição de `overlap`.\n\n    Comece um trecho a cada size - overlap posições até as palavras acabarem,\n    então o último trecho pode ser mais curto. Retorne os trechos como listas\n    de palavras. Uma sobreposição que não é menor que o tamanho nunca\n    avançaria, então retorne [] nesse caso.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(overlapping_chunks([\"a\", \"b\", \"c\", \"d\", \"e\"], 3, 1))",
       "publicExpected": "[['a', 'b', 'c'], ['c', 'd', 'e'], ['e']]",
       "hiddenAfterCode": "print(overlapping_chunks([\"a\", \"b\"], 2, 2))",
@@ -1754,7 +1766,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "answer_with_sources",
-      "starterCode": "def answer_with_sources(question, passages):\n    \"\"\"Return up to two overlapping passages and their source IDs, or insufficient evidence.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def answer_with_sources(question, passages):\n    \"\"\"Pick the passages that overlap the question and cite their sources.\n\n    Each passage is a dict with \"text\" and \"source\". A passage counts when it\n    shares at least one word with the question (case-insensitive). Return a\n    dict with \"passages\" (up to two texts, most overlapping first) and\n    \"sources\" (their \"source\" values, in the same order). With no overlapping\n    passage, both lists are empty.\n    \"\"\"\n    pass",
+        "pt": "def answer_with_sources(question, passages):\n    \"\"\"Escolha as passagens que se sobrepõem à pergunta e cite as fontes.\n\n    Cada passagem é um dict com \"text\" e \"source\". Uma passagem conta quando\n    compartilha ao menos uma palavra com a pergunta (sem diferenciar\n    maiúsculas). Retorne um dict com \"passages\" (até dois textos, o de maior\n    sobreposição primeiro) e \"sources\" (os valores de \"source\", na mesma\n    ordem). Sem passagem que se sobreponha, as duas listas ficam vazias.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(answer_with_sources(\"song title\", [{\"text\": \"song title is Bohemian Rhapsody\", \"source\": \"p1\"}])[\"sources\"])",
       "publicExpected": "['p1']",
       "hiddenAfterCode": "print(answer_with_sources(\"unrelated\", [{\"text\": \"song title\", \"source\": \"p1\"}])[\"sources\"])",

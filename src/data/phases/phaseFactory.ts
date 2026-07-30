@@ -6,7 +6,9 @@ export interface ChallengeSpec {
    *  normalised output to match. Use 'contains' when the expected value is one field
    *  of a larger printed structure — otherwise a correct solution is marked wrong. */
   checkType?: 'equals' | 'contains'
-  starterCode: string
+  /** Bilingual when the starter's docstring states the contract: a docstring is task
+   *  text, and task text reaches the learner in the learner's language. */
+  starterCode: string | Bilingual
   publicAfterCode: string
   publicExpected: string
   hiddenAfterCode: string
