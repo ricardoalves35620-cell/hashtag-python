@@ -64,7 +64,15 @@
          A WebKit bug in iOS 26.0, fixed in 26.1. Update iOS first.
     -->
     <script>
-      if (location.search.indexOf('safearea') !== -1) {
+      /*
+       * Two ways in, because an installed app has no address bar.
+       *
+       *   ?safearea=1        works in Safari
+       *   five quick taps    works anywhere, and is the only way INSIDE the installed
+       *                      app — which is the only place the window-sizing fault
+       *                      exists, so it is the one that matters.
+       */
+      window.__hpSafeAreaDiagnostic = function () {
         (function () {
           var probe = document.createElement('div')
           probe.style.cssText = 'position:fixed;visibility:hidden;' +
@@ -107,6 +115,19 @@
           document.body.appendChild(edge)
         })()
       }
+
+      if (location.search.indexOf('safearea') !== -1) window.__hpSafeAreaDiagnostic()
+
+      ;(function () {
+        var taps = 0
+        var last = 0
+        document.addEventListener('touchend', function (event) {
+          var now = event.timeStamp
+          taps = now - last < 600 ? taps + 1 : 1
+          last = now
+          if (taps >= 5) { taps = 0; window.__hpSafeAreaDiagnostic() }
+        }, { passive: true })
+      })()
     </script>
   </body>
 </html>
