@@ -492,10 +492,16 @@ const specs: ConceptPhaseSpec[] = [
           "kind": "function",
           "value": "parse_command"
         },
-        {
-          "kind": "main_guard",
-          "value": "__name__"
-        }
+        // A `main_guard: __name__` requirement was here and had to go. The starter ships
+        // `if __name__ == "__main__": print(parse_command([]))`, so satisfying it means
+        // KEEPING a print that runs before the grader's afterCode and lands in the same
+        // output the `equals` check compares. Requiring the guard and grading on exact
+        // output are mutually exclusive — the exercise could not be passed by anyone who
+        // kept the block, and the requirement forced them to keep it.
+        //
+        // audit:learner caught it in the running app, in both languages, while
+        // verify-expectations reported clean: a reference written from the task naturally
+        // omits the block, so only the browser sees the contradiction.
       ]
     },
     "transfer": {
@@ -524,10 +530,16 @@ const specs: ConceptPhaseSpec[] = [
           "kind": "function",
           "value": "parse_command"
         },
-        {
-          "kind": "main_guard",
-          "value": "__name__"
-        }
+        // A `main_guard: __name__` requirement was here and had to go. The starter ships
+        // `if __name__ == "__main__": print(parse_command([]))`, so satisfying it means
+        // KEEPING a print that runs before the grader's afterCode and lands in the same
+        // output the `equals` check compares. Requiring the guard and grading on exact
+        // output are mutually exclusive — the exercise could not be passed by anyone who
+        // kept the block, and the requirement forced them to keep it.
+        //
+        // audit:learner caught it in the running app, in both languages, while
+        // verify-expectations reported clean: a reference written from the task naturally
+        // omits the block, so only the browser sees the contradiction.
       ]
     },
     "quizPurpose": {
