@@ -104,6 +104,7 @@ function literals(code: string): string[] {
       if (text.length < 3) continue
       if (!text.includes(' ')) continue                 // one word: a key, not a sentence
       if (FILENAME.test(text)) continue
+      if (PINNED.has(text)) continue                    // a graded contract value
       // The prefix ends at the OPENING QUOTE, which has to come off before the context
       // test: KEY_CONTEXT looks for `raise ValueError(` and the raw prefix is
       // `raise ValueError("`. Without this, two pinned contract strings in phases 13
@@ -172,6 +173,36 @@ export function leaksIn(where: string, code: string): Leak[] {
   }
   return found
 }
+
+/**
+ * Strings a TEST pins are contract values, not prose.
+ *
+ * `return "missing command"` in phase 32 and `"too long"` in phase 33 are answers the
+ * grader compares against exactly. So are `"git add <file>"` and `"from {module} import
+ * {name}"` — command syntax the exercise teaches. Translating any of them breaks the
+ * exercise that pins it, and the checker was proposing all of them for translation
+ * alongside the docstrings that genuinely do need it.
+ *
+ * The exercise data already knows which strings those are. Reading them out is exact,
+ * where guessing from the wording would not be.
+ */
+function pinnedValues(): Set<string> {
+  const pinned = new Set<string>()
+  const add = (value: unknown) => {
+    if (typeof value === 'string') pinned.add(value.trim())
+    else if (Array.isArray(value)) value.forEach(add)
+  }
+  for (const phase of ALL_PHASES) {
+    for (const exercise of phase.exercises) {
+      for (const test of exercise.grading?.tests || []) {
+        for (const check of test.checks || []) add((check as { value?: unknown }).value)
+      }
+    }
+  }
+  return pinned
+}
+
+const PINNED = pinnedValues()
 
 /** Code assets rendered identically to both audiences. A bilingual one is fine. */
 function sharedCode(): Array<{ where: string, code: string }> {

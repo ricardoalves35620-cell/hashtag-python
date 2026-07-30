@@ -439,6 +439,52 @@ const literalPt: Record<string, string> = {
   'Admin:': 'Administrativo:',
   'Total check:': 'Conferência do total:',
   'Math now works:': 'A conta agora funciona:',
+  // Phases 28-39 docstrings — the one line a learner reads above `pass`.
+  // The contract values quoted INSIDE the longer docstrings are left in English on
+  // purpose: the grader compares against them exactly, so translating "missing command"
+  // or "too long" would fail the learner who followed the translated instruction.
+  'Return the essential project paths.': 'Retorne os caminhos essenciais do projeto.',
+  'Normalize, deduplicate and sort package specifications.':
+    'Normalize, remova duplicatas e ordene as especificações de pacote.',
+  'Return normalized unique non-empty package specs.':
+    'Retorne as especificações de pacote normalizadas, únicas e não vazias.',
+  'Return explicit import statements for public unique names.':
+    'Retorne comandos de import explícitos para os nomes públicos únicos.',
+  'Ignore private names, deduplicate, sort, and build imports.':
+    'Ignore nomes privados, remova duplicatas, ordene e monte os imports.',
+  'Create package and matching test paths.':
+    'Crie os caminhos do pacote e os caminhos de teste correspondentes.',
+  'Return deterministic package and test paths without duplicates.':
+    'Retorne caminhos determinísticos de pacote e de teste, sem duplicatas.',
+  'Return command and optional value; empty args means help.':
+    'Retorne o comando e um valor opcional; sem argumentos significa ajuda.',
+  'Normalize the command to lowercase and preserve one optional value.':
+    'Normalize o comando para minúsculas e preserve um valor opcional.',
+  'Return the safest next inspection or workflow command.':
+    'Retorne o próximo comando de inspeção ou de fluxo mais seguro.',
+  'Map workflow state to the next deliberate Git command.':
+    'Mapeie o estado do fluxo para o próximo comando Git deliberado.',
+  'Return PASS or FAIL for each (input, expected) case.':
+    'Retorne PASS ou FAIL para cada caso (entrada, esperado).',
+  'Evaluate all independent cases without stopping at first failure.':
+    'Avalie todos os casos independentes sem parar na primeira falha.',
+  'Return total/count, using 0.0 when count is zero.':
+    'Retorne total/count, usando 0.0 quando count for zero.',
+  'Validate numeric inputs and avoid division by zero.':
+    'Valide as entradas numéricas e evite divisão por zero.',
+  'Return a stable structured log line with sorted context keys.':
+    'Retorne uma linha de log estruturada e estável, com as chaves de contexto ordenadas.',
+  'Uppercase level and omit the context separator when empty.':
+    'Deixe o nível em maiúsculas e omita o separador de contexto quando vazio.',
+  'Income adds; expense subtracts.': 'Receita soma; despesa subtrai.',
+  'Reject unknown kinds with ValueError.': 'Rejeite tipos desconhecidos com ValueError.',
+  'Return the sum of all product prices.': 'Retorne a soma dos preços de todos os produtos.',
+  'Return income, expense and balance totals.':
+    'Retorne os totais de receita, despesa e saldo.',
+  'Validate kind and non-negative amount, then return totals.':
+    'Valide o tipo e o valor não negativo, depois retorne os totais.',
+  'Return at most count items from any iterable.':
+    'Retorne no máximo count itens de qualquer iterável.',
   // Phases 21-27 printed output.
   '% of the total': '% do total',
   '=== SYSTEM ===': '=== SISTEMA ===',
