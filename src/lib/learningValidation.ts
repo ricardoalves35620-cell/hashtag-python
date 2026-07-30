@@ -289,8 +289,15 @@ export function describeHiddenDifference(expected: string, actual: string, lang:
  */
 function explainTestFailure(exercise: Exercise, lang: Lang, result: TestResult): string {
   // `diagnosis` carries the pair even for a hidden test, where `feedback` withholds it.
+  //
+  // But a `matches` check pins a PATTERN, not an answer. Describing a difference against
+  // it printed the raw regular expression at the learner — `Expected a line like
+  // "(?=[\s\S]*quote\s+1:..."` — which is how phases 0-8 and 21-27 are graded, so it
+  // hit the exercises a beginner sees first. Those fall back to the exercise's own
+  // sampleOutput, which is readable and is what the pattern was built from anyway.
   const feedback = result.feedback?.[lang]
-  const expected = result.diagnosis?.expected ?? feedback?.expected
+  const patterned = result.diagnosis?.kind === 'matches'
+  const expected = patterned ? undefined : (result.diagnosis?.expected ?? feedback?.expected)
   const actual = result.diagnosis?.actual ?? feedback?.actual ?? result.output
 
   if (result.hidden) {

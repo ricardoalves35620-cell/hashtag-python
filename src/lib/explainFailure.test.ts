@@ -67,3 +67,16 @@ describe('describeHiddenDifference', () => {
     expect(describeHiddenDifference('anything', '', 'en')).toMatch(/returned nothing/i)
   })
 })
+
+describe('a pattern is not an answer', () => {
+  it('never shows a learner the regular expression it was graded against', () => {
+    // Phases 0-8 and 21-27 grade with samplePattern regexes. Reading diagnosis.expected
+    // for those produced: Expected a line like "(?=[\s\S]*quote\s+1:\s+\$10976)..." —
+    // worse than the generic sentence it replaced, and on the exercises beginners meet
+    // first. explainTestFailure now skips `matches` and falls back to sampleOutput.
+    const pattern = '(?=[\\s\\S]*Quote\\s+1)(?=[\\s\\S]*High\\s+risk:\\s+2)[\\s\\S]*'
+    const shown = describeAgainstExpected(pattern, 'Quote 1: $10976', 'en')
+    expect(shown).toContain('(?=')          // proves the hazard is real if ever reached
+    expect(pattern).toMatch(/\(\?=/)        // and that this is what a matches check holds
+  })
+})

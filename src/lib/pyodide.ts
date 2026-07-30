@@ -456,7 +456,7 @@ export interface TestResult {
    * nothing to act on, so they go and ask someone else. `describeHiddenDifference` reads
    * these and returns a sentence about the shape of the difference, never the values.
    */
-  diagnosis?: { expected?: string, actual: string }
+  diagnosis?: { expected?: string, actual: string, kind?: string }
   id: string
   description: { en: string; pt: string }
   passed: boolean
@@ -714,6 +714,10 @@ export async function runExam(
     results.push({
       // Carried for the diagnosis, never for the screen — see the field's comment.
       diagnosis: passed ? undefined : {
+        // The check TYPE travels too. A `matches` check's value is a regular expression,
+        // not an answer, and describing a difference against it shows the learner
+        // `(?=[\s\S]*Quote\s+1...)` — which is worse than saying nothing.
+        kind: failedCheck?.type,
         expected: expectedFromCheck(failedCheck),
         actual: ((failedCheck?.target === 'test_output' ? run.testOutput : run.output) || '').trim(),
       },
