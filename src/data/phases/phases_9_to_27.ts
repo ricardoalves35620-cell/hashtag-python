@@ -381,7 +381,7 @@ print(f"Side: {side:.2f}")`,
       title: { en: '🔴 From Scratch', pt: '🔴 Do Zero' },
       description: {
         en: 'Goal:\nBuild a compound interest calculator that shows the final amount after a number of years and also rounds it up to the next whole dollar.\n\nProgram requirements\n\n1. Calculate\n- Start with a principal of 10000\n- Apply an annual rate of 8% for 5 years using the compound interest formula\n- Round the result up to the next whole dollar\n\n2. Display\n- The exact amount with two decimal places\n- The rounded-up value\n\nExample output:\nAfter 5 years: $14693.28\nRounded up: $14694',
-        pt: 'Objetivo:\nConstrua uma calculadora de juros compostos que mostra o valor final após alguns anos e também arredonda para o próximo dólar inteiro.\n\nRequisitos do programa\n\n1. Calcular\n- Comece com um principal de 10000\n- Aplique uma taxa anual de 8% durante 5 anos usando a fórmula de juros compostos\n- Arredonde o resultado para cima para o próximo dólar inteiro\n\n2. Mostrar\n- O valor exato com duas casas decimais\n- O valor arredondado para cima\n\nExemplo de saída:\nAfter 5 years: $14693.28\nRounded up: $14694'
+        pt: 'Objetivo:\nConstrua uma calculadora de juros compostos que mostra o valor final após alguns anos e também arredonda para o próximo dólar inteiro.\n\nRequisitos do programa\n\n1. Calcular\n- Comece com um principal de 10000\n- Aplique uma taxa anual de 8% durante 5 anos usando a fórmula de juros compostos\n- Arredonde o resultado para cima para o próximo dólar inteiro\n\n2. Mostrar\n- O valor exato com duas casas decimais\n- O valor arredondado para cima\n\nExemplo de saída:\nDepois de 5 anos: $14693.28\nRounded up: $14694'
       },
       starterCode: `import math
 
@@ -395,7 +395,7 @@ rounded = math.ceil(amount)
 print(f"After {years} years: \${amount:.2f}")
 print(f"Rounded up: \${rounded}")`,
       hints: [{ en: 'math.pow(base, exp) raises base to power', pt: 'math.pow(base, exp) eleva base à potência' }],
-      sampleOutput: { en: 'After 5 years: $14693.28\nRounded up: $14694', pt: 'After 5 years: $14693.28\nRounded up: $14694' }
+      sampleOutput: { en: 'After 5 years: $14693.28\nRounded up: $14694', pt: 'Depois de 5 anos: $14693.28\nRounded up: $14694' }
     }
   ],
   quiz: [
@@ -1575,7 +1575,7 @@ for c in db: print(c)`,
       title: { en: '🔴 Build the Full System', pt: '🔴 Construa o Sistema Completo' },
       description: {
         en: 'Goal:\nRun the provided orders system as-is. The program creates orders, updates statuses, deletes records and displays statistics.\n\nProgram requirements\n\n1. Create five orders for Alice (12000 amount), Bob (3500), Carlos (7800), Diana (900) and Eduardo (-1)\n2. The negative amount for Eduardo should trigger an error message\n3. Approve Alice’s and Carlos’s orders\n4. Remove Diana’s order\n5. Display the remaining three orders with their priority and status\n6. Display total orders, total amount and grand total\n\nExample:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550',
-        pt: 'Objetivo:\nExecute o sistema de pedidos fornecido como está. O programa cria pedidos, atualiza status, exclui registros e exibe estatísticas.\n\nRequisitos do programa\n\n1. Crie cinco pedidos para Alice (valor 12000), Bob (3500), Carlos (7800), Diana (900) e Eduardo (-1)\n2. O valor negativo de Eduardo deve acionar uma mensagem de erro\n3. Aprove os pedidos de Alice e Carlos\n4. Remova o pedido de Diana\n5. Exiba os três pedidos restantes com prioridade e status\n6. Exiba o total de pedidos, o valor total e o total líquido\n\nExemplo:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550'
+        pt: 'Objetivo:\nExecute o sistema de pedidos fornecido como está. O programa cria pedidos, atualiza status, exclui registros e exibe estatísticas.\n\nRequisitos do programa\n\n1. Crie cinco pedidos para Alice (valor 12000), Bob (3500), Carlos (7800), Diana (900) e Eduardo (-1)\n2. O valor negativo de Eduardo deve acionar uma mensagem de erro\n3. Aprove os pedidos de Alice e Carlos\n4. Remova o pedido de Diana\n5. Exiba os três pedidos restantes com prioridade e status\n6. Exiba o total de pedidos, o valor total e o total líquido\n\nExemplo:\nError: Must be positive\n=== SISTEMA ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nPedidos:3 | Valor:$23,300 | Total:$22,550'
       },
       starterCode: `from datetime import datetime
 
@@ -1619,7 +1619,7 @@ delete_order(db, 4)
 print("=== SYSTEM ==="); read_all(db)
 print("=== STATS ==="); analyze(db)`,
       hints: [{ en: 'Eduardo with -1 should trigger the ValueError', pt: 'Eduardo com -1 deve acionar o ValueError' }],
-      sampleOutput: { en: 'Error: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved', pt: 'Error: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved' }
+      sampleOutput: { en: 'Error: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved', pt: 'Error: Must be positive\n=== SISTEMA ===\n#1 Alice $12000 [Critical] approved' }
     }
   ],
   quiz: [

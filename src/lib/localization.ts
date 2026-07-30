@@ -50,6 +50,21 @@ const exactPt: Record<string, string> = {
     'Problema: um negócio real tem MAIS de 2 categorias!',
   '4 — how many items': '4 — quantos itens',
   'Weekly check: review every course module': 'Verificação semanal: revise cada módulo do curso',
+  // Phases 21-27 comments.
+  '8% each year': '8% ao ano',
+  'An answer: the same data, described': 'Uma resposta: os mesmos dados, descritos',
+  'Named: each operation has one place to live': 'Nomeado: cada operação tem um lugar só',
+  'Separated: the maths knows nothing about input or printing':
+    'Separado: a conta não sabe nada sobre entrada nem impressão',
+  'ValueError if they type "abc"': 'ValueError se digitarem "abc"',
+  'and again, identical': 'e de novo, idêntico',
+  'how many were removed': 'quantos foram removidos',
+  'reorders songs itself': 'reordena as próprias músicas',
+  'Without a net: the program stops here': 'Sem rede de proteção: o programa para aqui',
+  'only when nothing failed': 'somente quando nada falhou',
+  'the person types: abc, then 7': 'a pessoa digita: abc, depois 7',
+  'two different songs': 'duas músicas diferentes',
+  '✅ SYSTEM: structured, persistent, robust': '✅ SISTEMA: estruturado, persistente, robusto',
   'The model never executes arbitrary Python directly.':
     'O modelo nunca executa Python arbitrário diretamente.',
   'Application code validates tool name, argument schema, user permission and activity logging.':
@@ -424,6 +439,43 @@ const literalPt: Record<string, string> = {
   'Admin:': 'Administrativo:',
   'Total check:': 'Conferência do total:',
   'Math now works:': 'A conta agora funciona:',
+  // Phases 21-27 printed output.
+  '% of the total': '% do total',
+  '=== SYSTEM ===': '=== SISTEMA ===',
+  'After {years} years: ${amount:.2f}': 'Depois de {years} anos: ${amount:.2f}',
+  'After {years} years: {total:.2f}': 'Depois de {years} anos: {total:.2f}',
+  'Average:  {average:.0f}': 'Média:    {average:.0f}',
+  'Average: ${average:.0f}': 'Média: ${average:.0f}',
+  'Average: {average:.0f}': 'Média: {average:.0f}',
+  'Calculate the hire cost. All values must be positive.':
+    'Calcule o custo da contratação. Todos os valores devem ser positivos.',
+  'Check today:': 'Verificação de hoje:',
+  'Create order with full metadata.': 'Cria o pedido com os metadados completos.',
+  'How many?': 'Quantos?',
+  'New title': 'Novo título',
+  'Next year you will be': 'Ano que vem você terá',
+  'No record with that id.': 'Nenhum registro com esse id.',
+  'No score recorded for that name yet.': 'Ainda não há nota registrada para esse nome.',
+  'Nothing to update.': 'Nada para atualizar.',
+  'Numbers only — try again.': 'Somente números — tente de novo.',
+  'Numbers only': 'Somente números',
+  'Order amount: $': 'Valor do pedido: $',
+  'Orders:{len(db)} | Amount:${gross:,} | Total:${net:,}':
+    'Pedidos:{len(db)} | Valor:${gross:,} | Total:${net:,}',
+  'Please type a whole number, like 30.': 'Digite um número inteiro, como 30.',
+  'Points from 70+: {top_total}': 'Pontos de 70+: {top_total}',
+  'Price: {price}': 'Preço: {price}',
+  'Range:    {smallest} to {biggest}': 'Faixa:    {smallest} a {biggest}',
+  'Return src package files, one test file per module and README.md.':
+    'Retorne os arquivos do pacote src, um arquivo de teste por módulo e README.md.',
+  'Return the result of one arithmetic operation.':
+    'Retorne o resultado de uma operação aritmética.',
+  'Simulated repair value: $': 'Valor simulado do reparo: $',
+  'They are': 'Eles são',
+  'This runs about 30% of the time': 'Isso executa cerca de 30% das vezes',
+  'This runs about 70% of the time': 'Isso executa cerca de 70% das vezes',
+  'Whole numbers only — try again.': 'Somente números inteiros — tente de novo.',
+  'vans needed': 'vans necessárias',
   // Phases 21-27. Each of these existed only in `sampleOutput.pt`, so the task promised
   // Portuguese and the program printed English — the same mismatch audit:content:described
   // was built to catch in phase 8.
