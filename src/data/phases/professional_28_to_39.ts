@@ -62,11 +62,11 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "project_manifest",
-      "starterCode": "def project_manifest(package, modules):\n    \"\"\"Return the essential project paths.\"\"\"\n    pass",
+      "starterCode": "def project_manifest(package, modules):\n    \"\"\"Return the essential project paths, in this order:\n\n      src/<package>/__init__.py\n      src/<package>/<module>.py   for each module, in the order given\n      tests/test_<package>.py\n    \"\"\"\n    pass",
       "publicAfterCode": "print(project_manifest(\"library\", [\"models\", \"service\"]))",
-      "publicExpected": "src/library/__init__.py",
+      "publicExpected": "['src/library/__init__.py', 'src/library/models.py', 'src/library/service.py', 'tests/test_library.py']",
       "hiddenAfterCode": "print(project_manifest(\"catalog\", [\"items\"]))",
-      "hiddenExpected": "tests/test_catalog.py",
+      "hiddenExpected": "['src/catalog/__init__.py', 'src/catalog/items.py', 'tests/test_catalog.py']",
       "requirements": [
         {
           "kind": "function",
@@ -278,9 +278,9 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "public_api",
-      "starterCode": "def public_api(module, names):\n    \"\"\"Return explicit import statements for public unique names.\"\"\"\n    pass",
+      "starterCode": "def public_api(module, names):\n    \"\"\"Return one import statement per public unique name, sorted, joined by newlines.\n\n    A name starting with _ is private. Repeated names appear once.\n    Each line reads: from <module> import <name>\n    \"\"\"\n    pass",
       "publicAfterCode": "print(public_api(\"library.service\", [\"search\", \"_cache\", \"album\"]))",
-      "publicExpected": "from library.service import album",
+      "publicExpected": "from library.service import album\nfrom library.service import search",
       "hiddenAfterCode": "print(public_api(\"music\", [\"play_track\", \"play_track\", \"_debug\"]))",
       "hiddenExpected": "from music import play_track"
     },
@@ -380,11 +380,11 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "package_tree",
-      "starterCode": "def package_tree(name, modules):\n    \"\"\"Create package and matching test paths.\"\"\"\n    pass",
+      "starterCode": "def package_tree(name, modules):\n    \"\"\"Return the package paths and their matching test paths, in this order:\n\n      src/<name>/__init__.py\n      src/<name>/<module>.py  then  tests/test_<module>.py   for each module\n    \"\"\"\n    pass",
       "publicAfterCode": "print(package_tree(\"notes\", [\"service\", \"models\"]))",
-      "publicExpected": "src/notes/__init__.py",
+      "publicExpected": "['src/notes/__init__.py', 'src/notes/service.py', 'tests/test_service.py', 'src/notes/models.py', 'tests/test_models.py']",
       "hiddenAfterCode": "print(package_tree(\"tasks\", [\"item\"]))",
-      "hiddenExpected": "tests/test_item.py"
+      "hiddenExpected": "['src/tasks/__init__.py', 'src/tasks/item.py', 'tests/test_item.py']"
     },
     "transfer": {
       "functionName": "missing_init",
@@ -910,11 +910,11 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "log_event",
-      "starterCode": "def log_event(level, message, context=None):\n    \"\"\"Return a stable structured log line with sorted context keys.\"\"\"\n    pass",
+      "starterCode": "def log_event(level, message, context=None):\n    \"\"\"Return one line: <LEVEL> | <message> | <key=value pairs, sorted by key>\n\n    The level is upper-cased. With no context, the line stops after the message.\n    \"\"\"\n    pass",
       "publicAfterCode": "print(log_event(\"info\", \"saved\", {\"id\": 7}))",
       "publicExpected": "INFO | saved | id=7",
       "hiddenAfterCode": "print(log_event(\"warning\", \"slow\", {\"ms\": 950, \"job\": \"sync\"}))",
-      "hiddenExpected": "job=sync ms=950"
+      "hiddenExpected": "WARNING | slow | job=sync ms=950"
     },
     "transfer": {
       "functionName": "resolved_settings",

@@ -1058,3 +1058,275 @@ def _ex27_zero():
     read_all(db)
     print("=== STATS ===")
     analyze(db)
+
+
+# ── phases 28-39 ─────────────────────────────────────────────────────────────
+#
+# The `-transfer` exercises state their contract in the starter docstring, so these are
+# written from that. The `-practice` ones carry a single summary line and say the contract
+# is "described above", which is a disclosure problem in its own right — each is written
+# from the summary plus the shape its own tests call for, and any disagreement between the
+# two is the finding.
+
+
+@solution('p28-practice')
+def _p28_practice():
+    def project_manifest(package, modules):
+        paths = [f"src/{package}/__init__.py"]
+        for module in modules:
+            paths.append(f"src/{package}/{module}.py")
+        paths.append(f"tests/test_{package}.py")
+        return paths
+
+
+@solution('p28-transfer')
+def _p28_transfer():
+    def misplaced_files(paths):
+        wrong = []
+        for path in paths:
+            name = path.split("/")[-1]
+            expected = "tests" if name.startswith("test_") else "src"
+            if not path.startswith(expected + "/"):
+                wrong.append(path)
+        return sorted(wrong)
+
+
+@solution('p29-practice')
+def _p29_practice():
+    def dependency_plan(packages):
+        seen = set()
+        for entry in packages:
+            seen.add(entry.strip().lower())
+        return sorted(seen)
+
+
+@solution('p29-transfer')
+def _p29_transfer():
+    def unpinned_packages(lines):
+        names = []
+        for line in lines:
+            entry = line.strip()
+            if not entry or entry.startswith("#"):
+                continue
+            if "==" in entry:
+                continue
+            for separator in (">=", "<=", "~=", ">", "<", "!="):
+                if separator in entry:
+                    entry = entry.split(separator)[0]
+                    break
+            names.append(entry.strip())
+        return sorted(names)
+
+
+@solution('p30-practice')
+def _p30_practice():
+    def public_api(module, names):
+        public = sorted({name for name in names if not name.startswith("_")})
+        return "\n".join(f"from {module} import {name}" for name in public)
+
+
+@solution('p30-transfer')
+def _p30_transfer():
+    def import_cycle(imports):
+        for module, targets in imports.items():
+            for target in targets:
+                if module in imports.get(target, []):
+                    return sorted([module, target])
+        return []
+
+
+@solution('p31-practice')
+def _p31_practice():
+    def package_tree(name, modules):
+        paths = [f"src/{name}/__init__.py"]
+        for module in modules:
+            paths.append(f"src/{name}/{module}.py")
+            paths.append(f"tests/test_{module}.py")
+        return paths
+
+
+@solution('p31-transfer')
+def _p31_transfer():
+    def missing_init(paths):
+        directories = set()
+        has_init = set()
+        for path in paths:
+            if not path.endswith(".py"):
+                continue
+            folder = "/".join(path.split("/")[:-1])
+            if not folder:
+                continue
+            directories.add(folder)
+            if path.endswith("/__init__.py"):
+                has_init.add(folder)
+        return sorted(directories - has_init)
+
+
+@solution('p32-practice')
+def _p32_practice():
+    def parse_command(args):
+        if not args:
+            return {"command": "help", "value": None}
+        return {"command": args[0], "value": args[1] if len(args) > 1 else None}
+
+
+@solution('p32-transfer')
+def _p32_transfer():
+    def usage_error(args):
+        if not args:
+            return "missing command"
+        if args[0] not in ("add", "list"):
+            return f"unknown command: {args[0]}"
+        if args[0] == "add" and len(args) < 2:
+            return "add needs a name"
+        return ""
+
+
+@solution('p33-practice')
+def _p33_practice():
+    def next_git_command(state):
+        if state == "modified":
+            return "git diff"
+        if state == "staged":
+            return "git commit"
+        if state == "clean":
+            return "git log"
+        return "git status"
+
+
+@solution('p33-transfer')
+def _p33_transfer():
+    def subject_problems(subjects):
+        problems = []
+        for subject in subjects:
+            if len(subject) > 50:
+                reason = "too long"
+            elif not subject[:1].isupper():
+                reason = "not capitalised"
+            elif subject.endswith("."):
+                reason = "ends with a period"
+            else:
+                continue
+            problems.append(f"{subject} -> {reason}")
+        return problems
+
+
+@solution('p34-practice')
+def _p34_practice():
+    def evaluate_cases(function, cases):
+        return ["PASS" if function(value) == expected else "FAIL" for value, expected in cases]
+
+
+@solution('p34-transfer')
+def _p34_transfer():
+    def untested_cases(required, test_names):
+        lowered = [name.lower() for name in test_names]
+        missing = [case for case in required
+                   if not any(case.lower() in name for name in lowered)]
+        return sorted(missing)
+
+
+@solution('p35-practice')
+def _p35_practice():
+    def safe_ratio(total, count):
+        if count == 0:
+            return 0.0
+        return total / count
+
+
+@solution('p35-transfer')
+def _p35_transfer():
+    def last_own_frame(lines):
+        found = ""
+        for line in lines:
+            if "student_code.py" in line:
+                found = line.strip()
+        return found
+
+
+@solution('p36-practice')
+def _p36_practice():
+    def log_event(level, message, context=None):
+        pairs = " ".join(f"{key}={context[key]}" for key in sorted(context or {}))
+        return f"{level.upper()} | {message} | {pairs}" if pairs else f"{level.upper()} | {message}"
+
+
+@solution('p36-transfer')
+def _p36_transfer():
+    def resolved_settings(defaults, environment):
+        resolved = dict(defaults)
+        rejected = []
+        for key, value in environment.items():
+            if key in defaults:
+                resolved[key] = value
+            else:
+                rejected.append(key)
+        return resolved, sorted(rejected)
+
+
+@solution('p37-practice')
+def _p37_practice():
+    from dataclasses import dataclass
+
+    @dataclass(frozen=True)
+    class Transaction:
+        amount: float
+        kind: str
+
+    def net_total(items):
+        total = 0
+        for item in items:
+            total += item.amount if item.kind == "income" else -item.amount
+        return total
+
+
+@solution('p37-transfer')
+def _p37_transfer():
+    def invalid_records(records, schema):
+        problems = []
+        for index, record in enumerate(records):
+            for field, expected in schema.items():
+                if field not in record or not isinstance(record[field], expected):
+                    problems.append(f"{index}: {field}")
+                    break
+        return problems
+
+
+@solution('p38-practice')
+def _p38_practice():
+    class Product:
+        def __init__(self, name, price):
+            self.name = name
+            self.price = price
+
+    def catalog_total(products):
+        return sum(product.price for product in products)
+
+
+@solution('p38-transfer')
+def _p38_transfer():
+    def shelf_report(shelves, items):
+        lines = []
+        for shelf in shelves:
+            owned = [item for item in items if item["shelf"] == shelf]
+            total = sum(item["price"] for item in owned)
+            lines.append(f"{shelf} count={len(owned)} total={total}")
+        return lines
+
+
+@solution('p39-practice')
+def _p39_practice():
+    def monthly_summary(transactions):
+        income = sum(entry["amount"] for entry in transactions if entry["kind"] == "income")
+        expense = sum(entry["amount"] for entry in transactions if entry["kind"] == "expense")
+        return {"income": income, "expense": expense, "balance": income - expense}
+
+
+@solution('p39-transfer')
+def _p39_transfer():
+    def top_categories(entries, limit):
+        totals = {}
+        for entry in entries:
+            totals[entry["category"]] = totals.get(entry["category"], 0) + entry["amount"]
+        ranked = sorted(totals.items(), key=lambda pair: (-pair[1], pair[0]))
+        return [f"{name}={total}" for name, total in ranked[:limit]]

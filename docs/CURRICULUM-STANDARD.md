@@ -218,6 +218,39 @@ harmless only while that shuffle exists, so `answerPosition.test.ts` pins it.
 
 ---
 
+## The order of work, decided 2026-07-30
+
+Written down so it does not have to be re-decided. Each step is a precondition for the
+one after it, which is why the order is not arbitrary.
+
+**1. Reference solutions for the remaining phases, band by band.**
+82 graded exercises in phases 28-68 have none, so nothing verifies their grading at all.
+This is the only work that finds the failure that matters most to a learner: a correct
+answer marked wrong. Measured yield in the band before it — phases 21-27 — was **six of
+fourteen graded exercises that a correct solution could not pass**. Assume that rate
+continues until it stops.
+
+**2. Make failures explain themselves.**
+Behavioural grading exists, works, and reaches five exercises, because it needs an
+exercise that takes `input()` — with no input a program has exactly one behaviour and it
+is whatever the learner chose to print. Widening it is a curriculum change first and a
+grading change second. This is what turns "expected X, got Y" into "your loop is right
+but you divided by 7 instead of `len(songs)`".
+
+**3. Finish the Portuguese.**
+145 strings still reach a Portuguese learner in English. Deliberately after step 1:
+translating a printed string changes what the program prints, and without a reference
+solution nothing can re-derive the task text or prove grading still passes. Doing it in
+the other order is exactly what produced the "Queue size: 3" defect.
+
+**4. Fix the update pipeline.**
+`registerType: 'prompt'` is correct — activating under a live tab deletes the chunks that
+tab is holding — but no prompt was ever wired, so a new build reaches a learner only when
+every client is closed. Until this is done, every fix above is invisible to anyone who
+keeps the app open.
+
+---
+
 ## What is still open
 
 - **155 English strings** still reach a Portuguese learner: 0 in phases 0–20, the rest in
