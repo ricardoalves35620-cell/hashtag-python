@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import type { Phase, Lang, UserProgress } from '../data/types'
 import { getPhaseStatus } from '../lib/progress'
+import { phaseHasMiniProject } from '../data/phaseIndex'
 import { inferPhaseStage, getPhaseGroup } from '../data/phaseCatalog'
 import { Badge, Progress } from './ui'
 
@@ -14,6 +15,11 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
   const group = getPhaseGroup(inferPhaseStage(phase))
   const isLocked = status === 'locked'
   const isDone = status === 'done'
+  // Deliberately from phaseIndex, not MINI_PROJECTS: importing the project data here
+  // would pull the whole ~84 KB definitions chunk into the Home screen's load. The
+  // index is pinned to the real data by phaseIndex.test.ts.
+  const hasMiniProject = phaseHasMiniProject(phase.id)
+  const miniProjectDone = Boolean(phaseProgress?.project_done)
 
   return (
     <button
@@ -38,8 +44,18 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
       </div>
 
       <p className="mt-3 mb-0 line-clamp-2 text-xs text-ink-secondary">{phase.description[lang]}</p>
-      {(phase.desktopRequired || phase.libraries.length > 0) && (
+      {(phase.desktopRequired || phase.libraries.length > 0 || hasMiniProject) && (
         <div className="mt-3 flex flex-wrap gap-2">
+          {/* The mini-project is a bonus: it never counts in the 4 steps below and
+              never blocks the next phase (see getPhaseStatus). The badge only makes
+              its existence visible before entering the phase. */}
+          {hasMiniProject && (
+            <Badge variant={miniProjectDone ? 'success' : 'primary'}>
+              {miniProjectDone
+                ? (lang === 'en' ? '✓ Mini-project done' : '✓ Mini-projeto concluído')
+                : (lang === 'en' ? '🚀 Bonus mini-project' : '🚀 Mini-projeto bônus')}
+            </Badge>
+          )}
           {phase.desktopRequired && <Badge variant="warning">{lang === 'en' ? 'Desktop recommended' : 'Desktop recomendado'}</Badge>}
           {phase.libraries.map(lib => <Badge key={lib} variant="neutral" mono>{lib}</Badge>)}
         </div>
