@@ -175,6 +175,135 @@ function requirementLabel(requirement: CodeRequirement, lang: Lang) {
  * something unspecified went wrong. Only the FIRST differing line is reported: a wall
  * of diffs is as unhelpful as no diff at all.
  */
+/**
+ * Describe a failure against the FAILING TEST's own expectation.
+ *
+ * `describeDifference` below compares against the exercise's `sampleOutput`, which is the
+ * right thing for an exercise graded on what the learner printed. It is the wrong thing
+ * for phases 9-39, where the deliverable is a function and each test calls it with
+ * different arguments: the sample describes one call, and the learner may have failed a
+ * different one. Every test already carries its own `expected` and `actual`; nothing was
+ * reading them.
+ */
+export function describeAgainstExpected(expected: string, actual: string, lang: Lang): string {
+  const wanted = meaningfulLines(expected)
+  const got = meaningfulLines(actual)
+
+  if (!got.length) {
+    return lang === 'en'
+      ? 'Your function returned nothing for this case. Check that every path ends in a return.'
+      : 'Sua função não retornou nada neste caso. Verifique se todos os caminhos terminam em return.'
+  }
+  if (wanted.length === 1 && got.length === 1) return describeLineDifference(wanted[0], got[0], lang)
+
+  const missing = wanted.filter(line => !got.includes(line))
+  const extra = got.filter(line => !wanted.includes(line))
+
+  if (!missing.length && !extra.length) {
+    return lang === 'en'
+      ? `Every value is right — the order is not. This case expects: ${wanted.join(' → ')}.`
+      : `Todos os valores estão certos — a ordem não. Este caso espera: ${wanted.join(' → ')}.`
+  }
+  if (missing.length && !extra.length) {
+    return lang === 'en'
+      ? `This case also expects ${missing.join(', ')}, which your result does not include.`
+      : `Este caso também espera ${missing.join(', ')}, que seu resultado não inclui.`
+  }
+  if (extra.length && !missing.length) {
+    return lang === 'en'
+      ? `Your result includes ${extra.join(', ')}, which this case does not expect.`
+      : `Seu resultado inclui ${extra.join(', ')}, que este caso não espera.`
+  }
+  return describeLineDifference(wanted[0], got[0], lang)
+}
+
+/**
+ * What went wrong on a HIDDEN case, without handing over the answer.
+ *
+ * A hidden test used to say only "the solution worked for the visible example but failed
+ * with another valid input" — true, and useless. The learner cannot see the input, cannot
+ * see the expectation, and is left guessing which of their assumptions broke. That is the
+ * exact complaint this app was failing on: having to ask someone else what went wrong.
+ *
+ * The values stay hidden. The SHAPE of the difference does not have to be: how many
+ * results, what type, whether the order was the only problem. That is enough to point at
+ * an edge case without revealing it.
+ */
+export function describeHiddenDifference(expected: string, actual: string, lang: Lang): string {
+  const wanted = meaningfulLines(expected)
+  const got = meaningfulLines(actual)
+
+  if (!got.length) {
+    return lang === 'en'
+      ? 'On a different input your function returned nothing. An empty or boundary case is likely falling through without a return.'
+      : 'Com outra entrada sua função não retornou nada. Um caso vazio ou de limite provavelmente termina sem return.'
+  }
+
+  const isNumber = (text: string) => /^-?\d+(\.\d+)?$/.test(text.trim())
+  if (wanted.length === 1 && got.length === 1) {
+    if (isNumber(wanted[0]) && isNumber(got[0])) {
+      const off = Number(got[0]) - Number(wanted[0])
+      // Equal as numbers, different as text: 0 against 0.0. Calling that "too low" sends
+      // the learner hunting for an arithmetic error they did not make — the value is
+      // right and the type is not.
+      if (off === 0) {
+        return lang === 'en'
+          ? 'On a different input the number was right but its type was not — a whole number where a decimal was expected, or the reverse.'
+          : 'Com outra entrada o número estava certo, mas o tipo não — um inteiro onde se esperava decimal, ou o contrário.'
+      }
+      return lang === 'en'
+        ? `On a different input your number came out ${off > 0 ? 'too high' : 'too low'}. Check the boundary — an edge case is being counted the wrong way.`
+        : `Com outra entrada seu número saiu ${off > 0 ? 'alto demais' : 'baixo demais'}. Verifique o limite — um caso de borda está sendo contado do jeito errado.`
+    }
+    if (isNumber(wanted[0]) !== isNumber(got[0])) {
+      return lang === 'en'
+        ? 'On a different input your function returned the wrong kind of value — a number where text was expected, or the reverse.'
+        : 'Com outra entrada sua função retornou o tipo errado de valor — um número onde se esperava texto, ou o contrário.'
+    }
+    return lang === 'en'
+      ? 'On a different input your function returned a different value than the rule requires. Re-read the rule and try the smallest input you can think of.'
+      : 'Com outra entrada sua função retornou um valor diferente do que a regra exige. Releia a regra e teste a menor entrada que conseguir imaginar.'
+  }
+
+  if (wanted.length !== got.length) {
+    return lang === 'en'
+      ? `On a different input your function produced ${got.length} result${got.length === 1 ? '' : 's'} where ${wanted.length} ${wanted.length === 1 ? 'was' : 'were'} expected. Something is being included or skipped that should not be.`
+      : `Com outra entrada sua função produziu ${got.length} resultado${got.length === 1 ? '' : 's'} onde se esperava ${wanted.length}. Algo está sendo incluído ou pulado indevidamente.`
+  }
+  if (wanted.every(line => got.includes(line))) {
+    return lang === 'en'
+      ? 'On a different input every value was right but the order was not. Check where the rule says the results are sorted.'
+      : 'Com outra entrada todos os valores estavam certos, mas a ordem não. Verifique onde a regra diz que os resultados são ordenados.'
+  }
+  return lang === 'en'
+    ? 'On a different input the number of results was right but at least one value was not. A branch is producing the wrong answer for part of the data.'
+    : 'Com outra entrada a quantidade de resultados estava certa, mas ao menos um valor não. Algum caminho produz a resposta errada para parte dos dados.'
+}
+
+/**
+ * Pick the best account of a failing test.
+ *
+ * A test that knows what it expected can say how the answer differed. One that does not —
+ * a `no_error` or a structural check — falls back to the exercise's sample. A hidden test
+ * describes the shape of the difference and never the values.
+ */
+function explainTestFailure(exercise: Exercise, lang: Lang, result: TestResult): string {
+  // `diagnosis` carries the pair even for a hidden test, where `feedback` withholds it.
+  const feedback = result.feedback?.[lang]
+  const expected = result.diagnosis?.expected ?? feedback?.expected
+  const actual = result.diagnosis?.actual ?? feedback?.actual ?? result.output
+
+  if (result.hidden) {
+    return expected
+      ? describeHiddenDifference(expected, actual || '', lang)
+      : (lang === 'en'
+        ? 'The solution worked for the visible example but failed with another valid input.'
+        : 'A solução funcionou no exemplo visível, mas falhou com outra entrada válida.')
+  }
+  if (expected) return describeAgainstExpected(expected, actual || '', lang)
+  return describeDifference(exercise, lang, result.output)
+}
+
 function describeDifference(exercise: Exercise, lang: Lang, actual: string): string {
   const generic = lang === 'en'
     ? 'One of the expected behaviors was not produced.'
@@ -437,11 +566,12 @@ export async function gradeExercise(
         hidden: result.hidden,
         // Naming the difference beats naming the failure. A learner who is told only
         // that "a behaviour was not produced" has to guess which one, and how it differed.
-        why: result.passed ? undefined : (result.hidden
-          ? (lang === 'en' ? 'The solution worked for the visible example but failed with another valid input.' : 'A solução funcionou no exemplo visível, mas falhou com outra entrada válida.')
-          : describeDifference(exercise, lang, result.output)),
+        // Every test carries its own expected and actual. Reading the exercise's
+        // sampleOutput instead described the wrong call whenever a phase 9-39 exercise
+        // failed a case other than the one the sample shows.
+        why: result.passed ? undefined : explainTestFailure(exercise, lang, result),
         fix: result.passed ? undefined : (result.hidden
-          ? (lang === 'en' ? 'Avoid fixed answers. Use the input variables and calculations so the logic works with different values.' : 'Evite respostas fixas. Use as variáveis de entrada e os cálculos para a lógica funcionar com valores diferentes.')
+          ? (lang === 'en' ? 'Do not aim at the example. Write the rule the task states, then try the smallest and the emptiest input you can.' : 'Não mire no exemplo. Escreva a regra que o enunciado descreve e teste a menor entrada e a entrada vazia.')
           : (lang === 'en' ? 'Review the test description and compare the expected behavior with your output.' : 'Revise a descrição do teste e compare o comportamento esperado com sua saída.')),
         concept: lang === 'en' ? 'Generalization and behavior' : 'Generalização e comportamento',
       })

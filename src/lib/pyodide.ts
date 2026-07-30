@@ -446,6 +446,17 @@ export interface TestFeedback {
 }
 
 export interface TestResult {
+  /**
+   * The failing check's expected value and the output it was compared with.
+   *
+   * NOT part of `feedback`, which is what the UI renders. A hidden test must never show
+   * its expected value — that is how a learner reverse-engineers the answer instead of
+   * writing the rule. But withholding it from the DIAGNOSIS too left the app saying only
+   * "it failed with another valid input", which is the exact dead end a learner reported:
+   * nothing to act on, so they go and ask someone else. `describeHiddenDifference` reads
+   * these and returns a sentence about the shape of the difference, never the values.
+   */
+  diagnosis?: { expected?: string, actual: string }
   id: string
   description: { en: string; pt: string }
   passed: boolean
@@ -701,6 +712,11 @@ export async function runExam(
     const feedback = buildFeedback({ passed, hidden: isHidden, run, failedCheck, failedRequirement, hardcodedAnswer })
 
     results.push({
+      // Carried for the diagnosis, never for the screen — see the field's comment.
+      diagnosis: passed ? undefined : {
+        expected: expectedFromCheck(failedCheck),
+        actual: ((failedCheck?.target === 'test_output' ? run.testOutput : run.output) || '').trim(),
+      },
       id: testCase.id,
       description: testCase.description,
       passed,
