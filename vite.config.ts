@@ -23,7 +23,9 @@ export default defineConfig({
       // reload. Reported from the app as happening often.
       //
       // 'prompt' respects them: the new worker waits until the old page is gone.
-      registerType: 'prompt',
+      // 'autoUpdate' so the waiting worker actually activates. With
+      // cleanupOutdatedCaches now false, activating no longer strands a live tab.
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/*.png'],
       // Single source of truth for the manifest. public/manifest.json used to be a
       // second, hand-maintained copy that Vite shipped verbatim; the two had already
@@ -73,14 +75,36 @@ export default defineConfig({
         // though every asset it needs is already precached.
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api\//, /\.[^/]+$/],
-        // Without these, a deploy leaves the previous index.html in the precache.
-        // It then requests asset hashes that no longer exist on the server and the
-        // app fails to boot until the user hard-refreshes.
-        cleanupOutdatedCaches: true,
-        // Do NOT claim open tabs mid-session: the running page still references the
-        // previous build's chunks, and taking over deletes them under its feet.
-        clientsClaim: false,
-        skipWaiting: false,
+        /*
+         * These two settings were in opposition, and the deadlock between them took the
+         * site down on 2026-07-30.
+         *
+         * `navigateFallback` above means EVERY navigation is answered from the worker's
+         * precache — including an OAuth redirect back to /#access_token=... So whichever
+         * index.html the ACTIVE worker precached is the index.html the app boots from.
+         *
+         * `skipWaiting: false` means a new worker never becomes active while any client
+         * exists. On an installed app that is close to never. So the active worker stayed
+         * on an old generation, kept serving its old index.html, and that file asked for
+         * asset hashes that later deploys had removed from the server. Every navigation
+         * died on `Failed to load module script … MIME type "text/html"`, while
+         * Ctrl+Shift+R — which bypasses the worker — reached the real index and booted
+         * fine. That asymmetry is the signature, and it is what the reporter saw: the
+         * login page appeared on a hard reload and the redirect after login went blank.
+         *
+         * `skipWaiting: false` was chosen for a real reason — taking over a live tab while
+         * `cleanupOutdatedCaches` deletes the chunks it is still holding produces the
+         * "Algo interrompeu a aula" crash. But the cause of THAT is the cleanup, not the
+         * takeover. So: take over promptly, and stop deleting the old build's chunks. A
+         * tab mid-lesson keeps the files it is using, and the next navigation gets the
+         * new build. Neither failure remains available.
+         *
+         * The cost is precache growth across deploys, which Workbox bounds by revision
+         * and which is a far smaller price than an app that cannot start.
+         */
+        cleanupOutdatedCaches: false,
+        clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
           {
             // Order matters: Workbox matches in registration order, so auth must come
