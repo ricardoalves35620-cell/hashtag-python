@@ -8,6 +8,124 @@ export function resolveLocalizedText(value: LocalizedText | undefined, lang: Lan
 }
 
 const exactPt: Record<string, string> = {
+  // Guided-starter intent comments, phases 0-8 — 2026-07-31.
+  "name the file we are pretending to run":
+    "dá nome ao arquivo que vamos fingir que executa",
+  "announce which file is starting":
+    "anuncia qual arquivo está começando",
+  "confirm the environment is ready":
+    "confirma que o ambiente está pronto",
+  "greet the reader":
+    "cumprimenta quem lê",
+  "show a label next to a name":
+    "mostra um rótulo ao lado de um nome",
+  "show a label next to a number":
+    "mostra um rótulo ao lado de um número",
+  "let Python do the sum before printing":
+    "deixa o Python fazer a conta antes de imprimir",
+  "print a blank line to separate the sections":
+    "imprime uma linha em branco para separar as seções",
+  "close with a final message":
+    "encerra com uma mensagem final",
+  "the single number every operator below works on":
+    "o único número sobre o qual cada operador abaixo trabalha",
+  "addition":
+    "adição",
+  "subtraction":
+    "subtração",
+  "multiplication":
+    "multiplicação",
+  "true division, always gives a decimal":
+    "divisão real, sempre dá um decimal",
+  "floor division, drops the fractional part":
+    "divisão inteira, descarta a parte fracionária",
+  "remainder left after dividing":
+    "resto que sobra depois de dividir",
+  "power, n raised to the 2":
+    "potência, n elevado a 2",
+  "start the running total at zero":
+    "começa o total acumulado em zero",
+  "show the total before anything is added":
+    "mostra o total antes de somar qualquer coisa",
+  "add the cartons cost to the total":
+    "soma o custo das caixas ao total",
+  "show the total so far":
+    "mostra o total até aqui",
+  "add the steel cost to the total":
+    "soma o custo do aço ao total",
+  "add the paint cost to the total":
+    "soma o custo da tinta ao total",
+  "show the final total":
+    "mostra o total final",
+  "read what the user types (always text)":
+    "lê o que o usuário digita (sempre texto)",
+  "show the value exactly as it came in":
+    "mostra o valor exatamente como chegou",
+  "reveal that it is a string, not a number":
+    "revela que é uma string, não um número",
+  "turn the text into a whole number":
+    "transforma o texto em um número inteiro",
+  "show the numeric value":
+    "mostra o valor numérico",
+  "reveal that it is now an int":
+    "revela que agora é um int",
+  "prove arithmetic works after converting":
+    "prova que a conta funciona depois de converter",
+  "read the amount and turn it into a number":
+    "lê o valor e o transforma em número",
+  "decide which branch to take":
+    "decide qual caminho seguir",
+  "runs only for large amounts":
+    "roda apenas para valores altos",
+  "the action that goes with high priority":
+    "a ação que acompanha a prioridade alta",
+  "every amount that is not above 5000":
+    "todo valor que não passa de 5000",
+  "runs for the rest":
+    "roda para o restante",
+  "the action that goes with standard":
+    "a ação que acompanha o processamento padrão",
+  "runs no matter which branch was chosen":
+    "roda não importa qual caminho foi escolhido",
+  "read the amount as a number":
+    "lê o valor como número",
+  "check the highest band first":
+    "verifica a faixa mais alta primeiro",
+  "runs only above 10000":
+    "roda apenas acima de 10000",
+  "only reached when the first check was false":
+    "só é alcançado quando a verificação anterior foi falsa",
+  "runs for 5001 to 10000":
+    "roda de 5001 a 10000",
+  "only reached when both checks above were false":
+    "só é alcançado quando as duas verificações acima foram falsas",
+  "runs for 1000 to 5000":
+    "roda de 1000 a 5000",
+  "everything below 1000":
+    "tudo abaixo de 1000",
+  "the catch-all band":
+    "a faixa que pega todo o resto",
+  "start counting at the first order":
+    "começa a contar no primeiro pedido",
+  "keep looping while the count is 5 or less":
+    "continua repetindo enquanto a contagem for 5 ou menos",
+  "handle the current order":
+    "trata o pedido atual",
+  "move to the next order so the loop can end":
+    "avança para o próximo pedido para que o loop possa terminar",
+  "show the count after the loop stops":
+    "mostra a contagem depois que o loop para",
+  "the list of clients to work through":
+    "a lista de clientes a percorrer",
+  "count how many are in the queue":
+    "conta quantos estão na fila",
+  "visit each client one at a time":
+    "visita cada cliente, um de cada vez",
+  "handle the current client":
+    "trata o cliente atual",
+  "runs once, after every client is done":
+    "roda uma vez, depois que todos os clientes terminam",
+
   // ex21_zero starter: per-line intent comments, bilingual via this dictionary so the
   // output strings keep localizing separately (Quote->Cotacao) — 2026-07-31.
   "bring in Python's random-number tools":

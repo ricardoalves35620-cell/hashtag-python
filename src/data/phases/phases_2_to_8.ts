@@ -184,14 +184,14 @@ print(5 * 3)           # 15`
         en: 'Goal:\nRun the code and observe all seven math operators applied to a single number. Study how each operator transforms the value. Then change the starting number, predict each result before running, and check your predictions.\n\nOutput for n = 17:\n17 + 5 = 22\n17 - 5 = 12\n17 * 2 = 34\n17 / 5 = 3.4\n17 // 5 = 3\n17 % 5 = 2\n17 ** 2 = 289',
         pt: 'Objetivo:\nExecute o código e observe os sete operadores matemáticos aplicados a um único número. Estude como cada operador transforma o valor. Depois mude o número inicial, preveja cada resultado antes de executar e confirme suas previsões.\n\nSaída para n = 17:\n17 + 5 = 22\n17 - 5 = 12\n17 * 2 = 34\n17 / 5 = 3.4\n17 // 5 = 3\n17 % 5 = 2\n17 ** 2 = 289'
       },
-      starterCode: `n = 17
-print(n, "+ 5 =", n + 5)
-print(n, "- 5 =", n - 5)
-print(n, "* 2 =", n * 2)
-print(n, "/ 5 =", n / 5)
-print(n, "// 5 =", n // 5)
-print(n, "% 5 =", n % 5)
-print(n, "** 2 =", n ** 2)`,
+      starterCode: `n = 17  # the single number every operator below works on
+print(n, "+ 5 =", n + 5)  # addition
+print(n, "- 5 =", n - 5)  # subtraction
+print(n, "* 2 =", n * 2)  # multiplication
+print(n, "/ 5 =", n / 5)  # true division, always gives a decimal
+print(n, "// 5 =", n // 5)  # floor division, drops the fractional part
+print(n, "% 5 =", n % 5)  # remainder left after dividing
+print(n, "** 2 =", n ** 2)  # power, n raised to the 2`,
       hints: [
         { en: '// always drops the decimal: 17 // 5 = 3 because 5 fits into 17 exactly 3 whole times (3 × 5 = 15, leaving 2 over).', pt: '// sempre descarta o decimal: 17 // 5 = 3 porque 5 cabe em 17 exatamente 3 vezes inteiras (3 × 5 = 15, sprojeto 2).' },
         { en: '% gives only the leftover: 17 % 5 = 2 because 17 = 5×3 + 2. Think of it as the remainder after dividing.', pt: '% dá apenas o resto: 17 % 5 = 2 porque 17 = 5×3 + 2. Pense como o restante após a divisão.' }
@@ -490,17 +490,17 @@ print(x == 5)   # x é igual a 5? → True`
         en: 'Goal:\nRun the code and watch how a running total changes. The variable starts at 0 and is updated three times with +=. After tracing each update, add a fourth purchase of 500 to the code, predict the new total, and run to confirm.\n\nOutput with the fourth purchase added:\nStart: 0\nAfter cartons: 960\nAfter steel: 2235\nAfter paint: 3035\nAfter tiles: 3535',
         pt: 'Objetivo:\nExecute o código e veja como um total acumulado muda. A variável começa em 0 e é atualizada três vezes com +=. Depois de acompanhar cada atualização, adicione uma quarta compra de 500 ao código, preveja o novo total e execute para confirmar.\n\nSaída com a quarta compra adicionada:\nInício: 0\nApós caixas: 960\nApós aço: 2235\nApós tinta: 3035\nAfter tiles: 3535'
       },
-      starterCode: `total = 0
-print("Start:", total)
+      starterCode: `total = 0  # start the running total at zero
+print("Start:", total)  # show the total before anything is added
 
-total += 960
-print("After cartons:", total)
+total += 960  # add the cartons cost to the total
+print("After cartons:", total)  # show the total so far
 
-total += 1275
-print("After steel:", total)
+total += 1275  # add the steel cost to the total
+print("After steel:", total)  # show the total so far
 
-total += 800
-print("After paint:", total)`,
+total += 800  # add the paint cost to the total
+print("After paint:", total)  # show the final total`,
       hints: [
         { en: 'Add after the last print: total += 500 then print("After tiles:", total)', pt: 'Adicione após o último print: total += 500 e depois print("After tiles:", total)' },
         { en: 'New total: 3035 + 500 = 3535', pt: 'Novo total: 3035 + 500 = 3535' }
@@ -772,15 +772,15 @@ n = float(input("Height: "))
         en: 'Goal:\nRun the code and type a number when prompted. Observe that input() always returns text, even when you type digits. Notice how int() converts that text into a real number that math can work with.\n\nThen change the multiplier at the end, run with a different number, and predict the result before pressing Enter.\n\nExample, typing 25, before your change:\nMath now works: 50',
         pt: 'Objetivo:\nExecute o código e digite um número quando solicitado. Observe que input() sempre retorna texto, mesmo quando você digita dígitos. Perceba como int() converte esse texto num número real no qual a matemática funciona.\n\nDepois mude o multiplicador no final, execute com um número diferente e preveja o resultado antes de pressionar Enter.\n\nExemplo, digitando 25, antes da sua alteração:\nA conta agora funciona: 50'
       },
-      starterCode: `raw = input("Type a number: ")
-print("Raw value:", raw)
-print("Raw type:", type(raw))
+      starterCode: `raw = input("Type a number: ")  # read what the user types (always text)
+print("Raw value:", raw)  # show the value exactly as it came in
+print("Raw type:", type(raw))  # reveal that it is a string, not a number
 
-converted = int(raw)
-print("Converted:", converted)
-print("New type:", type(converted))
+converted = int(raw)  # turn the text into a whole number
+print("Converted:", converted)  # show the numeric value
+print("New type:", type(converted))  # reveal that it is now an int
 
-print("Math now works:", converted * 2)`,
+print("Math now works:", converted * 2)  # prove arithmetic works after converting`,
       hints: [
         { en: 'The raw type is str even though you typed digits — input() always returns text', pt: 'O tipo bruto é str mesmo digitando dígitos — input() sempre retorna texto' }
       ],
@@ -1200,16 +1200,16 @@ if int(palpite) == 10:
         en: 'Goal:\nRun the code, type a number when prompted, and trace the if/else decision. Test with a value above the threshold to see the if-block run and the else-block skip, then test with a value below to see the opposite. Finally, try the exact boundary value to see which branch catches it.\n\nExample, typing 8000:\n🔴 HIGH PRIORITY\nExpert reviewer assigned\n--- check complete ---\n\nExample, typing 2000:\n🟢 Standard processing\nAuto-queue assigned\n--- check complete ---',
         pt: 'Objetivo:\nExecute o código, digite um número quando solicitado e acompanhe a decisão do if/else. Teste com um valor acima do limite para ver o bloco if executar e o else ser pulado, depois teste com um valor abaixo para ver o oposto. Por fim, tente o valor exato do limite para ver qual ramo captura.\n\nExemplo, digitando 8000:\n🔴 PRIORIDADE ALTA\nAnalista especialista designado\n--- verificação concluída ---\n\nExemplo, digitando 2000:\n🟢 Processamento padrão\nFila automática atribuída\n--- verificação concluída ---'
       },
-      starterCode: `amount = int(input("Amount: $"))
+      starterCode: `amount = int(input("Amount: $"))  # read the amount and turn it into a number
 
-if amount > 5000:
-    print("🔴 HIGH PRIORITY")
-    print("Expert reviewer assigned")
-else:
-    print("🟢 Standard processing")
-    print("Auto-queue assigned")
+if amount > 5000:  # decide which branch to take
+    print("🔴 HIGH PRIORITY")  # runs only for large amounts
+    print("Expert reviewer assigned")  # the action that goes with high priority
+else:  # every amount that is not above 5000
+    print("🟢 Standard processing")  # runs for the rest
+    print("Auto-queue assigned")  # the action that goes with standard
 
-print("--- check complete ---")`,
+print("--- check complete ---")  # runs no matter which branch was chosen`,
       hints: [
         { en: 'The last print always runs — it is OUTSIDE the if/else block (no indentation)', pt: 'O último print sempre executa — está FORA do bloco if/else (sem indentação)' }
       ],
@@ -1547,16 +1547,16 @@ if valor > 1000:
         en: 'Goal:\nRun the code and type different values to trace the if/elif/else waterfall. Notice how only the first matching branch runs and the rest are skipped. Test with values in each range and try the exact boundary values to see which branch catches them.\n\nExample, typing 12000:\n🔴 CRITICAL — 2h SLA\n\nExample, typing 7000:\n🟠 URGENT — 4h SLA\n\nExample, typing 500:\n🟢 LOW — 72h SLA',
         pt: 'Objetivo:\nExecute o código e digite valores diferentes para acompanhar a cascata do if/elif/else. Observe como apenas o primeiro ramo que atende à condição é executado e os demais são pulados. Teste com valores de cada faixa e tente os valores exatos dos limites para ver qual ramo os captura.\n\nExemplo, digitando 12000:\n🔴 CRITICAL — 2h SLA\n\nExemplo, digitando 7000:\n🟠 URGENT — 4h SLA\n\nExemplo, digitando 500:\n🟢 LOW — 72h SLA'
       },
-      starterCode: `amount = int(input("Amount: $"))
+      starterCode: `amount = int(input("Amount: $"))  # read the amount as a number
 
-if amount > 10000:
-    print("🔴 CRITICAL — 2h SLA")
-elif amount > 5000:
-    print("🟠 URGENT — 4h SLA")
-elif amount >= 1000:
-    print("🟡 NORMAL — 24h SLA")
-else:
-    print("🟢 LOW — 72h SLA")`,
+if amount > 10000:  # check the highest band first
+    print("🔴 CRITICAL — 2h SLA")  # runs only above 10000
+elif amount > 5000:  # only reached when the first check was false
+    print("🟠 URGENT — 4h SLA")  # runs for 5001 to 10000
+elif amount >= 1000:  # only reached when both checks above were false
+    print("🟡 NORMAL — 24h SLA")  # runs for 1000 to 5000
+else:  # everything below 1000
+    print("🟢 LOW — 72h SLA")  # the catch-all band`,
       hints: [
         { en: '12000 stops at the first check; 7000 passes it and stops at the second; 500 falls all the way to else', pt: '12000 para na primeira verificação; 7000 passa e para na segunda; 500 cai até o else' }
       ],
@@ -1935,12 +1935,12 @@ while contador <= 5:        # 10 <= 5 é False, então o loop nunca executa
         en: 'Goal:\nRun the code and trace how the counter changes on each turn of the while loop. Observe that the loop continues as long as the condition is true and stops at the first value that fails the check. Then change the limit, predict how many iterations will occur and what the final counter value will be, and run to confirm.\n\nOutput with the original limit of 5:\nOrder # 1 processed\nOrder # 2 processed\nOrder # 3 processed\nOrder # 4 processed\nOrder # 5 processed\nFinal count value: 6',
         pt: 'Objetivo:\nExecute o código e acompanhe como o contador muda a cada volta do loop while. Observe que o loop continua enquanto a condição for verdadeira e para no primeiro valor que falha na verificação. Depois mude o limite, preveja quantas iterações ocorrerão e qual será o valor final do contador, e execute para confirmar.\n\nSaída com o limite original de 5:\nPedido nº 1 processado\nPedido nº 2 processado\nPedido nº 3 processado\nPedido nº 4 processado\nPedido nº 5 processado\nValor final do contador: 6'
       },
-      starterCode: `count = 1
-while count <= 5:
-    print("Order #", count, "processed")
-    count += 1
+      starterCode: `count = 1  # start counting at the first order
+while count <= 5:  # keep looping while the count is 5 or less
+    print("Order #", count, "processed")  # handle the current order
+    count += 1  # move to the next order so the loop can end
 
-print("Final count value:", count)`,
+print("Final count value:", count)  # show the count after the loop stops`,
       hints: [
         { en: 'After the loop, count = 6 — it is the first value that made the condition False', pt: 'Após o loop, count = 6 — é o primeiro valor que tornou a condição False' }
       ]
@@ -2303,13 +2303,13 @@ print(total)              # 60 ✅
         en: 'Goal:\nRun the code and watch how a for loop processes each item in a list, one at a time. Observe that no counter is needed — the loop automatically visits every element. Then add a fourth item to the list before the loop, predict what changes in the output, and run to confirm.\n\nOutput before your change:\nQueue size: 3\nProcessing: Alice\nProcessing: Bob\nProcessing: Carlos\nQueue complete!',
         pt: 'Objetivo:\nExecute o código e veja como um loop for processa cada item de uma lista, um por vez. Observe que não é preciso contador — o loop visita automaticamente cada elemento. Depois adicione um quarto item à lista antes do loop, preveja o que muda na saída e execute para confirmar.\n\nSaída antes da sua alteração:\nTamanho da fila: 3\nProcessando: Alice\nProcessando: Bob\nProcessando: Carlos\nFila concluída!'
       },
-      starterCode: `clients = ["Alice", "Bob", "Carlos"]
-print("Queue size:", len(clients))
+      starterCode: `clients = ["Alice", "Bob", "Carlos"]  # the list of clients to work through
+print("Queue size:", len(clients))  # count how many are in the queue
 
-for name in clients:
-    print("Processing:", name)
+for name in clients:  # visit each client one at a time
+    print("Processing:", name)  # handle the current client
 
-print("Queue complete!")`,
+print("Queue complete!")  # runs once, after every client is done`,
       hints: [
         { en: 'Add this line BEFORE the for loop: clients.append("Eva")', pt: 'Adicione esta linha ANTES do for loop: clients.append("Eva")' }
       ]

@@ -206,12 +206,12 @@ print("oi")`
         en: 'Goal:\nThis code is complete. Run it and observe how text and numbers are displayed, and how Python calculates a sum from two values.\n\nThen change "Alice" to your own name and run again to see the output change.\n\nOutput:\nWelcome to Python!\nMy name is Alice\nMy age is 28\nIn 10 years I\'ll be 38\n\nThis is my first program!',
         pt: 'Objetivo:\nEste código está completo. Execute-o e observe como texto e números são exibidos, e como o Python calcula uma soma a partir de dois valores.\n\nDepois troque "Alice" pelo seu próprio nome e execute novamente para ver a saída mudar.\n\nSaída:\nBem-vindo ao Python!\nMeu nome é Alice\nMinha idade é 28\nDaqui a 10 anos eu terei 38\n\nEste é o meu primeiro programa!'
       },
-      starterCode: `print("Welcome to Python!")
-print("My name is", "Alice")
-print("My age is", 28)
-print("In 10 years I'll be", 28 + 10)
-print()
-print("This is my first program!")`,
+      starterCode: `print("Welcome to Python!")  # greet the reader
+print("My name is", "Alice")  # show a label next to a name
+print("My age is", 28)  # show a label next to a number
+print("In 10 years I'll be", 28 + 10)  # let Python do the sum before printing
+print()  # print a blank line to separate the sections
+print("This is my first program!")  # close with a final message`,
       hints: [
         { en: 'Click Run and watch each line print in order', pt: 'Clique em Executar e veja cada linha imprimir em ordem' },
         { en: 'Change "Alice" (keep the quotes!) and run again', pt: 'Troque "Alice" (mantenha as aspas!) e rode de novo' }

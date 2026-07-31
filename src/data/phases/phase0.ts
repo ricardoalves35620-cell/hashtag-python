@@ -30,7 +30,7 @@ export const phase0: Phase = {
         en: 'Goal:\nRun the code and observe how a variable appears inside a print statement. A text label is combined with the value stored in the variable file_name.\n\nThen change the text stored in file_name, run again, and notice which part of the output changes.\n\nOutput:\nRunning: meu_primeiro.py\nPython is ready',
         pt: 'Objetivo:\nExecute o código e observe como uma variável aparece dentro de um print. Um rótulo de texto é combinado com o valor guardado na variável file_name.\n\nDepois mude o texto guardado em file_name, execute novamente e perceba qual parte da saída muda.\n\nSaída:\nExecutando: meu_primeiro.py\nO Python está pronto'
       },
-      starterCode: 'file_name = "meu_primeiro.py"\nprint("Running:", file_name)\nprint("Python is ready")',
+      starterCode: 'file_name = "meu_primeiro.py"  # name the file we are pretending to run\nprint("Running:", file_name)  # announce which file is starting\nprint("Python is ready")  # confirm the environment is ready',
       hints: [
         { en: 'Before running, predict the two lines you expect to see. This turns execution into a test of your reasoning.', pt: 'Antes de executar, preveja as duas linhas que espera ver. Isso transforma a execução em um teste do seu raciocínio.' },
         { en: 'The variable file_name stores text. The first print combines a label with that stored value.', pt: 'A variável file_name guarda um texto. O primeiro print combina um rótulo com esse valor guardado.' },
