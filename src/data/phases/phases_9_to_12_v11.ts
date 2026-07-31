@@ -301,20 +301,20 @@ for material, esperado, recebido in entregas:
     exercise(
       'p9-guided-cell',
       b('🟢 Guided — read one cell safely', '🟢 Guiado — leia uma célula com segurança'),
-      b('Goal:\nComplete the function cell_at so it returns the value found at the given row and column in a nested list (table).\n\nProgram requirements\n\n- Blank 1 — the row index\n- Blank 2 — the column index\n\nExample, accessing row 0 and column 1 in a table of colors:\nblue', 'Objetivo:\nComplete a função cell_at para que ela retorne o valor encontrado na linha e coluna indicadas de uma lista aninhada (tabela).\n\nRequisitos do programa\n\n- Lacuna 1 — o índice da linha\n- Lacuna 2 — o índice da coluna\n\nExemplo, acessando a linha 0 e coluna 1 de uma tabela de cores:\nblue'),
+      b('Goal:\nComplete the function cell_at so it returns the value found at the given row and column in a nested list (table).\n\nProgram requirements\n\n- Blank 1 — the row index\n- Blank 2 — the column index\n\nExample, accessing row 0 and column 1 in a table of colors:\nblue', 'Objetivo:\nComplete a função cell_at para que ela retorne o valor encontrado na linha e coluna indicadas de uma lista aninhada (tabela).\n\nRequisitos do programa\n\n- Lacuna 1 — o índice da linha\n- Lacuna 2 — o índice da coluna\n\nExemplo, acessando a linha 0 e coluna 1 de uma tabela de cores:\nazul'),
       b(`def cell_at(table, row, column):
     # First select the row, then select the column.
     return table[___][___]`, `def cell_at(table, row, column):
     # Primeiro selecione a linha, depois selecione a coluna.
     return table[___][___]`),
-      b('blue', 'blue'),
+      b('blue', 'azul'),
       [
         b('Replace the first blank with row and the second with column.', 'Substitua a primeira lacuna por row e a segunda por column.'),
         b('Read table[row] first; its result is another list.', 'Leia table[row] primeiro; o resultado é outra lista.'),
         b('Do not print the sample answer. Return the selected value.', 'Não imprima a resposta do exemplo. Retorne o valor selecionado.'),
       ],
       phase9Requirements,
-      exactTest('p9-guided-visible', b('Reads a normal rectangular table', 'Lê uma tabela retangular normal'), `print(cell_at([["red", "blue"], ["green", "yellow"]], 0, 1))`, b('blue', 'blue'), 60, phase9Requirements),
+      exactTest('p9-guided-visible', b('Reads a normal rectangular table', 'Lê uma tabela retangular normal'), `print(cell_at([["red", "blue"], ["green", "yellow"]], 0, 1))`, b('blue', 'azul'), 60, phase9Requirements),
       exactTest('p9-guided-hidden-accent', b('Preserves an accented value in another position', 'Preserva um valor acentuado em outra posição'), `print(cell_at([["cafe"], ["ação"]], 1, 0))`, b('ação', 'ação'), 40, phase9Requirements, true),
       'guided',
       b('Follow two indexes in the correct order.', 'Seguir dois índices na ordem correta.'),
