@@ -8,6 +8,9 @@ export function resolveLocalizedText(value: LocalizedText | undefined, lang: Lan
 }
 
 const exactPt: Record<string, string> = {
+  // ex21_fill: the word fallback produced '# preencha: pick one' (Portunol).
+  'fill: pick one': 'preencha: escolha um',
+  'fill: random int': 'preencha: inteiro aleatório',
   // Phases 52-68 lesson comments — authored 2026-07-30.
   "pyproject.toml defines package metadata and tools":
     "pyproject.toml define os metadados e as ferramentas do pacote",
@@ -626,6 +629,7 @@ const literalPt: Record<string, string> = {
   'Return the result of one arithmetic operation.':
     'Retorne o resultado de uma operação aritmética.',
   'Simulated repair value: $': 'Valor simulado do reparo: $',
+  'Audit:': 'Auditoria:',
   'They are': 'Eles são',
   'This runs about 30% of the time': 'Isso executa cerca de 30% das vezes',
   'This runs about 70% of the time': 'Isso executa cerca de 70% das vezes',

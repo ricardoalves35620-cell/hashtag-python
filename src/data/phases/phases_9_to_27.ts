@@ -147,7 +147,7 @@ print(random.randint(1, 100))    # and again, identical` },
       title: { en: '🟡 Fill the Gap', pt: '🟡 Preencha a Lacuna' },
       description: {
         en: 'Goal:\nThis exercise teaches how to use random.choice() to pick one item from a list and random.randint() to generate a random integer in a range.\n\nThe starter code has 2 blanks for you to fill.\n\nBlank 1 — use the name of the function from the random module that picks one item from a list\nBlank 2 — use the name of the function from the random module that generates a random integer between two bounds, inclusive\n\nThe program picks a random client name from a list and generates a random repair value between 500 and 10000.\n\nExample output (values vary because the selection is random):\nAudit: Carlos\nSimulated repair value: $ 4782',
-        pt: 'Objetivo:\nEste exercício ensina como usar random.choice() para escolher um item de uma lista e random.randint() para gerar um inteiro aleatório dentro de um intervalo.\n\nO código inicial tem 2 lacunas para você preencher.\n\nLacuna 1 — use o nome da função do módulo random que escolhe um item de uma lista\nLacuna 2 — use o nome da função do módulo random que gera um inteiro aleatório entre dois limites, incluindo ambos\n\nO programa escolhe um nome de cliente aleatório de uma lista e gera um valor de reparo aleatório entre 500 e 10000.\n\nExemplo de saída (os valores variam porque a seleção é aleatória):\nAudit: Carlos\nSimulated repair value: $ 4782'
+        pt: 'Objetivo:\nEste exercício ensina como usar random.choice() para escolher um item de uma lista e random.randint() para gerar um inteiro aleatório dentro de um intervalo.\n\nO código inicial tem 2 lacunas para você preencher.\n\nLacuna 1 — use o nome da função do módulo random que escolhe um item de uma lista\nLacuna 2 — use o nome da função do módulo random que gera um inteiro aleatório entre dois limites, incluindo ambos\n\nO programa escolhe um nome de cliente aleatório de uma lista e gera um valor de reparo aleatório entre 500 e 10000.\n\nExemplo de saída (os valores variam porque a seleção é aleatória):\nAuditoria: Carlos\nValor simulado do reparo: $ 4782'
       },
       starterCode: `import random
 
@@ -162,7 +162,7 @@ print("Simulated repair value: $", repair_value)`,
         { en: 'random.choice() picks one item', pt: 'random.choice() escolhe um item' },
         { en: 'random.randint(min, max) picks a random int', pt: 'random.randint(min, max) gera inteiro aleatório' }
       ],
-      sampleOutput: { en: 'Audit: Carlos\nSimulated repair value: $ 4782', pt: 'Audit: Carlos\nSimulated repair value: $ 4782' }
+      sampleOutput: { en: 'Audit: Carlos\nSimulated repair value: $ 4782', pt: 'Auditoria: Carlos\nValor simulado do reparo: $ 4782' }
     },
     {
       id: 'ex21_zero',
