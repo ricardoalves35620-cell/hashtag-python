@@ -19,6 +19,16 @@ Set-Location $PSScriptRoot
 git pull --ff-only
 if ($LASTEXITCODE -ne 0) { throw "git pull failed - resolve local state first" }
 
+# The prebuild copies the Pyodide runtime out of node_modules/pyodide. A checkout
+# whose last npm install predates that devDependency fails with "pyodide not
+# installed" — seen on the owner's machine 2026-07-30. npm ci also picks up any
+# lockfile changes a pull just brought in.
+if (-not (Test-Path "node_modules\pyodide")) {
+  Write-Host "node_modules is missing pyodide - running npm ci once..."
+  npm ci
+  if ($LASTEXITCODE -ne 0) { throw "npm ci failed" }
+}
+
 if (-not $SkipBuild) {
   npm run build
   if ($LASTEXITCODE -ne 0) { throw "build failed" }
