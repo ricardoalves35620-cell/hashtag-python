@@ -4,6 +4,7 @@
 #   .\run-learner.ps1 -Phases 0-20         # a range
 #   .\run-learner.ps1 -Phases 40-68 -Langs pt
 #   .\run-learner.ps1 -SkipBuild           # reuse the last build in dist/
+#   .\run-learner.ps1 -Headed              # visible browser: watch the learner work
 #
 # This wrapper does ONLY the things Node cannot: pull, install, build, browser.
 # Everything else — the server, the credential loading, the agent, the cleanup —
@@ -17,7 +18,8 @@
 param(
   [string]$Phases = "0-68",
   [string]$Langs = "en,pt",
-  [switch]$SkipBuild
+  [switch]$SkipBuild,
+  [switch]$Headed
 )
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
@@ -42,5 +44,7 @@ if (-not $SkipBuild) {
 npx playwright install chromium
 if ($LASTEXITCODE -ne 0) { throw "playwright install failed" }
 
-node scripts\audit\run-learner.mjs --phases=$Phases --langs=$Langs
+$extra = @()
+if ($Headed) { $extra += "--headed" }
+node scripts\audit\run-learner.mjs --phases=$Phases --langs=$Langs @extra
 exit $LASTEXITCODE

@@ -44,6 +44,7 @@ const arg = (name: string, fallback: string) =>
 const [FROM, TO] = arg('phases', '0-68').split('-').map(Number)
 const LANGS = arg('langs', 'en,pt').split(',').filter(Boolean) as Array<'en' | 'pt'>
 const KEEP_PROGRESS = process.argv.includes('--keep-progress')
+const HEADED = process.argv.includes('--headed')
 const REPORT_DIR = 'audit-reports'
 
 /**
@@ -247,8 +248,17 @@ async function signIn(page: Page) {
 /** The app's own reset-progress flow, same one reset-progress.spec.ts covers. */
 async function resetServerProgress(page: Page, lang: 'en' | 'pt') {
   await page.goto(`${BASE}/profile`, { waitUntil: 'domcontentloaded' })
+  // Session established AND page rendered — the spec's own assertion. The page
+  // shows a loading screen until the session resolves; asking for the reset
+  // button during that window times out while nothing is actually wrong.
+  const emailField = page.locator('input[type="email"]').first()
+  await emailField.waitFor({ state: 'visible', timeout: 30_000 })
+  for (let i = 0; i < 60; i++) {
+    if ((await emailField.inputValue().catch(() => '')) === AUDIT_EMAIL) break
+    await page.waitForTimeout(500)
+  }
   const open = page.getByTestId('reset-progress-open')
-  await open.waitFor({ state: 'visible', timeout: 20_000 })
+  await open.scrollIntoViewIfNeeded({ timeout: 20_000 })
   await open.click()
   await page.getByTestId('reset-progress-confirmation').fill(lang === 'pt' ? 'RESETAR' : 'RESET')
   await page.getByRole('dialog').getByRole('button', { name: /Apagar progresso e recome|Delete progress and start over/i }).click()
@@ -260,9 +270,11 @@ async function resetServerProgress(page: Page, lang: 'en' | 'pt') {
 // sandbox sets HP_CHROMIUM=/opt/pw-browsers/chromium). Hardcoding the sandbox
 // path as the DEFAULT made every Windows run fail with a path from another
 // machine's filesystem — seen on the owner's machine 2026-07-30.
-const browser = await chromium.launch(
-  process.env.HP_CHROMIUM ? { executablePath: process.env.HP_CHROMIUM } : {},
-)
+const browser = await chromium.launch({
+  ...(process.env.HP_CHROMIUM ? { executablePath: process.env.HP_CHROMIUM } : {}),
+  // --headed opens a visible window so the owner can watch the learner work.
+  headless: !HEADED,
+})
 const phases = ALL_PHASES.filter(p => p.id >= FROM && p.id <= TO).sort((a, b) => a.id - b.id)
 
 /**
