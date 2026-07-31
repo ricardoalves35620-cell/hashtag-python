@@ -1622,12 +1622,36 @@ print("Fee:", fee)`,
       id: 'ex6_zero',
       title: { en: '🔴 From Scratch: Movie Rating System', pt: '🔴 Do Zero: Sistema de Avaliação de Filmes' },
       description: {
-        en: 'Goal:\nWrite a movie rating classifier that turns a numeric score into a recommendation.\n\nProgram requirements\n\n1. Set up\n- Store a rating score from 0 to 10.\n\n2. Classify into one band\n- 9 or above is highly recommended.\n- 7 up to just under 9 is worth watching.\n- 5 up to just under 7 is average.\n- Below 5 is not recommended.\n\n3. Display\n- The recommendation for the score you stored.\n\nOnly one band can apply to a score, so make sure the boundaries do not overlap.\n\nExample, for a score of 9.2:\n👍 Highly Recommended',
-        pt: 'Objetivo:\nEscreva um classificador de avaliação de filmes que transforma uma nota em uma recomendação.\n\nRequisitos do programa\n\n1. Preparar\n- Guarde uma nota de 0 a 10.\n\n2. Classificar numa faixa\n- 9 ou mais é muito recomendado.\n- De 7 até menos de 9 vale a pena assistir.\n- De 5 até menos de 7 é mediano.\n- Abaixo de 5 não é recomendado.\n\n3. Mostrar\n- A recomendação para a nota que você guardou.\n\nSó uma faixa pode valer para cada nota, então garanta que os limites não se sobreponham.\n\nExemplo, para uma nota de 9.2:\n👍 Muito Recomendado'
+        en: 'Goal:\nWrite a movie rating classifier that turns a numeric score into a recommendation.\n\nProgram requirements\n\n1. Gather input\n- Ask for a rating score from 0 to 10.\n\n2. Classify into one band\n- 9 or above is highly recommended.\n- 7 up to just under 9 is worth watching.\n- 5 up to just under 7 is average.\n- Below 5 is not recommended.\n\n3. Display\n- The recommendation for the score you were given.\n\nOnly one band can apply to a score, so make sure the boundaries do not overlap.\n\nExample, for a score of 9.2:\n👍 Highly Recommended',
+        pt: 'Objetivo:\nEscreva um classificador de avaliação de filmes que transforma uma nota em uma recomendação.\n\nRequisitos do programa\n\n1. Receber os dados\n- Pergunte uma nota de 0 a 10.\n\n2. Classificar numa faixa\n- 9 ou mais é muito recomendado.\n- De 7 até menos de 9 vale a pena assistir.\n- De 5 até menos de 7 é mediano.\n- Abaixo de 5 não é recomendado.\n\n3. Mostrar\n- A recomendação para a nota recebida.\n\nSó uma faixa pode valer para cada nota, então garanta que os limites não se sobreponham.\n\nExemplo, para uma nota de 9.2:\n👍 Muito Recomendado'
       },
       starterCode: `# Movie rating classifier:`,
+      // Behavioural grading. The reference reads a score and classifies it; the cases
+      // walk each band AND its lower boundary (9.0, 7.0, 5.0), which is where the
+      // waterfall order is easy to get wrong. Validated: a solution that checks the
+      // bands in the opposite order passes; one that always says "Highly Recommended"
+      // (ignoresInput) and one that uses > 9 instead of >= 9 both fail.
+      behaviour: {
+        reference: `score = float(input("Score (0-10): "))
+if score >= 9:
+    print("👍 Highly Recommended")
+elif score >= 7:
+    print("Worth Watching")
+elif score >= 5:
+    print("Average")
+else:
+    print("Not Recommended")`,
+        cases: [
+          { inputs: ['9.2'], label: { en: 'the example in the task', pt: 'o exemplo do enunciado' }, visible: true },
+          { inputs: ['9.0'], label: { en: 'exactly on the top boundary', pt: 'exatamente no limite superior' } },
+          { inputs: ['7.0'], label: { en: 'exactly on the worth-watching boundary', pt: 'exatamente no limite de vale assistir' } },
+          { inputs: ['6.0'], label: { en: 'an average score', pt: 'uma nota mediana' } },
+          { inputs: ['5.0'], label: { en: 'exactly on the average boundary', pt: 'exatamente no limite de mediano' } },
+          { inputs: ['2.0'], label: { en: 'a low score', pt: 'uma nota baixa' } },
+        ],
+      },
       hints: [
-        { en: 'Store the score directly, e.g. score = 9.2 — the example in the task uses a decimal', pt: 'Guarde a nota diretamente, ex.: score = 9.2 — o exemplo do enunciado usa decimal' },
+        { en: 'Read the score with input(), then float(), e.g. score = float(input("Score: "))', pt: 'Leia a nota com input() e depois float(), ex.: score = float(input("Nota: "))' },
         { en: 'Waterfall order (highest first): if score >= 9, elif score >= 7, elif score >= 5, else', pt: 'Ordem cachoeira (maior primeiro): if score >= 9, elif score >= 7, elif score >= 5, else' }
       ],
       sampleOutput: { en: '👍 Highly Recommended', pt: '👍 Muito Recomendado' }
@@ -1965,6 +1989,28 @@ print("Restock needed!")`,
           points: 100,
           codeRequirements: [{ kind: 'node', value: 'While' }],
         }],
+      },
+      // Behavioural grading, on top of the While requirement above. One authored input
+      // set could be satisfied by printing 10200 and 2550.0 as literals; these cases feed
+      // four different batches, so the total and the average must actually be computed.
+      // Validated: a for-loop solution passes the behaviour gate (the While requirement is
+      // what enforces the loop kind); a hard-coded total (ignoresInput) and a wrong average
+      // both fail.
+      behaviour: {
+        reference: `total = 0
+count = 1
+while count <= 4:
+    value = int(input("Order value: "))
+    total = total + value
+    count = count + 1
+print("Total:", total)
+print("Average:", total / 4)`,
+        cases: [
+          { inputs: ['2550', '2550', '2550', '2550'], label: { en: 'the example in the task', pt: 'o exemplo do enunciado' }, visible: true },
+          { inputs: ['1000', '2000', '3000', '4000'], label: { en: 'four different values', pt: 'quatro valores diferentes' } },
+          { inputs: ['100', '200', '300', '400'], label: { en: 'small values', pt: 'valores pequenos' } },
+          { inputs: ['5000', '1000', '2000', '200'], label: { en: 'an uneven batch', pt: 'um lote irregular' } },
+        ],
       },
       hints: [
         { en: 'total = 0 and count = 1 before the loop', pt: 'total = 0 e count = 1 antes do loop' },

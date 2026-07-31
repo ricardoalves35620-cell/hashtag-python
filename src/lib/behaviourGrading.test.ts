@@ -70,11 +70,19 @@ describe('the pilot is scoped to exercises it can actually judge', () => {
     expect(guided.behaviour, 'an observation exercise has no single correct behaviour').toBeUndefined()
   })
 
-  it('leaves the from-scratch exercise alone until it takes an input', () => {
-    // "Store a rating score" means the learner picks the value, so there is exactly one
-    // behaviour and it is theirs. A reference storing 9.2 fails everyone who stored 8.
+  it('grades the from-scratch exercise once it takes an input', () => {
+    // It used to "Store a rating score" — the learner picked the value, so there was
+    // exactly one behaviour and it was theirs; a reference storing 9.2 failed everyone
+    // who stored 8, so behaviour grading was correctly left off. 2026-07-31 the task was
+    // changed to ASK for the score (input()), the condition this module always named as
+    // the one that makes an exercise a candidate. So it now carries a spec whose
+    // reference reads that input rather than storing a fixed value.
     const zero = phase6.exercises.find((e: any) => e.id === 'ex6_zero')
-    expect(zero.behaviour).toBeUndefined()
+    expect(zero.behaviour).toBeDefined()
+    const reference = typeof zero.behaviour.reference === 'string'
+      ? zero.behaviour.reference
+      : zero.behaviour.reference.en
+    expect(reference).toContain('input(')
   })
 
   it('keeps ex6_zero internally consistent, since its hints contradicted its task', () => {

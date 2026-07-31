@@ -625,6 +625,31 @@ while amount is None:
         amount = None
 
 print("Confirmed total: $", amount - 250)`,
+      // Behavioural grading. The error MESSAGE is the learner's to word, so the reference
+      // prints only the guaranteed line ("Confirmed total: $ N"); producesExpected allows
+      // the learner's extra "Invalid:" lines. The invalid-then-valid cases discriminate by
+      // whether the program survives bad input at all — a program without try/except
+      // crashes on "abc", and a hard-coded total prints the same figure for every case
+      // (ignoresInput). Validated: the original starter and a differently-worded solution
+      // both pass; crash-on-invalid and hard-coded both fail.
+      behaviour: {
+        reference: `amount = None
+while amount is None:
+    try:
+        value = int(input("Order amount: $"))
+        if value > 0:
+            amount = value
+    except ValueError:
+        pass
+print("Confirmed total: $", amount - 250)`,
+        cases: [
+          { inputs: ['5000'], label: { en: 'the example in the task', pt: 'o exemplo do enunciado' }, visible: true },
+          { inputs: ['abc', '5000'], label: { en: 'text before a valid number', pt: 'texto antes de um número válido' } },
+          { inputs: ['-100', '600'], label: { en: 'a negative value is rejected', pt: 'um valor negativo é rejeitado' } },
+          { inputs: ['0', 'xyz', '1200'], label: { en: 'zero and text before a valid number', pt: 'zero e texto antes de um número válido' } },
+        ],
+        timeoutMs: 3500,
+      },
       hints: [{ en: 'Set amount = None before loop; reset to None on error', pt: 'Defina amount = None antes do loop; redefina como None no erro' }],
       sampleOutput: { en: 'Confirmed total: $ 4750', pt: 'Total confirmado: $ 4750' }
     }

@@ -714,7 +714,7 @@ def _ex6_fill():
 
 @solution('ex6_zero')
 def _ex6_zero():
-    score = 9.2
+    score = float(input("Score (0-10): "))
     if score >= 9:
         print("\U0001f44d Highly Recommended")
     elif score >= 7:

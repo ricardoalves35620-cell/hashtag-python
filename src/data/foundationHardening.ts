@@ -61,6 +61,9 @@ const SUGGESTED_INPUTS: Record<string, string[]> = {
   ex5_fill: ['8000', '10'],
   ex6_guided: ['15000'],
   ex6_fill: ['24'],
+  // ex6_zero now reads the score (converted to input() so it can be behaviour-graded).
+  // The derived matches-check needs a value or the program EOFErrors on input().
+  ex6_zero: ['9.2'],
   ex23_zero: ['abc', '5000'],
   // From-scratch exercises: the learner writes the input() calls, so the starter
   // contains none and the count guard below cannot infer them. Values come from the
