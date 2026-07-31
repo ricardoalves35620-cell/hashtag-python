@@ -65,6 +65,12 @@ DISCLOSURE = {
     'ClassDef': [r'class', r'classe'],
     'Lambda': [r'lambda'],
     'With': [r'with ', r'open', r'file', r'arquivo'],
+    # Added 2026-07-30: generators and async were graded structures with no way to
+    # disclose them — every such requirement was flagged forever, which buries the
+    # real findings under permanent ones.
+    'Yield': [r'yield', r'generator', r'gerador'],
+    'AsyncFunctionDef': [r'async'],
+    'Await': [r'await'],
     'Global': [r'global'],
     'Nonlocal': [r'nonlocal'],
     'Assert': [r'assert'],

@@ -1350,7 +1350,7 @@ REFERENCES['p42-practice'] = 'def make_multiplier(factor):\n    """Return a func
 
 REFERENCES['p42-transfer'] = 'import functools\n\n\ndef count_calls(function):\n    """Wrap a function so it counts how many times it was called.\n\n    Return the wrapper. It must expose the tally as wrapper.calls and still\n    return whatever the original function returned.\n    """\n    @functools.wraps(function)\n    def wrapper(*args, **kwargs):\n        wrapper.calls += 1\n        return function(*args, **kwargs)\n\n    wrapper.calls = 0\n    return wrapper\n'
 
-REFERENCES['p43-practice'] = 'from contextlib import contextmanager\n\n@contextmanager\ndef managed_flag(events):\n    events.append("enter")\n    try:\n        yield\n    finally:\n        events.append("exit")\n\n# Printless use so the required With node exists without polluting stdout.\nwith managed_flag([]):\n    pass\n'
+REFERENCES['p43-practice'] = 'from contextlib import contextmanager\n\n@contextmanager\ndef managed_flag(events):\n    events.append("enter")\n    try:\n        yield\n    finally:\n        events.append("exit")\n'
 
 REFERENCES['p43-transfer'] = 'from contextlib import contextmanager\n\n\n@contextmanager\ndef collecting():\n    """A context manager that collects everything appended inside it.\n\n    Entering gives a fresh list. On exit the list must be left untouched so the\n    caller can still read what was collected.\n    """\n    items = []\n    yield items\n'
 

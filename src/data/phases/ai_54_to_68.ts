@@ -62,7 +62,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "dot_product",
-      "starterCode": "def dot_product(a, b):\n    \"\"\"Return the dot product and reject different lengths.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def dot_product(a, b):\n    \"\"\"Pair the components with zip, return the dot product, and reject different lengths.\"\"\"\n    pass",
+        "pt": "def dot_product(a, b):\n    \"\"\"Combine os componentes com zip, retorne o produto escalar e rejeite comprimentos diferentes.\"\"\"\n    pass"
+      },
       "publicAfterCode": "print(dot_product([1, 2, 3], [4, 5, 6]))",
       "publicExpected": "32",
       "hiddenAfterCode": "try:\n    dot_product([1], [1, 2])\nexcept ValueError:\n    print(\"dimension-mismatch\")",

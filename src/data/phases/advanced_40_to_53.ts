@@ -62,7 +62,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "take",
-      "starterCode": "def take(iterable, count):\n    \"\"\"Return at most count items from any iterable.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def take(iterable, count):\n    \"\"\"Return at most count items from any iterable, using iter() and next().\"\"\"\n    pass",
+        "pt": "def take(iterable, count):\n    \"\"\"Retorne no máximo count itens de qualquer iterável, usando iter() e next().\"\"\"\n    pass"
+      },
       "publicAfterCode": "print(take(iter([1, 2, 3]), 2))",
       "publicExpected": "[1, 2]",
       "hiddenAfterCode": "print(take((x for x in range(3)), 10))",
@@ -450,10 +453,6 @@ const specs: ConceptPhaseSpec[] = [
         },
         {
           "kind": "node",
-          "value": "With"
-        },
-        {
-          "kind": "node",
           "value": "Yield"
         }
       ]
@@ -819,7 +818,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "gather_values",
-      "starterCode": "import asyncio\n\nasync def gather_values(values):\n    \"\"\"Double values concurrently and preserve input order.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "import asyncio\n\nasync def gather_values(values):\n    \"\"\"Double values concurrently and preserve input order.\n\n    Create one coroutine per value and await asyncio.gather to collect the\n    results.\n    \"\"\"\n    pass",
+        "pt": "import asyncio\n\nasync def gather_values(values):\n    \"\"\"Dobre os valores de forma concorrente e preserve a ordem de entrada.\n\n    Crie uma corrotina por valor e use await com asyncio.gather para coletar\n    os resultados.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(await gather_values([1, 2, 3]))",
       "publicExpected": "[2, 4, 6]",
       "hiddenAfterCode": "print(await gather_values([]))",
@@ -1303,8 +1305,8 @@ const specs: ConceptPhaseSpec[] = [
     "practice": {
       "functionName": "normalize_response",
       "starterCode": {
-        "en": "def normalize_response(status, payload):\n    \"\"\"Normalize success and error responses into one stable shape.\n\n    Return a dict with keys \"ok\", \"data\" and \"error\". A status in the 200s is\n    a success: \"ok\" is True, \"data\" is the payload, \"error\" is None. Anything\n    else is a failure: \"ok\" is False, \"data\" is None, and \"error\" holds the\n    message found at payload[\"error\"].\n    \"\"\"\n    pass",
-        "pt": "def normalize_response(status, payload):\n    \"\"\"Normalize respostas de sucesso e de erro em um único formato estável.\n\n    Retorne um dict com as chaves \"ok\", \"data\" e \"error\". Um status na faixa\n    200 é sucesso: \"ok\" é True, \"data\" é o payload e \"error\" é None. Qualquer\n    outro é falha: \"ok\" é False, \"data\" é None e \"error\" recebe a mensagem em\n    payload[\"error\"].\n    \"\"\"\n    pass"
+        "en": "def normalize_response(status, payload):\n    \"\"\"Normalize success and error responses into one stable shape.\n\n    Return a dict with keys \"ok\", \"data\" and \"error\". When the status is in\n    the 200s: \"ok\" is True, \"data\" is the payload, \"error\" is None.\n    Otherwise: \"ok\" is False, \"data\" is None, and \"error\" holds the message\n    found at payload[\"error\"].\n    \"\"\"\n    pass",
+        "pt": "def normalize_response(status, payload):\n    \"\"\"Normalize respostas de sucesso e de erro em um único formato estável.\n\n    Retorne um dict com as chaves \"ok\", \"data\" e \"error\". Quando o status está\n    na faixa 200: \"ok\" é True, \"data\" é o payload e \"error\" é None. Caso\n    contrário: \"ok\" é False, \"data\" é None e \"error\" recebe a mensagem em\n    payload[\"error\"].\n    \"\"\"\n    pass"
       },
       "publicAfterCode": "print(normalize_response(201, {\"id\": 7})[\"ok\"])",
       "publicExpected": "True",
@@ -1423,7 +1425,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "practice": {
       "functionName": "redact_record",
-      "starterCode": "def redact_record(record, secret_keys):\n    \"\"\"Return a new dictionary with secret values replaced by ***.\"\"\"\n    pass",
+      "starterCode": {
+        "en": "def redact_record(record, secret_keys):\n    \"\"\"Return a new dictionary with secret values replaced by ***.\n\n    Build it with a dict comprehension.\n    \"\"\"\n    pass",
+        "pt": "def redact_record(record, secret_keys):\n    \"\"\"Retorne um novo dicionário com os valores secretos trocados por ***.\n\n    Monte-o com uma compreensão de dicionário (dict comprehension).\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(redact_record({\"name\": \"Ana\", \"token\": \"abc\"}, {\"token\"}))",
       "publicExpected": "{'name': 'Ana', 'token': '***'}",
       "hiddenAfterCode": "original = {\"password\": \"p\", \"id\": 3}\nprint(redact_record(original, {\"password\"}))\nprint(original[\"password\"])",
