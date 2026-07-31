@@ -34,6 +34,21 @@ if (-not $SkipBuild) {
   if ($LASTEXITCODE -ne 0) { throw "build failed" }
 }
 
+# The audit account: the learner signs in, and between language passes it uses
+# the app's own reset-progress flow so no answers from the first pass survive
+# into the second. Same .env.audit.local convention as run-auditor.ps1.
+$envFile = Join-Path $PSScriptRoot ".env.audit.local"
+if (Test-Path $envFile) {
+  Get-Content $envFile | ForEach-Object {
+    if ($_ -match '^\s*([^#][^=]+)=(.*)$') {
+      [Environment]::SetEnvironmentVariable($Matches[1].Trim(), $Matches[2].Trim(), "Process")
+    }
+  }
+}
+if (-not $env:AUDIT_USER_EMAIL -or -not $env:AUDIT_USER_PASSWORD) {
+  Write-Host "No audit account found in .env.audit.local - the learner will walk as a GUEST (no sync coverage)." -ForegroundColor Yellow
+}
+
 # Playwright launches its own managed Chromium — no path guessing (the first
 # version walked ms-playwright folder names and broke on layout differences).
 # install is a fast no-op when the browser is already present.

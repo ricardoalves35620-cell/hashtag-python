@@ -209,6 +209,52 @@ function languageLeaks(text: string, neutral: Set<string> = new Set()): string[]
     .slice(0, 3)
 }
 
+/**
+ * Signed in when the audit account is configured, guest when it is not.
+ *
+ * A dedicated test account exists precisely so audits exercise what a real
+ * learner has: Supabase-synced progress, the outbox, session handling. Guest
+ * mode never touches any of it. The price of an account is that progress
+ * lives on the SERVER, shared across browser contexts — so every language
+ * pass must open with the app's own reset-progress flow, or the English
+ * pass's synced completions leak into the Portuguese pass and the run grades
+ * the wrong exercise (the same corruption the fresh-context rule exists for,
+ * one storage layer up).
+ */
+const AUDIT_EMAIL = process.env.AUDIT_USER_EMAIL?.trim()
+const AUDIT_PASSWORD = process.env.AUDIT_USER_PASSWORD?.trim()
+const SIGNED_IN = Boolean(AUDIT_EMAIL && AUDIT_PASSWORD)
+
+async function signIn(page: Page) {
+  // Decide from the DOM, not the URL: the client redirects once the session
+  // resolves, and checking page.url() right after goto races that redirect.
+  await page.goto(`${BASE}/login`, { waitUntil: 'domcontentloaded' })
+  const password = page.locator('input[type="password"]').first()
+  const needsLogin = await password.isVisible({ timeout: 15_000 }).catch(() => false)
+  if (!needsLogin) return
+  await page.locator('input[type="email"]').first().fill(AUDIT_EMAIL!)
+  await password.fill(AUDIT_PASSWORD!)
+  await page.locator('form button[type="submit"]').first().click()
+  const loginError = page.locator('[role="alert"]').first()
+  await Promise.race([
+    page.waitForURL(url => !url.pathname.endsWith('/login'), { timeout: 25_000 }),
+    loginError.waitFor({ state: 'visible', timeout: 25_000 }).then(async () => {
+      throw new Error(`audit login failed: ${(await loginError.textContent())?.trim() || 'unknown error'}`)
+    }),
+  ])
+}
+
+/** The app's own reset-progress flow, same one reset-progress.spec.ts covers. */
+async function resetServerProgress(page: Page, lang: 'en' | 'pt') {
+  await page.goto(`${BASE}/profile`, { waitUntil: 'domcontentloaded' })
+  const open = page.getByTestId('reset-progress-open')
+  await open.waitFor({ state: 'visible', timeout: 20_000 })
+  await open.click()
+  await page.getByTestId('reset-progress-confirmation').fill(lang === 'pt' ? 'RESETAR' : 'RESET')
+  await page.getByRole('dialog').getByRole('button', { name: /Apagar progresso e recome|Delete progress and start over/i }).click()
+  await page.waitForURL(/\/phase\/0/, { timeout: 30_000 })
+}
+
 // Playwright resolves its own managed browser; forcing a path here is only for
 // environments whose browser lives outside Playwright's registry (the cloud
 // sandbox sets HP_CHROMIUM=/opt/pw-browsers/chromium). Hardcoding the sandbox
@@ -235,10 +281,24 @@ for (const lang of LANGS) {
   const context: BrowserContext = await browser.newContext({ viewport: { width: 1280, height: 1100 } })
   const page = await context.newPage()
 
-  await page.goto(BASE, { waitUntil: 'domcontentloaded' })
-  await page.waitForTimeout(1500)
-  await page.locator('.hp-guest-entry').click().catch(() => {})
-  await page.waitForTimeout(1000)
+  // Skip onboarding the way the signed-in audit specs do, and pin the pass's
+  // language BEFORE the app boots so the whole session renders in it.
+  await page.addInitScript((language: string) => {
+    localStorage.setItem('hp_lang', language)
+    localStorage.setItem('hp_onboarding_done', 'course')
+  }, lang)
+
+  if (SIGNED_IN) {
+    await signIn(page)
+    if (!KEEP_PROGRESS) await resetServerProgress(page, lang)
+    console.log(`  signed in as ${AUDIT_EMAIL}; server progress reset for a fresh ${lang.toUpperCase()} learner`)
+  } else {
+    console.log('  AUDIT_USER_EMAIL/AUDIT_USER_PASSWORD not set — walking as a guest (no sync coverage)')
+    await page.goto(BASE, { waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(1500)
+    await page.locator('.hp-guest-entry').click().catch(() => {})
+    await page.waitForTimeout(1000)
+  }
 
   /**
    * Prove the app actually booted before walking 69 phases through it.
@@ -366,6 +426,8 @@ for (const lang of LANGS) {
 
   if (!KEEP_PROGRESS) {
     // Leave nothing behind, so the next run is the same experiment as this one.
+    // Server first — the local wipe below signs the session out.
+    if (SIGNED_IN) await resetServerProgress(page, lang).catch(() => {})
     await page.evaluate(async () => {
       try { localStorage.clear(); sessionStorage.clear() } catch { /* blocked */ }
       if (indexedDB.databases) {
