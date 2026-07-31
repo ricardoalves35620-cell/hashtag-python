@@ -48,6 +48,28 @@ const MUST_STAY_SILENT = [
   '{s[\'name\']}: {area:.1f} m² → ${cost}',
 ]
 
+describe('leaksIn command syntax', () => {
+  // Added 2026-07-30: taught syntax is code, not prose. Each of these was flagged
+  // for translation, and translating any of them breaks the thing the lesson
+  // teaches (SQL keywords, git subcommands, Python's own import statement).
+  it('stays silent on SQL, git and import syntax in lesson code', () => {
+    const code = [
+      'query = "SELECT id, title FROM tasks WHERE status = ? ORDER BY id LIMIT ?"',
+      'cursor.execute("INSERT INTO tasks(status) VALUES (?)")',
+      '# git add <file>',
+      '# from {module} import {name}',
+      '# predictions = model(features)',
+      '# Pipeline([("scale", StandardScaler()), ("model", LogisticRegression())])',
+    ].join('\n')
+    expect(leaksIn('fixture', code)).toEqual([])
+  })
+
+  it('is not silenced by a keyword INSIDE prose — only by the statement shape', () => {
+    const leaks = leaksIn('fixture', 'reason = "please select the right task from the list"')
+    expect(leaks.map(leak => leak.kind)).toEqual(['output'])
+  })
+})
+
 describe('isEnglishProse', () => {
   it('still fires on prose a Portuguese learner cannot read', () => {
     const missed = REAL_LEAKS.filter(text => !isEnglishProse(text))

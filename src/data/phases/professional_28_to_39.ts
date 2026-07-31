@@ -506,7 +506,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "usage_error",
-      "starterCode": "def usage_error(args):\n    \"\"\"Return the usage error for a command line, or \"\" when it is valid.\n\n    The only valid commands are \"add <name>\" and \"list\".\n    Report exactly one problem, in this order:\n      - no arguments at all          -> \"missing command\"\n      - a command that is not known  -> \"unknown command: <name>\"\n      - add without a name           -> \"add needs a name\"\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "def usage_error(args):\n    \"\"\"Return the usage error for a command line, or \"\" when it is valid.\n\n    The only valid commands are \"add <name>\" and \"list\".\n    Report exactly one problem, in this order:\n      - no arguments at all          -> \"missing command\"\n      - a command that is not known  -> \"unknown command: <name>\"\n      - add without a name           -> \"add needs a name\"\n    \"\"\"\n    pass",
+        "pt": "def usage_error(args):\n    \"\"\"Retorne o erro de uso de uma linha de comando, ou \"\" quando ela é válida.\n\n    Os únicos comandos válidos são \"add <name>\" e \"list\".\n    Reporte exatamente um problema, nesta ordem:\n      - nenhum argumento             -> \"missing command\"\n      - um comando desconhecido      -> \"unknown command: <name>\"\n      - add sem um nome              -> \"add needs a name\"\n    Os textos entre aspas são o contrato exato: mantenha-os como estão.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print([usage_error([]), usage_error([\"remove\", \"x\"]), usage_error([\"add\"]), usage_error([\"add\", \"todo\"])])",
       "publicExpected": "['missing command', 'unknown command: remove', 'add needs a name', '']",
       "hiddenAfterCode": "print([usage_error([\"list\"]), usage_error([\"list\", \"extra\"]), usage_error([\"Add\"])])",
@@ -624,7 +627,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "subject_problems",
-      "starterCode": "def subject_problems(subjects):\n    \"\"\"Return the commit subjects that break the rules, each with its reason.\n\n    Each result is \"<subject> -> <reason>\", in the order the subjects arrive.\n    The rules, checked in this order:\n      - longer than 50 characters   -> \"too long\"\n      - does not start with a capital -> \"not capitalised\"\n      - ends with a full stop        -> \"ends with a period\"\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "def subject_problems(subjects):\n    \"\"\"Return the commit subjects that break the rules, each with its reason.\n\n    Each result is \"<subject> -> <reason>\", in the order the subjects arrive.\n    The rules, checked in this order:\n      - longer than 50 characters   -> \"too long\"\n      - does not start with a capital -> \"not capitalised\"\n      - ends with a full stop        -> \"ends with a period\"\n    \"\"\"\n    pass",
+        "pt": "def subject_problems(subjects):\n    \"\"\"Retorne os assuntos de commit que quebram as regras, cada um com o motivo.\n\n    Cada resultado é \"<subject> -> <reason>\", na ordem em que os assuntos chegam.\n    As regras, verificadas nesta ordem:\n      - mais de 50 caracteres          -> \"too long\"\n      - não começa com maiúscula       -> \"not capitalised\"\n      - termina com ponto final        -> \"ends with a period\"\n    Os textos entre aspas são o contrato exato: mantenha-os como estão.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(subject_problems([\"Add login form\", \"fix bug\", \"Update docs.\"]))",
       "publicExpected": "['fix bug -> not capitalised', 'Update docs. -> ends with a period']",
       "hiddenAfterCode": "print(subject_problems([\"Rewrite the whole authentication and session handling layer\", \"Refactor the parser\"]))",
@@ -1290,7 +1296,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "top_categories",
-      "starterCode": "def top_categories(entries, limit):\n    \"\"\"Return the highest-spending categories as \"<category>=<total>\", best first.\n\n    Ties are broken alphabetically. Return at most `limit` of them.\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "def top_categories(entries, limit):\n    \"\"\"Return the highest-spending categories as \"<category>=<total>\", best first.\n\n    Ties are broken alphabetically. Return at most `limit` of them.\n    \"\"\"\n    pass",
+        "pt": "def top_categories(entries, limit):\n    \"\"\"Retorne as categorias de maior gasto como \"<category>=<total>\", da maior para a menor.\n\n    Empates são desfeitos em ordem alfabética. Retorne no máximo `limit` delas.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(top_categories([{\"category\": \"rent\", \"amount\": 1200}, {\"category\": \"food\", \"amount\": 300}, {\"category\": \"food\", \"amount\": 250}], 2))",
       "publicExpected": "['rent=1200', 'food=550']",
       "hiddenAfterCode": "print(top_categories([{\"category\": \"b\", \"amount\": 5}, {\"category\": \"a\", \"amount\": 5}], 5))",

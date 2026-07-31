@@ -1533,7 +1533,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "tool_allowed",
-      "starterCode": "def tool_allowed(name, path, allowed):\n    \"\"\"Decide whether a tool call may run.\n\n    Return \"\" when it is allowed, otherwise the reason:\n      - the tool is not on the allow list -> \"tool not allowed: <name>\"\n      - the tool is allowed but the path leaves the sandbox -> \"path escapes sandbox\"\n    A path escapes when it contains \"..\".\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "def tool_allowed(name, path, allowed):\n    \"\"\"Decide whether a tool call may run.\n\n    Return \"\" when it is allowed, otherwise the reason:\n      - the tool is not on the allow list -> \"tool not allowed: <name>\"\n      - the tool is allowed but the path leaves the sandbox -> \"path escapes sandbox\"\n    A path escapes when it contains \"..\".\n    \"\"\"\n    pass",
+        "pt": "def tool_allowed(name, path, allowed):\n    \"\"\"Decida se uma chamada de ferramenta pode rodar.\n\n    Retorne \"\" quando é permitida; caso contrário, o motivo:\n      - a ferramenta não está na lista de permissão -> \"tool not allowed: <name>\"\n      - a ferramenta é permitida mas o caminho sai da sandbox -> \"path escapes sandbox\"\n    Um caminho escapa quando contém \"..\".\n    Os textos entre aspas são o contrato exato: mantenha-os como estão.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print([tool_allowed(\"read\", \"docs/a.txt\", [\"read\"]), tool_allowed(\"write\", \"a\", [\"read\"]), tool_allowed(\"read\", \"../etc\", [\"read\"])])",
       "publicExpected": "['', 'tool not allowed: write', 'path escapes sandbox']",
       "hiddenAfterCode": "print(tool_allowed(\"read\", \"notes/../notes/a.txt\", [\"read\"]))",

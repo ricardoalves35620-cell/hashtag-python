@@ -67,8 +67,21 @@ def run(code, stdin=None):
     if "input(" in code and stdin is None:
         return None                                   # it would block waiting for a person
     try:
+        # Mirrors the worker and verify-expectations.py: the program is compiled
+        # with top-level await allowed (Pyodide's runPythonAsync does exactly this),
+        # so an afterCode that awaits — p46 — is runnable here too instead of being
+        # silently skipped as "not produced by any runnable program".
+        driver = (
+            "import ast, asyncio, sys\n"
+            "src = sys.argv[1]\n"
+            "compiled = compile(src, '<learner>', 'exec', flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT)\n"
+            "g = {'__name__': '__main__'}\n"
+            "coro = eval(compiled, g, g)\n"
+            "if coro is not None:\n"
+            "    asyncio.run(coro)\n"
+        )
         done = subprocess.run(
-            [sys.executable, "-c", code],
+            [sys.executable, "-c", driver, code],
             input="".join(f"{value}\n" for value in (stdin or [])),
             capture_output=True, text=True, timeout=15,
         )

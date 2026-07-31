@@ -588,7 +588,10 @@ const specs: ConceptPhaseSpec[] = [
     },
     "transfer": {
       "functionName": "Duration",
-      "starterCode": "class Duration:\n    \"\"\"A Duration in minutes that adds with + and prints as \"<n>min\".\n\n    Give it __add__ so two Durations added together make a longer one, and\n    __str__ so printing one reads as minutes.\n    \"\"\"\n    pass",
+      "starterCode": {
+        "en": "class Duration:\n    \"\"\"A Duration in minutes that adds with + and prints as \"<n>min\".\n\n    Give it __add__ so two Durations added together make a longer one, and\n    __str__ so printing one reads as minutes.\n    \"\"\"\n    pass",
+        "pt": "class Duration:\n    \"\"\"Uma Duration em minutos que soma com + e imprime como \"<n>min\".\n\n    Dê a ela __add__ para que duas Durations somadas façam uma mais longa, e\n    __str__ para que imprimir uma leia como minutos.\n    \"\"\"\n    pass"
+      },
       "publicAfterCode": "print(str(Duration(30) + Duration(45)))",
       "publicExpected": "75min",
       "hiddenAfterCode": "print(str(Duration(0) + Duration(0)))",

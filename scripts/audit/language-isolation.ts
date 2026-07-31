@@ -75,6 +75,19 @@ const KEY_CONTEXT = /\[\s*$|\.get\(\s*$|\braise\s+\w*Error\(\s*$|\bin\s+$/
 const FILENAME = /^[\w./-]+\.\w{1,5}$/
 
 /**
+ * Command syntax the lesson TEACHES, not prose a translator should touch.
+ *
+ * "SELECT id, title FROM tasks WHERE status = ?" and "git add <file>" read as
+ * English to the prose detector, but translating them breaks the very thing the
+ * exercise exists to teach — SQL keywords and git subcommands ARE the content.
+ * The pinnedValues guard cannot help here: these live in lesson example code,
+ * not in graded check values. Deliberately narrow: a full SQL statement shape,
+ * a git subcommand line, or Python's own import syntax — not "anything with a
+ * keyword in it", which would silence real leaks.
+ */
+const COMMAND_SYNTAX = /^(SELECT|INSERT INTO|UPDATE|DELETE FROM)\b|^git \w+|^from .+ import .+|^[\w.]+\s*=\s*[\w.]+\(.*\)$|^\w+\(\[.*\]\)$/
+
+/**
  * Walk the line, tracking quote state. A global regex cannot do this.
  *
  * `db.append({"id": len(db)+1, "client": client, "pages": pages})` has three string
@@ -104,6 +117,7 @@ function literals(code: string): string[] {
       if (text.length < 3) continue
       if (!text.includes(' ')) continue                 // one word: a key, not a sentence
       if (FILENAME.test(text)) continue
+      if (COMMAND_SYNTAX.test(text)) continue           // taught syntax, not prose
       if (PINNED.has(text)) continue                    // a graded contract value
       // The prefix ends at the OPENING QUOTE, which has to come off before the context
       // test: KEY_CONTEXT looks for `raise ValueError(` and the raw prefix is
@@ -166,6 +180,7 @@ export function isEnglishProse(text: string): boolean {
 export function leaksIn(where: string, code: string): Leak[] {
   const found: Leak[] = []
   for (const comment of comments(code)) {
+    if (COMMAND_SYNTAX.test(comment)) continue          // taught syntax, not prose
     if (isEnglishProse(comment)) found.push({ where, kind: 'comment', text: comment })
   }
   for (const literal of literals(code)) {

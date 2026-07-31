@@ -8,6 +8,29 @@ export function resolveLocalizedText(value: LocalizedText | undefined, lang: Lan
 }
 
 const exactPt: Record<string, string> = {
+  // Phases 52-68 lesson comments — authored 2026-07-30.
+  "pyproject.toml defines package metadata and tools":
+    "pyproject.toml define os metadados e as ferramentas do pacote",
+  "CI runs from a clean checkout:":
+    "O CI roda a partir de um checkout limpo:",
+  "install the wheel and run smoke tests":
+    "instale o wheel e rode os testes de fumaça",
+  "Time-dependent deployment usually needs a chronological split.":
+    "Implantação dependente do tempo geralmente exige uma divisão cronológica.",
+  "choose threshold from decision costs, not convenience":
+    "escolha o limiar pelos custos da decisão, não pela conveniência",
+  "Save model.state_dict(), optimizer.state_dict(), epoch and configuration.":
+    "Salve os estados com model.state_dict() e optimizer.state_dict(), junto da época e da configuração.",
+  "In real LLMs, subword tokenizers avoid treating every unseen word as unknown.":
+    "Em LLMs reais, tokenizadores de subpalavras evitam tratar toda palavra nova como desconhecida.",
+  "2. Every factual answer carries source IDs.":
+    "2. Toda resposta factual carrega IDs de fonte.",
+  "4. Evaluation dataset tracks retrieval recall and answer faithfulness.":
+    "4. O conjunto de avaliação acompanha o recall da busca e a fidelidade das respostas.",
+  "5. Tool calls are allowlisted and destructive actions require confirmation.":
+    "5. Chamadas de ferramenta passam por lista de permissão e ações destrutivas exigem confirmação.",
+  "6. LoRA adapter, if used, is versioned separately from the base model.":
+    "6. O adaptador LoRA, se usado, é versionado separadamente do modelo base.",
   // Comments the word-level fallback left in two languages at once. A learner reading
   // "# Construa the laço:" is worse off than one reading "# Build the loop:", because the
   // second can be looked up and the first looks like a broken app. Found by
@@ -400,6 +423,92 @@ function findCommentStart(line: string): number {
  * the two agree. scripts/audit/language-isolation.ts checks that they do.
  */
 const literalPt: Record<string, string> = {
+  // Phases 40-68 starter docstrings, exam starters and lesson example strings —
+  // authored 2026-07-30. None is a graded contract value (checked against
+  // pinnedValues before entry): the quoted contracts in p32/p33/p66 transfers
+  // live in bilingual starterCode instead, with the English values kept.
+  "Return no items for non-positive count and never over-consume.":
+    "Retorne nenhum item para count não positivo e nunca consuma além do necessário.",
+  "Yield lists of at most size items.":
+    "Produza (yield) listas de no máximo size itens.",
+  "Raise ValueError for non-positive size and yield final partial batch.":
+    "Gere ValueError para size não positivo e produza (yield) o lote parcial final.",
+  "Return a function that multiplies by factor.":
+    "Retorne uma função que multiplica por factor.",
+  "Capture factor without using a global variable.":
+    "Capture factor sem usar uma variável global.",
+  "Append enter before yield and exit in a finally block.":
+    "Adicione enter antes do yield e exit em um bloco finally.",
+  "Yield ready and always record cleanup.":
+    "Produza (yield) ready e sempre registre cleanup.",
+  "Return each value formatted by the supplied collaborator.":
+    "Retorne cada valor formatado pelo colaborador fornecido.",
+  "Create one coroutine per value and gather results.":
+    "Crie uma corrotina por valor e reúna os resultados com gather.",
+  "Distribute items round-robin into worker buckets.":
+    "Distribua os itens em rodízio (round-robin) entre os baldes dos workers.",
+  "Return squared results and number of unique computations.":
+    "Retorne os resultados ao quadrado e o número de cálculos únicos.",
+  "Compute each distinct value once while preserving result order.":
+    "Calcule cada valor distinto uma única vez preservando a ordem dos resultados.",
+  "Return parameterized SQL and a parameter tuple.":
+    "Retorne SQL parametrizado e uma tupla de parâmetros.",
+  "Never interpolate status into SQL text.":
+    "Nunca interpole status no texto SQL.",
+  "Treat only 2xx as success and use unknown for missing error text.":
+    "Trate apenas 2xx como sucesso e use unknown quando faltar o texto de erro.",
+  "Report every missing or failed required gate in stable order.":
+    "Reporte todo gate obrigatório ausente ou reprovado, em ordem estável.",
+  "Reject negative rates, quantities or prices and round money to 2 decimals.":
+    "Rejeite taxas, quantidades ou preços negativos e arredonde dinheiro para 2 casas.",
+  "Return a float NumPy vector with L2 norm 1; preserve zero vector.":
+    "Retorne um vetor NumPy de floats com norma L2 igual a 1; preserve o vetor zero.",
+  "Normalize without mutating the caller input.":
+    "Normalize sem modificar a entrada de quem chamou.",
+  "Return a list of cleaned records without changing the source list.":
+    "Retorne uma lista de registros limpos sem alterar a lista original.",
+  "Return precision, recall and F1, using 0 for undefined divisions.":
+    "Retorne precisão, recall e F1, usando 0 para divisões indefinidas.",
+  "Reject negative counts and return three metrics.":
+    "Rejeite contagens negativas e retorne as três métricas.",
+  "Return train, validation and test slices without overlap.":
+    "Retorne as fatias de treino, validação e teste sem sobreposição.",
+  "Return one prediction for each x.":
+    "Retorne uma previsão para cada x.",
+  "Return updated weight and pre-update MSE loss.":
+    "Retorne o peso atualizado e a perda MSE anterior à atualização.",
+  "Use deterministic IDs independent of input order.":
+    "Use IDs determinísticos independentes da ordem de entrada.",
+  "Return numerically stable probabilities summing to 1.":
+    "Retorne probabilidades numericamente estáveis que somam 1.",
+  "Reject an empty sequence and remain stable for large scores.":
+    "Rejeite uma sequência vazia e permaneça estável para valores grandes.",
+  "Estimate raw weight storage in decimal GB.":
+    "Estime o armazenamento bruto dos pesos em GB decimais.",
+  "Reject non-positive model sizes or bit widths and round to 2 decimals.":
+    "Rejeite tamanhos de modelo ou larguras de bits não positivos e arredonde para 2 casas.",
+  "Return a safe llama-server command bound to localhost.":
+    "Retorne um comando llama-server seguro vinculado ao localhost.",
+  "Reject empty paths and non-positive context sizes.":
+    "Rejeite caminhos vazios e tamanhos de contexto não positivos.",
+  "Preserve word order and validate progress-producing overlap.":
+    "Preserve a ordem das palavras e valide uma sobreposição que gere progresso.",
+  "Rank by token overlap, preserve source IDs and refuse without evidence.":
+    "Classifique por sobreposição de tokens, preserve os IDs das fontes e recuse sem evidência.",
+  "minimize the failing case":
+    "reduza ao mínimo o caso que falha",
+  "inspect types":
+    "inspecione os tipos",
+  "inspect available keys":
+    "inspecione as chaves disponíveis",
+  "validate denominator":
+    "valide o denominador",
+  "up to 30B at 4-bit, benchmark first":
+    "até 30B em 4 bits, faça benchmark primeiro",
+  "sub-1B model or upgrade memory":
+    "modelo abaixo de 1B ou aumente a memória",
+  "order completed":
+    "pedido concluído",
   // Printed strings whose Portuguese existed only in `sampleOutput.pt`. The task promised
   // "Tempo total: 1710 segundos" and the same exercise's code printed "Total time: 1710
   // seconds" — nothing was comparing the two until `npm run audit:content:described`.
