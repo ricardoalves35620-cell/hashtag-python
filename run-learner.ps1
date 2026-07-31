@@ -6,12 +6,17 @@
 #   .\run-learner.ps1 -SkipBuild           # reuse the last build in dist/
 #   .\run-learner.ps1 -Headed              # visible browser: watch the learner work
 #
-# This wrapper does ONLY the things Node cannot: pull, install, build, browser.
-# Everything else — the server, the credential loading, the agent, the cleanup —
-# lives in scripts/audit/run-learner.mjs, which runs identically on Windows and
-# Linux and is tested end-to-end before it ships. The first version of this file
-# orchestrated all of that in PowerShell and failed three different ways on this
-# machine, because PowerShell here cannot be tested where the repo is maintained.
+# This wrapper does ONLY the three things Node cannot: git pull, npm ci, and the
+# Playwright browser install. Everything else — the BUILD (pointed at the right
+# backend), the Supabase stub, the server, credential loading, the agent, the
+# cleanup — lives in scripts/audit/run-learner.mjs, which runs identically on
+# Windows and Linux and is tested end-to-end before it ships. Earlier versions
+# orchestrated all of that in PowerShell and failed four different ways on this
+# machine, because PowerShell here cannot be run where the repo is maintained.
+#
+# The build lives in the .mjs on purpose: a signed-in run must build against the
+# audit backend, and only the .mjs knows whether that is the local Supabase stub
+# or a real one. This is why the wrapper no longer builds.
 #
 # The report lands in audit-reports\learner-agent.md, appended after every phase,
 # so interrupting with Ctrl+C still leaves something worth reading.
@@ -35,16 +40,12 @@ if (-not (Test-Path "node_modules\pyodide")) {
   if ($LASTEXITCODE -ne 0) { throw "npm ci failed" }
 }
 
-if (-not $SkipBuild) {
-  npm run build
-  if ($LASTEXITCODE -ne 0) { throw "build failed" }
-}
-
 # Playwright launches its own managed Chromium; install is a fast no-op when present.
 npx playwright install chromium
 if ($LASTEXITCODE -ne 0) { throw "playwright install failed" }
 
 $extra = @()
 if ($Headed) { $extra += "--headed" }
+if ($SkipBuild) { $extra += "--skip-build" }
 node scripts\audit\run-learner.mjs --phases=$Phases --langs=$Langs @extra
 exit $LASTEXITCODE
