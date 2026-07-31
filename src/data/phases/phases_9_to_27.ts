@@ -383,17 +383,17 @@ print(f"Side: {side:.2f}")`,
         en: 'Goal:\nBuild a compound interest calculator that shows the final amount after a number of years and also rounds it up to the next whole dollar.\n\nProgram requirements\n\n1. Calculate\n- Start with a principal of 10000\n- Apply an annual rate of 8% for 5 years using the compound interest formula\n- Round the result up to the next whole dollar\n\n2. Display\n- The exact amount with two decimal places\n- The rounded-up value\n\nExample output:\nAfter 5 years: $14693.28\nRounded up: $14694',
         pt: 'Objetivo:\nConstrua uma calculadora de juros compostos que mostra o valor final após alguns anos e também arredonda para o próximo dólar inteiro.\n\nRequisitos do programa\n\n1. Calcular\n- Comece com um principal de 10000\n- Aplique uma taxa anual de 8% durante 5 anos usando a fórmula de juros compostos\n- Arredonde o resultado para cima para o próximo dólar inteiro\n\n2. Mostrar\n- O valor exato com duas casas decimais\n- O valor arredondado para cima\n\nExemplo de saída:\nDepois de 5 anos: $14693.28\nRounded up: $14694'
       },
-      starterCode: `import math
+      starterCode: `import math  # bring in the math tools (pow, ceil)
 
-principal = 10000
-rate = 0.08
-years = 5
+principal = 10000  # the starting money
+rate = 0.08  # the yearly interest rate, 8%
+years = 5  # how long the money grows
 
-amount = principal * math.pow(1 + rate, years)
-rounded = math.ceil(amount)
+amount = principal * math.pow(1 + rate, years)  # compound growth: principal times (1+rate) to the years
+rounded = math.ceil(amount)  # round the amount UP to the next whole dollar
 
-print(f"After {years} years: \${amount:.2f}")
-print(f"Rounded up: \${rounded}")`,
+print(f"After {years} years: \${amount:.2f}")  # show the exact amount, two decimals
+print(f"Rounded up: \${rounded}")  # show the rounded-up amount`,
       hints: [{ en: 'math.pow(base, exp) raises base to power', pt: 'math.pow(base, exp) eleva base à potência' }],
       sampleOutput: { en: 'After 5 years: $14693.28\nRounded up: $14694', pt: 'Depois de 5 anos: $14693.28\nRounded up: $14694' }
     }
@@ -612,19 +612,19 @@ except KeyError:
         en: 'Goal:\nBuild a program that repeatedly asks for an order amount until the user enters a valid positive integer. The program must handle all types of invalid input gracefully.\n\nProgram requirements\n\n1. Gather input\n- Ask for the order amount in dollars\n\n2. Validate\n- Convert the input to an integer\n- Reject the value if it is not a positive number — this should not crash the program\n- On any invalid input, show an error message and ask again\n\n3. Display\n- Once a valid amount is received, subtract a 250 credit and show the confirmed total\n\nExample output:\nInvalid: ... — try again\nConfirmed total: $ 4750',
         pt: 'Objetivo:\nConstrua um programa que pergunta repetidamente o valor do pedido até o usuário digitar um inteiro positivo válido. O programa deve tratar todos os tipos de entrada inválida com elegância.\n\nRequisitos do programa\n\n1. Receber os dados\n- Pergunte o valor do pedido em dólares\n\n2. Validar\n- Converta a entrada para inteiro\n- Rejeite o valor se não for um número positivo — isso não deve travar o programa\n- Em caso de entrada inválida, exiba uma mensagem de erro e pergunte novamente\n\n3. Mostrar\n- Quando um valor válido for recebido, subtraia um crédito de 250 e exiba o total confirmado\n\nExemplo de saída:\nInvalid: ... — try again\nConfirmed total: $ 4750'
       },
-      starterCode: `amount = None
+      starterCode: `amount = None  # no valid amount yet, so the loop keeps asking
 
-while amount is None:
-    try:
-        raw = input("Order amount: $")
-        amount = int(raw)
-        if amount <= 0:
-            raise ValueError("Must be positive")
-    except ValueError as e:
-        print("Invalid:", e, "— try again")
-        amount = None
+while amount is None:  # repeat until a valid amount arrives
+    try:  # guard the risky conversion
+        raw = input("Order amount: $")  # read whatever the user types (text)
+        amount = int(raw)  # try to turn that text into a whole number
+        if amount <= 0:  # a valid order must be positive
+            raise ValueError("Must be positive")  # reject zero or negatives
+    except ValueError as e:  # runs when int() failed or the value was not positive
+        print("Invalid:", e, "— try again")  # explain and loop again
+        amount = None  # stay in the loop
 
-print("Confirmed total: $", amount - 250)`,
+print("Confirmed total: $", amount - 250)  # once valid, apply the 250 credit and show it`,
       // Behavioural grading. The error MESSAGE is the learner's to word, so the reference
       // prints only the guaranteed line ("Confirmed total: $ N"); producesExpected allows
       // the learner's extra "Invalid:" lines. The invalid-then-valid cases discriminate by
@@ -872,31 +872,31 @@ except ValueError as e:
         en: 'Goal:\nBuild a calculator that performs arithmetic on pairs of numbers and keeps a history of successful operations.\n\nProgram requirements\n\n1. Calculate\n- Perform the requested operation on the two operands\n- Support addition, subtraction, multiplication and division\n- Reject division by zero by raising ValueError\n- Reject unknown operators by raising ValueError\n\n2. Process test cases\n- Run each of the three test cases inside a try/except block\n- On success, record the operation in the history list and display the result\n- On error, display the error message\n\n3. Display history\n- After all test cases, show the label "History:" followed by every successful operation\n\nExample output:\n= 15\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15',
         pt: 'Objetivo:\nConstrua uma calculadora que realiza operações aritméticas em pares de números e mantém um histórico das operações bem-sucedidas.\n\nRequisitos do programa\n\n1. Calcular\n- Execute a operação solicitada nos dois operandos\n- Suporte adição, subtração, multiplicação e divisão\n- Rejeite divisão por zero gerando ValueError\n- Rejeite operadores desconhecidos gerando ValueError\n\n2. Processar casos de teste\n- Execute cada um dos três casos de teste dentro de um bloco try/except\n- Em caso de sucesso, registre a operação na lista de histórico e exiba o resultado\n- Em caso de erro, exiba a mensagem de erro\n\n3. Mostrar histórico\n- Após todos os casos de teste, exiba o rótulo "Histórico:" seguido de cada operação bem-sucedida\n\nExemplo de saída:\n= 15\n= 5.0\nErro: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15'
       },
-      starterCode: `def calculate(x, op, y):
+      starterCode: `def calculate(x, op, y):  # do one operation on two numbers
     """Perform arithmetic. Raises ValueError on invalid input."""
-    if op == "+": return x + y
-    elif op == "-": return x - y
-    elif op == "*": return x * y
-    elif op == "/":
-        if y == 0: raise ValueError("Cannot divide by zero")
-        return x / y
-    else:
-        raise ValueError(f"Unknown operator: {op}")
+    if op == "+": return x + y  # addition
+    elif op == "-": return x - y  # subtraction
+    elif op == "*": return x * y  # multiplication
+    elif op == "/":  # division needs an extra guard
+        if y == 0: raise ValueError("Cannot divide by zero")  # refuse to divide by zero
+        return x / y  # safe to divide
+    else:  # any operator we do not recognise
+        raise ValueError(f"Unknown operator: {op}")  # report it instead of guessing
 
-history = []
-tests = [(10, "+", 5), (20, "/", 4), (8, "/", 0)]
+history = []  # remember every operation that succeeded
+tests = [(10, "+", 5), (20, "/", 4), (8, "/", 0)]  # the operations to run, last one is bad
 
-for x, op, y in tests:
-    try:
-        result = calculate(x, op, y)
-        entry = f"{x} {op} {y} = {result}"
-        history.append(entry)
-        print("=", result)
-    except ValueError as e:
-        print("Error:", e)
+for x, op, y in tests:  # run each operation in turn
+    try:  # guard against the operations that raise
+        result = calculate(x, op, y)  # do the maths
+        entry = f"{x} {op} {y} = {result}"  # build a readable line for the history
+        history.append(entry)  # keep it only when it worked
+        print("=", result)  # show the result
+    except ValueError as e:  # runs when calculate raised
+        print("Error:", e)  # show the error instead of crashing
 
-print("\\nHistory:")
-for h in history: print(" ", h)`,
+print("\\nHistory:")  # a heading before the recap
+for h in history: print(" ", h)  # list every successful operation`,
       hints: [{ en: 'Use try/except inside the loop to catch errors per calculation', pt: 'Use try/except dentro do loop para capturar erros por cálculo' }],
       sampleOutput: { en: '= 15\n= 5.0\nError: Cannot divide by zero\n\nHistory:\n  10 + 5 = 15', pt: '= 15\n= 5.0\nErro: Cannot divide by zero\n\nHistórico:\n  10 + 5 = 15' }
     }
@@ -1178,25 +1178,25 @@ print("Final:"); read_all(db)`,
     title: { en: 'Records Management System', pt: 'Sistema de Gestão de Registros' },
     scenario: { en: 'Build a full CRUD records system and run a demo.', pt: 'Construa um sistema CRUD completo de registros e execute um demo.' },
     requirements: { en: ['create/read_all/update/delete functions', 'Create 4 records', 'Update #2 to 9000', 'Delete #4', 'Read final state'], pt: ['Funções create/read_all/update/delete', 'Criar 4 registros', 'Atualizar #2 para 9000', 'Deletar #4', 'Ler estado final'] },
-    starterCode: `def create(db, client, pages):
-    db.append({"id": len(db)+1, "client": client, "pages": pages})
+    starterCode: `def create(db, client, pages):  # CREATE: add a new record
+    db.append({"id": len(db)+1, "client": client, "pages": pages})  # next id is the current size plus one
 
-def read_all(db):
-    for c in db: print(f"#{c['id']} {c['client']} \${c['pages']}")
+def read_all(db):  # READ: show every record
+    for c in db: print(f"#{c['id']} {c['client']} \${c['pages']}")  # one line per record
 
-def update(db, cid, new_pages):
-    for c in db:
-        if c["id"] == cid: c["pages"] = new_pages; return True
+def update(db, cid, new_pages):  # UPDATE: change one record by id
+    for c in db:  # search for the matching id
+        if c["id"] == cid: c["pages"] = new_pages; return True  # change it and stop
 
-def delete(db, cid):
-    db[:] = [c for c in db if c["id"] != cid]
+def delete(db, cid):  # DELETE: drop one record by id
+    db[:] = [c for c in db if c["id"] != cid]  # keep everything except the matching id
 
-db = []
-create(db, "Alice",5230); create(db, "Bob",1200)
-create(db, "Carlos",8000); create(db, "Diana",900)
-print("Initial:"); read_all(db)
-update(db, 2, 9000); delete(db, 4)
-print("Final:"); read_all(db)`,
+db = []  # start with an empty database
+create(db, "Alice",5230); create(db, "Bob",1200)  # add the first two clients
+create(db, "Carlos",8000); create(db, "Diana",900)  # add two more
+print("Initial:"); read_all(db)  # show the database before changes
+update(db, 2, 9000); delete(db, 4)  # change Bob's pages, remove Diana
+print("Final:"); read_all(db)  # show the database after changes`,
     testCases: [
       { id: 'tc25_1', description: { en: 'Alice in output', pt: 'Alice no output' }, inputs: [], checks: [{ type: 'contains', value: 'Alice' }], points: 20 },
       { id: 'tc25_2', description: { en: 'Bob updated to 9000', pt: 'Bob atualizado para 9000' }, inputs: [], checks: [{ type: 'contains', value: '9000' }], points: 30 },
@@ -1400,25 +1400,25 @@ print(f"Critical: {critical}")`,
         en: 'Goal:\nRun the provided data report as-is. The program takes a list of daily sales and produces a full statistical summary.\n\nProgram requirements\n\n1. Calculate the total and average of all sales\n2. Find the minimum, maximum and median values\n3. Calculate the net total after a 250 deduction per sale\n4. Count sales in three ranges: critical (above 8000), urgent (3000 to 8000) and normal (below 3000)\n5. Identify the three largest sales\n\nExample, for 10 daily sales:\n=== REPORT ===\nTotal: $42,400 | Avg: $4,240\nMin: $450 | Max: $9200 | Median: $4500\nNet total: $39,900\nCritical:1 Urgent:5 Normal:4\nTop 3: [9200, 8000, 7800]',
         pt: 'Objetivo:\nExecute o relatório de dados fornecido como está. O programa recebe uma lista de vendas diárias e produz um resumo estatístico completo.\n\nRequisitos do programa\n\n1. Calcule o total e a média de todas as vendas\n2. Encontre o valor mínimo, máximo e a mediana\n3. Calcule o total líquido após dedução de 250 por venda\n4. Conte vendas em três faixas: critical (acima de 8000), urgent (3000 a 8000) e normal (abaixo de 3000)\n5. Identifique as três maiores vendas\n\nExemplo, para 10 vendas diárias:\n=== RELATÓRIO ===\nTotal: $42,400 | Avg: $4,240\nMin: $450 | Max: $9200 | Median: $4500\nNet total: $39,900\nCritical:1 Urgent:5 Normal:4\nTop 3: [9200, 8000, 7800]'
       },
-      starterCode: `sales = [5230,1200,8000,450,3100,9200,620,4500,7800,2300]
+      starterCode: `sales = [5230,1200,8000,450,3100,9200,620,4500,7800,2300]  # the raw daily sales
 
-total    = sum(sales)
-average  = total / len(sales)
-minimum  = min(sales)
-maximum  = max(sales)
-median   = sorted(sales)[len(sales)//2]
-net_total   = sum(c - 250 for c in sales)
-critical = len([c for c in sales if c > 8000])
-urgent   = len([c for c in sales if 3000 <= c <= 8000])
-normal   = len([c for c in sales if c < 3000])
-top3     = sorted(sales, reverse=True)[:3]
+total    = sum(sales)  # add every sale together
+average  = total / len(sales)  # total shared over how many sales there are
+minimum  = min(sales)  # the smallest sale
+maximum  = max(sales)  # the largest sale
+median   = sorted(sales)[len(sales)//2]  # sort, then take the middle value
+net_total   = sum(c - 250 for c in sales)  # total after taking 250 off each sale
+critical = len([c for c in sales if c > 8000])  # count sales above 8000
+urgent   = len([c for c in sales if 3000 <= c <= 8000])  # count sales in the middle band
+normal   = len([c for c in sales if c < 3000])  # count the small sales
+top3     = sorted(sales, reverse=True)[:3]  # sort high-to-low and take the first three
 
-print(f"=== REPORT ===")
-print(f"Total: \${total:,} | Avg: \${average:,.0f}")
-print(f"Min: \${minimum} | Max: \${maximum} | Median: \${median}")
-print(f"Net total: \${net_total:,}")
-print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")
-print(f"Top 3: {top3}")`,
+print(f"=== REPORT ===")  # a heading for the summary
+print(f"Total: \${total:,} | Avg: \${average:,.0f}")  # show the total and the average
+print(f"Min: \${minimum} | Max: \${maximum} | Median: \${median}")  # show the spread
+print(f"Net total: \${net_total:,}")  # show the total after deductions
+print(f"Critical:{critical} Urgent:{urgent} Normal:{normal}")  # show the three counts
+print(f"Top 3: {top3}")  # show the three largest sales`,
       hints: [{ en: 'sorted(sales, reverse=True)[:3] gets top 3', pt: 'sorted(sales, reverse=True)[:3] pega top 3' }],
       sampleOutput: { en: '=== REPORT ===\nTotal: $42,400', pt: '=== RELATÓRIO ===\nTotal: $42,400' }
     }
@@ -1602,47 +1602,47 @@ for c in db: print(c)`,
         en: 'Goal:\nRun the provided orders system as-is. The program creates orders, updates statuses, deletes records and displays statistics.\n\nProgram requirements\n\n1. Create five orders for Alice (12000 amount), Bob (3500), Carlos (7800), Diana (900) and Eduardo (-1)\n2. The negative amount for Eduardo should trigger an error message\n3. Approve Alice’s and Carlos’s orders\n4. Remove Diana’s order\n5. Display the remaining three orders with their priority and status\n6. Display total orders, total amount and grand total\n\nExample:\nError: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nOrders:3 | Amount:$23,300 | Total:$22,550',
         pt: 'Objetivo:\nExecute o sistema de pedidos fornecido como está. O programa cria pedidos, atualiza status, exclui registros e exibe estatísticas.\n\nRequisitos do programa\n\n1. Crie cinco pedidos para Alice (valor 12000), Bob (3500), Carlos (7800), Diana (900) e Eduardo (-1)\n2. O valor negativo de Eduardo deve acionar uma mensagem de erro\n3. Aprove os pedidos de Alice e Carlos\n4. Remova o pedido de Diana\n5. Exiba os três pedidos restantes com prioridade e status\n6. Exiba o total de pedidos, o valor total e o total líquido\n\nExemplo:\nError: Must be positive\n=== SISTEMA ===\n#1 Alice $12000 [Critical] approved\n#2 Bob $3500 [Normal] open\n#3 Carlos $7800 [Urgent] approved\n=== STATS ===\nPedidos:3 | Valor:$23,300 | Total:$22,550'
       },
-      starterCode: `from datetime import datetime
+      starterCode: `from datetime import datetime  # for stamping each order with today's date
 
-def create_order(db, client, amount, ded=250):
-    if amount <= 0: raise ValueError("Must be positive")
-    priority = "Critical" if amount > 10000 else "Urgent" if amount > 5000 else "Normal"
-    db.append({"id": len(db)+1, "client": client, "amount": amount,
-               "total": amount-ded, "priority": priority, "status": "open",
-               "date": datetime.now().strftime("%Y-%m-%d")})
+def create_order(db, client, amount, ded=250):  # CREATE: add one validated order
+    if amount <= 0: raise ValueError("Must be positive")  # reject bad amounts up front
+    priority = "Critical" if amount > 10000 else "Urgent" if amount > 5000 else "Normal"  # band by amount
+    db.append({"id": len(db)+1, "client": client, "amount": amount,  # store the record
+               "total": amount-ded, "priority": priority, "status": "open",  # with its computed fields
+               "date": datetime.now().strftime("%Y-%m-%d")})  # date as text, so it can be saved later
 
-def read_all(db):
-    for c in db:
-        print(f"#{c['id']} {c['client']} \${c['amount']} [{c['priority']}] {c['status']}")
+def read_all(db):  # READ: show every order
+    for c in db:  # one order at a time
+        print(f"#{c['id']} {c['client']} \${c['amount']} [{c['priority']}] {c['status']}")  # a summary line
 
-def update_status(db, cid, status):
-    for c in db:
-        if c["id"] == cid: c["status"] = status; return True
+def update_status(db, cid, status):  # UPDATE: change one order's status by id
+    for c in db:  # find the matching order
+        if c["id"] == cid: c["status"] = status; return True  # set it and stop
 
-def delete_order(db, cid):
-    db[:] = [c for c in db if c["id"] != cid]
+def delete_order(db, cid):  # DELETE: drop one order by id
+    db[:] = [c for c in db if c["id"] != cid]  # keep all except the matching id
 
-def analyze(db):
-    gross = sum(c["amount"] for c in db)
-    net   = sum(c["total"] for c in db)
-    print(f"Orders:{len(db)} | Amount:\${gross:,} | Total:\${net:,}")
+def analyze(db):  # summarise the whole database
+    gross = sum(c["amount"] for c in db)  # total of the raw amounts
+    net   = sum(c["total"] for c in db)  # total after each deduction
+    print(f"Orders:{len(db)} | Amount:\${gross:,} | Total:\${net:,}")  # show the counts and totals
 
-db = []
-try:
-    create_order(db, "Alice",  12000)
-    create_order(db, "Bob",     3500)
-    create_order(db, "Carlos",  7800)
-    create_order(db, "Diana",    900)
+db = []  # start with no orders
+try:  # the last create raises, so guard the whole block
+    create_order(db, "Alice",  12000)  # a critical order
+    create_order(db, "Bob",     3500)  # a normal order
+    create_order(db, "Carlos",  7800)  # an urgent order
+    create_order(db, "Diana",    900)  # a small order
     create_order(db, "Eduardo",   -1)  # should error
-except ValueError as e:
-    print(f"Error: {e}")
+except ValueError as e:  # catch the rejected order
+    print(f"Error: {e}")  # report it and carry on
 
-update_status(db, 1, "approved")
-update_status(db, 3, "approved")
-delete_order(db, 4)
+update_status(db, 1, "approved")  # approve Alice's order
+update_status(db, 3, "approved")  # approve Carlos's order
+delete_order(db, 4)  # remove Diana's order
 
-print("=== SYSTEM ==="); read_all(db)
-print("=== STATS ==="); analyze(db)`,
+print("=== SYSTEM ==="); read_all(db)  # show the final list of orders
+print("=== STATS ==="); analyze(db)  # show the summary`,
       hints: [{ en: 'Eduardo with -1 should trigger the ValueError', pt: 'Eduardo com -1 deve acionar o ValueError' }],
       sampleOutput: { en: 'Error: Must be positive\n=== SYSTEM ===\n#1 Alice $12000 [Critical] approved', pt: 'Error: Must be positive\n=== SISTEMA ===\n#1 Alice $12000 [Critical] approved' }
     }

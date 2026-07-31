@@ -8,6 +8,234 @@ export function resolveLocalizedText(value: LocalizedText | undefined, lang: Lan
 }
 
 const exactPt: Record<string, string> = {
+  // Starter intent comments, phases 9-27 (band 2) — 2026-07-31.
+  "bring in the math tools (pow, ceil)":
+    "traz as ferramentas de matemática (pow, ceil)",
+  "the starting money":
+    "o dinheiro inicial",
+  "the yearly interest rate, 8%":
+    "a taxa de juros anual, 8%",
+  "how long the money grows":
+    "por quanto tempo o dinheiro cresce",
+  "compound growth: principal times (1+rate) to the years":
+    "crescimento composto: principal vezes (1+taxa) elevado aos anos",
+  "round the amount UP to the next whole dollar":
+    "arredonda o valor PARA CIMA até o próximo dólar inteiro",
+  "show the exact amount, two decimals":
+    "mostra o valor exato, duas casas decimais",
+  "show the rounded-up amount":
+    "mostra o valor arredondado para cima",
+  "no valid amount yet, so the loop keeps asking":
+    "ainda não há valor válido, então o loop continua perguntando",
+  "repeat until a valid amount arrives":
+    "repete até chegar um valor válido",
+  "guard the risky conversion":
+    "protege a conversão arriscada",
+  "read whatever the user types (text)":
+    "lê o que o usuário digitar (texto)",
+  "try to turn that text into a whole number":
+    "tenta transformar esse texto em um número inteiro",
+  "a valid order must be positive":
+    "um pedido válido precisa ser positivo",
+  "reject zero or negatives":
+    "rejeita zero ou negativos",
+  "runs when int() failed or the value was not positive":
+    "roda quando int() falhou ou o valor não foi positivo",
+  "explain and loop again":
+    "explica e repete o loop",
+  "stay in the loop":
+    "permanece no loop",
+  "once valid, apply the 250 credit and show it":
+    "quando válido, aplica o crédito de 250 e mostra",
+  "do one operation on two numbers":
+    "faz uma operação com dois números",
+  "division needs an extra guard":
+    "a divisão precisa de uma proteção extra",
+  "refuse to divide by zero":
+    "recusa dividir por zero",
+  "safe to divide":
+    "seguro dividir",
+  "any operator we do not recognise":
+    "qualquer operador que não reconhecemos",
+  "report it instead of guessing":
+    "reporta em vez de adivinhar",
+  "remember every operation that succeeded":
+    "guarda toda operação que deu certo",
+  "the operations to run, last one is bad":
+    "as operações a rodar, a última é inválida",
+  "run each operation in turn":
+    "roda cada operação por vez",
+  "guard against the operations that raise":
+    "protege contra as operações que lançam erro",
+  "do the maths":
+    "faz a conta",
+  "build a readable line for the history":
+    "monta uma linha legível para o histórico",
+  "keep it only when it worked":
+    "guarda só quando deu certo",
+  "show the result":
+    "mostra o resultado",
+  "runs when calculate raised":
+    "roda quando calculate lançou erro",
+  "show the error instead of crashing":
+    "mostra o erro em vez de travar",
+  "a heading before the recap":
+    "um título antes do resumo",
+  "list every successful operation":
+    "lista todas as operações bem-sucedidas",
+  "CREATE: add a new record":
+    "CREATE: adiciona um novo registro",
+  "next id is the current size plus one":
+    "o próximo id é o tamanho atual mais um",
+  "READ: show every record":
+    "READ: mostra todos os registros",
+  "one line per record":
+    "uma linha por registro",
+  "UPDATE: change one record by id":
+    "UPDATE: muda um registro pelo id",
+  "search for the matching id":
+    "procura o id correspondente",
+  "change it and stop":
+    "muda e para",
+  "DELETE: drop one record by id":
+    "DELETE: remove um registro pelo id",
+  "keep everything except the matching id":
+    "mantém tudo, menos o id correspondente",
+  "start with an empty database":
+    "começa com um banco vazio",
+  "add the first two clients":
+    "adiciona os dois primeiros clientes",
+  "add two more":
+    "adiciona mais dois",
+  "show the database before changes":
+    "mostra o banco antes das mudanças",
+  "change Bob's pages, remove Diana":
+    "muda as páginas de Bob, remove Diana",
+  "show the database after changes":
+    "mostra o banco depois das mudanças",
+  "the raw daily sales":
+    "as vendas diárias brutas",
+  "add every sale together":
+    "soma todas as vendas",
+  "total shared over how many sales there are":
+    "total dividido pela quantidade de vendas",
+  "the smallest sale":
+    "a menor venda",
+  "the largest sale":
+    "a maior venda",
+  "sort, then take the middle value":
+    "ordena e pega o valor do meio",
+  "total after taking 250 off each sale":
+    "total depois de tirar 250 de cada venda",
+  "count sales above 8000":
+    "conta vendas acima de 8000",
+  "count sales in the middle band":
+    "conta vendas na faixa do meio",
+  "count the small sales":
+    "conta as vendas pequenas",
+  "sort high-to-low and take the first three":
+    "ordena do maior para o menor e pega os três primeiros",
+  "a heading for the summary":
+    "um título para o resumo",
+  "show the total and the average":
+    "mostra o total e a média",
+  "show the spread":
+    "mostra a dispersão",
+  "show the total after deductions":
+    "mostra o total depois das deduções",
+  "show the three counts":
+    "mostra as três contagens",
+  "show the three largest sales":
+    "mostra as três maiores vendas",
+  "for stamping each order with today's date":
+    "para marcar cada pedido com a data de hoje",
+  "CREATE: add one validated order":
+    "CREATE: adiciona um pedido validado",
+  "reject bad amounts up front":
+    "rejeita valores inválidos logo de cara",
+  "band by amount":
+    "classifica pela faixa do valor",
+  "store the record":
+    "guarda o registro",
+  "with its computed fields":
+    "com seus campos calculados",
+  "date as text, so it can be saved later":
+    "data como texto, para poder ser salva depois",
+  "READ: show every order":
+    "READ: mostra todos os pedidos",
+  "one order at a time":
+    "um pedido por vez",
+  "a summary line":
+    "uma linha de resumo",
+  "UPDATE: change one order's status by id":
+    "UPDATE: muda o status de um pedido pelo id",
+  "find the matching order":
+    "encontra o pedido correspondente",
+  "set it and stop":
+    "define e para",
+  "DELETE: drop one order by id":
+    "DELETE: remove um pedido pelo id",
+  "keep all except the matching id":
+    "mantém todos, menos o id correspondente",
+  "summarise the whole database":
+    "resume o banco inteiro",
+  "total of the raw amounts":
+    "total dos valores brutos",
+  "total after each deduction":
+    "total depois de cada dedução",
+  "show the counts and totals":
+    "mostra as contagens e os totais",
+  "start with no orders":
+    "começa sem pedidos",
+  "the last create raises, so guard the whole block":
+    "o último create lança erro, então protege o bloco todo",
+  "a critical order":
+    "um pedido crítico",
+  "a normal order":
+    "um pedido normal",
+  "an urgent order":
+    "um pedido urgente",
+  "a small order":
+    "um pedido pequeno",
+  "catch the rejected order":
+    "captura o pedido rejeitado",
+  "report it and carry on":
+    "reporta e segue em frente",
+  "approve Alice's order":
+    "aprova o pedido de Alice",
+  "approve Carlos's order":
+    "aprova o pedido de Carlos",
+  "remove Diana's order":
+    "remove o pedido de Diana",
+  "show the final list of orders":
+    "mostra a lista final de pedidos",
+  "show the summary":
+    "mostra o resumo",
+  "turn raw text into a list of stock records":
+    "transforma texto bruto em uma lista de registros de estoque",
+  "collect the finished records here":
+    "junta aqui os registros prontos",
+  "go through the text one line at a time":
+    "percorre o texto uma linha por vez",
+  "skip blank lines":
+    "pula linhas em branco",
+  "split on | and trim each piece":
+    "divide no | e apara cada parte",
+  "turn the quantity text into a number":
+    "transforma o texto da quantidade em número",
+  "hand back everything collected":
+    "devolve tudo o que foi juntado",
+  "write each line to a file and count them":
+    "escreve cada linha em um arquivo e as conta",
+  "nothing written yet":
+    "nada escrito ainda",
+  "open for writing, auto-close after":
+    "abre para escrita, fecha sozinho depois",
+  "go through each line to write":
+    "percorre cada linha a escrever",
+  "hand back how many were written":
+    "devolve quantas foram escritas",
+
   // Guided-starter intent comments, phases 0-8 — 2026-07-31.
   "name the file we are pretending to run":
     "dá nome ao arquivo que vamos fingir que executa",
