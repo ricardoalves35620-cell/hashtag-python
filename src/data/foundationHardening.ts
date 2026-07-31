@@ -40,6 +40,20 @@ const PHASE_REQUIREMENTS: Record<number, CodeRequirement[]> = {
   27: [{ kind: 'node', value: 'FunctionDef' }, { kind: 'node', value: 'Try' }],
 }
 
+// Per-exercise requirements, ADDED to the phase's. For three deterministic
+// simulations the only graded check is a `matches` regex over a fixed output, so a
+// program that prints the literal answer passes — cheat-resistance.py flagged all
+// three. The phase requirement cannot be tightened, because other graded exercises
+// in the same phase do not share the structure (ex21_fill has no loop). Requiring
+// the computation per-exercise closes the hole; every requirement below is present
+// in the exercise's own starter, so no correct answer can fail it, and a
+// literal-print answer has none of them.
+const EXERCISE_REQUIREMENTS: Record<string, CodeRequirement[]> = {
+  ex21_zero: [{ kind: 'call', value: 'randint' }, { kind: 'node', value: 'For' }],
+  ex22_zero: [{ kind: 'call', value: 'pow' }, { kind: 'call', value: 'ceil' }],
+  ex26_zero: [{ kind: 'call', value: 'sum' }, { kind: 'call', value: 'sorted' }],
+}
+
 const SUGGESTED_INPUTS: Record<string, string[]> = {
   ex4_guided: ['25'],
   ex4_fill: ['Maria', '35', '1.68', '555-1234'],
@@ -177,6 +191,7 @@ function ensureExerciseGrading(phase: Phase, exercise: Exercise) {
   if (asksForInput && inputs.length === 0) return
 
   exercise.suggestedInputs ||= inputs.length ? inputs : undefined
+  const requirements = [...(PHASE_REQUIREMENTS[phase.id] || []), ...(EXERCISE_REQUIREMENTS[exercise.id] || [])]
   exercise.grading = {
     tests: [{
       id: `${exercise.id}-visible-contract`,
@@ -188,9 +203,9 @@ function ensureExerciseGrading(phase: Phase, exercise: Exercise) {
       inputs,
       checks: exerciseChecks(exercise.sampleOutput),
       points: 100,
-      codeRequirements: PHASE_REQUIREMENTS[phase.id],
+      codeRequirements: requirements,
     }],
-    codeRequirements: PHASE_REQUIREMENTS[phase.id],
+    codeRequirements: requirements,
     timeoutMs: phase.id === 7 || phase.id === 23 ? 3500 : 2500,
   }
 }
