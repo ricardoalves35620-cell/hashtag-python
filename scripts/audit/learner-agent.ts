@@ -230,9 +230,19 @@ async function signIn(page: Page) {
   // Decide from the DOM, not the URL: the client redirects once the session
   // resolves, and checking page.url() right after goto races that redirect.
   await page.goto(`${BASE}/login`, { waitUntil: 'domcontentloaded' })
+  // WAIT for the form, do not instant-check it. locator.isVisible() ignores its
+  // timeout option entirely — it is a synchronous snapshot — so on a fresh load
+  // where React has not yet painted the login form it returns false, signIn
+  // decides "already signed in", returns having done NOTHING, and the reset step
+  // then lands on /login signed out. That was the coin-flip: whether the form had
+  // rendered by the instant the snapshot ran. Race the password field against an
+  // already-authenticated redirect, and only skip login if the redirect wins.
   const password = page.locator('input[type="password"]').first()
-  const needsLogin = await password.isVisible({ timeout: 15_000 }).catch(() => false)
-  if (!needsLogin) return
+  const alreadyIn = await Promise.race([
+    password.waitFor({ state: 'visible', timeout: 20_000 }).then(() => false),
+    page.waitForURL(url => !url.pathname.endsWith('/login'), { timeout: 20_000 }).then(() => true),
+  ]).catch(() => { throw new Error('login page never resolved — neither the form nor a signed-in redirect appeared') })
+  if (alreadyIn) return
   await page.locator('input[type="email"]').first().fill(AUDIT_EMAIL!)
   await password.fill(AUDIT_PASSWORD!)
   await page.locator('form button[type="submit"]').first().click()
@@ -243,6 +253,17 @@ async function signIn(page: Page) {
       throw new Error(`audit login failed: ${(await loginError.textContent())?.trim() || 'unknown error'}`)
     }),
   ])
+  // The redirect fires from the IN-MEMORY session; persistence to localStorage
+  // races it. Every later page.goto is a full reload that rehydrates from
+  // storage — navigate before the token lands and the app boots signed OUT,
+  // which is exactly how the reset step found itself back on /login
+  // (reproduced against the stub: same agent, one run green, next run on
+  // /login — a coin-flip race, not a broken backend).
+  await page.waitForFunction(
+    () => Object.keys(localStorage).some(key => key.startsWith('sb-') && key.includes('auth-token')),
+    undefined,
+    { timeout: 15_000 },
+  )
 }
 
 /** The app's own reset-progress flow, same one reset-progress.spec.ts covers. */
@@ -263,6 +284,31 @@ async function resetServerProgress(page: Page, lang: 'en' | 'pt') {
   await page.getByTestId('reset-progress-confirmation').fill(lang === 'pt' ? 'RESETAR' : 'RESET')
   await page.getByRole('dialog').getByRole('button', { name: /Apagar progresso e recome|Delete progress and start over/i }).click()
   await page.waitForURL(/\/phase\/0/, { timeout: 30_000 })
+}
+
+/**
+ * A failure that cannot be reproduced here must carry its own diagnosis home.
+ * The signed-in flow runs green against scripts/audit/supabase-stub.mjs, so a
+ * failure on a real backend is about THAT backend's behavior for THIS account —
+ * and a TimeoutError saying 'element not visible' says nothing about what the
+ * page showed instead. This does: URL, what the learner would have read, and a
+ * screenshot in audit-reports/.
+ */
+async function explainFailure(page: Page, step: string, error: unknown): Promise<never> {
+  const url = page.url()
+  const text = await page.locator('body').innerText().catch(() => '(body unreadable)')
+  const auth = await page.evaluate(() => ({
+    sbKeys: Object.keys(localStorage).filter(key => key.startsWith('sb-')),
+    guest: localStorage.getItem('hp_guest_mode'),
+  })).catch(() => null)
+  console.error(`[${step}] auth storage at failure: ${JSON.stringify(auth)}`)
+  const shot = `${REPORT_DIR}/failure-${step}.png`
+  mkdirSync(REPORT_DIR, { recursive: true })
+  await page.screenshot({ path: shot, fullPage: true }).catch(() => {})
+  console.error(`\n[${step}] FAILED on ${url}`)
+  console.error(`[${step}] the page showed: ${text.replace(/\s+/g, ' ').slice(0, 400)}`)
+  console.error(`[${step}] screenshot: ${shot}`)
+  throw error
 }
 
 // Playwright resolves its own managed browser; forcing a path here is only for
@@ -301,8 +347,10 @@ for (const lang of LANGS) {
   }, lang)
 
   if (SIGNED_IN) {
-    await signIn(page)
-    if (!KEEP_PROGRESS) await resetServerProgress(page, lang)
+    await signIn(page).catch(error => explainFailure(page, `signin-${lang}`, error))
+    if (!KEEP_PROGRESS) {
+      await resetServerProgress(page, lang).catch(error => explainFailure(page, `reset-${lang}`, error))
+    }
     console.log(`  signed in as ${AUDIT_EMAIL}; server progress reset for a fresh ${lang.toUpperCase()} learner`)
   } else {
     console.log('  AUDIT_USER_EMAIL/AUDIT_USER_PASSWORD not set — walking as a guest (no sync coverage)')
