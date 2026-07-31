@@ -178,6 +178,25 @@ export default function Exercises() {
     return () => { cancelled = true }
   }, [draftKey, learnerId, phase.id, exercise.id, user])
 
+  // Follow a language switch. The editor keeps the learner's code across an EN/PT
+  // toggle, which is correct for real work — but a PRISTINE starter must switch with
+  // the language, or an English learner is left reading the Portuguese starter (its
+  // comments are Portuguese). Runs on lang change and after a draft hydrates; only
+  // ever replaces code that still equals a pristine starter of EITHER language, so a
+  // real edit is never touched.
+  useEffect(() => {
+    const en = resolveLocalizedCode(exercise.starterCode, 'en').trim()
+    const pt = resolveLocalizedCode(exercise.starterCode, 'pt').trim()
+    const wanted = resolveLocalizedCode(exercise.starterCode, lang)
+    setCodes(previous => {
+      const current = previous[exercise.id]
+      if (current === undefined) return previous
+      const isPristine = current.trim() === en || current.trim() === pt
+      if (isPristine && current !== wanted) return { ...previous, [exercise.id]: wanted }
+      return previous
+    })
+  }, [lang, exercise.id, exercise.starterCode, hydratedDraftKey])
+
   useEffect(() => {
     if (!learnerId || hydratedDraftKey !== draftKey) return
 

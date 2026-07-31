@@ -45,6 +45,17 @@ export default function Exam() {
     })
   }, [learnerId, phase?.id])
 
+  // Follow a language switch while the code is still a pristine starter, so an
+  // English learner is never left looking at the Portuguese starter (or vice-versa).
+  // A real edit — anything not equal to either language's starter — is never touched.
+  useEffect(() => {
+    if (!phase) return
+    const en = resolveLocalizedCode(phase.exam.starterCode, 'en').trim()
+    const pt = resolveLocalizedCode(phase.exam.starterCode, 'pt').trim()
+    const wanted = resolveLocalizedCode(phase.exam.starterCode, lang)
+    setCode(current => ((current.trim() === en || current.trim() === pt) && current !== wanted ? wanted : current))
+  }, [lang, phase?.id])
+
   // Auto-save draft as user types (debounced inside saveExamDraft)
   useEffect(() => {
     if (!learnerId || !phase || !draftLoaded) return
