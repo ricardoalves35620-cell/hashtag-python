@@ -34,26 +34,11 @@ if (-not $SkipBuild) {
   if ($LASTEXITCODE -ne 0) { throw "build failed" }
 }
 
-# The agent's default executable path is the cloud sandbox's Linux Chromium.
-# On Windows, point HP_CHROMIUM at the Playwright-managed browser instead.
-function Find-Chromium {
-  $root = Join-Path $env:LOCALAPPDATA "ms-playwright"
-  if (-not (Test-Path $root)) { return $null }
-  Get-ChildItem $root -Directory -Filter "chromium-*" |
-    Sort-Object Name -Descending |
-    ForEach-Object { Join-Path $_.FullName "chrome-win\chrome.exe" } |
-    Where-Object { Test-Path $_ } |
-    Select-Object -First 1
-}
-$chrome = Find-Chromium
-if (-not $chrome) {
-  Write-Host "Playwright Chromium not found - installing once..."
-  npx playwright install chromium
-  $chrome = Find-Chromium
-  if (-not $chrome) { throw "could not find Chromium even after playwright install" }
-}
-$env:HP_CHROMIUM = $chrome
-Write-Host "Chromium: $chrome"
+# Playwright launches its own managed Chromium — no path guessing (the first
+# version walked ms-playwright folder names and broke on layout differences).
+# install is a fast no-op when the browser is already present.
+npx playwright install chromium
+if ($LASTEXITCODE -ne 0) { throw "playwright install failed" }
 
 # Serve the production build the way learners get it. --strictPort so a stale
 # server on 4173 fails loudly instead of silently testing an old build.

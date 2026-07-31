@@ -209,9 +209,14 @@ function languageLeaks(text: string, neutral: Set<string> = new Set()): string[]
     .slice(0, 3)
 }
 
-const browser = await chromium.launch({
-  executablePath: process.env.HP_CHROMIUM || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-})
+// Playwright resolves its own managed browser; forcing a path here is only for
+// environments whose browser lives outside Playwright's registry (the cloud
+// sandbox sets HP_CHROMIUM=/opt/pw-browsers/chromium). Hardcoding the sandbox
+// path as the DEFAULT made every Windows run fail with a path from another
+// machine's filesystem — seen on the owner's machine 2026-07-30.
+const browser = await chromium.launch(
+  process.env.HP_CHROMIUM ? { executablePath: process.env.HP_CHROMIUM } : {},
+)
 const phases = ALL_PHASES.filter(p => p.id >= FROM && p.id <= TO).sort((a, b) => a.id - b.id)
 
 /**
