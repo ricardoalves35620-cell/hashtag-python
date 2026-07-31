@@ -8,6 +8,29 @@ export function resolveLocalizedText(value: LocalizedText | undefined, lang: Lan
 }
 
 const exactPt: Record<string, string> = {
+  // ex21_zero starter: per-line intent comments, bilingual via this dictionary so the
+  // output strings keep localizing separately (Quote->Cotacao) — 2026-07-31.
+  "bring in Python's random-number tools":
+    "traz as ferramentas de números aleatórios do Python",
+  "fix the seed so every run gives the same numbers":
+    "fixa a semente para que toda execução dê os mesmos números",
+  "count the high-risk repairs":
+    "conta os reparos de alto risco",
+  "run the simulation for 5 rounds":
+    "roda a simulação por 5 rodadas",
+  "draw a random repair cost for this round":
+    "sorteia um custo de reparo aleatório para esta rodada",
+  "apply the 250 credit to get the quote amount":
+    "aplica o crédito de 250 para obter o valor do orçamento",
+  "label the round by how costly it is":
+    "rotula a rodada pelo quão cara ela é",
+  "count this round when it is high risk":
+    "conta esta rodada quando é de alto risco",
+  "show this round's numbers":
+    "mostra os números desta rodada",
+  "after all rounds, show how many were high risk":
+    "depois de todas as rodadas, mostra quantas foram de alto risco",
+
   // ex21_fill: the word fallback produced '# preencha: pick one' (Portunol).
   'fill: pick one': 'preencha: escolha um',
   'fill: random int': 'preencha: inteiro aleatório',

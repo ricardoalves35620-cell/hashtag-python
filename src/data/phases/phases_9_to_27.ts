@@ -171,18 +171,18 @@ print("Simulated repair value: $", repair_value)`,
         en: 'Goal:\nBuild a repair-quote simulation that runs 5 rounds. Use a fixed seed of 42 so every run produces the same results.\n\nProgram requirements\n\n1. Simulate\n- For each round, generate a random repair value between 500 and 12000\n- Apply a 250 credit to get the quote amount\n- Classify the repair as "HIGH" when the value exceeds 5000, otherwise "normal"\n- Count how many repairs are classified as high risk\n\n2. Display\n- For each round, show the quote number, the repair value, the quote amount after credit and the risk level\n- At the end, show how many repairs were high risk\n\nExample output:\nQuote 1: $10976 → $10726 [HIGH]\nHigh risk: 2',
         pt: 'Objetivo:\nConstrua uma simulação de orçamentos de reparo que executa 5 rodadas. Use uma seed fixa de 42 para que toda execução produza os mesmos resultados.\n\nRequisitos do programa\n\n1. Simular\n- Para cada rodada, gere um valor de reparo aleatório entre 500 e 12000\n- Aplique um crédito de 250 para obter o valor do orçamento\n- Classifique o reparo como "HIGH" quando o valor ultrapassa 5000, senão "normal"\n- Conte quantos reparos são classificados como alto risco\n\n2. Mostrar\n- Para cada rodada, exiba o número do orçamento, o valor do reparo, o valor do orçamento após o crédito e o nível de risco\n- Ao final, exiba quantos reparos foram de alto risco\n\nExemplo de saída:\nCotação 1: $10976 → $10726 [ALTO]\nAlto risco: 2'
       },
-      starterCode: `import random
-random.seed(42)
+      starterCode: `import random  # bring in Python's random-number tools
+random.seed(42)  # fix the seed so every run gives the same numbers
 
-high_risk = 0
-for i in range(5):
-    repair_value = random.randint(500, 12000)
-    quote = repair_value - 250
-    risk = "HIGH" if repair_value > 5000 else "normal"
-    if repair_value > 5000: high_risk += 1
-    print(f"Quote {i+1}: \${repair_value} → \${quote} [{risk}]")
+high_risk = 0  # count the high-risk repairs
+for i in range(5):  # run the simulation for 5 rounds
+    repair_value = random.randint(500, 12000)  # draw a random repair cost for this round
+    quote = repair_value - 250  # apply the 250 credit to get the quote amount
+    risk = "HIGH" if repair_value > 5000 else "normal"  # label the round by how costly it is
+    if repair_value > 5000: high_risk += 1  # count this round when it is high risk
+    print(f"Quote {i+1}: \${repair_value} → \${quote} [{risk}]")  # show this round's numbers
 
-print("High risk:", high_risk)`,
+print("High risk:", high_risk)  # after all rounds, show how many were high risk`,
       hints: [{ en: 'random.randint(500, 12000) generates the repair_value', pt: 'random.randint(500, 12000) gera o repair_value' }],
       sampleOutput: { en: 'Quote 1: $10976 → $10726 [HIGH]\nHigh risk: 2', pt: 'Cotação 1: $10976 → $10726 [ALTO]\nAlto risco: 2' }
     }
