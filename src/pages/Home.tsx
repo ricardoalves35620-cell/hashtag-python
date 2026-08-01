@@ -106,17 +106,15 @@ export default function Home() {
           <div className="h-2 rounded-full overflow-hidden mt-4" style={{ background: 'var(--c-bg)' }}><div className="h-full rounded-full" style={{ width: `${coreOverall}%`, background: 'var(--c-purple)' }} /></div>
         </section>
 
-        <div className="grid md:grid-cols-2 gap-3">
-          <button onClick={() => navigate('/base-zero')} className="rounded-xl p-4 text-left" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
-            <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🌱 {t.zeroTitle}</div>
-            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{t.zeroText}</div>
-            <div className="text-xs font-medium mt-3" style={{ color: 'var(--c-purple-l)' }}>{t.zeroBtn} →</div>
-          </button>
-          <button onClick={() => navigate('/visualizer')} className="rounded-xl p-4 text-left" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}>
-            <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🧩 {t.visualBtn}</div>
-            <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Step through variables, conditions and loops.' : 'Avance passo a passo por variáveis, condições e laços.'}</div>
-          </button>
-        </div>
+        {/* Base Zero shortcut removed: it jumped straight into Phase 0's lesson step,
+            duplicating the "Phase 0 · Base Zero" card in the phase list below. Phase 0
+            remains the single canonical entry (it carries progress + exam and still
+            opens this lab as its lesson). The lab stays reachable via that lesson step
+            and onboarding. */}
+        <button onClick={() => navigate('/visualizer')} className="w-full rounded-xl p-4 text-left" style={{ background: 'var(--c-code-bg)', border: '1px solid var(--c-border)' }}>
+          <div className="text-sm font-semibold" style={{ color: 'var(--c-text)' }}>🧩 {t.visualBtn}</div>
+          <div className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--c-muted)' }}>{lang === 'en' ? 'Step through variables, conditions and loops.' : 'Avance passo a passo por variáveis, condições e laços.'}</div>
+        </button>
 
         <div className="rounded-xl p-4" style={{ background: 'var(--c-card)', border: '1px solid var(--c-border)' }}>
           <div className="flex items-start justify-between gap-3 mb-3">
