@@ -11,7 +11,6 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
   const navigate = useNavigate()
   const status = getPhaseStatus(progress, phase.id)
   const phaseProgress = progress.find(p => p.phase_id === phase.id)
-  const stepsCompleted = [phaseProgress?.lesson_done, phaseProgress?.exercises_done, phaseProgress?.quiz_done, phaseProgress?.exam_passed].filter(Boolean).length
   const group = getPhaseGroup(inferPhaseStage(phase))
   const isLocked = status === 'locked'
   const isDone = status === 'done'
@@ -20,6 +19,14 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
   // index is pinned to the real data by phaseIndex.test.ts.
   const hasMiniProject = phaseHasMiniProject(phase.id)
   const miniProjectDone = Boolean(phaseProgress?.project_done)
+  // On a phase that HAS a mini-project it is the 5th step, so the extra step is
+  // visible from the card before opening the phase. It still never blocks the next
+  // phase — getPhaseStatus unlocks on exam_passed alone — but it does count towards
+  // fully completing (mastering) this phase, which is exactly when getPhaseStatus
+  // reports 'done'. Phases without a mini-project keep the usual 4 steps.
+  const coreSteps = [phaseProgress?.lesson_done, phaseProgress?.exercises_done, phaseProgress?.quiz_done, phaseProgress?.exam_passed].filter(Boolean).length
+  const totalSteps = hasMiniProject ? 5 : 4
+  const stepsCompleted = coreSteps + (hasMiniProject && miniProjectDone ? 1 : 0)
 
   return (
     <button
@@ -46,9 +53,9 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
       <p className="mt-3 mb-0 line-clamp-2 text-xs text-ink-secondary">{phase.description[lang]}</p>
       {(phase.desktopRequired || phase.libraries.length > 0 || hasMiniProject) && (
         <div className="mt-3 flex flex-wrap gap-2">
-          {/* The mini-project is a bonus: it never counts in the 4 steps below and
-              never blocks the next phase (see getPhaseStatus). The badge only makes
-              its existence visible before entering the phase. */}
+          {/* The mini-project is the 5th step on phases that have one (see totalSteps)
+              and never blocks the next phase (see getPhaseStatus). This badge names it
+              explicitly and shows whether it is still open before entering the phase. */}
           {hasMiniProject && (
             <Badge variant={miniProjectDone ? 'success' : 'primary'}>
               {miniProjectDone
@@ -60,7 +67,7 @@ export default function PhaseCard({ phase, progress, lang }: Props) {
           {phase.libraries.map(lib => <Badge key={lib} variant="neutral" mono>{lib}</Badge>)}
         </div>
       )}
-      <div className="mt-4"><Progress value={stepsCompleted} max={4} label={`${stepsCompleted}/4 ${lang === 'en' ? 'steps' : 'etapas'}`} showValue tone={isDone ? 'success' : 'primary'} size="sm" /></div>
+      <div className="mt-4"><Progress value={stepsCompleted} max={totalSteps} label={`${stepsCompleted}/${totalSteps} ${lang === 'en' ? 'steps' : 'etapas'}`} showValue tone={isDone ? 'success' : 'primary'} size="sm" /></div>
     </button>
   )
 }
